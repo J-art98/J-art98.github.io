@@ -683,6 +683,24 @@
     </div>
 </div>
 
+<!-- Post Location Modal -->
+<div id="postLocationModal" class="modal" style="display: none;">
+    <div class="auth-box" style="max-width: 400px;">
+        <h2 style="font-size: 1.2rem; margin-bottom: 14px; text-align: center;">📍 Standort für Nachricht wählen</h2>
+        <div class="auth-form-group">
+            <label for="postAddrInput">Welche Adresse möchtest du anhängen?</label>
+            <input type="text" id="postAddrInput" placeholder="Ort, Stadt oder Adresse..." onkeydown="if(event.key==='Enter') submitPostManualLocation()">
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 14px;">
+            <button style="width: 100%;" onclick="submitPostManualLocation()">Adresse übernehmen</button>
+            <button style="width: 100%; background: #ef4444; color: white; display: flex; align-items: center; justify-content: center; gap: 6px; border: none; padding: 10px; border-radius: 6px; font-weight: 600; cursor: pointer;" onclick="submitPostCurrentLocation()">
+                📍 Aktuellen Standort verwenden
+            </button>
+            <button style="width: 100%; background: #334155; color: white; border: none; padding: 8px; border-radius: 6px; font-weight: 600; cursor: pointer;" onclick="closePostLocationModal()">Abbrechen</button>
+        </div>
+    </div>
+</div>
+
 <div class="container" id="mainAppContainer" style="display: none;">
     <header>
         <h1 onclick="resetToHome()" data-i18n="title">Jannik Reisen 🌍✈️</h1>
@@ -897,6 +915,9 @@
     <div class="modal-content" style="max-width: 460px; text-align: center;">
         <span class="close-modal" onclick="closeEmojiPickerModal()">&times;</span>
         <h3 style="margin-top:0; color: var(--accent-color);" data-i18n="emojiTitle">😀 Emoji auswählen</h3>
+        <div style="margin-bottom: 10px;">
+            <input type="text" id="emojiSearchInput" placeholder="Emojis suchen (z.B. Herz, Auto, Lachen)..." oninput="filterEmojis()" style="padding: 8px; font-size: 0.9rem;">
+        </div>
         <div id="emojiPickerGrid" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin: 15px 0; min-height: 180px;"></div>
         <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 10px;">
             <button onclick="prevEmojiPage()" style="padding: 6px 12px; font-size: 0.85rem; background: #334155;">◀ Zurück</button>
@@ -1196,21 +1217,39 @@
     let attachedLocation = null;
 
     function requestLocationAttachment() {
-        if (confirm("Möchtest du deinen aktuellen GPS-Standort verwenden?\n(Klicke Abbrechen, um eine Adresse manuell einzugeben)")) {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(pos => {
-                    attachedLocation = { lat: pos.coords.latitude, lon: pos.coords.longitude, name: "Aktueller GPS-Standort" };
-                    document.getElementById('postLocationIndicator').innerText = "📍 Standort angehängt (GPS)";
-                }, () => alert("GPS-Standort konnte nicht ermittelt werden."));
-            } else {
-                alert("Geolocation wird nicht unterstützt.");
-            }
+        document.getElementById('postLocationModal').style.display = 'flex';
+        document.getElementById('postAddrInput').value = '';
+        document.getElementById('postAddrInput').focus();
+    }
+
+    function closePostLocationModal() {
+        document.getElementById('postLocationModal').style.display = 'none';
+    }
+
+    function submitPostManualLocation() {
+        const addr = document.getElementById('postAddrInput').value.trim();
+        if (!addr) {
+            alert("Bitte gib eine gültige Adresse ein.");
+            return;
+        }
+        attachedLocation = { name: addr };
+        document.getElementById('postLocationIndicator').innerText = "📍 Standort: " + addr;
+        closePostLocationModal();
+    }
+
+    function submitPostCurrentLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(pos => {
+                attachedLocation = { lat: pos.coords.latitude, lon: pos.coords.longitude, name: "Aktueller GPS-Standort" };
+                document.getElementById('postLocationIndicator').innerText = "📍 Standort angehängt (GPS)";
+                closePostLocationModal();
+            }, () => {
+                alert("GPS-Standort konnte nicht ermittelt werden.");
+                closePostLocationModal();
+            });
         } else {
-            const locName = prompt("Bitte gib eine Adresse oder einen Ort ein:");
-            if (locName) {
-                attachedLocation = { name: locName };
-                document.getElementById('postLocationIndicator').innerText = "📍 Standort: " + locName;
-            }
+            alert("Geolocation wird von diesem Browser nicht unterstützt.");
+            closePostLocationModal();
         }
     }
 
@@ -1297,19 +1336,248 @@
     }
 
     const MASTER_EMOJI_POOL = [
-        '😀', '😃', '😄', '😁', '😆', '😅', '🤣', '😂', '🙂', '🙃', '😉', '😊', '😇', '🥰', '😍', '🤩', '😘', '😗', '😙', '😚',
-        '😋', '😛', '😜', '🤪', '😝', '🤑', '🤗', '🤭', '🤫', '🤔', '🤐', '🤨', '😐', '😑', '😶', '😏', '😒', '🙄', '😬', '🤥',
-        '👍', '👎', '👌', '🤌', '🤏', '✌️', '🤞', '🫰', '🤟', '🤘', '🤙', '👈', '👉', '👆', '🖕', '👇', '☝️', '✋', '🤚', '👋',
-        '❤️', '🧡', '💛', '💚', '💙', '💜', '🖤', '🤍', '🤎', '💔', '❤️‍🔥', '❤️‍🩹', '💕', '💞', '💓', '💗', '💖', '💘', '💝', '⭐',
-        '🌟', '💫', '✨', '☄️', '🔥', '💥', '💯', '💢', '💬', '💭', '💤', '🎉', '🎊', '🎈', '🎁', '🏆', '🎖️', '🏅', '🥇', '🥈',
-        '🌍', '🌎', '🌏', '🗺️', '🧭', '✈️', '🛫', '🛬', '🚀', '🛸', '🛰️', '🚗', '🚕', '🚙', '🚌', '🚎', '🏎️', '🚓', '🚑', '🚒',
-        '🍕', '🍔', '🍟', '🌭', '🍿', '🧂', '🥓', '🥚', '🍳', '🧇', '🥞', '🧈', '🍞', '🥐', '🥨', '🧀', '🥗', '🥪', '🥙', '🧆',
-        '🍺', '🍻', '🍷', '🍸', '🍹', '🍾', '🍶', '🍵', '☕', '🧃', '🧉', '🍼', '🥤', '🧋', '🍽️', '🍴', '🥄', '🔪', '🏺', '🥘',
-        '⚽', '🏀', '🏈', '⚾', '🥎', '🎾', '🏐', '🏉', '🥏', '🎱', '🪀', '🏓', '🏸', '🏒', '🏑', '🥍', '🏏', '🪃', '🥅', '⛳',
-        '🌊', '⚡', '❄️', '☃️', '⛄', '🌬️', '🌪️', '🌫️', '☂️', '☔', '☀️', '🌤️', '⛅', '🌥️', '☁️', '🌦️', '🌧️', '⛈️', '🌩️', '🌨️',
-        '⛺', '🏕️', '🧱', '🪵', '🛖', '🏠', '🏡', '🏘️', '🏚️', '🏗️', '🏭', '🏢', '🏬', '🏣', '🏤', '🏥', '🏦', '🏨', '🏪', '🏫',
-        '🎨', '🎭', '🎪', '🎤', '🎧', '🎼', '🎹', '🥁', '🎷', '🎺', '🎸', '🪕', '🎻', '🎲', '♟️', '🎯', '🎳', '🎮', '🎰', '🧩'
+        { emoji: '😀', kw: 'grinsen lachen lächeln smile happy' },
+        { emoji: '😃', kw: 'grinsen lächeln fröhlich smile' },
+        { emoji: '😄', kw: 'lachen freude fröhlich' },
+        { emoji: '😁', kw: 'grinsen zähne lachen glücklich' },
+        { emoji: '😆', kw: 'lachen augen zu fröhlich' },
+        { emoji: '😅', kw: 'schweiß lächeln erleichtert' },
+        { emoji: '🤣', kw: 'wegschmeißen lachen tot rofl' },
+        { emoji: '😂', kw: 'lachen tränen lol tears joy' },
+        { emoji: '🙂', kw: 'lächeln leicht freundlich' },
+        { emoji: '🙃', kw: 'verrückt kopf über verkehrt' },
+        { emoji: '😉', kw: 'zwinkern auge flirten' },
+        { emoji: '😊', kw: 'lächeln glücklich erröten' },
+        { emoji: '😇', kw: 'engel heilig heiligenschein' },
+        { emoji: '🥰', kw: 'herzen liebe verknallt' },
+        { emoji: '😍', kw: 'herzen augen verliebt love' },
+        { emoji: '🤩', kw: 'sterne augen begeistert starstruck' },
+        { emoji: '😘', kw: 'kuss herz zuwinkend' },
+        { emoji: '😗', kw: 'kuss mund' },
+        { emoji: '😙', kw: 'kuss lächeln' },
+        { emoji: '😚', kw: 'kuss augen zu' },
+        { emoji: '😋', kw: 'lecker mjam hungrig' },
+        { emoji: '😛', kw: 'zunge raus albern' },
+        { emoji: '😜', kw: 'zwinkern zunge albern' },
+        { emoji: '🤪', kw: 'verrückt goofy wild' },
+        { emoji: '😝', kw: 'zunge raus augen zu' },
+        { emoji: '🤑', kw: 'geld reif dollar rich' },
+        { emoji: '🤗', kw: 'umarmung hug' },
+        { emoji: '🤭', kw: 'hand mund kichern' },
+        { emoji: '🤫', kw: 'leise pssst geheimnis' },
+        { emoji: '🤔', kw: 'nachdenken grübeln überlegen' },
+        { emoji: '🤐', kw: 'reißverschluss mund stumm' },
+        { emoji: '🤨', kw: 'skeptisch augenbraue' },
+        { emoji: '😐', kw: 'neutral neutraler gesichtsausdruck' },
+        { emoji: '😑', kw: 'ausdruckslos' },
+        { emoji: '😶', kw: 'sprachlos mundlos' },
+        { emoji: '😏', kw: 'süffisant grinsen' },
+        { emoji: '😒', kw: 'genervt unzufrieden' },
+        { emoji: '🙄', kw: 'augen verdrehen' },
+        { emoji: '😬', kw: 'grimasse peinlich' },
+        { emoji: '🤥', kw: 'lügen pinocchio lüge' },
+        { emoji: '👍', kw: 'daumen hoch gut like yes' },
+        { emoji: '👎', kw: 'daumen runter schlecht dislike' },
+        { emoji: '👌', kw: 'okay ok perfekt' },
+        { emoji: '🤌', kw: 'italienisch handgeste' },
+        { emoji: '🤏', kw: 'klein wenig bisschen' },
+        { emoji: '✌️', kw: 'victory sieg peace' },
+        { emoji: '🤞', kw: 'daumen drücken glück' },
+        { emoji: '🫰', kw: 'fingerspitzen herz' },
+        { emoji: '🤟', kw: 'love you zeichen' },
+        { emoji: '🤘', kw: 'rock on hörner' },
+        { emoji: '🤙', kw: 'anrufen schaefchen shaka' },
+        { emoji: '👈', kw: 'zeigefinger links' },
+        { emoji: '👉', kw: 'zeigefinger rechts' },
+        { emoji: '👆', kw: 'zeigefinger oben' },
+        { emoji: '🖕', kw: 'mittelfinger' },
+        { emoji: '👇', kw: 'zeigefinger unten' },
+        { emoji: '☝️', kw: 'zeigefinger hoch' },
+        { emoji: '✋', kw: 'hand stopp' },
+        { emoji: '🤚', kw: 'handrücken' },
+        { emoji: '👋', kw: 'winken hallo tschüss' },
+        { emoji: '❤️', kw: 'herz liebe red heart' },
+        { emoji: '🧡', kw: 'oranges herz' },
+        { emoji: '💛', kw: 'gelbes herz' },
+        { emoji: '💚', kw: 'grünes herz' },
+        { emoji: '💙', kw: 'blaues herz' },
+        { emoji: '💜', kw: 'lila herz' },
+        { emoji: '🖤', kw: 'schwarzes herz' },
+        { emoji: '🤍', kw: 'weißes herz' },
+        { emoji: '🤎', kw: 'braunes herz' },
+        { emoji: '💔', kw: 'gebrochenes herz heartbreak' },
+        { emoji: '❤️‍🔥', kw: 'brennendes herz' },
+        { emoji: '❤️‍🩹', kw: 'geheiltes herz' },
+        { emoji: '💕', kw: 'zwei herzen' },
+        { emoji: '💞', kw: 'krebs herzen' },
+        { emoji: '💓', kw: 'schlagendes herz' },
+        { emoji: '💗', kw: 'wachsendes herz' },
+        { emoji: '💖', kw: 'glitzerndes herz sparkly' },
+        { emoji: '💘', kw: 'pfeil herz cupido' },
+        { emoji: '💝', kw: 'geschenk herz ribbon' },
+        { emoji: '⭐', kw: 'stern star' },
+        { emoji: '🌟', kw: 'leuchtender stern glowing' },
+        { emoji: '💫', kw: 'schwindel sterne dizzy' },
+        { emoji: '✨', kw: 'funken glanz sparkles' },
+        { emoji: '☄️', kw: 'komet meteor' },
+        { emoji: '🔥', kw: 'feuer fire hot' },
+        { emoji: '💥', kw: 'explosion boom collision' },
+        { emoji: '💯', kw: 'hundert punkte 100 perfect' },
+        { emoji: '💢', kw: 'wut symbol ärger' },
+        { emoji: '💬', kw: 'sprechblase chat message' },
+        { emoji: '💭', kw: 'denkblase thought' },
+        { emoji: '💤', kw: 'schlafen schlaf müde zzz' },
+        { emoji: '🎉', kw: 'konfetti party celebration' },
+        { emoji: '🎊', kw: 'konfettibombe' },
+        { emoji: '🎈', kw: 'luftballon balloon' },
+        { emoji: '🎁', kw: 'geschenk present gift' },
+        { emoji: '🏆', kw: 'pokal gewinner trophy' },
+        { emoji: '🎖️', kw: 'militär medaille' },
+        { emoji: '🏅', kw: 'sport medaille' },
+        { emoji: '🥇', kw: '1 platz goldmedaille' },
+        { emoji: '🥈', kw: '2 platz silbermedaille' },
+        { emoji: '🌍', kw: 'erde europa afrika welt earth' },
+        { emoji: '🌎', kw: 'erde amerika' },
+        { emoji: '🌏', kw: 'erde asien australien' },
+        { emoji: '🗺️', kw: 'weltkarte map' },
+        { emoji: '🧭', kw: 'kompass navigation' },
+        { emoji: '✈️', kw: 'flugzeug reise travel flight' },
+        { emoji: '🛫', kw: 'flugzeug abflug departure' },
+        { emoji: '🛬', kw: 'flugzeug ankunft arrival' },
+        { emoji: '🚀', kw: 'rakete rocket space' },
+        { emoji: '🛸', kw: 'ufo' },
+        { emoji: '🛰️', kw: 'satellit' },
+        { emoji: '🚗', kw: 'auto car fahrzeug' },
+        { emoji: '🚕', kw: 'taxi cab' },
+        { emoji: '🚙', kw: 'suv auto' },
+        { emoji: '🚌', kw: 'bus' },
+        { emoji: '🚎', kw: 'oberleitungsbus' },
+        { emoji: '🏎️', kw: 'rennauto racing' },
+        { emoji: '🚓', kw: 'polizeiauto police' },
+        { emoji: '🚑', kw: 'krankenwagen ambulance' },
+        { emoji: '🚒', kw: 'feuerwehrauto fire engine' },
+        { emoji: '🍕', kw: 'pizza essen food' },
+        { emoji: '🍔', kw: 'burger hamburger' },
+        { emoji: '🍟', kw: 'pommes frites fries' },
+        { emoji: '🌭', kw: 'hotdog' },
+        { emoji: '🍿', kw: 'popcorn kino' },
+        { emoji: '🧂', kw: 'salz' },
+        { emoji: '🥓', kw: 'speck bacon' },
+        { emoji: '🥚', kw: 'ei egg' },
+        { emoji: '🍳', kw: 'spiegelei kochen cooking' },
+        { emoji: '🧇', kw: 'waffel' },
+        { emoji: '🥞', kw: 'pfannkuchen pancakes' },
+        { emoji: '🧈', kw: 'butter' },
+        { emoji: '🍞', kw: 'brot bread' },
+        { emoji: '🥐', kw: 'croissant' },
+        { emoji: '🥨', kw: 'brezel pretzel' },
+        { emoji: '🧀', kw: 'käse cheese' },
+        { emoji: '🥗', kw: 'salat salad' },
+        { emoji: '🥪', kw: 'sandwich' },
+        { emoji: '🥙', kw: 'wrap' },
+        { emoji: '🧆', kw: 'falafel' },
+        { emoji: '🍺', kw: 'bier beer getränk drink' },
+        { emoji: '🍻', kw: 'anstoßen bierkrüge cheers' },
+        { emoji: '🍷', kw: 'weinglas wine' },
+        { emoji: '🍸', kw: 'cocktailglas martini' },
+        { emoji: '🍹', kw: 'tropischer cocktail drink' },
+        { emoji: '🍾', kw: 'sektflasche champagne' },
+        { emoji: '🍶', kw: 'sake' },
+        { emoji: '🍵', kw: 'tasse tee tea' },
+        { emoji: '☕', kw: 'kaffee coffee tasse' },
+        { emoji: '🧃', kw: 'safttüte juice' },
+        { emoji: '🧉', kw: 'mate tee' },
+        { emoji: '🍼', kw: 'babyflasche baby bottle' },
+        { emoji: '🥤', kw: 'becher strohhalm drink' },
+        { emoji: '🧋', kw: 'bubble tea' },
+        { emoji: '🍽️', kw: 'gabel messer teller restaurant' },
+        { emoji: '🍴', kw: 'gabel und messer' },
+        { emoji: '🥄', kw: 'löffel spoon' },
+        { emoji: '🔪', kw: 'messer knife' },
+        { emoji: '🏺', kw: 'krug anfrage' },
+        { emoji: '🥘', kw: 'pfanne essen paella' },
+        { emoji: '⚽', kw: 'fussball soccer ball' },
+        { emoji: '🏀', kw: 'basketball' },
+        { emoji: '🏈', kw: 'football' },
+        { emoji: '⚾', kw: 'baseball' },
+        { emoji: '🥎', kw: 'softball' },
+        { emoji: '🎾', kw: 'tennis' },
+        { emoji: '🏐', kw: 'volleyball' },
+        { emoji: '🏉', kw: 'rugby' },
+        { emoji: '🥏', kw: 'frisbee' },
+        { emoji: '🎱', kw: 'billard 8ball' },
+        { emoji: '🪀', kw: 'jojo' },
+        { emoji: '🏓', kw: 'tischtennis ping pong' },
+        { emoji: '🏸', kw: 'badminton' },
+        { emoji: '🏒', kw: 'eishockey' },
+        { emoji: '🏑', kw: 'feldhockey' },
+        { emoji: '🥍', kw: 'lacrosse' },
+        { emoji: '🏏', kw: 'cricket' },
+        { emoji: '🪃', kw: 'bumerang' },
+        { emoji: '🥅', kw: 'tor goal' },
+        { emoji: '⛳', kw: 'golf loch flagge' },
+        { emoji: '🌊', kw: 'welle wave water ocean' },
+        { emoji: '⚡', kw: 'blitz lightning thunderbolt' },
+        { emoji: '❄️', kw: 'schneeflocke snowflake winter' },
+        { emoji: '☃️', kw: 'schneemann snowman' },
+        { emoji: '⛄', kw: 'schneemann ohne schnee' },
+        { emoji: '🌬️', kw: 'windgesicht wind blow' },
+        { emoji: '🌪️', kw: 'tornado' },
+        { emoji: '🌫️', kw: 'nebel fog' },
+        { emoji: '☂️', kw: 'regenschirm umbrella' },
+        { emoji: '☔', kw: 'regenschirm im regen rain' },
+        { emoji: '☀️', kw: 'sonne sun sunny' },
+        { emoji: '🌤️', kw: 'sonne hinter wolke' },
+        { emoji: '⛅', kw: 'wolkig partly cloudy' },
+        { emoji: '🌥️', kw: 'grosse wolke sonne' },
+        { emoji: '☁️', kw: 'wolke cloud' },
+        { emoji: '🌦️', kw: 'regen sonne wetter' },
+        { emoji: '🌧️', kw: 'regen wolke rain' },
+        { emoji: '⛈️', kw: 'gewitter thunderstorm' },
+        { emoji: '🌩️', kw: 'blitz wolke lightning' },
+        { emoji: '🌨️', kw: 'schnee wolke snow' },
+        { emoji: '⛺', kw: 'zelt tent camping' },
+        { emoji: '🏕️', kw: 'camping' },
+        { emoji: '🧱', kw: 'ziegelstein brick' },
+        { emoji: '🪵', kw: 'holz holzscheit wood' },
+        { emoji: '🛖', kw: 'hütte hut' },
+        { emoji: '🏠', kw: 'haus house home' },
+        { emoji: '🏡', kw: 'haus mit garten' },
+        { emoji: '🏘️', kw: 'häuser' },
+        { emoji: '🏚️', kw: 'verlassenes haus' },
+        { emoji: '🏗️', kw: 'kran baustelle construction' },
+        { emoji: '🏭', kw: 'fabrik factory' },
+        { emoji: '🏢', kw: 'bürogebäude office' },
+        { emoji: '🏬', kw: 'kaufhaus store' },
+        { emoji: '🏣', kw: 'japanische post' },
+        { emoji: '🏤', kw: 'postamt post office' },
+        { emoji: '🏥', kw: 'krankenhaus hospital' },
+        { emoji: '🏦', kw: 'bank' },
+        { emoji: '🏨', kw: 'hotel' },
+        { emoji: '🏪', kw: 'supermarkt store' },
+        { emoji: '🏫', kw: 'schule school' },
+        { emoji: '🎨', kw: 'malpalette kunst art' },
+        { emoji: '🎭', kw: 'theater masken drama' },
+        { emoji: '🎪', kw: 'zirkuszelt circus' },
+        { emoji: '🎤', kw: 'mikrofon microphone sing' },
+        { emoji: '🎧', kw: 'kopfhörer headphones music' },
+        { emoji: '🎼', kw: 'notenblatt music' },
+        { emoji: '🎹', kw: 'klavier keyboard' },
+        { emoji: '🥁', kw: 'trommel drum' },
+        { emoji: '🎷', kw: 'saxophon' },
+        { emoji: '🎺', kw: 'trompete trumpet' },
+        { emoji: '🎸', kw: 'gitarre guitar' },
+        { emoji: '🪕', kw: 'banjo' },
+        { emoji: '🎻', kw: 'geige violin' },
+        { emoji: '🎲', kw: 'würfel dice game' },
+        { emoji: '♟️', kw: 'schachfigur' },
+        { emoji: '🎯', kw: 'zielscheibe dart target' },
+        { emoji: '🎳', kw: 'bowling' },
+        { emoji: '🎮', kw: 'videospiel controller gaming' },
+        { emoji: '🎰', kw: 'spielautomat slot machine' },
+        { emoji: '🧩', kw: 'puzzle' }
     ];
+
     let currentEmojiPage = 0;
     const emojisPerPage = 20;
     let currentActivePostForEmoji = null;
@@ -1317,6 +1585,7 @@
     function openEmojiPicker(postId) {
         currentActivePostForEmoji = postId;
         currentEmojiPage = 0;
+        document.getElementById('emojiSearchInput').value = '';
         renderEmojiPickerPage();
         document.getElementById('emojiPickerModal').style.display = 'flex';
     }
@@ -1326,22 +1595,36 @@
         currentActivePostForEmoji = null;
     }
 
+    function getFilteredEmojis() {
+        const query = document.getElementById('emojiSearchInput').value.toLowerCase().trim();
+        if (!query) return MASTER_EMOJI_POOL;
+        return MASTER_EMOJI_POOL.filter(item => item.emoji.includes(query) || item.kw.toLowerCase().includes(query));
+    }
+
+    function filterEmojis() {
+        currentEmojiPage = 0;
+        renderEmojiPickerPage();
+    }
+
     function renderEmojiPickerPage() {
         const gridEl = document.getElementById('emojiPickerGrid');
+        const filtered = getFilteredEmojis();
         const start = currentEmojiPage * emojisPerPage;
-        const slice = MASTER_EMOJI_POOL.slice(start, start + emojisPerPage);
+        const slice = filtered.slice(start, start + emojisPerPage);
         let html = '';
-        slice.forEach(emoji => {
-            html += `<button onclick="selectEmojiReaction('${emoji}')" style="background: #0f172a; border: 1px solid var(--border-color); border-radius: 6px; padding: 10px; font-size: 1.3rem; cursor: pointer;">${emoji}</button>`;
+        slice.forEach(item => {
+            html += `<button onclick="selectEmojiReaction('${item.emoji}')" style="background: #0f172a; border: 1px solid var(--border-color); border-radius: 6px; padding: 10px; font-size: 1.3rem; cursor: pointer;">${item.emoji}</button>`;
         });
         gridEl.innerHTML = html;
-        const totalPages = Math.ceil(MASTER_EMOJI_POOL.length / emojisPerPage);
+        const totalPages = Math.ceil(filtered.length / emojisPerPage) || 1;
+        if (currentEmojiPage >= totalPages) currentEmojiPage = totalPages - 1;
         document.getElementById('emojiPageIndicator').innerText = `Seite ${currentEmojiPage + 1} von ${totalPages}`;
     }
 
     function prevEmojiPage() { if (currentEmojiPage > 0) { currentEmojiPage--; renderEmojiPickerPage(); } }
     function nextEmojiPage() {
-        const totalPages = Math.ceil(MASTER_EMOJI_POOL.length / emojisPerPage);
+        const filtered = getFilteredEmojis();
+        const totalPages = Math.ceil(filtered.length / emojisPerPage) || 1;
         if (currentEmojiPage < totalPages - 1) { currentEmojiPage++; renderEmojiPickerPage(); }
     }
 
