@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jannik Reisen 🌍✈️</title>
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <!-- Chart.js für die Graphen -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-color: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent-color: #3b82f6;
+            --accent-hover: #2563eb;
+            --border-color: #334155;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 8px;
+            width: 100%;
+            min-height: 100vh;
+            box-sizing: border-box;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            box-sizing: border-box;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--card-bg);
+            padding: 12px 18px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 1.2rem;
+            margin: 0;
+            cursor: pointer;
+            color: var(--text-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        h1:hover {
+            color: var(--accent-color);
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.9rem;
+        }
+
+        .badge {
+            background: #334155;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 8px;
+            padding: 14px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .card h3 {
+            margin-top: 0;
+            font-size: 1.05rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 8px;
+        }
+
+        /* Admin Banner */
+        .admin-banner {
+            background: linear-gradient(135deg, #1e3a8a, #1e293b);
+            border: 1px solid #3b82f6;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-bottom: 4px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .admin-banner-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            color: #93c5fd;
+            font-weight: bold;
+        }
+
+        /* Chat Styles */
+        .chat-box-container {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .chat-messages-list {
+            background: #0f172a;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            height: 180px;
+            overflow-y: auto;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+        .chat-msg {
+            background: #1e293b;
+            padding: 6px 10px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+        }
+        .chat-msg-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 2px;
+        }
+        .chat-input-row {
+            display: flex;
+            gap: 8px;
+        }
+
+        /* Post & Poll Creator Styles */
+        .post-creation-container {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .form-group label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+        .form-group input[type="text"],
+        .form-group textarea,
+        .poll-option-input,
+        .form-row select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background: #0f172a;
+            color: white;
+            font-size: 0.95rem;
+            box-sizing: border-box;
+        }
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        .poll-creator-section {
+            background: #0f172a;
+            padding: 14px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+        }
+        .poll-creator-section h3 {
+            margin-top: 0;
+            font-size: 0.95rem;
+            margin-bottom: 4px;
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+        .hint {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+        .poll-option-inputs {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+        .btn-secondary {
+            background-color: #334155;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+        .btn-secondary:hover {
+            background-color: #475569;
+        }
+        .section-divider {
+            border: none;
+            border-top: 1px solid var(--border-color);
+            margin: 4px 0;
+        }
+        .additional-features-section h4 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+            color: var(--text-color);
+        }
+        .form-row {
+            margin-bottom: 10px;
+        }
+        .form-row label {
+            font-size: 0.9rem;
+            font-weight: normal;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .form-row input[type="checkbox"] {
+            cursor: pointer;
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Poll Styles */
+        .poll-option {
+            background: #0f172a;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 8px 12px;
+            margin-bottom: 6px;
+            cursor: pointer;
+            transition: background 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+        .poll-option:hover {
+            border-color: var(--accent-color);
+            background: #1e293b;
+        }
+        .poll-bar {
+            position: absolute;
+            top: 0; left: 0; bottom: 0;
+            background: rgba(59, 130, 246, 0.2);
+            z-index: 1;
+            transition: width 0.3s ease;
+        }
+        .poll-content {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+        }
+
+        .map-wrapper {
+            position: relative;
+        }
+
+        .map-container {
+            height: 320px;
+            width: 100%;
+            border-radius: 8px;
+            margin-top: 10px;
+            z-index: 1;
+        }
+
+        .map-legend-container {
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            z-index: 1000;
+        }
+
+        .legend-toggle-btn {
+            background: rgba(30, 41, 59, 0.95);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .legend-toggle-btn:hover {
+            background: rgba(51, 65, 85, 0.95);
+        }
+
+        .map-legend {
+            display: none;
+            flex-direction: column;
+            gap: 6px;
+            background: rgba(30, 41, 59, 0.95);
+            border: 1px solid var(--border-color);
+            padding: 10px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.3);
+            margin-bottom: 5px;
+        }
+
+        .map-legend label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+        }
+
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .legend-dot.red { background: #ef4444; }
+        .legend-dot.blue { background: #3b82f6; }
+        .legend-dot.orange { background: #f59e0b; }
+        .legend-dot.green { background: #10b981; }
+
+        .search-box {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .radius-control {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: #0f172a;
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+
+        .radius-control input[type="range"] {
+            flex-grow: 1;
+            cursor: pointer;
+        }
+
+        input[type="text"], textarea, select {
+            width: 100%;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            background: #0f172a;
+            color: white;
+            font-size: 0.95rem;
+            box-sizing: border-box;
+        }
+
+        select {
+            cursor: pointer;
+        }
+
+        .section-header-bar {
+            margin-top: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 6px;
+            gap: 8px;
+        }
+
+        .section-header-bar strong {
+            font-size: 1rem;
+            white-space: nowrap;
+        }
+
+        .inline-filter {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .inline-filter label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            white-space: nowrap;
+        }
+
+        .inline-filter select {
+            padding: 3px 6px;
+            font-size: 0.8rem;
+            width: auto;
+            max-width: 140px;
+            background: #0f172a;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            color: white;
+        }
+
+        button {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background: var(--accent-hover);
+        }
+
+        .weather-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .weather-day {
+            background: #0f172a;
+            padding: 10px 8px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: border-color 0.2s, background 0.2s;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            text-align: center;
+        }
+
+        .weather-day:hover {
+            border-color: var(--accent-color);
+            background: #1e293b;
+        }
+
+        .weather-hours {
+            display: flex;
+            overflow-x: auto;
+            gap: 8px;
+            padding-bottom: 6px;
+            margin-top: 10px;
+        }
+
+        .hour-slot {
+            background: #0f172a;
+            min-width: 60px;
+            padding: 8px;
+            border-radius: 6px;
+            text-align: center;
+            font-size: 0.8rem;
+            border: 1px solid var(--border-color);
+            flex-shrink: 0;
+            cursor: pointer;
+            transition: border-color 0.2s, background 0.2s;
+        }
+
+        .hour-slot:hover {
+            border-color: var(--accent-color);
+            background: #1e293b;
+        }
+
+        .day-divider {
+            background: #020617;
+            border: 1px dashed var(--border-color);
+            border-radius: 6px;
+            min-width: 85px;
+            padding: 8px 4px;
+            text-align: center;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            flex-shrink: 0;
+            gap: 2px;
+        }
+
+        .clickable {
+            color: #60a5fa;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        .clickable:hover {
+            color: #93c5fd;
+        }
+
+        .item-list {
+            list-style: none;
+            padding: 0;
+            margin: 8px 0 0 0;
+        }
+
+        .item-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #0f172a;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 8px 10px;
+            margin-bottom: 6px;
+            gap: 10px;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .item-row:hover {
+            background: #1e293b;
+        }
+
+        .item-info-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            overflow: hidden;
+            flex-grow: 1;
+        }
+
+        .item-thumb {
+            width: 48px;
+            height: 48px;
+            border-radius: 6px;
+            object-fit: cover;
+            background: #334155;
+            flex-shrink: 0;
+        }
+
+        .item-text-details {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .rating-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            background: #334155;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            color: #fbbf24;
+            flex-shrink: 0;
+        }
+
+        .load-more-btn {
+            background: #334155;
+            color: white;
+            border: 1px solid var(--border-color);
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 6px;
+            font-size: 0.85rem;
+        }
+
+        .load-more-btn:hover {
+            background: #475569;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            padding: 24px;
+            border-radius: 12px;
+            max-width: 800px;
+            width: 95%;
+            border: 1px solid var(--border-color);
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+            box-sizing: border-box;
+        }
+
+        .fullscreen-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0, 0, 0, 0.75);
+            z-index: 3000;
+            justify-content: center;
+            align-items: center;
+            box-sizing: border-box;
+            padding: 16px;
+        }
+
+        .fullscreen-content-box {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            width: 100%;
+            max-width: 780px;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.4);
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+
+        .fullscreen-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #121824;
+            padding: 14px 18px;
+            border-bottom: 1px solid var(--border-color);
+            flex-shrink: 0;
+        }
+
+        .fullscreen-body {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 16px;
+            box-sizing: border-box;
+        }
+
+        .close-modal {
+            cursor: pointer;
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: var(--text-muted);
+            background: #334155;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .close-modal:hover {
+            background: #475569;
+            color: white;
+        }
+        
+        .gallery-container {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+            margin-bottom: 12px;
+        }
+
+        .gallery-img {
+            height: 140px;
+            border-radius: 6px;
+            object-fit: cover;
+            background: #000;
+            flex-shrink: 0;
+            width: 180px;
+        }
+
+        .nav-button-container {
+            margin-top: 16px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .navigate-btn {
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: background 0.2s;
+            text-decoration: none;
+        }
+
+        .navigate-btn:hover {
+            background: #059669;
+        }
+
+        .loading-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border: 2px solid var(--text-muted);
+            border-top-color: var(--accent-color);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-left: 6px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .weather-anim-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #0f172a;
+            padding: 12px 16px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 12px;
+        }
+
+        .weather-anim-stage {
+            width: 60px;
+            height: 60px;
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+            background: rgba(30, 41, 59, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .anim-sun {
+            width: 28px;
+            height: 28px;
+            background: #f59e0b;
+            border-radius: 50%;
+            box-shadow: 0 0 12px #f59e0b;
+            animation: sunPulse 3s infinite alternate;
+            position: relative;
+        }
+        .anim-sun::after {
+            content: '';
+            position: absolute;
+            top: -5px; left: -5px; right: -5px; bottom: -5px;
+            border: 2px dashed rgba(245, 158, 11, 0.6);
+            border-radius: 50%;
+            animation: spin 10s linear infinite;
+        }
+        @keyframes sunPulse {
+            0% { transform: scale(0.9); box-shadow: 0 0 8px #f59e0b; }
+            100% { transform: scale(1.1); box-shadow: 0 0 16px #fbbf24; }
+        }
+
+        .anim-rain-drop {
+            position: absolute;
+            width: 2px;
+            height: 10px;
+            background: #38bdf8;
+            opacity: 0.8;
+            top: -10px;
+            animation: fallDrop 0.8s linear infinite;
+        }
+        @keyframes fallDrop {
+            0% { transform: translateY(0); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateY(75px); opacity: 0; }
+        }
+
+        .anim-wind-line {
+            position: absolute;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #94a3b8, transparent);
+            width: 40px;
+            left: -40px;
+            animation: blowWind 1.2s linear infinite;
+        }
+        @keyframes blowWind {
+            0% { transform: translateX(0); opacity: 0; }
+            30% { opacity: 1; }
+            100% { transform: translateX(100px); opacity: 0; }
+        }
+
+        .chart-box {
+            background: #0f172a;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 12px;
+            position: relative;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <h1>Jannik Reisen 🌍✈️</h1>
+            <div class="header-controls">
+                <span class="badge">Live</span>
+            </div>
+        </header>
+
+        <!-- 1. Karte & Standort-Card -->
+        <div class="card">
+            <h3>📍 Reisekarte</h3>
+            <div class="map-wrapper">
+                <div class="search-box">
+                    <input type="text" id="map-search-input" placeholder="Ort oder Region suchen...">
+                    <button type="button" id="map-search-btn">Suchen</button>
+                </div>
+                <div class="radius-control">
+                    <label for="radius-slider">Suchradius: <span id="radius-val">10</span> km</label>
+                    <input type="range" id="radius-slider" min="1" max="50" value="10">
+                </div>
+                <div id="map" class="map-container"></div>
+                <div class="map-legend-container">
+                    <button type="button" class="legend-toggle-btn" id="legend-toggle">Legende ▾</button>
+                    <div class="map-legend" id="map-legend">
+                        <label><span class="legend-dot red"></span> Hotels & Unterkünfte</label>
+                        <label><span class="legend-dot blue"></span> Sehenswürdigkeiten</label>
+                        <label><span class="legend-dot orange"></span> Restaurants</label>
+                        <label><span class="legend-dot green"></span> Aktivitäten</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. Wetter-Card -->
+        <div class="card">
+            <h3>☀️ Wetter & Vorhersage</h3>
+            <div class="weather-anim-container">
+                <div>
+                    <strong>Wetter-Animation</strong>
+                    <div style="font-size:0.8rem; color:var(--text-muted);">Aktuelle Bedingungen vor Ort</div>
+                </div>
+                <div class="weather-anim-stage" id="weather-stage">
+                    <div class="anim-sun"></div>
+                </div>
+            </div>
+            <div class="weather-grid" id="weather-grid">
+                <!-- Dynamische Wetter-Tage -->
+                <div class="weather-day">
+                    <strong>Heute</strong>
+                    <span>☀️ 24°C</span>
+                    <span style="font-size:0.75rem; color:var(--text-muted);">Sonnig</span>
+                </div>
+                <div class="weather-day">
+                    <strong>Morgen</strong>
+                    <span>⛅ 22°C</span>
+                    <span style="font-size:0.75rem; color:var(--text-muted);">Wolkig</span>
+                </div>
+                <div class="weather-day">
+                    <strong>Samstag</strong>
+                    <span>🌧️ 18°C</span>
+                    <span style="font-size:0.75rem; color:var(--text-muted);">Regen</span>
+                </div>
+            </div>
+            <div class="weather-hours" id="weather-hours">
+                <!-- Stündliche Vorhersage -->
+                <div class="hour-slot">12:00<br>☀️ 23°</div>
+                <div class="hour-slot">15:00<br>☀️ 24°</div>
+                <div class="hour-slot">18:00<br>⛅ 21°</div>
+                <div class="hour-slot">21:00<br>🌙 17°</div>
+            </div>
+        </div>
+
+        <!-- 3. Community Chat -->
+        <div class="card">
+            <h3>💬 Community Chat</h3>
+            <div class="chat-box-container">
+                <div class="chat-messages-list" id="chat-messages-list">
+                    <div class="chat-msg">
+                        <div class="chat-msg-header"><span>Jannik</span><span>12:30</span></div>
+                        Hallo zusammen! Wo treffen wir uns heute Abend?
+                    </div>
+                    <div class="chat-msg">
+                        <div class="chat-msg-header"><span>Sarah</span><span>12:32</span></div>
+                        Wie wäre es am Aussichtspunkt?
+                    </div>
+                </div>
+                <div class="chat-input-row">
+                    <input type="text" id="chat-input" placeholder="Nachricht schreiben...">
+                    <button type="button" id="chat-send-btn">Senden</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. NEU: Beitrag & Umfrage erstellen (Wie gewünscht) -->
+        <div class="card">
+            <h3>📝 Beitrag & Umfrage erstellen</h3>
+            
+            <div class="post-creation-container">
+                <!-- Hauptinhalt / Beitrag -->
+                <div class="form-group">
+                    <label for="post-title">Titel des Beitrags</label>
+                    <input type="text" id="post-title" placeholder="Gib deinem Beitrag einen Titel...">
+                </div>
+                
+                <div class="form-group">
+                    <label for="post-content">Nachricht / Beschreibung</label>
+                    <textarea id="post-content" placeholder="Schreibe hier deinen Text..."></textarea>
+                </div>
+
+                <!-- Leere Abstimmungsfelder zum Erstellen einer Umfrage -->
+                <div class="poll-creator-section">
+                    <h3>Umfrage erstellen</h3>
+                    <p class="hint">Trage hier die Optionen ein, über die andere User abstimmen können:</p>
+                    <div class="poll-option-inputs" id="poll-options-container">
+                        <input type="text" class="poll-option-input" placeholder="Option 1 eingeben...">
+                        <input type="text" class="poll-option-input" placeholder="Option 2 eingeben...">
+                    </div>
+                    <button type="button" class="btn-secondary" id="add-option-btn">+ Weitere Option hinzufügen</button>
+                </div>
+
+                <!-- Die neuen Änderungen / Zusatzfunktionen am Ende platziert -->
+                <hr class="section-divider">
+                <div class="additional-features-section">
+                    <h4>Erweiterte Optionen</h4>
+                    <div class="form-row">
+                        <label>
+                            <input type="checkbox" id="allow-multiple-votes"> Mehrfachauswahl erlauben
+                        </label>
+                    </div>
+                    <div class="form-row">
+                        <label for="poll-duration">Laufzeit der Umfrage:</label>
+                        <select id="poll-duration">
+                            <option value="1">1 Tag</option>
+                            <option value="3" selected>3 Tage</option>
+                            <option value="7">7 Tage</option>
+                            <option value="unlimited">Unbegrenzt</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button type="submit" id="publish-btn" style="width: 100%; margin-top: 4px;">Beitrag veröffentlichen</button>
+            </div>
+        </div>
+
+        <!-- 5. Ausflugsziele & Empfehlungen -->
+        <div class="card">
+            <div class="section-header-bar">
+                <strong>🌟 Empfohlene Orte</strong>
+                <div class="inline-filter">
+                    <label for="place-filter">Filter:</label>
+                    <select id="place-filter">
+                        <option value="all">Alle</option>
+                        <option value="sights">Sehenswürdigkeiten</option>
+                        <option value="food">Restaurants</option>
+                    </select>
+                </div>
+            </div>
+            <ul class="item-list" id="item-list">
+                <li class="item-row">
+                    <div class="item-info-left">
+                        <div class="item-thumb" style="background: #3b82f6;"></div>
+                        <div class="item-text-details">
+                            <strong>Schloss Heidelberg</strong><br>
+                            <span style="font-size:0.8rem; color:var(--text-muted);">Historische Ruine & Aussicht</span>
+                        </div>
+                    </div>
+                    <div class="rating-badge">⭐ 4.8</div>
+                </li>
+                <li class="item-row">
+                    <div class="item-info-left">
+                        <div class="item-thumb" style="background: #10b981;"></div>
+                        <div class="item-text-details">
+                            <strong>Schwarzwaldhochstraße</strong><br>
+                            <span style="font-size:0.8rem; color:var(--text-muted);">Panoramastraße & Natur</span>
+                        </div>
+                    </div>
+                    <div class="rating-badge">⭐ 4.9</div>
+                </li>
+            </ul>
+            <button type="button" class="load-more-btn">Weitere laden...</button>
+        </div>
+
+        <!-- 6. Statistiken & Graphen -->
+        <div class="card">
+            <h3>📊 Reise-Statistiken</h3>
+            <div class="chart-box">
+                <canvas id="travelChart" height="100"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        // Dynamisches Hinzufügen weiterer Umfrage-Optionen (max. 10)
+        document.getElementById('add-option-btn').addEventListener('click', function() {
+            const container = document.getElementById('poll-options-container');
+            const optionCount = container.getElementsByClassName('poll-option-input').length + 1;
+            
+            if (optionCount <= 10) {
+                const newInput = document.createElement('input');
+                newInput.type = 'text';
+                newInput.className = 'poll-option-input';
+                newInput.placeholder = `Option ${optionCount} eingeben...`;
+                container.appendChild(newInput);
+            }
+        });
+
+        // Legende ein-/ausschalten
+        document.getElementById('legend-toggle').addEventListener('click', function() {
+            const legend = document.getElementById('map-legend');
+            legend.style.display = legend.style.display === 'flex' ? 'none' : 'flex';
+        });
+
+        // Radius Slider Wert aktualisieren
+        document.getElementById('radius-slider').addEventListener('input', function(e) {
+            document.getElementById('radius-val').textContent = e.target.value;
+        });
+
+        // Beispiel Chart.js Initialisierung
+        window.addEventListener('load', function() {
+            const ctx = document.getElementById('travelChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Jan', 'Feb', 'März', 'Apr', 'Mai', 'Juni'],
+                    datasets: [{
+                        label: 'Zurückgelegte km',
+                        data: [450, 800, 1200, 950, 1500, 2100],
+                        backgroundColor: '#3b82f6',
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        x: { grid: { color: '#334155' }, ticks: { color: '#94a3b8' } },
+                        y: { grid: { color: '#334155' }, ticks: { color: '#94a3b8' } }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
