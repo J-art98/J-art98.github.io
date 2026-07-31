@@ -164,9 +164,14 @@
 
         .badge {
             background: #334155;
-            padding: 4px 8px;
+            padding: 6px 10px;
             border-radius: 6px;
-            font-size: 0.8rem;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .badge:hover {
+            background: #475569;
         }
 
         .logout-btn {
@@ -809,7 +814,7 @@
     <header>
         <h1 onclick="resetToHome()">Jannik Reisen 🌍✈️</h1>
         <div class="header-controls">
-            <span class="badge" id="userBadgeLabel">admin (👤 Admin)</span>
+            <span class="badge" id="userBadgeLabel" onclick="openUserSettingsModal()" title="Einstellungen öffnen">admin (👤 Admin)</span>
             <button class="logout-btn" onclick="handleLogout()">Abmelden</button>
             <label style="cursor:pointer;"><input type="checkbox" id="trafficToggle"> Live-Verkehr</label>
         </div>
@@ -1043,6 +1048,109 @@
             completeLogin(currentUser);
         }
     });
+
+    /* --- BENUTZER- EINSTELLUNGEN & VERWALTUNG --- */
+    function openUserSettingsModal() {
+        const currentUser = localStorage.getItem('jannik_current_user');
+        const users = JSON.parse(localStorage.getItem('jannik_users') || '{}');
+        
+        document.getElementById('modalTitle').innerText = "⚙️ Account- & Benutzereinstellungen";
+        
+        let bodyHTML = '';
+        
+        if (currentUser === 'admin') {
+            bodyHTML += `
+                <div style="margin-bottom: 16px;">
+                    <h4 style="margin: 0 0 8px 0; color: var(--accent-color);">👤 Admin-Bereich: Alle Benutzer verwalten</h4>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px;">Hier siehst du alle registrierten Accounts, kannst Passwörter zurücksetzen oder Benutzer löschen.</p>
+                    <div style="display: flex; flex-direction: column; gap: 8px;">
+            `;
+            
+            for (let [uname, upass] of Object.entries(users)) {
+                bodyHTML += `
+                    <div style="background: #0f172a; border: 1px solid var(--border-color); border-radius: 6px; padding: 10px; display: flex; flex-direction: column; gap: 8px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <strong>${uname} ${uname === 'admin' ? '(Admin)' : ''}</strong>
+                            ${uname !== 'admin' ? `<button style="background: #ef4444; padding: 4px 8px; font-size: 0.75rem;" onclick="adminDeleteUser('${uname}')">Löschen</button>` : '<span style="font-size: 0.75rem; color: var(--text-muted);">Haupt-Admin</span>'}
+                        </div>
+                        <div style="display: flex; gap: 6px; align-items: center;">
+                            <input type="text" id="admin_pwd_${uname}" value="${upass}" placeholder="Neues Passwort" style="font-size: 0.85rem; padding: 6px;">
+                            <button style="padding: 6px 10px; font-size: 0.8rem; white-space: nowrap;" onclick="adminSavePassword('${uname}')">Passwort speichern</button>
+                        </div>
+                    </div>
+                `;
+            }
+            bodyHTML += `</div></div>`;
+        } else {
+            bodyHTML += `
+                <div style="margin-bottom: 16px;">
+                    <h4 style="margin: 0 0 8px 0; color: var(--accent-color);">🔑 Passwort ändern</h4>
+                    <div class="auth-form-group" style="margin-bottom: 8px;">
+                        <label>Neues Passwort für ${currentUser}</label>
+                        <input type="password" id="userNewPass" placeholder="Neues Passwort eingeben...">
+                    </div>
+                    <button onclick="userSavePassword()" style="font-size: 0.85rem; padding: 8px 12px;">Passwort aktualisieren</button>
+                </div>
+                <hr style="border-color: var(--border-color); margin: 16px 0;">
+                <div>
+                    <h4 style="margin: 0 0 8px 0; color: #ef4444;">⚠️ Account löschen</h4>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 8px;">Wenn du deinen Account löschst, werden deine Anmeldedaten unwiderruflich entfernt.</p>
+                    <button style="background: #ef4444; font-size: 0.85rem; padding: 8px 12px;" onclick="userDeleteOwnAccount()">Meinen Account unwiderruflich löschen</button>
+                </div>
+            `;
+        }
+        
+        document.getElementById('modalBody').innerHTML = bodyHTML;
+        document.getElementById('modalFooterNav').style.display = 'none';
+        document.getElementById('detailModal').style.display = 'flex';
+    }
+
+    function adminSavePassword(username) {
+        const newPass = document.getElementById(`admin_pwd_${username}`).value.trim();
+        if(!newPass) {
+            alert("Passwort darf nicht leer sein.");
+            return;
+        }
+        const users = JSON.parse(localStorage.getItem('jannik_users') || '{}');
+        users[username] = newPass;
+        localStorage.setItem('jannik_users', JSON.stringify(users));
+        alert(`Passwort für ${username} erfolgreich aktualisiert!`);
+    }
+
+    function adminDeleteUser(username) {
+        if(confirm(`Möchtest du den Benutzer "${username}" wirklich löschen?`)) {
+            const users = JSON.parse(localStorage.getItem('jannik_users') || '{}');
+            delete users[username];
+            localStorage.setItem('jannik_users', JSON.stringify(users));
+            openUserSettingsModal();
+        }
+    }
+
+    function userSavePassword() {
+        const newPass = document.getElementById('userNewPass').value.trim();
+        if(!newPass) {
+            alert("Bitte gib ein neues Passwort ein.");
+            return;
+        }
+        const currentUser = localStorage.getItem('jannik_current_user');
+        const users = JSON.parse(localStorage.getItem('jannik_users') || '{}');
+        users[currentUser] = newPass;
+        localStorage.setItem('jannik_users', JSON.stringify(users));
+        alert("Dein Passwort wurde erfolgreich aktualisiert!");
+        document.getElementById('userNewPass').value = '';
+    }
+
+    function userDeleteOwnAccount() {
+        const currentUser = localStorage.getItem('jannik_current_user');
+        if(confirm("Bist du sicher, dass du deinen Account löschen möchtest? Diese Aktion kann nicht rückgängig gemacht werden.")) {
+            const users = JSON.parse(localStorage.getItem('jannik_users') || '{}');
+            delete users[currentUser];
+            localStorage.setItem('jannik_users', JSON.stringify(users));
+            alert("Dein Account wurde gelöscht.");
+            closeModal();
+            handleLogout();
+        }
+    }
 
 
     /* --- HAUPTAPP-LOGIK --- */
