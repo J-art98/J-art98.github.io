@@ -31,6 +31,49 @@
             overflow-x: hidden;
         }
 
+        /* Swivel / Rotating Wheel Loading Animation */
+        @keyframes swivelSpin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .swivel-loader {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 2px solid var(--border-color);
+            border-top-color: var(--accent-color);
+            border-radius: 50%;
+            animation: swivelSpin 0.8s linear infinite;
+            vertical-align: middle;
+            margin-left: 6px;
+        }
+
+        /* Top Language Bar */
+        #topLanguageBar {
+            position: fixed;
+            top: 10px;
+            right: 14px;
+            z-index: 10000;
+            display: flex;
+            gap: 8px;
+            background: rgba(30, 41, 59, 0.9);
+            padding: 6px 10px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+        }
+
+        .lang-flag {
+            cursor: pointer;
+            font-size: 1.3rem;
+            transition: transform 0.15s;
+        }
+
+        .lang-flag:hover {
+            transform: scale(1.15);
+        }
+
         /* Login Screen Overlay */
         #authOverlay {
             position: fixed;
@@ -193,7 +236,7 @@
             font-size: 1.05rem;
             display: flex;
             align-items: center;
-            gap: 8px;
+            justify-content: space-between;
             border-bottom: 1px solid var(--border-color);
             padding-bottom: 8px;
         }
@@ -266,8 +309,8 @@
         .legend-dot.red { background: #ef4444; }
         .legend-dot.blue { background: #3b82f6; }
         .legend-dot.orange { background: #f59e0b; }
-        .legend-dot.green { background: #10b981; }
-        .legend-dot.darkgray { background: #334155; border: 1px solid #94a3b8; }
+        .legend-dot.gray { background: #64748b; }
+        .legend-dot.pink { background: #ec4899; }
 
         .search-box {
             display: flex;
@@ -326,35 +369,6 @@
             gap: 8px;
         }
 
-        .section-header-bar strong {
-            font-size: 1rem;
-            white-space: nowrap;
-        }
-
-        .inline-filter {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            flex-wrap: wrap;
-        }
-
-        .inline-filter label {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            white-space: nowrap;
-        }
-
-        .inline-filter select {
-            padding: 3px 6px;
-            font-size: 0.8rem;
-            width: auto;
-            max-width: 140px;
-            background: #0f172a;
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-            color: white;
-        }
-
         button {
             background: var(--accent-color);
             color: white;
@@ -383,17 +397,13 @@
             border-radius: 8px;
             border: 1px solid var(--border-color);
             font-size: 0.8rem;
-            cursor: pointer;
-            transition: border-color 0.2s, background 0.2s;
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
             text-align: center;
+            cursor: pointer;
+            transition: transform 0.15s, border-color 0.15s;
         }
-
         .weather-day:hover {
+            transform: translateY(-2px);
             border-color: var(--accent-color);
-            background: #1e293b;
         }
 
         .weather-hours {
@@ -413,105 +423,59 @@
             font-size: 0.8rem;
             border: 1px solid var(--border-color);
             flex-shrink: 0;
-            cursor: pointer;
-            transition: border-color 0.2s, background 0.2s;
         }
 
-        .hour-slot:hover {
-            border-color: var(--accent-color);
-            background: #1e293b;
-        }
-
-        .clickable {
-            color: #60a5fa;
-            cursor: pointer;
-            text-decoration: underline;
-        }
-
-        .clickable:hover {
-            color: #93c5fd;
+        .day-separator-slot {
+            background: var(--card-bg);
+            min-width: 90px;
+            padding: 8px;
+            border-radius: 6px;
+            text-align: center;
+            font-size: 0.75rem;
+            border: 1px dashed var(--accent-color);
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            color: var(--accent-color);
         }
 
         .item-list {
             list-style: none;
             padding: 0;
             margin: 8px 0 0 0;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
         }
 
-        .item-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+        .poi-item-card {
             background: #0f172a;
             border: 1px solid var(--border-color);
             border-radius: 6px;
-            padding: 8px 10px;
-            margin-bottom: 6px;
-            gap: 10px;
-            cursor: pointer;
-            transition: background 0.15s;
-        }
-
-        .item-row:hover {
-            background: #1e293b;
-        }
-
-        .item-info-left {
+            padding: 10px 12px;
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 10px;
-            overflow: hidden;
-            flex-grow: 1;
+            cursor: pointer;
+            transition: border-color 0.15s;
+        }
+        .poi-item-card:hover {
+            border-color: var(--accent-color);
         }
 
-        .item-thumb {
-            width: 48px;
-            height: 48px;
-            border-radius: 6px;
-            object-fit: cover;
-            background: #334155;
-            flex-shrink: 0;
-        }
-
-        .item-text-details {
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        .rating-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 3px;
-            background: #334155;
-            padding: 4px 8px;
+        .stars-badge {
+            color: #f59e0b;
+            cursor: pointer;
+            font-size: 0.9rem;
+            padding: 2px 6px;
+            background: rgba(245, 158, 11, 0.1);
             border-radius: 4px;
-            font-size: 0.8rem;
-            color: #fbbf24;
-            flex-shrink: 0;
-            cursor: pointer;
-            transition: background 0.2s, transform 0.1s;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            display: inline-block;
         }
-
-        .rating-badge:hover {
-            background: #475569;
-            transform: scale(1.05);
-        }
-
-        .load-more-btn {
-            background: #334155;
-            color: white;
-            border: 1px solid var(--border-color);
-            padding: 8px 12px;
-            border-radius: 6px;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 6px;
-            font-size: 0.85rem;
-        }
-
-        .load-more-btn:hover {
-            background: #475569;
+        .stars-badge:hover {
+            background: rgba(245, 158, 11, 0.2);
         }
 
         .modal {
@@ -533,50 +497,6 @@
             border: 1px solid var(--border-color);
             max-height: 90vh;
             overflow-y: auto;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
-            box-sizing: border-box;
-        }
-
-        .fullscreen-modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(0, 0, 0, 0.75);
-            z-index: 3000;
-            justify-content: center;
-            align-items: center;
-            box-sizing: border-box;
-            padding: 16px;
-        }
-
-        .fullscreen-content-box {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            width: 100%;
-            max-width: 850px;
-            max-height: 92vh;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.4);
-            box-sizing: border-box;
-            overflow: hidden;
-        }
-
-        .fullscreen-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: #121824;
-            padding: 14px 18px;
-            border-bottom: 1px solid var(--border-color);
-            flex-shrink: 0;
-        }
-
-        .fullscreen-body {
-            flex-grow: 1;
-            overflow-y: auto;
-            padding: 16px;
             box-sizing: border-box;
         }
 
@@ -592,178 +512,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: background 0.2s, color 0.2s;
-        }
-
-        .close-modal:hover {
-            background: #475569;
-            color: white;
-        }
-
-        .nav-button-container {
-            margin-top: 16px;
-            padding-top: 12px;
-            border-top: 1px solid var(--border-color);
-            display: flex;
-            justify-content: flex-end;
-            flex-wrap: wrap;
-        }
-
-        .navigate-btn {
-            background: #10b981;
-            color: white;
-            border: none;
-            padding: 8px 14px;
-            border-radius: 6px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            transition: background 0.2s;
-            text-decoration: none;
-        }
-
-        .navigate-btn:hover {
-            background: #059669;
-        }
-
-        .loading-indicator {
-            display: inline-block;
-            width: 12px;
-            height: 12px;
-            border: 2px solid var(--text-muted);
-            border-top-color: var(--accent-color);
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            margin-left: 6px;
-            vertical-align: middle;
-        }
-
-        .img-container {
-            width: 38px;
-            height: 28px;
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #0f172a;
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-            overflow: hidden;
-            box-sizing: border-box;
-        }
-
-        .flag {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .spinner {
-            width: 14px;
-            height: 14px;
-            border: 2px solid #ccc;
-            border-top: 2px solid var(--accent-color);
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            position: absolute;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        /* Weather Animations */
-        .weather-anim-box {
-            position: relative;
-            width: 70px;
-            height: 70px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2.5rem;
-        }
-        @keyframes pulseSun {
-            0% { transform: scale(1); filter: drop-shadow(0 0 2px #f59e0b); }
-            50% { transform: scale(1.15); filter: drop-shadow(0 0 12px #f59e0b); }
-            100% { transform: scale(1); filter: drop-shadow(0 0 2px #f59e0b); }
-        }
-        .anim-sun { animation: pulseSun 3s infinite ease-in-out; }
-
-        @keyframes floatFog {
-            0% { transform: translateX(-6px); opacity: 0.6; }
-            50% { transform: translateX(6px); opacity: 1; }
-            100% { transform: translateX(-6px); opacity: 0.6; }
-        }
-        .anim-fog { animation: floatFog 4s infinite ease-in-out; }
-        .anim-heavy-fog { animation: floatFog 2.5s infinite ease-in-out; filter: blur(0.5px); }
-
-        @keyframes fallSnow {
-            0% { transform: translateY(-10px); opacity: 0; }
-            50% { opacity: 1; }
-            100% { transform: translateY(18px); opacity: 0; }
-        }
-        .anim-snow::after {
-            content: '❄';
-            position: absolute;
-            font-size: 1rem;
-            animation: fallSnow 1.5s infinite linear;
-            top: 2px;
-            left: 18px;
-        }
-        .anim-heavy-snow::after {
-            content: '❄❄❄';
-            position: absolute;
-            font-size: 0.85rem;
-            animation: fallSnow 1s infinite linear;
-            top: 0;
-            left: 10px;
-            letter-spacing: 2px;
-        }
-
-        @keyframes fallRain {
-            0% { transform: translateY(-10px); opacity: 0; }
-            50% { opacity: 1; }
-            100% { transform: translateY(18px); opacity: 0; }
-        }
-        .anim-rain::after {
-            content: '💧';
-            position: absolute;
-            font-size: 0.9rem;
-            animation: fallRain 0.8s infinite linear;
-            top: 0;
-            left: 18px;
-        }
-        .anim-heavy-rain::after {
-            content: '💧💧💧';
-            position: absolute;
-            font-size: 0.85rem;
-            animation: fallRain 0.4s infinite linear;
-            top: 0;
-            left: 10px;
-            letter-spacing: 2px;
-        }
-
-        .chart-box {
-            background: #0f172a;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 12px;
-            margin-bottom: 12px;
-            position: relative;
-            height: 220px;
-            box-sizing: border-box;
-        }
-
-        .chart-box h4 {
-            margin: 0 0 8px 0;
-            font-size: 0.9rem;
-            color: var(--text-color);
-            display: flex;
-            align-items: center;
-            gap: 6px;
+            float: right;
         }
 
         .leaflet-popup-content-wrapper, .leaflet-popup-tip {
@@ -771,17 +520,113 @@
             color: var(--text-color) !important;
             border: 1px solid var(--border-color);
         }
+
+        /* Flags Styling (Only Flags) */
+        .emblem-container {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+
+        .emblem-item {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            transition: transform 0.15s;
+        }
+        .emblem-item:hover {
+            transform: scale(1.1);
+        }
+
+        .emblem-img {
+            width: 32px;
+            height: 22px;
+            object-fit: cover;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+            background: #0f172a;
+        }
+
+        .emblem-fallback {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            border: 2px solid #64748b;
+            background: rgba(100, 116, 139, 0.15);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            box-sizing: border-box;
+        }
+        .emblem-fallback::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: #64748b;
+            transform: rotate(-45deg);
+        }
+
+        /* Weather Animations */
+        .weather-anim-box {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 90px;
+            margin: 15px 0;
+            position: relative;
+            background: #0f172a;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+        }
+
+        @keyframes rainFall {
+            0% { transform: translateY(-10px); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateY(25px); opacity: 0; }
+        }
+        @keyframes lightningFlash {
+            0%, 90%, 100% { opacity: 0.2; }
+            92%, 96% { opacity: 1; text-shadow: 0 0 12px #facc15; }
+        }
+        @keyframes sunRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        @keyframes cloudFloat {
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(8px); }
+        }
+
+        .anim-sun { font-size: 2.8rem; animation: sunRotate 12s linear infinite; display: inline-block; }
+        .anim-rain { font-size: 2.2rem; animation: rainFall 0.8s linear infinite; display: inline-block; }
+        .anim-storm { font-size: 2.8rem; animation: lightningFlash 2.5s infinite; display: inline-block; }
+        .anim-snow { font-size: 2rem; animation: rainFall 1.6s linear infinite; display: inline-block; }
+        .anim-cloud { font-size: 2.8rem; animation: cloudFloat 4s ease-in-out infinite; display: inline-block; }
     </style>
 </head>
 <body>
 
+<!-- Top Language Bar -->
+<div id="topLanguageBar">
+    <span class="lang-flag" onclick="changeLanguage('de')" title="Deutsch (Standard)">🇩🇪</span>
+    <span class="lang-flag" onclick="changeLanguage('en')" title="English (USA)">🇺🇸</span>
+    <span class="lang-flag" onclick="changeLanguage('fr')" title="Français">🇫🇷</span>
+</div>
+
 <!-- Login & Register Overlay -->
 <div id="authOverlay">
     <div class="auth-box">
-        <h2>Jannik Reisen 🌍✈️</h2>
+        <h2 data-i18n="title">Jannik Reisen 🌍✈️</h2>
         <div class="auth-tabs">
-            <div id="tabLogin" class="auth-tab active" onclick="switchAuthTab('login')">Einloggen</div>
-            <div id="tabRegister" class="auth-tab" onclick="switchAuthTab('register')">Account erstellen</div>
+            <div id="tabLogin" class="auth-tab active" onclick="switchAuthTab('login')" data-i18n="loginTab">Einloggen</div>
+            <div id="tabRegister" class="auth-tab" onclick="switchAuthTab('register')" data-i18n="registerTab">Account erstellen</div>
         </div>
         
         <div id="authError" class="auth-error"></div>
@@ -790,330 +635,246 @@
         <!-- Login Form -->
         <div id="loginFormSection">
             <div class="auth-form-group">
-                <label for="loginUser">Benutzername</label>
-                <input type="text" id="loginUser" placeholder="Benutzername eingeben...">
+                <label for="loginUser" data-i18n="username">Benutzername</label>
+                <input type="text" id="loginUser" data-i18n-placeholder="usernamePlaceholder" placeholder="Benutzername eingeben...">
             </div>
             <div class="auth-form-group">
-                <label for="loginPass">Passwort</label>
-                <input type="password" id="loginPass" placeholder="Passwort eingeben..." onkeydown="if(event.key==='Enter') handleLogin()">
+                <label for="loginPass" data-i18n="password">Passwort</label>
+                <div style="position: relative;">
+                    <input type="password" id="loginPass" data-i18n-placeholder="passwordPlaceholder" placeholder="Passwort eingeben..." onkeydown="if(event.key==='Enter') handleLogin()" style="padding-right: 40px;">
+                    <span onclick="togglePasswordVisibility('loginPass', this)" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 1.1rem; opacity: 0.7;">👁️</span>
+                </div>
             </div>
-            <button style="width: 100%; margin-top: 6px;" onclick="handleLogin()">Einloggen</button>
+            <button style="width: 100%; margin-top: 6px;" onclick="handleLogin()" data-i18n="loginBtn">Einloggen</button>
         </div>
 
         <!-- Register Form -->
         <div id="registerFormSection" style="display: none;">
             <div class="auth-form-group">
-                <label for="regUser">Gewünschter Benutzername</label>
-                <input type="text" id="regUser" placeholder="Benutzername...">
+                <label for="regUser" data-i18n="regUsername">Gewünschter Benutzername</label>
+                <input type="text" id="regUser" data-i18n-placeholder="regUsernamePlaceholder" placeholder="Benutzername...">
             </div>
             <div class="auth-form-group">
-                <label for="regPass">Passwort</label>
-                <input type="password" id="regPass" placeholder="Passwort..." onkeydown="if(event.key==='Enter') handleRegister()">
+                <label for="regPass" data-i18n="regPassword">Passwort</label>
+                <div style="position: relative;">
+                    <input type="password" id="regPass" data-i18n-placeholder="passwordPlaceholder" placeholder="Passwort..." onkeydown="if(event.key==='Enter') handleRegister()" style="padding-right: 40px;">
+                    <span onclick="togglePasswordVisibility('regPass', this)" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 1.1rem; opacity: 0.7;">👁️</span>
+                </div>
             </div>
-            <button style="width: 100%; margin-top: 6px;" onclick="handleRegister()">Account erstellen</button>
+            <button style="width: 100%; margin-top: 6px;" onclick="handleRegister()" data-i18n="registerBtn">Account erstellen</button>
+        </div>
+    </div>
+</div>
+
+<!-- Start Location Overlay Modal -->
+<div id="startLocationOverlay" class="modal" style="display: none;">
+    <div class="auth-box" style="max-width: 400px;">
+        <h2 style="font-size: 1.2rem; margin-bottom: 14px; text-align: center;" data-i18n="startModalTitle">📍 Startadresse wählen</h2>
+        <div class="auth-form-group">
+            <label for="startAddrInput" data-i18n="startModalLabel">Welche Adresse möchtest du sehen?</label>
+            <input type="text" id="startAddrInput" data-i18n-placeholder="searchPlaceholder" placeholder="Ort, Stadt oder PLZ suchen..." onkeydown="if(event.key==='Enter') submitStartLocation()">
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 14px;">
+            <button style="width: 100%;" onclick="submitStartLocation()" data-i18n="searchBtn">Suchen</button>
+            <button style="width: 100%; background: #ef4444; color: white; display: flex; align-items: center; justify-content: center; gap: 6px; border: none; padding: 10px; border-radius: 6px; font-weight: 600; cursor: pointer;" onclick="submitCurrentLocationStartup()">
+                📍 <span data-i18n="useCurrentLocation">Aktuellen Standort verwenden</span>
+            </button>
         </div>
     </div>
 </div>
 
 <div class="container" id="mainAppContainer" style="display: none;">
     <header>
-        <h1 onclick="resetToHome()">Jannik Reisen 🌍✈️</h1>
+        <h1 onclick="resetToHome()" data-i18n="title">Jannik Reisen 🌍✈️</h1>
         <span class="badge" id="userBadgeLabel" onclick="openUserSettingsModal()" title="Einstellungen öffnen">admin (👑 Admin)</span>
-        <button class="logout-btn" onclick="handleLogout()">Abmelden</button>
+        <button class="logout-btn" onclick="handleLogout()" data-i18n="logout">Abmelden</button>
     </header>
 
     <div class="card">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap;">
-            <h3 style="margin:0; border:none; padding:0;">🗺️ Weltkarte & Umkreis-Suche</h3>
-        </div>
+        <h3 data-i18n="mapTitle">🗺️ Weltkarte & Umkreis-Suche <small style="font-size:0.75rem; color:var(--text-muted);">(Nadel per Klick oder Drag beweglich!)</small></h3>
         <div class="search-box">
-            <input type="text" id="citySearch" placeholder="Ort, Stadt oder PLZ suchen (z.B. Ettenheim, Lahr, Freiburg)..." onkeydown="if(event.key==='Enter') searchLocation()">
-            <button id="searchBtn" onclick="searchLocation()">Suchen</button>
+            <input type="text" id="citySearch" data-i18n-placeholder="searchPlaceholder" placeholder="Ort, Stadt oder PLZ suchen..." onkeydown="if(event.key==='Enter') searchLocation()">
+            <button onclick="searchLocation()" data-i18n="searchBtn">Suchen</button>
         </div>
         <div class="radius-control">
-            <label for="radiusRange">Such-Umkreis: <strong id="radiusValue">1</strong> km</label>
-            <input type="range" id="radiusRange" min="1" max="100" value="1" oninput="onRadiusChange(this.value)">
+            <label for="radiusRange"><span data-i18n="radiusLabel">Such-Umkreis:</span> <strong id="radiusValue">3</strong> km</label>
+            <input type="range" id="radiusRange" min="1" max="50" value="3" oninput="onRadiusChange(this.value)">
         </div>
         <div class="map-wrapper">
             <div id="map" class="map-container"></div>
             <div class="map-legend-container">
                 <div id="mapLegendBox" class="map-legend">
-                    <label><input type="checkbox" id="toggleSights" checked onchange="updateMapMarkers()"> <span class="legend-dot red"></span> Sehenswürdigkeiten</label>
-                    <label><input type="checkbox" id="toggleRestaurants" checked onchange="updateMapMarkers()"> <span class="legend-dot blue"></span> Restaurants</label>
-                    <label><input type="checkbox" id="toggleHotels" checked onchange="updateMapMarkers()"> <span class="legend-dot orange"></span> Unterkünfte</label>
-                    <label><input type="checkbox" id="toggleStations" checked onchange="updateMapMarkers()"> 🚂 Bahnhöfe</label>
-                    <label><input type="checkbox" id="toggleHospitals" checked onchange="updateMapMarkers()"> <span class="legend-dot green"></span> Krankenhäuser</label>
+                    <label><input type="checkbox" id="toggleSights" checked onchange="updateMapMarkers()"> <span class="legend-dot red"></span> <span data-i18n="sights">Sehenswürdigkeiten</span></label>
+                    <label><input type="checkbox" id="toggleRestaurants" checked onchange="updateMapMarkers()"> <span class="legend-dot blue"></span> <span data-i18n="restaurants">Restaurants</span></label>
+                    <label><input type="checkbox" id="toggleHotels" checked onchange="updateMapMarkers()"> <span class="legend-dot orange"></span> <span data-i18n="hotels">Unterkünfte</span></label>
+                    <label><input type="checkbox" id="toggleParking" checked onchange="togglePoiLayer('parking')"> <span class="legend-dot gray"></span> 🅿️ Parkplätze</label>
+                    <label><input type="checkbox" id="toggleShops" checked onchange="togglePoiLayer('shops')"> <span class="legend-dot pink"></span> 🛍️ Geschäfte</label>
                 </div>
-                <button class="legend-toggle-btn" onclick="toggleLegend()">🗺️ Legende</button>
+                <button class="legend-toggle-btn" onclick="toggleLegend()">🗺️ <span data-i18n="legend">Legende</span></button>
             </div>
         </div>
         <div style="margin-top: 10px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
             <label style="cursor:pointer; display: flex; align-items: center; gap: 6px; font-size: 0.9rem;">
-                <input type="checkbox" id="trafficToggle"> Live-Verkehr aktivieren
+                <input type="checkbox" id="trafficToggle"> <span data-i18n="liveTraffic">Live-Verkehr aktivieren</span>
             </label>
-            <button onclick="openGoogleMapsNavigation()" style="background: #10b981; color: white; padding: 6px 14px; border-radius: 6px; font-weight: 600; font-size: 0.85rem; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
-                🧭 Navigation Google Maps
-            </button>
+            <div style="display: flex; gap: 6px; align-items: center;">
+                <button onclick="setMyCurrentLocation()" style="background: #ef4444; color: white; padding: 6px 12px; border-radius: 6px; font-weight: 600; font-size: 0.85rem; border: none; cursor: pointer; display: flex; align-items: center; gap: 6px;" title="Aktueller Standort">
+                    📍 <span data-i18n="useCurrentLocation">Aktuellen Standort verwenden</span>
+                </button>
+                <button onclick="openGoogleMapsNavigation()" style="background: #10b981; color: white; padding: 6px 14px; border-radius: 6px; font-weight: 600; font-size: 0.85rem; border: none; cursor: pointer;">
+                    🧭 <span data-i18n="navMaps">Navigation Google Maps</span>
+                </button>
+            </div>
         </div>
     </div>
 
-    <div class="card">
-        <h3 id="weatherTitle">🌤️ Wetter-Vorschau (Tage) <small style="font-size: 0.75rem; color:var(--text-muted); font-weight:normal;">(Klicke auf einen Tag für Graphen, Warnungen & Infopaket)</small></h3>
+    <div class="card" style="cursor: pointer;" onclick="openWeatherDetailsModal()" title="Klicken für detaillierte Graphen und Animationen">
+        <h3 id="weatherTitle" data-i18n="weatherTitle">🌤️ Wetter-Vorschau <small style="font-size:0.75rem; color:var(--accent-color);">(Klicken für Graphen & Animationen)</small></h3>
         <div class="weather-grid" id="weatherGrid">
             <div style="text-align:center; padding:20px; grid-column:1/-1; color:var(--text-muted);">
-                <div class="spinner" style="position:relative; margin:0 auto 8px auto;"></div>Lade Wetter...
+                Lade Wetter...
             </div>
         </div>
-        <h3 style="margin-top: 15px;">⏱️ Stündliche Vorschau ab JETZT <small style="font-size: 0.75rem; color:var(--text-muted); font-weight:normal;">(Klicke auf eine Stunde für Details)</small></h3>
-        <div class="weather-hours" id="weatherHoursGrid">
-            <div style="text-align:center; padding:10px; color:var(--text-muted);">
-                <div class="spinner" style="position:relative; margin:0 auto 4px auto;"></div>Lade stündliche Vorhersage...
-            </div>
-        </div>
-        <p style="font-size: 0.8rem; color: #4ade80; margin-top: 8px; margin-bottom: 0;">⚡ Wetter-Datenpunkt aktiv für <span id="weatherCityName">Ettenheim</span></p>
+        <h3 style="margin-top: 15px;" data-i18n="hourlyTitle">⏱️ Stündliche Vorschau ab JETZT</h3>
+        <div class="weather-hours" id="weatherHoursGrid"></div>
+        <p style="font-size: 0.8rem; color: #4ade80; margin-top: 8px; margin-bottom: 0;">⚡ <span data-i18n="weatherActive">Wetter-Datenpunkt aktiv für</span> <span id="weatherCityName">Standort</span></p>
     </div>
 
     <div class="card">
-        <h3>ℹ️ Infos zur Stadt <span id="loadingStatus"></span></h3>
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+            <h3 style="margin: 0; border: none; padding: 0;" data-i18n="cityInfoTitle">ℹ️ Infos zur Stadt & API-Entdeckungen <span id="loadingStatus"></span></h3>
+            <button onclick="manualRefreshPOIs()" style="background: var(--accent-color); padding: 6px 12px; font-size: 0.8rem; border-radius: 6px;">🔄 Aktualisieren</button>
+        </div>
+        <p style="margin-top: 10px;"><strong data-i18n="country">Land:</strong> <span id="infoCountry">-</span> <span id="countryEmblems" class="emblem-container"></span></p>
+        <p><strong data-i18n="region">Region / Bundesland:</strong> <span id="infoState">-</span> <span id="stateEmblems" class="emblem-container"></span></p>
+        <p><strong data-i18n="city">Stadt:</strong> <span id="infoCity">-</span> <span id="cityEmblems" class="emblem-container"></span></p>
         
-        <!-- Land: Flagge und Wappen -->
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px solid var(--border-color); flex-wrap: wrap; gap: 8px;">
-            <div><strong>Land:</strong> <a id="infoCountryLink" href="#" target="_blank" class="clickable">Deutschland</a></div>
-            <div style="display: flex; align-items: center; gap: 12px;">
-                <div style="display: flex; align-items: center; gap: 4px; font-size: 0.8rem; color: var(--text-muted);">
-                    <span>Flagge:</span>
-                    <a id="infoCountryFlagLink" href="#" target="_blank" style="display:inline-block; text-decoration:none;">
-                        <div class="img-container">
-                            <div class="spinner" title="Lade Landesflagge..."></div>
-                            <img id="infoCountryFlag" src="" alt="Landesflagge" class="flag" style="display:none;">
-                            <div style="display:none; align-items:center; justify-content:center; width:100%; height:100%;">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line></svg>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-                <div style="display: flex; align-items: center; gap: 4px; font-size: 0.8rem; color: var(--text-muted);">
-                    <span>Wappen:</span>
-                    <div class="img-container">
-                        <div class="spinner" title="Lade Landeswappen..."></div>
-                        <img id="infoCountryCoatImg" src="" alt="Landeswappen" style="object-fit: contain; width:100%; height:100%; display:none;">
-                        <div style="display:none; align-items:center; justify-content:center; width:100%; height:100%;">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line></svg>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Bundesland / Region: Flagge und Wappen -->
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px solid var(--border-color); flex-wrap: wrap; gap: 8px;">
-            <div><strong>Region / Bundesland:</strong> <a id="infoStateLink" href="#" target="_blank" class="clickable">Baden-Württemberg</a></div>
-            <div style="display: flex; align-items: center; gap: 12px;">
-                <div style="display: flex; align-items: center; gap: 4px; font-size: 0.8rem; color: var(--text-muted);">
-                    <span>Flagge:</span>
-                    <a id="infoStateFlagLink" href="#" target="_blank" style="display:inline-block; text-decoration:none;">
-                        <div class="img-container">
-                            <div class="spinner" title="Lade Regionsflagge..."></div>
-                            <img id="infoStateFlag" src="" alt="Regionsflagge" class="flag" style="display:none;">
-                            <div style="display:none; align-items:center; justify-content:center; width:100%; height:100%;">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line></svg>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-                <div style="display: flex; align-items: center; gap: 4px; font-size: 0.8rem; color: var(--text-muted);">
-                    <span>Wappen:</span>
-                    <div class="img-container">
-                        <div class="spinner" title="Lade Regionswappen..."></div>
-                        <img id="infoStateCoatImg" src="" alt="Regionswappen" style="object-fit: contain; width:100%; height:100%; display:none;">
-                        <div style="display:none; align-items:center; justify-content:center; width:100%; height:100%;">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line></svg>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Stadt: Flagge und Wappen -->
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px solid var(--border-color); flex-wrap: wrap; gap: 8px;">
-            <div><strong>Stadt:</strong> <a id="infoCityLink" href="#" target="_blank" class="clickable">Ettenheim</a></div>
-            <div style="display: flex; align-items: center; gap: 12px;">
-                <div style="display: flex; align-items: center; gap: 4px; font-size: 0.8rem; color: var(--text-muted);">
-                    <span>Flagge:</span>
-                    <a id="infoCityFlagLink" href="#" target="_blank" style="display:inline-block; text-decoration:none;">
-                        <div class="img-container">
-                            <div class="spinner" title="Lade Stadtflagge..."></div>
-                            <img id="infoCityFlagImg" src="" alt="Stadtflagge" class="flag" style="display:none;">
-                            <div style="display:none; align-items:center; justify-content:center; width:100%; height:100%;">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line></svg>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-                <div style="display: flex; align-items: center; gap: 4px; font-size: 0.8rem; color: var(--text-muted);">
-                    <span>Wappen:</span>
-                    <a id="infoCityCoatLink" href="#" target="_blank" style="display:inline-block; text-decoration:none;">
-                        <div class="img-container">
-                            <div class="spinner" title="Lade Stadtwappen..."></div>
-                            <img id="infoCoatOfArmsImg" src="" alt="Stadtwappen" style="object-fit: contain; width:100%; height:100%; display:none;">
-                            <div style="display:none; align-items:center; justify-content:center; width:100%; height:100%;">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line></svg>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <p><strong>Postleitzahl(en):</strong> <span id="infoZip">77960</span></p>
-        <p><strong>Bevölkerung:</strong> <span id="infoPopulation">ca. 13.500</span></p>
-        <p><strong>Gründungsjahr:</strong> <span id="infoFounded">1181</span></p>
-        
+        <!-- Sehenswürdigkeiten Sektion -->
         <div class="section-header-bar">
-            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-                <strong>🏛️ Sehenswürdigkeiten: <span id="sightsLoadingStatus"></span></strong>
-                <button onclick="fetchAllData()" style="padding: 3px 8px; font-size: 0.75rem;">Aktualisieren</button>
-            </div>
-            <div class="inline-filter">
-                <label for="sightSort">Sortieren:</label>
-                <select id="sightSort" onchange="renderSightsList()">
-                    <option value="distance">Entfernung</option>
-                    <option value="rating">Bewertung</option>
-                    <option value="alpha">A-Z</option>
-                </select>
-            </div>
+            <span style="font-weight: 600; font-size: 0.95rem;">🏛️ Sehenswürdigkeiten <span id="sightsLoading"></span></span>
+            <button onclick="openAllPoiModal('sights')" style="padding: 4px 10px; font-size: 0.75rem; background: #334155;">Alle anzeigen</button>
         </div>
-        <ul id="sightList" class="item-list"></ul>
-        <button id="sightMoreBtn" class="load-more-btn" style="display:none;" onclick="openAllItemsModal('sights')">Hier klicken, um alle anzuzeigen</button>
+        <ul id="sightsListContainer" class="item-list"></ul>
+        <div id="sightsMoreBtnContainer"></div>
 
-        <div class="section-header-bar">
-            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-                <strong>🍽️ Restaurants: <span id="restaurantsLoadingStatus"></span></strong>
-                <button onclick="fetchAllData()" style="padding: 3px 8px; font-size: 0.75rem;">Aktualisieren</button>
-            </div>
-            <div class="inline-filter">
-                <label for="restaurantSort">Sortieren:</label>
-                <select id="restaurantSort" onchange="renderRestaurantsList()">
-                    <option value="distance">Entfernung</option>
-                    <option value="rating">Bewertung</option>
-                    <option value="alpha">A-Z</option>
-                </select>
-            </div>
+        <!-- Restaurants Sektion -->
+        <div class="section-header-bar" style="margin-top: 16px;">
+            <span style="font-weight: 600; font-size: 0.95rem;">🍽️ Restaurants & Cafés <span id="restaurantsLoading"></span></span>
+            <button onclick="openAllPoiModal('restaurants')" style="padding: 4px 10px; font-size: 0.75rem; background: #334155;">Alle anzeigen</button>
         </div>
-        <ul id="restaurantList" class="item-list"></ul>
-        <button id="restaurantMoreBtn" class="load-more-btn" style="display:none;" onclick="openAllItemsModal('restaurants')">Hier klicken, um alle anzuzeigen</button>
+        <ul id="restaurantsListContainer" class="item-list"></ul>
+        <div id="restaurantsMoreBtnContainer"></div>
 
-        <div class="section-header-bar">
-            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-                <strong>🏨 Unterkünfte: <span id="hotelsLoadingStatus"></span></strong>
-                <button onclick="fetchAllData()" style="padding: 3px 8px; font-size: 0.75rem;">Aktualisieren</button>
-            </div>
-            <div class="inline-filter">
-                <label for="hotelSort">Sortieren:</label>
-                <select id="hotelSort" onchange="renderHotelsList()">
-                    <option value="distance">Entfernung</option>
-                    <option value="rating">Bewertung</option>
-                    <option value="alpha">A-Z</option>
-                </select>
-            </div>
+        <!-- Unterkünfte Sektion -->
+        <div class="section-header-bar" style="margin-top: 16px;">
+            <span style="font-weight: 600; font-size: 0.95rem;">🏨 Unterkünfte <span id="hotelsLoading"></span></span>
+            <button onclick="openAllPoiModal('hotels')" style="padding: 4px 10px; font-size: 0.75rem; background: #334155;">Alle anzeigen</button>
         </div>
-        <ul id="hotelList" class="item-list"></ul>
-        <button id="hotelMoreBtn" class="load-more-btn" style="display:none;" onclick="openAllItemsModal('hotels')">Hier klicken, um alle anzuzeigen</button>
+        <ul id="hotelsListContainer" class="item-list"></ul>
+        <div id="hotelsMoreBtnContainer"></div>
     </div>
 
-    <!-- Community Feed / Nachrichtenverlauf mit Filter und Paginierung -->
+    <!-- Community Feed -->
     <div class="card">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 8px;">
-            <h3 style="margin: 0; border: none; padding: 0;">💬 Nachrichtenverlauf & Community Feed</h3>
-            <div class="inline-filter">
-                <label for="postSortSelect">Filter & Sortierung:</label>
-                <select id="postSortSelect" onchange="renderPostsFeed()">
-                    <option value="newest" selected>Neueste Nachricht</option>
-                    <option value="oldest">Älteste Nachricht</option>
-                    <option value="most_replies">Nachrichten mit meisten Antworten</option>
-                    <option value="most_emojis">Nachrichten mit meisten Emojis</option>
-                    <option value="fewest_emojis">Nachricht mit wenigsten Emojis</option>
-                    <option value="fewest_replies">Nachricht mit wenigsten Antworten</option>
+            <h3 style="margin: 0; border: none; padding: 0;" data-i18n="feedTitle">💬 Nachrichtenverlauf & Community Feed</h3>
+            <div class="inline-filter" style="display:flex; align-items:center; gap:6px;">
+                <input type="text" id="postSearchInput" placeholder="Nachrichten durchsuchen..." oninput="renderPostsFeed()" style="padding: 4px 8px; font-size: 0.85rem; width: 160px;">
+                <label for="postSortSelect" data-i18n="filterSort" style="font-size:0.85rem;">Sortierung:</label>
+                <select id="postSortSelect" onchange="renderPostsFeed()" style="padding: 4px 8px; font-size: 0.85rem; width: auto;">
+                    <option value="newest" selected data-i18n="sortNewest">Neueste Nachricht</option>
+                    <option value="oldest" data-i18n="sortOldest">Älteste Nachricht</option>
+                    <option value="most_reactions" data-i18n="sortMostReactions">Meiste Reaktionen</option>
                 </select>
             </div>
         </div>
         <div id="postsFeedContainer" style="display: flex; flex-direction: column; gap: 12px;"></div>
-        <!-- Paginierung für den Nachrichtenverlauf -->
-        <div id="postsPaginationContainer" style="display: none; justify-content: space-between; align-items: center; margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--border-color);">
-            <button onclick="prevPostPage()" id="postPrevBtn" style="padding: 6px 12px; font-size: 0.85rem; background: #334155;">◀ Zurück</button>
+        
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--border-color);">
+            <button onclick="prevPostPage()" id="postPrevBtn" style="padding: 6px 12px; font-size: 0.85rem; background: #334155;" data-i18n="prevBtn">◀ Zurück</button>
             <span id="postPageIndicator" style="font-size: 0.85rem; color: var(--text-muted);">Seite 1 von 1</span>
-            <button onclick="nextPostPage()" id="postNextBtn" style="padding: 6px 12px; font-size: 0.85rem; background: #334155;">Weiter ▶</button>
+            <button onclick="nextPostPage()" id="postNextBtn" style="padding: 6px 12px; font-size: 0.85rem; background: #334155;" data-i18n="nextBtn">Weiter ▶</button>
         </div>
     </div>
 
     <!-- Nachrichtenschreibfeld -->
     <div class="card">
-        <h3>✍️ Neue Nachricht oder Umfrage schreiben</h3>
-        <textarea id="postText" placeholder="Was gibt's Neues bei deinen Reisen? (Du kannst auch Reddit-Links einfügen)..." rows="3" style="margin-bottom: 8px;"></textarea>
+        <h3 data-i18n="newPostTitle">✍️ Neue Nachricht schreiben</h3>
+        <textarea id="postText" data-i18n-placeholder="postPlaceholder" placeholder="Was gibt's Neues bei deinen Reisen?..." rows="3" style="margin-bottom: 8px;"></textarea>
         
         <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 8px;">
-            <label style="background: var(--accent-color); color: white; border: none; padding: 6px 10px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 6px; transition: background 0.2s;" onmouseover="this.style.background='var(--accent-hover)'" onmouseout="this.style.background='var(--accent-color)'">
-                📷 Bild hochladen
-                <input type="file" id="postImage" accept="image/*" style="display:none;" onchange="previewPostImage(this)">
+            <label style="background: var(--accent-color); color: white; padding: 6px 10px; border-radius: 6px; cursor: pointer; font-size: 0.8rem;">
+                <span data-i18n="uploadImg">📷 Bild hochladen</span>
+                <input type="file" id="postImage" accept="image/*" style="display:none;" onchange="previewPostMedia(this, 'image')">
             </label>
-            <span id="postImageName" style="font-size: 0.8rem; color: var(--text-muted);">Keine Datei ausgewählt</span>
-            
+            <label style="background: #10b981; color: white; padding: 6px 10px; border-radius: 6px; cursor: pointer; font-size: 0.8rem;">
+                🎥 Video hochladen
+                <input type="file" id="postVideo" accept="video/*" style="display:none;" onchange="previewPostMedia(this, 'video')">
+            </label>
+            <span id="postMediaName" style="font-size: 0.8rem; color: var(--text-muted);">Keine Datei ausgewählt</span>
             <button onclick="openGiphyModal()" style="font-size: 0.8rem; padding: 6px 10px; background: #8b5cf6;">🖼️ GIF (Giphy)</button>
-            <button onclick="openLocationSelectionModal()" style="font-size: 0.8rem; padding: 6px 10px; background: #10b981;">📍 Standort anhängen...</button>
+            <button onclick="requestLocationAttachment()" style="font-size: 0.8rem; padding: 6px 10px; background: #059669;">📍 Standort anhängen</button>
+        </div>
+        <div id="postLocationIndicator" style="font-size: 0.8rem; color: #34d399; margin-bottom: 6px;"></div>
+
+        <div id="postMediaPreviewContainer" style="display:none; margin-bottom: 8px; position: relative; max-width: 220px;">
+            <div id="postMediaPreviewContent"></div>
+            <button onclick="clearPostMedia()" style="position: absolute; top: 4px; right: 4px; background: rgba(0,0,0,0.8); padding: 2px 6px; font-size: 0.7rem; color:white; border:none; border-radius:4px; cursor:pointer;">&times;</button>
         </div>
 
-        <div id="postImagePreviewContainer" style="display:none; margin-bottom: 8px; position: relative; max-width: 160px;">
-            <img id="postImagePreview" src="" style="width: 100%; border-radius: 6px; max-height: 100px; object-fit: cover;">
-            <button onclick="clearPostImage()" style="position: absolute; top: 4px; right: 4px; background: rgba(0,0,0,0.8); padding: 2px 6px; font-size: 0.7rem;">&times;</button>
-        </div>
-
-        <div id="postLocationPreviewContainer" style="display:none; margin-bottom: 8px; background: #0f172a; padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border-color); font-size: 0.85rem; display: flex; justify-content: space-between; align-items: center;">
-            <span id="postLocationText">📍 Standort angehängt</span>
-            <button onclick="clearPostLocation()" style="background: #ef4444; padding: 2px 6px; font-size: 0.7rem;">Entfernen</button>
-        </div>
-
-        <div style="margin-bottom: 8px;">
-            <label style="font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; gap: 6px; color: #38bdf8;">
-                <input type="checkbox" id="enablePollToggle" onchange="togglePollInputs()"> 📊 Umfrage erstellen (alternativ oder zusätzlich)
-            </label>
-        </div>
-
-        <div id="pollSection" style="display: none; background: #1e293b; padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); margin-bottom: 8px;">
-            <input type="text" id="pollQuestion" placeholder="Frage der Umfrage..." style="margin-bottom: 6px; font-size: 0.85rem;">
-            <div id="pollOptionsContainer" style="display: flex; flex-direction: column; gap: 6px; margin-bottom: 6px;">
-                <input type="text" class="poll-option-input" placeholder="Antwortmöglichkeit 1" style="font-size: 0.85rem; padding: 6px;">
-                <input type="text" class="poll-option-input" placeholder="Antwortmöglichkeit 2" style="font-size: 0.85rem; padding: 6px;">
-            </div>
-            <button onclick="addPollOptionInput()" style="font-size: 0.75rem; padding: 4px 8px; background: #334155;">+ Weitere Option</button>
-        </div>
-
-        <button onclick="handleCreatePost()" style="font-size: 0.9rem; padding: 8px 14px;">Beitrag veröffentlichen</button>
+        <button onclick="handleCreatePost()" style="font-size: 0.9rem; padding: 8px 14px;" data-i18n="publishBtn">Beitrag veröffentlichen</button>
     </div>
 </div>
 
-<!-- Location Selection Modal -->
-<div id="locationSelectionModal" class="modal">
-    <div class="modal-content" style="max-width: 480px;">
-        <span class="close-modal" onclick="closeLocationSelectionModal()" style="float:right;">&times;</span>
-        <h3 style="margin-top:0; color: var(--accent-color);">📍 Standort für Beitrag auswählen</h3>
-        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">Wähle, ob du den aktuellen Standort verwenden oder eine Adresse händisch eintragen möchtest.</p>
-        
-        <div style="display: flex; flex-direction: column; gap: 12px;">
-            <button onclick="useCurrentLocationForPost()" style="background: #10b981; padding: 12px; font-size: 0.95rem; text-align: left; display: flex; align-items: center; gap: 8px;">
-                <span>🎯</span>
-                <div>
-                    <strong>Jetzigen Standort verwenden</strong><br>
-                    <span style="font-size: 0.75rem; opacity: 0.85;" id="modalCurrentLocationLabel">Ettenheim (Baden-Württemberg)</span>
-                </div>
-            </button>
+<!-- All POIs Scrollable Modal -->
+<div id="allPoiModal" class="modal">
+    <div class="modal-content" style="max-width: 850px;">
+        <span class="close-modal" onclick="closeAllPoiModal()">&times;</span>
+        <h2 id="allPoiModalTitle" style="margin-top:0; color: var(--accent-color);">📍 Alle POIs im Umkreis</h2>
+        <div style="display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap;">
+            <input type="text" id="allPoiSearchInput" placeholder="Name oder Adresse suchen..." oninput="renderAllPoiModalList()" style="flex: 1; min-width: 180px;">
+            <select id="allPoiCategorySelect" onchange="renderAllPoiModalList()" style="width: auto;">
+                <option value="all">Alle Kategorien</option>
+                <option value="sights">Sehenswürdigkeiten</option>
+                <option value="restaurants">Restaurants</option>
+                <option value="hotels">Unterkünfte</option>
+            </select>
+            <select id="allPoiSortSelect" onchange="renderAllPoiModalList()" style="width: auto;">
+                <option value="distance">Entfernung (aufsteigend)</option>
+                <option value="newest">Neueste (ID)</option>
+                <option value="name">Name (A-Z)</option>
+                <option value="stars_desc">Beste Sternebewertung</option>
+                <option value="stars_asc">Schlechteste Sternebewertung</option>
+            </select>
+        </div>
+        <div id="allPoiModalListContainer" style="max-height: 60vh; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;"></div>
+    </div>
+</div>
 
-            <div style="background: #0f172a; border: 1px solid var(--border-color); border-radius: 8px; padding: 12px;">
-                <label style="font-size: 0.85rem; display: block; margin-bottom: 6px; color: var(--text-muted);">Oder Adresse / Ort händisch eintragen:</label>
-                <div style="display: flex; gap: 8px;">
-                    <input type="text" id="manualLocationInput" placeholder="z.B. Berlin, Alexanderplatz..." onkeydown="if(event.key==='Enter') searchManualLocationForPost()">
-                    <button onclick="searchManualLocationForPost()" style="white-space: nowrap;">Suchen</button>
-                </div>
-            </div>
+<!-- Weather Details & Charts Modal -->
+<div id="weatherDetailsModal" class="modal">
+    <div class="modal-content" style="max-width: 850px;">
+        <span class="close-modal" onclick="closeWeatherDetailsModal()">&times;</span>
+        <h2 style="margin-top:0; color: var(--accent-color);">🌤️ Detaillierte Wetter-Analyse & Graphen</h2>
+        <div id="weatherAnimContainer" class="weather-anim-box">
+            <div id="weatherAnimElement" class="anim-sun">☀️</div>
+        </div>
+        <div id="weatherConditionText" style="text-align: center; font-size: 0.95rem; font-weight: 600; margin-bottom: 12px; color: var(--text-muted);">Sonnig & Angenehm</div>
+        <div style="display: flex; justify-content: center; gap: 10px; margin-bottom: 15px;">
+            <button id="btnViewHourly" onclick="setWeatherViewMode('hourly')" style="padding: 6px 14px; font-size: 0.85rem; background: var(--accent-color);">Stündlicher Verlauf</button>
+            <button id="btnViewDaily" onclick="setWeatherViewMode('daily')" style="padding: 6px 14px; font-size: 0.85rem; background: #334155;">Wöchentlicher Verlauf (Täglich)</button>
+        </div>
+        <div style="margin-bottom: 20px; background: #0f172a; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color);">
+            <h4 style="margin: 0 0 8px 0; font-size: 0.95rem; color: #f8fafc;">🌡️ Temperaturverlauf (°C)</h4>
+            <div style="position: relative; height: 180px; width: 100%;"><canvas id="tempChart"></canvas></div>
+        </div>
+        <div style="margin-bottom: 20px; background: #0f172a; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color);">
+            <h4 style="margin: 0 0 8px 0; font-size: 0.95rem; color: #f8fafc;">🌧️ Niederschlag (mm)</h4>
+            <div style="position: relative; height: 160px; width: 100%;"><canvas id="rainChart"></canvas></div>
+        </div>
+        <div style="background: #0f172a; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color);">
+            <h4 style="margin: 0 0 8px 0; font-size: 0.95rem; color: #f8fafc;">💨 Windgeschwindigkeiten (km/h)</h4>
+            <div style="position: relative; height: 160px; width: 100%;"><canvas id="windChart"></canvas></div>
         </div>
     </div>
 </div>
@@ -1121,92 +882,216 @@
 <!-- Giphy Modal -->
 <div id="giphyModal" class="modal">
     <div class="modal-content" style="max-width: 600px;">
-        <span class="close-modal" onclick="closeGiphyModal()" style="float:right;">&times;</span>
+        <span class="close-modal" onclick="closeGiphyModal()">&times;</span>
         <h3 style="margin-top:0; color: var(--accent-color);">🖼️ Giphy GIF auswählen</h3>
         <div style="display: flex; gap: 8px; margin-bottom: 12px;">
-            <input type="text" id="giphySearchInput" placeholder="GIFs suchen (z.B. travel, cat, party)..." onkeydown="if(event.key==='Enter') searchGiphy()">
+            <input type="text" id="giphySearchInput" placeholder="GIFs suchen..." onkeydown="if(event.key==='Enter') searchGiphy()">
             <button onclick="searchGiphy()">Suchen</button>
         </div>
-        <div id="giphyResultsContainer" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px; max-height: 350px; overflow-y: auto;">
-            <p style="color: var(--text-muted); text-align: center; grid-column: 1 / -1;">Gib einen Suchbegriff ein, um GIFs von GIPHY zu finden.</p>
-        </div>
+        <div id="giphyResultsContainer" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px; max-height: 350px; overflow-y: auto;"></div>
     </div>
 </div>
 
-<!-- Emoji Picker Modal mit Paginierung -->
+<!-- Emoji Picker Modal -->
 <div id="emojiPickerModal" class="modal">
-    <div class="modal-content" style="max-width: 480px;">
-        <span class="close-modal" onclick="closeEmojiPickerModal()" style="float:right;">&times;</span>
-        <h3 style="margin-top:0; color: var(--accent-color);">😀 Emoji auswählen</h3>
-        <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 10px;">Wähle aus einer riesigen Auswahl an Emojis (über mehrere Seiten).</p>
-        <div id="emojiPickerGrid" style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; max-height: 280px; overflow-y: auto; margin-bottom: 10px;"></div>
-        
-        <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 8px; border-top: 1px solid var(--border-color);">
-            <button onclick="prevEmojiPage()" id="emojiPrevBtn" style="padding: 6px 12px; font-size: 0.85rem; background: #334155;">◀ Zurück</button>
-            <span id="emojiPageIndicator" style="font-size: 0.85rem; color: var(--text-muted);">Seite 1 von 1</span>
-            <button onclick="nextEmojiPage()" id="emojiNextBtn" style="padding: 6px 12px; font-size: 0.85rem; background: #334155;">Weiter ▶</button>
+    <div class="modal-content" style="max-width: 460px; text-align: center;">
+        <span class="close-modal" onclick="closeEmojiPickerModal()">&times;</span>
+        <h3 style="margin-top:0; color: var(--accent-color);" data-i18n="emojiTitle">😀 Emoji auswählen</h3>
+        <div id="emojiPickerGrid" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin: 15px 0; min-height: 180px;"></div>
+        <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 10px;">
+            <button onclick="prevEmojiPage()" style="padding: 6px 12px; font-size: 0.85rem; background: #334155;">◀ Zurück</button>
+            <span id="emojiPageIndicator" style="font-size: 0.85rem; color: var(--text-muted);">Seite 1</span>
+            <button onclick="nextEmojiPage()" style="padding: 6px 12px; font-size: 0.85rem; background: #334155;">Weiter ▶</button>
         </div>
     </div>
 </div>
 
-<!-- Reviews Modal (Sterne-Bewertungen & Nachrichten) -->
-<div id="reviewsModal" class="modal">
-    <div class="modal-content" style="max-width: 700px;">
-        <span class="close-modal" onclick="closeReviewsModal()" style="float:right;">&times;</span>
-        <h3 id="reviewsModalTitle" style="margin-top:0; color: var(--accent-color);">⭐ Bewertungen & Nachrichten</h3>
-        
-        <div style="margin-bottom: 14px;">
-            <div class="chart-box" style="height: 180px;">
-                <h4>📊 Sterne-Verteilung</h4>
-                <canvas id="reviewsBarChart"></canvas>
-            </div>
-        </div>
-
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
-            <strong>Nutzer-Rezensionen</strong>
-            <div class="inline-filter">
-                <label for="reviewFilterSelect">Filtern:</label>
-                <select id="reviewFilterSelect" onchange="renderReviewsModalContent()">
-                    <option value="all" selected>Alle Bewertungen</option>
-                    <option value="newest">Neueste Bewertung</option>
-                    <option value="oldest">Älteste Bewertung</option>
-                    <option value="5">⭐⭐⭐⭐⭐ (5 Sterne)</option>
-                    <option value="4">⭐⭐⭐⭐ (4 Sterne)</option>
-                    <option value="3">⭐⭐⭐ (3 Sterne)</option>
-                    <option value="2">⭐⭐ (2 Sterne)</option>
-                    <option value="1">⭐ (1 Stern)</option>
-                </select>
-            </div>
-        </div>
-
-        <div id="reviewsListContainer" style="display: flex; flex-direction: column; gap: 8px; max-height: 320px; overflow-y: auto;"></div>
-    </div>
-</div>
-
-<!-- Standard Modal -->
+<!-- Standard / POI Detail Modal -->
 <div id="detailModal" class="modal">
     <div class="modal-content">
-        <span class="close-modal" onclick="closeModal()" style="float:right; width:auto; height:auto; border-radius:0; background:none; font-size:1.4rem;">&times;</span>
+        <span class="close-modal" onclick="closeModal()">&times;</span>
         <h2 id="modalTitle" style="margin-top:0; font-size: 1.2rem; color: var(--accent-color);">Titel</h2>
         <div id="modalBody" style="font-size: 0.95rem; line-height: 1.5;">Inhalt...</div>
-        <div id="modalFooterNav" class="nav-button-container" style="display:none;"></div>
-    </div>
-</div>
-
-<!-- Kompaktes Modal für Tages-Infopaket & Wetter-Graph -->
-<div id="fullscreenDayModal" class="fullscreen-modal">
-    <div class="fullscreen-content-box">
-        <div class="fullscreen-header">
-            <h2 id="fsModalTitle" style="margin:0; font-size: 1.15rem; color: var(--accent-color);">Tagesinfopaket</h2>
-            <div class="close-modal" onclick="closeFullscreenModal()">&times;</div>
-        </div>
-        <div class="fullscreen-body" id="fsModalBody"></div>
     </div>
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-    /* --- AUTHENTIFIZIERUNGS & BENUTZER-LOGIK --- */
+    const translations = {
+        de: {
+            title: "Jannik Reisen 🌍✈️",
+            loginTab: "Einloggen",
+            registerTab: "Account erstellen",
+            username: "Benutzername",
+            password: "Passwort",
+            usernamePlaceholder: "Benutzername eingeben...",
+            passwordPlaceholder: "Passwort eingeben...",
+            loginBtn: "Einloggen",
+            registerBtn: "Account erstellen",
+            regUsername: "Gewünschter Benutzername",
+            mapTitle: "🗺️ Weltkarte & Umkreis-Suche",
+            searchPlaceholder: "Ort, Stadt oder PLZ suchen...",
+            searchBtn: "Suchen",
+            radiusLabel: "Such-Umkreis:",
+            legend: "Legende",
+            liveTraffic: "Live-Verkehr aktivieren",
+            navMaps: "Navigation Google Maps",
+            weatherTitle: "🌤️ Wetter-Vorschau (Tage)",
+            hourlyTitle: "⏱️ Stündliche Vorschau ab JETZT",
+            weatherActive: "Wetter-Datenpunkt aktiv für",
+            cityInfoTitle: "ℹ️ Infos zur Stadt",
+            country: "Land",
+            region: "Region / Bundesland",
+            city: "Stadt",
+            sights: "Sehenswürdigkeiten",
+            restaurants: "Restaurants",
+            hotels: "Unterkünfte",
+            feedTitle: "💬 Nachrichtenverlauf & Community Feed",
+            filterSort: "Sortierung:",
+            sortNewest: "Neueste Nachricht",
+            sortOldest: "Älteste Nachricht",
+            sortMostReactions: "Meiste Reaktionen",
+            prevBtn: "◀ Zurück",
+            nextBtn: "Weiter ▶",
+            newPostTitle: "✍️ Neue Nachricht schreiben",
+            postPlaceholder: "Was gibt's Neues bei deinen Reisen?...",
+            uploadImg: "📷 Bild hochladen",
+            publishBtn: "Beitrag veröffentlichen",
+            logout: "Abmelden",
+            reactBtn: "😀 Reagieren",
+            emojiTitle: "😀 Emoji auswählen",
+            startModalTitle: "📍 Startadresse wählen",
+            startModalLabel: "Welche Adresse möchtest du sehen?",
+            useCurrentLocation: "Aktuellen Standort verwenden"
+        },
+        en: {
+            title: "Jannik Travel 🌍✈️",
+            loginTab: "Login",
+            registerTab: "Create Account",
+            username: "Username",
+            password: "Password",
+            usernamePlaceholder: "Enter username...",
+            passwordPlaceholder: "Enter password...",
+            loginBtn: "Login",
+            registerBtn: "Create Account",
+            regUsername: "Desired Username",
+            mapTitle: "🗺️ World Map & Radius Search",
+            searchPlaceholder: "Search city or zip code...",
+            searchBtn: "Search",
+            radiusLabel: "Search Radius:",
+            legend: "Legend",
+            liveTraffic: "Enable Live Traffic",
+            navMaps: "Google Maps Navigation",
+            weatherTitle: "🌤️ Weather Forecast",
+            hourlyTitle: "⏱️ Hourly Forecast",
+            weatherActive: "Weather data active for",
+            cityInfoTitle: "ℹ️ City Information",
+            country: "Country",
+            region: "Region / State",
+            city: "City",
+            sights: "Sights",
+            restaurants: "Restaurants",
+            hotels: "Accommodations",
+            feedTitle: "💬 Community Feed & Messages",
+            filterSort: "Sort:",
+            sortNewest: "Newest Message",
+            sortOldest: "Oldest Message",
+            sortMostReactions: "Most Reactions",
+            prevBtn: "◀ Back",
+            nextBtn: "Next ▶",
+            newPostTitle: "✍️ Write New Message",
+            postPlaceholder: "What's new on your travels?...",
+            uploadImg: "📷 Upload Image",
+            publishBtn: "Publish Post",
+            logout: "Logout",
+            reactBtn: "😀 React",
+            emojiTitle: "😀 Select Emoji",
+            startModalTitle: "📍 Select Start Address",
+            startModalLabel: "What address would you like to see?",
+            useCurrentLocation: "Use Current Location"
+        },
+        fr: {
+            title: "Jannik Voyages 🌍✈️",
+            loginTab: "Connexion",
+            registerTab: "Créer un compte",
+            username: "Nom d'utilisateur",
+            password: "Mot de passe",
+            usernamePlaceholder: "Entrer le nom d'utilisateur...",
+            passwordPlaceholder: "Entrer le mot de passe...",
+            loginBtn: "Se connecter",
+            registerBtn: "Créer un compte",
+            regUsername: "Nom d'utilisateur souhaité",
+            mapTitle: "🗺️ Carte du monde & Recherche",
+            searchPlaceholder: "Rechercher une ville...",
+            searchBtn: "Rechercher",
+            radiusLabel: "Rayon :",
+            legend: "Légende",
+            liveTraffic: "Trafic en direct",
+            navMaps: "Navigation Google Maps",
+            weatherTitle: "🌤️ Prévisions météo",
+            hourlyTitle: "⏱️ Prévisions horaires",
+            weatherActive: "Météo active pour",
+            cityInfoTitle: "ℹ️ Infos ville",
+            country: "Pays",
+            region: "Région",
+            city: "Ville",
+            sights: "Lieux",
+            restaurants: "Restaurants",
+            hotels: "Hébergements",
+            feedTitle: "💬 Fil d'actualité",
+            filterSort: "Tri :",
+            sortNewest: "Le plus récent",
+            sortOldest: "Le plus ancien",
+            sortMostReactions: "Plus de réactions",
+            prevBtn: "◀ Précédent",
+            nextBtn: "Suivant ▶",
+            newPostTitle: "✍️ Nouveau message",
+            postPlaceholder: "Quoi de neuf ?...",
+            uploadImg: "📷 Image",
+            publishBtn: "Publier",
+            logout: "Déconnexion",
+            reactBtn: "😀 Réagir",
+            emojiTitle: "😀 Choisir un emoji",
+            startModalTitle: "📍 Choisir l'adresse de départ",
+            startModalLabel: "Quelle adresse souhaitez-vous voir ?",
+            useCurrentLocation: "Utiliser la position actuelle"
+        }
+    };
+
+    let currentLang = localStorage.getItem('jannik_lang') || 'de';
+
+    function changeLanguage(lang) {
+        currentLang = lang;
+        localStorage.setItem('jannik_lang', lang);
+        applyTranslations();
+    }
+
+    function applyTranslations() {
+        const t = translations[currentLang] || translations['de'];
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            if (t[key]) el.innerText = t[key];
+        });
+        document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+            const key = el.getAttribute('data-i18n-placeholder');
+            if (t[key]) el.placeholder = t[key];
+        });
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+        applyTranslations();
+        getUsers();
+        const currentUser = localStorage.getItem('jannik_current_user');
+        if(currentUser) {
+            completeLogin(currentUser);
+        }
+    });
+
+    function togglePasswordVisibility(fieldId, iconEl) {
+        const inputEl = document.getElementById(fieldId);
+        inputEl.type = inputEl.type === 'password' ? 'text' : 'password';
+    }
+
     function switchAuthTab(tab) {
         document.getElementById('authError').style.display = 'none';
         document.getElementById('authSuccess').style.display = 'none';
@@ -1227,41 +1112,19 @@
         const errEl = document.getElementById('authError');
         errEl.innerText = msg;
         errEl.style.display = 'block';
-        document.getElementById('authSuccess').style.display = 'none';
-    }
-
-    function showAuthSuccess(msg) {
-        const sucEl = document.getElementById('authSuccess');
-        sucEl.innerText = msg;
-        sucEl.style.display = 'block';
-        document.getElementById('authError').style.display = 'none';
     }
 
     function getUsers() {
         let users = JSON.parse(localStorage.getItem('jannik_users') || '{}');
-        let updated = false;
-        for (let [uname, val] of Object.entries(users)) {
-            if (typeof val === 'string') {
-                users[uname] = { pass: val, isAdmin: (uname === 'admin'), approved: true };
-                updated = true;
-            } else {
-                if (val.approved === undefined) {
-                    val.approved = (uname === 'admin' || val.isAdmin === true);
-                    updated = true;
-                }
-            }
-        }
-        if(!users['admin']) {
-            users['admin'] = { pass: 'admin', isAdmin: true, approved: true };
-            updated = true;
-        }
-        if(updated) {
+        if (!users['admin']) {
+            users['admin'] = { pass: 'admin', isAdmin: true };
             localStorage.setItem('jannik_users', JSON.stringify(users));
         }
         return users;
     }
 
     function isAdmin(username) {
+        if (!username) return false;
         const users = getUsers();
         return users[username] && users[username].isAdmin === true;
     }
@@ -1269,366 +1132,192 @@
     function handleLogin() {
         const user = document.getElementById('loginUser').value.trim();
         const pass = document.getElementById('loginPass').value.trim();
-
-        if(!user || !pass) {
-            showAuthError("Bitte Benutzername und Passwort eingeben.");
-            return;
-        }
-
         const users = getUsers();
-        if(users[user] && users[user].pass === pass) {
-            if(users[user].approved === false && !users[user].isAdmin) {
-                showAuthError("Dein Account wartet noch auf die Freigabe durch den Admin.");
-                return;
-            }
-            completeLogin(user);
+        const matchedKey = Object.keys(users).find(k => k.toLowerCase() === user.toLowerCase());
+        if(matchedKey && users[matchedKey].pass === pass) {
+            completeLogin(matchedKey);
         } else {
             showAuthError("Ungültiger Benutzername oder falsches Passwort.");
         }
     }
 
-    function showRegistrationThankYouModal() {
-        document.getElementById('modalTitle').innerText = "🎉 Vielen Dank für deine Registrierung!";
-        document.getElementById('modalBody').innerHTML = `
-            <p style="font-size: 1.05rem; line-height: 1.6; text-align: center; margin: 20px 0;">
-                Vielen Dank für deine Registrierung, der Admin muss jetzt noch bestätigen. Du kannst dich einloggen, sobald dein Account freigegeben wurde.
-            </p>
-            <div style="text-align: center; margin-top: 20px;">
-                <button onclick="closeModal()" style="padding: 10px 24px; font-size: 1rem;">Okay</button>
-            </div>
-        `;
-        document.getElementById('modalFooterNav').style.display = 'none';
-        document.getElementById('detailModal').style.display = 'flex';
-    }
-
     function handleRegister() {
         const user = document.getElementById('regUser').value.trim();
         const pass = document.getElementById('regPass').value.trim();
-
-        if(!user || !pass) {
-            showAuthError("Bitte fülle alle Felder aus.");
-            return;
-        }
-
-        const users = getUsers();
-        if(users[user]) {
-            showAuthError("Dieser Benutzername ist bereits vergeben.");
-            return;
-        }
-
-        users[user] = { pass: pass, isAdmin: false, approved: false };
+        if(!user || !pass) { showAuthError("Bitte alle Felder ausfüllen."); return; }
+        let users = getUsers();
+        if(users[user]) { showAuthError("Benutzername vergeben."); return; }
+        users[user] = { pass: pass, isAdmin: false };
         localStorage.setItem('jannik_users', JSON.stringify(users));
-        
-        document.getElementById('regUser').value = '';
-        document.getElementById('regPass').value = '';
         switchAuthTab('login');
-        showRegistrationThankYouModal();
+        alert("Account erstellt! Bitte einloggen.");
     }
 
     function completeLogin(username) {
         localStorage.setItem('jannik_current_user', username);
         document.getElementById('authOverlay').style.display = 'none';
         document.getElementById('mainAppContainer').style.display = 'flex';
-        
-        const badge = document.getElementById('userBadgeLabel');
-        if(isAdmin(username)) {
-            badge.innerHTML = `👑 ${username} (Admin)`;
-        } else {
-            badge.innerHTML = `👤 ${username} (Benutzer)`;
-        }
-
+        document.getElementById('userBadgeLabel').innerHTML = isAdmin(username) ? `👑 ${username} (Admin)` : `👤 ${username} (User)`;
         renderPostsFeed();
-
+        
+        // Initial address prompt custom modal
         setTimeout(() => {
             if(map) map.invalidateSize();
+            document.getElementById('startLocationOverlay').style.display = 'flex';
+            document.getElementById('startAddrInput').value = '';
+            document.getElementById('startAddrInput').focus();
         }, 200);
+    }
+
+    function submitStartLocation() {
+        const addr = document.getElementById('startAddrInput').value.trim();
+        if (!addr) {
+            alert("Bitte gib eine gültige Adresse ein.");
+            return;
+        }
+        document.getElementById('startLocationOverlay').style.display = 'none';
+        document.getElementById('citySearch').value = addr;
+        searchLocation();
+    }
+
+    function submitCurrentLocationStartup() {
+        document.getElementById('startLocationOverlay').style.display = 'none';
+        setMyCurrentLocation();
     }
 
     function handleLogout() {
         localStorage.removeItem('jannik_current_user');
         document.getElementById('mainAppContainer').style.display = 'none';
         document.getElementById('authOverlay').style.display = 'flex';
-        document.getElementById('loginUser').value = '';
-        document.getElementById('loginPass').value = '';
-        document.getElementById('authError').style.display = 'none';
-        document.getElementById('authSuccess').style.display = 'none';
     }
 
-    window.addEventListener('DOMContentLoaded', () => {
-        getUsers();
-        const currentUser = localStorage.getItem('jannik_current_user');
-        if(currentUser) {
-            completeLogin(currentUser);
-        }
-    });
-
-    /* --- COMMUNITY FEED & WIDGETS --- */
     let currentPostPage = 1;
-    const postsPerPage = 50;
+    const postsPerPage = 10;
+    let attachedLocation = null;
 
-    function prevPostPage() {
-        if (currentPostPage > 1) {
-            currentPostPage--;
-            renderPostsFeed();
+    function requestLocationAttachment() {
+        if (confirm("Möchtest du deinen aktuellen GPS-Standort verwenden?\n(Klicke Abbrechen, um eine Adresse manuell einzugeben)")) {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(pos => {
+                    attachedLocation = { lat: pos.coords.latitude, lon: pos.coords.longitude, name: "Aktueller GPS-Standort" };
+                    document.getElementById('postLocationIndicator').innerText = "📍 Standort angehängt (GPS)";
+                }, () => alert("GPS-Standort konnte nicht ermittelt werden."));
+            } else {
+                alert("Geolocation wird nicht unterstützt.");
+            }
+        } else {
+            const locName = prompt("Bitte gib eine Adresse oder einen Ort ein:");
+            if (locName) {
+                attachedLocation = { name: locName };
+                document.getElementById('postLocationIndicator').innerText = "📍 Standort: " + locName;
+            }
         }
     }
 
-    function nextPostPage() {
-        const posts = JSON.parse(localStorage.getItem('jannik_posts') || '[]');
-        const totalPages = Math.ceil(posts.length / postsPerPage) || 1;
-        if (currentPostPage < totalPages) {
-            currentPostPage++;
-            renderPostsFeed();
-        }
-    }
+    let uploadedPostMediaBase64 = null;
+    let uploadedMediaType = 'image';
 
-    let uploadedPostImageBase64 = null;
-    let selectedPostGifUrl = null;
-    let attachedPostLocation = null;
-
-    function previewPostImage(input) {
+    function previewPostMedia(input, type) {
         if (input.files && input.files[0]) {
             const reader = new FileReader();
             reader.onload = function(e) {
-                uploadedPostImageBase64 = e.target.result;
-                selectedPostGifUrl = null;
-                document.getElementById('postImagePreview').src = uploadedPostImageBase64;
-                document.getElementById('postImagePreviewContainer').style.display = 'block';
-                document.getElementById('postImageName').innerText = input.files[0].name;
+                uploadedPostMediaBase64 = e.target.result;
+                uploadedMediaType = type;
+                const container = document.getElementById('postMediaPreviewContent');
+                if (type === 'video') {
+                    container.innerHTML = `<video src="${uploadedPostMediaBase64}" style="width: 100%; border-radius: 6px; max-height: 120px;" controls></video>`;
+                } else {
+                    container.innerHTML = `<img src="${uploadedPostMediaBase64}" style="width: 100%; border-radius: 6px; max-height: 120px; object-fit: cover;">`;
+                }
+                document.getElementById('postMediaPreviewContainer').style.display = 'block';
+                document.getElementById('postMediaName').innerText = input.files[0].name;
             };
             reader.readAsDataURL(input.files[0]);
         }
     }
 
-    function clearPostImage() {
-        uploadedPostImageBase64 = null;
-        document.getElementById('postImage').value = '';
-        document.getElementById('postImagePreviewContainer').style.display = 'none';
-        document.getElementById('postImageName').innerText = 'Keine Datei ausgewählt';
+    function clearPostMedia() {
+        uploadedPostMediaBase64 = null;
+        uploadedMediaType = 'image';
+        const imgEl = document.getElementById('postImage');
+        const vidEl = document.getElementById('postVideo');
+        if(imgEl) imgEl.value = '';
+        if(vidEl) vidEl.value = '';
+        document.getElementById('postMediaPreviewContainer').style.display = 'none';
+        document.getElementById('postMediaName').innerText = 'Keine Datei ausgewählt';
     }
 
-    function openGiphyModal() {
-        document.getElementById('giphyModal').style.display = 'flex';
-        document.getElementById('giphySearchInput').focus();
-    }
-
-    function closeGiphyModal() {
-        document.getElementById('giphyModal').style.display = 'none';
-    }
-
+    function openGiphyModal() { document.getElementById('giphyModal').style.display = 'flex'; }
+    function closeGiphyModal() { document.getElementById('giphyModal').style.display = 'none'; }
     async function searchGiphy() {
         const query = document.getElementById('giphySearchInput').value.trim();
         const container = document.getElementById('giphyResultsContainer');
         if (!query) return;
-
-        container.innerHTML = '<p style="color: var(--text-muted); text-align: center; grid-column: 1 / -1;"><div class="spinner" style="position:relative; margin:0 auto 6px auto;"></div>Lade GIFs...</p>';
-
-        try {
-            const res = await fetch(`https://api.giphy.com/v1/gifs/search?api_key=dc6zaTOxFJmzC&q=${encodeURIComponent(query)}&limit=24`);
-            const data = await res.json();
-            if (data && data.data && data.data.length > 0) {
-                let html = '';
-                data.data.forEach(gif => {
-                    const gifUrl = gif.images.fixed_height_small.url;
-                    html += `<img src="${gifUrl}" style="width: 100%; height: 110px; object-fit: cover; border-radius: 6px; cursor: pointer; transition: transform 0.1s;" onclick="selectGif('${gifUrl}')" onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='scale(1)'">`;
-                });
-                container.innerHTML = html;
-            } else {
-                container.innerHTML = '<p style="color: var(--text-muted); text-align: center; grid-column: 1 / -1;">Keine GIFs gefunden.</p>';
-            }
-        } catch (e) {
-            container.innerHTML = '<p style="color: #ef4444; text-align: center; grid-column: 1 / -1;">Giphy-Verbindung fehlgeschlagen.</p>';
-        }
-    }
-
-    function selectGif(url) {
-        selectedPostGifUrl = url;
-        uploadedPostImageBase64 = null;
-        document.getElementById('postImagePreview').src = url;
-        document.getElementById('postImagePreviewContainer').style.display = 'block';
-        document.getElementById('postImageName').innerText = 'GIPHY GIF ausgewählt';
-        closeGiphyModal();
-    }
-
-    function openLocationSelectionModal() {
-        document.getElementById('modalCurrentLocationLabel').innerText = `${currentCityData.name} (${currentCityData.state})`;
-        document.getElementById('manualLocationInput').value = '';
-        document.getElementById('locationSelectionModal').style.display = 'flex';
-        document.getElementById('manualLocationInput').focus();
-    }
-
-    function closeLocationSelectionModal() {
-        document.getElementById('locationSelectionModal').style.display = 'none';
-    }
-
-    function useCurrentLocationForPost() {
-        attachedPostLocation = {
-            name: currentCityData.name,
-            state: currentCityData.state,
-            lat: currentCityData.lat,
-            lon: currentCityData.lon
-        };
-        document.getElementById('postLocationText').innerText = `📍 Standort angehängt: ${currentCityData.name} (${currentCityData.state})`;
-        document.getElementById('postLocationPreviewContainer').style.display = 'flex';
-        closeLocationSelectionModal();
-    }
-
-    async function searchManualLocationForPost() {
-        const query = document.getElementById('manualLocationInput').value.trim();
-        if (!query) return;
-
-        try {
-            const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1`);
-            const data = await res.json();
-            if (data && data.length > 0) {
-                const item = data[0];
-                const lat = parseFloat(item.lat);
-                const lon = parseFloat(item.lon);
-                const displayName = item.display_name.split(',')[0];
-                
-                attachedPostLocation = {
-                    name: displayName,
-                    state: item.display_name,
-                    lat: lat,
-                    lon: lon
-                };
-
-                document.getElementById('postLocationText').innerText = `📍 Standort angehängt: ${displayName}`;
-                document.getElementById('postLocationPreviewContainer').style.display = 'flex';
-                closeLocationSelectionModal();
-            } else {
-                alert("Standort nicht gefunden.");
-            }
-        } catch (e) {
-            alert("Fehler bei der Adresssuche.");
-        }
-    }
-
-    function clearPostLocation() {
-        attachedPostLocation = null;
-        document.getElementById('postLocationPreviewContainer').style.display = 'none';
-    }
-
-    function parseRedditLinks(text) {
-        if (!text) return '';
-        const redditRegex = /(https?:\/\/(?:www\.)?(?:reddit\.com\/r\/[\w\/]+|redd\.it\/[\w]+))/g;
-        
-        let parsedText = text.replace(redditRegex, (url) => {
-            return `
-                <div style="background: #1a1f2c; border: 1px solid #ff4500; border-radius: 8px; padding: 10px; margin-top: 8px; margin-bottom: 8px;">
-                    <div style="display: flex; align-items: center; gap: 6px; font-size: 0.8rem; color: #ff4500; font-weight: bold; margin-bottom: 4px;">
-                        🟠 Reddit Beitrag
-                    </div>
-                    <a href="${url}" target="_blank" style="color: #60a5fa; text-decoration: underline; font-size: 0.85rem; word-break: break-all;">${url}</a>
-                </div>
-            `;
+        const res = await fetch(`https://api.giphy.com/v1/gifs/search?api_key=dc6zaTOxFJmzC&q=${encodeURIComponent(query)}&limit=16`);
+        const data = await res.json();
+        let html = '';
+        data.data.forEach(gif => {
+            const url = gif.images.fixed_height_small.url;
+            html += `<img src="${url}" style="width: 100%; height: 110px; object-fit: cover; border-radius: 6px; cursor: pointer;" onclick="selectGif('${url}')">`;
         });
-        return parsedText;
+        container.innerHTML = html;
     }
-
-    function togglePollInputs() {
-        const show = document.getElementById('enablePollToggle').checked;
-        document.getElementById('pollSection').style.display = show ? 'block' : 'none';
-    }
-
-    function addPollOptionInput() {
-        const container = document.getElementById('pollOptionsContainer');
-        if (container.children.length >= 6) {
-            alert("Maximal 6 Antwortmöglichkeiten erlaubt.");
-            return;
-        }
-        const input = document.createElement('input');
-        input.type = 'text';
-        input.className = 'poll-option-input';
-        input.placeholder = `Antwortmöglichkeit ${container.children.length + 1}`;
-        input.style.cssText = 'font-size: 0.85rem; padding: 6px;';
-        container.appendChild(input);
+    function selectGif(url) {
+        uploadedPostMediaBase64 = url;
+        uploadedMediaType = 'image';
+        document.getElementById('postMediaPreviewContent').innerHTML = `<img src="${url}" style="width: 100%; border-radius: 6px; max-height: 120px; object-fit: cover;">`;
+        document.getElementById('postMediaPreviewContainer').style.display = 'block';
+        document.getElementById('postMediaName').innerText = 'GIPHY GIF';
+        closeGiphyModal();
     }
 
     function handleCreatePost() {
         const text = document.getElementById('postText').value.trim();
-        const enablePoll = document.getElementById('enablePollToggle').checked;
-        let pollData = null;
-
-        if (!text && !uploadedPostImageBase64 && !selectedPostGifUrl && !attachedPostLocation && !enablePoll) {
-            alert("Bitte schreibe eine Nachricht, lade ein Bild/GIF hoch, hänge einen Standort an oder erstelle eine Umfrage.");
-            return;
-        }
-
-        if (enablePoll) {
-            const q = document.getElementById('pollQuestion').value.trim();
-            const optionInputs = document.querySelectorAll('.poll-option-input');
-            let options = [];
-            optionInputs.forEach(inp => {
-                if (inp.value.trim()) {
-                    options.push({ text: inp.value.trim(), votes: [] });
-                }
-            });
-
-            if (!q) {
-                alert("Bitte gib eine Umfragefrage ein.");
-                return;
-            }
-            if (options.length < 2) {
-                alert("Eine Umfrage benötigt mindestens 2 Antwortmöglichkeiten.");
-                return;
-            }
-            pollData = {
-                question: q,
-                options: options
-            };
-        }
-
+        if (!text && !uploadedPostMediaBase64) return;
         const currentUser = localStorage.getItem('jannik_current_user');
         const posts = JSON.parse(localStorage.getItem('jannik_posts') || '[]');
-
-        const newPost = {
+        posts.unshift({
             id: Date.now(),
             author: currentUser,
             isAdmin: isAdmin(currentUser),
             text: text,
-            image: uploadedPostImageBase64 || selectedPostGifUrl,
-            location: attachedPostLocation,
-            poll: pollData,
+            image: uploadedPostMediaBase64,
+            mediaType: uploadedMediaType,
+            location: attachedLocation,
             reactions: {},
-            reactionCounts: {},
-            replies: [],
+            comments: [],
             timestamp: new Date().toLocaleString('de-DE')
-        };
-
-        posts.unshift(newPost);
+        });
         localStorage.setItem('jannik_posts', JSON.stringify(posts));
-
         document.getElementById('postText').value = '';
-        clearPostImage();
-        clearPostLocation();
-        selectedPostGifUrl = null;
-        document.getElementById('enablePollToggle').checked = false;
-        document.getElementById('pollSection').style.display = 'none';
-        document.getElementById('pollQuestion').value = '';
-        document.getElementById('pollOptionsContainer').innerHTML = `
-            <input type="text" class="poll-option-input" placeholder="Antwortmöglichkeit 1" style="font-size: 0.85rem; padding: 6px;">
-            <input type="text" class="poll-option-input" placeholder="Antwortmöglichkeit 2" style="font-size: 0.85rem; padding: 6px;">
-        `;
-
-        currentPostPage = 1;
+        clearPostMedia();
+        attachedLocation = null;
+        document.getElementById('postLocationIndicator').innerText = '';
         renderPostsFeed();
     }
 
     const MASTER_EMOJI_POOL = [
-        '👍', '❤️', '😂', '🔥', '🚀', '🎉', '👏', '😍', '🙌', '😎',
-        '⭐', '🌍', '✈️', '🧭', '🍕', '🍻', '☕', '💡', '📌', '✨',
-        '🙏', '💪', '🥳', '👇', '💯', '✅', '❌', '❤️‍🔥', '🎯', '🏆'
+        '😀', '😃', '😄', '😁', '😆', '😅', '🤣', '😂', '🙂', '🙃', '😉', '😊', '😇', '🥰', '😍', '🤩', '😘', '😗', '😙', '😚',
+        '😋', '😛', '😜', '🤪', '😝', '🤑', '🤗', '🤭', '🤫', '🤔', '🤐', '🤨', '😐', '😑', '😶', '😏', '😒', '🙄', '😬', '🤥',
+        '👍', '👎', '👌', '🤌', '🤏', '✌️', '🤞', '🫰', '🤟', '🤘', '🤙', '👈', '👉', '👆', '🖕', '👇', '☝️', '✋', '🤚', '👋',
+        '❤️', '🧡', '💛', '💚', '💙', '💜', '🖤', '🤍', '🤎', '💔', '❤️‍🔥', '❤️‍🩹', '💕', '💞', '💓', '💗', '💖', '💘', '💝', '⭐',
+        '🌟', '💫', '✨', '☄️', '🔥', '💥', '💯', '💢', '💬', '💭', '💤', '🎉', '🎊', '🎈', '🎁', '🏆', '🎖️', '🏅', '🥇', '🥈',
+        '🌍', '🌎', '🌏', '🗺️', '🧭', '✈️', '🛫', '🛬', '🚀', '🛸', '🛰️', '🚗', '🚕', '🚙', '🚌', '🚎', '🏎️', '🚓', '🚑', '🚒',
+        '🍕', '🍔', '🍟', '🌭', '🍿', '🧂', '🥓', '🥚', '🍳', '🧇', '🥞', '🧈', '🍞', '🥐', '🥨', '🧀', '🥗', '🥪', '🥙', '🧆',
+        '🍺', '🍻', '🍷', '🍸', '🍹', '🍾', '🍶', '🍵', '☕', '🧃', '🧉', '🍼', '🥤', '🧋', '🍽️', '🍴', '🥄', '🔪', '🏺', '🥘',
+        '⚽', '🏀', '🏈', '⚾', '🥎', '🎾', '🏐', '🏉', '🥏', '🎱', '🪀', '🏓', '🏸', '🏒', '🏑', '🥍', '🏏', '🪃', '🥅', '⛳',
+        '🌊', '⚡', '❄️', '☃️', '⛄', '🌬️', '🌪️', '🌫️', '☂️', '☔', '☀️', '🌤️', '⛅', '🌥️', '☁️', '🌦️', '🌧️', '⛈️', '🌩️', '🌨️',
+        '⛺', '🏕️', '🧱', '🪵', '🛖', '🏠', '🏡', '🏘️', '🏚️', '🏗️', '🏭', '🏢', '🏬', '🏣', '🏤', '🏥', '🏦', '🏨', '🏪', '🏫',
+        '🎨', '🎭', '🎪', '🎤', '🎧', '🎼', '🎹', '🥁', '🎷', '🎺', '🎸', '🪕', '🎻', '🎲', '♟️', '🎯', '🎳', '🎮', '🎰', '🧩'
     ];
-
+    let currentEmojiPage = 0;
+    const emojisPerPage = 20;
     let currentActivePostForEmoji = null;
-    let currentEmojiPage = 1;
-    const emojisPerPage = 30;
 
     function openEmojiPicker(postId) {
         currentActivePostForEmoji = postId;
-        currentEmojiPage = 1;
-        renderEmojiPickerGrid();
+        currentEmojiPage = 0;
+        renderEmojiPickerPage();
         document.getElementById('emojiPickerModal').style.display = 'flex';
     }
 
@@ -1637,132 +1326,145 @@
         currentActivePostForEmoji = null;
     }
 
-    function prevEmojiPage() {
-        if (currentEmojiPage > 1) {
-            currentEmojiPage--;
-            renderEmojiPickerGrid();
-        }
-    }
-
-    function nextEmojiPage() {
-        const totalPages = Math.ceil(MASTER_EMOJI_POOL.length / emojisPerPage);
-        if (currentEmojiPage < totalPages) {
-            currentEmojiPage++;
-            renderEmojiPickerGrid();
-        }
-    }
-
-    function renderEmojiPickerGrid() {
-        const posts = JSON.parse(localStorage.getItem('jannik_posts') || '[]');
-        const post = posts.find(p => p.id === currentActivePostForEmoji);
-        if (!post) return;
-        if (!post.reactionCounts) post.reactionCounts = {};
-
-        const startIndex = (currentEmojiPage - 1) * emojisPerPage;
-        const visibleEmojis = MASTER_EMOJI_POOL.slice(startIndex, startIndex + emojisPerPage);
-
+    function renderEmojiPickerPage() {
         const gridEl = document.getElementById('emojiPickerGrid');
+        const start = currentEmojiPage * emojisPerPage;
+        const slice = MASTER_EMOJI_POOL.slice(start, start + emojisPerPage);
         let html = '';
-        visibleEmojis.forEach(emoji => {
-            const count = (post.reactions[emoji] || []).length;
-            html += `
-                <button onclick="selectEmojiReaction('${emoji}')" style="background: #0f172a; border: 1px solid var(--border-color); border-radius: 6px; padding: 10px; font-size: 1.2rem; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;" title="Reagieren mit ${emoji}">
-                    <span>${emoji}</span>
-                    ${count > 0 ? `<span style="font-size: 0.65rem; color: var(--accent-color);">${count}</span>` : ''}
-                </button>
-            `;
+        slice.forEach(emoji => {
+            html += `<button onclick="selectEmojiReaction('${emoji}')" style="background: #0f172a; border: 1px solid var(--border-color); border-radius: 6px; padding: 10px; font-size: 1.3rem; cursor: pointer;">${emoji}</button>`;
         });
         gridEl.innerHTML = html;
-        document.getElementById('emojiPageIndicator').innerText = `Seite ${currentEmojiPage} von ${Math.ceil(MASTER_EMOJI_POOL.length / emojisPerPage)}`;
+        const totalPages = Math.ceil(MASTER_EMOJI_POOL.length / emojisPerPage);
+        document.getElementById('emojiPageIndicator').innerText = `Seite ${currentEmojiPage + 1} von ${totalPages}`;
+    }
+
+    function prevEmojiPage() { if (currentEmojiPage > 0) { currentEmojiPage--; renderEmojiPickerPage(); } }
+    function nextEmojiPage() {
+        const totalPages = Math.ceil(MASTER_EMOJI_POOL.length / emojisPerPage);
+        if (currentEmojiPage < totalPages - 1) { currentEmojiPage++; renderEmojiPickerPage(); }
     }
 
     function selectEmojiReaction(emoji) {
         if (!currentActivePostForEmoji) return;
-        const postId = currentActivePostForEmoji;
-        closeEmojiPickerModal();
-
-        const currentUser = localStorage.getItem('jannik_current_user');
         const posts = JSON.parse(localStorage.getItem('jannik_posts') || '[]');
-        const post = posts.find(p => p.id === postId);
+        const post = posts.find(p => p.id === currentActivePostForEmoji);
         if (!post) return;
-
         if (!post.reactions) post.reactions = {};
-        if (!post.reactionCounts) post.reactionCounts = {};
-
-        let wasPresent = false;
-        Object.keys(post.reactions).forEach(em => {
-            if (!post.reactions[em]) post.reactions[em] = [];
-            let i = post.reactions[em].indexOf(currentUser);
-            if (i !== -1) {
-                post.reactions[em].splice(i, 1);
-                if (em === emoji) wasPresent = true;
-            }
-        });
-
-        if (!wasPresent) {
-            if (!post.reactions[emoji]) post.reactions[emoji] = [];
+        if (!post.reactions[emoji]) post.reactions[emoji] = [];
+        const currentUser = localStorage.getItem('jannik_current_user');
+        const idx = post.reactions[emoji].indexOf(currentUser);
+        if (idx > -1) {
+            post.reactions[emoji].splice(idx, 1);
+            if (post.reactions[emoji].length === 0) delete post.reactions[emoji];
+        } else {
             post.reactions[emoji].push(currentUser);
-            post.reactionCounts[emoji] = (post.reactionCounts[emoji] || 0) + 1;
         }
-
         localStorage.setItem('jannik_posts', JSON.stringify(posts));
+        closeEmojiPickerModal();
         renderPostsFeed();
+    }
+
+    function addCommentToPost(postId) {
+        const input = document.getElementById(`commentInput_${postId}`);
+        const text = input.value.trim();
+        if(!text) return;
+        const currentUser = localStorage.getItem('jannik_current_user');
+        let posts = JSON.parse(localStorage.getItem('jannik_posts') || '[]');
+        const post = posts.find(p => p.id === postId);
+        if(post) {
+            if(!post.comments) post.comments = [];
+            post.comments.push({ author: currentUser, text: text, timestamp: new Date().toLocaleTimeString('de-DE', {hour: '2-digit', minute:'2-digit'}) });
+            localStorage.setItem('jannik_posts', JSON.stringify(posts));
+            renderPostsFeed();
+        }
+    }
+
+    function prevPostPage() { if (currentPostPage > 1) { currentPostPage--; renderPostsFeed(); } }
+    function nextPostPage() {
+        const posts = JSON.parse(localStorage.getItem('jannik_posts') || '[]');
+        if (currentPostPage < Math.ceil(posts.length / postsPerPage)) { currentPostPage++; renderPostsFeed(); }
     }
 
     function renderPostsFeed() {
         const container = document.getElementById('postsFeedContainer');
-        const paginationContainer = document.getElementById('postsPaginationContainer');
         if (!container) return;
         let posts = JSON.parse(localStorage.getItem('jannik_posts') || '[]');
         const currentUser = localStorage.getItem('jannik_current_user');
-        const sortMode = document.getElementById('postSortSelect') ? document.getElementById('postSortSelect').value : 'newest';
+        const searchTerm = document.getElementById('postSearchInput').value.toLowerCase();
+        const sortVal = document.getElementById('postSortSelect').value;
 
-        posts.sort((a, b) => {
-            if (sortMode === 'newest') return (b.id || 0) - (a.id || 0);
-            if (sortMode === 'oldest') return (a.id || 0) - (b.id || 0);
-            return (b.id || 0) - (a.id || 0);
-        });
-
-        if (posts.length === 0) {
-            container.innerHTML = '<p style="color: var(--text-muted); font-size: 0.85rem; text-align: center; margin: 10px 0;">Noch keine Beiträge im Nachrichtenverlauf vorhanden.</p>';
-            if (paginationContainer) paginationContainer.style.display = 'none';
-            return;
+        if (searchTerm) {
+            posts = posts.filter(p => p.text.toLowerCase().includes(searchTerm) || p.author.toLowerCase().includes(searchTerm));
         }
+
+        const totalReactions = p => Object.values(p.reactions || {}).reduce((sum, arr) => sum + arr.length, 0);
+
+        if (sortVal === 'newest') posts.sort((a,b) => b.id - a.id);
+        else if (sortVal === 'oldest') posts.sort((a,b) => a.id - b.id);
+        else if (sortVal === 'most_reactions') posts.sort((a,b) => totalReactions(b) - totalReactions(a));
 
         const totalPages = Math.ceil(posts.length / postsPerPage) || 1;
         if (currentPostPage > totalPages) currentPostPage = totalPages;
-        const startIndex = (currentPostPage - 1) * postsPerPage;
-        const paginatedPosts = posts.slice(startIndex, startIndex + postsPerPage);
+        const paginatedPosts = posts.slice((currentPostPage - 1) * postsPerPage, currentPostPage * postsPerPage);
+        document.getElementById('postPageIndicator').innerText = `Seite ${currentPostPage} von ${totalPages}`;
 
-        if (posts.length > postsPerPage) {
-            paginationContainer.style.display = 'flex';
-            document.getElementById('postPageIndicator').innerText = `Seite ${currentPostPage} von ${totalPages}`;
-        } else {
-            paginationContainer.style.display = 'none';
+        if (paginatedPosts.length === 0) {
+            container.innerHTML = '<p style="color: var(--text-muted); text-align: center;">Keine Beiträge gefunden.</p>';
+            return;
         }
 
         let html = '';
         paginatedPosts.forEach(post => {
             if (!post.reactions) post.reactions = {};
-            if (!post.reactionCounts) post.reactionCounts = {};
-            if (!post.replies) post.replies = [];
-
-            const authorEmoji = post.isAdmin ? '👑' : '👤';
+            if (!post.comments) post.comments = [];
             const canDelete = (currentUser === post.author || isAdmin(currentUser));
-            const parsedPostText = parseRedditLinks(post.text);
+
+            const sortedReactions = Object.entries(post.reactions).sort((a,b) => b[1].length - a[1].length);
+            let reactionsHtml = '';
+            sortedReactions.forEach(([emoji, users]) => {
+                const count = users.length;
+                if (count > 0) {
+                    reactionsHtml += `<span style="background: #334155; border-radius: 12px; padding: 2px 8px; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 4px; cursor: pointer;" onclick="openEmojiPicker(${post.id})">${emoji} ${count}</span>`;
+                }
+            });
+
+            let commentsHtml = '';
+            post.comments.forEach(c => {
+                commentsHtml += `<div style="background: #121824; padding: 6px 10px; border-radius: 6px; margin-top: 4px; font-size: 0.85rem;"><strong>${c.author}:</strong> ${c.text} <span style="font-size: 0.7rem; color:var(--text-muted); float:right;">${c.timestamp}</span></div>`;
+            });
+
+            let mediaHtml = '';
+            if (post.image) {
+                if (post.mediaType === 'video') {
+                    mediaHtml = `<div style="margin-top: 6px;"><video src="${post.image}" style="max-width: 100%; max-height: 260px; border-radius: 6px;" controls></video></div>`;
+                } else {
+                    mediaHtml = `<div style="margin-top: 6px;"><img src="${post.image}" style="max-width: 100%; max-height: 220px; border-radius: 6px; object-fit: contain;"></div>`;
+                }
+            }
 
             html += `
-                <div style="background: #0f172a; border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; box-sizing: border-box;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                        <div style="display: flex; align-items: center; gap: 6px; font-size: 0.9rem;">
-                            <strong>${post.author}</strong>
-                            <span>${authorEmoji}</span>
-                            <span style="font-size: 0.75rem; color: var(--text-muted);">• ${post.timestamp}</span>
-                        </div>
+                <div style="background: #0f172a; border: 1px solid var(--border-color); border-radius: 8px; padding: 12px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                        <div style="font-size: 0.9rem;"><strong>${post.author}</strong> ${post.isAdmin ? '👑' : '👤'} <span style="font-size: 0.75rem; color: var(--text-muted);">• ${post.timestamp}</span></div>
                         ${canDelete ? `<button onclick="deletePost(${post.id})" style="background: #ef4444; padding: 2px 6px; font-size: 0.75rem;">Löschen</button>` : ''}
                     </div>
-                    ${post.text ? `<p style="margin: 4px 0 8px 0; font-size: 0.9rem; white-space: pre-wrap; word-break: break-word;">${parsedPostText}</p>` : ''}
-                    ${post.image ? `<div style="margin-top: 10px;"><img src="${post.image}" style="max-width: 100%; max-height: 300px; border-radius: 8px; object-fit: contain; background: #000;"></div>` : ''}
+                    ${post.location ? `<div style="font-size: 0.8rem; color: #34d399; margin-bottom: 4px;">📍 ${post.location.name}</div>` : ''}
+                    ${post.text ? `<p style="margin: 4px 0 8px 0; font-size: 0.9rem; white-space: pre-wrap;">${post.text}</p>` : ''}
+                    ${mediaHtml}
+                    
+                    <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap; margin-top: 10px;">
+                        <button onclick="openEmojiPicker(${post.id})" style="background: #334155; padding: 4px 10px; font-size: 0.8rem; border-radius: 4px;" data-i18n="reactBtn">😀 Reagieren</button>
+                        ${reactionsHtml}
+                    </div>
+
+                    <div style="margin-top: 10px; border-top: 1px solid var(--border-color); padding-top: 8px;">
+                        ${commentsHtml}
+                        <div style="display: flex; gap: 6px; margin-top: 6px;">
+                            <input type="text" id="commentInput_${post.id}" placeholder="Kommentar schreiben..." onkeydown="if(event.key==='Enter') addCommentToPost(${post.id})" style="padding: 6px; font-size: 0.85rem;">
+                            <button onclick="addCommentToPost(${post.id})" style="padding: 6px 10px; font-size: 0.85rem;">Senden</button>
+                        </div>
+                    </div>
                 </div>
             `;
         });
@@ -1770,7 +1472,7 @@
     }
 
     function deletePost(postId) {
-        if (confirm("Möchtest du diesen Beitrag wirklich löschen?")) {
+        if (confirm("Beitrag löschen?")) {
             let posts = JSON.parse(localStorage.getItem('jannik_posts') || '[]');
             posts = posts.filter(p => p.id !== postId);
             localStorage.setItem('jannik_posts', JSON.stringify(posts));
@@ -1778,888 +1480,633 @@
         }
     }
 
-    /* --- REVIEW MODAL (STERNE-BEWERTUNGEN & NACHRICHTEN) --- */
-    let currentReviewItemData = null;
-    let reviewsChartInstance = null;
+    /* --- MAP, OVERPASS API POIS & WEATHER --- */
+    let map = L.map('map').setView([48.5734, 7.7521], 13);
+    let currentMarker = L.marker([48.5734, 7.7521], { draggable: true }).addTo(map);
+    let radiusCircle = L.circle([48.5734, 7.7521], { radius: 3000, color: '#3b82f6', fillColor: '#3b82f6', fillOpacity: 0.1 }).addTo(map);
 
-    function openReviewsModal(itemName, itemRating, reviewsArray) {
-        currentReviewItemData = { name: itemName, rating: itemRating, reviews: reviewsArray || generateMockReviews(itemName, itemRating) };
-        document.getElementById('reviewsModalTitle').innerText = `⭐ Bewertungen für ${itemName} (${itemRating} ⭐)`;
-        document.getElementById('reviewFilterSelect').value = 'all';
-        renderReviewsModalContent();
-        document.getElementById('reviewsModal').style.display = 'flex';
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
+
+    map.on('click', function(e) {
+        const lat = e.latlng.lat;
+        const lng = e.latlng.lng;
+        currentMarker.setLatLng([lat, lng]);
+        radiusCircle.setLatLng([lat, lng]);
+        fetchRealWeather(lat, lng);
+        reverseGeocode(lat, lng);
+        fetchPOIs(lat, lng);
+    });
+
+    currentMarker.on('dragend', function(e) {
+        const pos = currentMarker.getLatLng();
+        radiusCircle.setLatLng(pos);
+        fetchRealWeather(pos.lat, pos.lng);
+        reverseGeocode(pos.lat, pos.lng);
+        fetchPOIs(pos.lat, pos.lng);
+    });
+
+    // Cursor move auto-refresh handler with throttle
+    let lastCursorRefresh = 0;
+    document.addEventListener('mousemove', () => {
+        const now = Date.now();
+        if (now - lastCursorRefresh > 3000) { // 3 second throttle for performance
+            lastCursorRefresh = now;
+            const pos = currentMarker.getLatLng();
+            fetchPOIs(pos.lat, pos.lng, true);
+        }
+    });
+
+    function manualRefreshPOIs() {
+        const pos = currentMarker.getLatLng();
+        fetchPOIs(pos.lat, pos.lng);
+        fetchRealWeather(pos.lat, pos.lng);
     }
 
-    function closeReviewsModal() {
-        document.getElementById('reviewsModal').style.display = 'none';
-        if (reviewsChartInstance) {
-            reviewsChartInstance.destroy();
-            reviewsChartInstance = null;
+    function setMyCurrentLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(pos => {
+                const lat = pos.coords.latitude;
+                const lng = pos.coords.longitude;
+                currentMarker.setLatLng([lat, lng]);
+                radiusCircle.setLatLng([lat, lng]);
+                map.setView([lat, lng], 13);
+                fetchRealWeather(lat, lng);
+                reverseGeocode(lat, lng);
+                fetchPOIs(lat, lng);
+            }, () => alert("GPS-Standort konnte nicht ermittelt werden."));
+        } else {
+            alert("Geolocation wird von diesem Browser nicht unterstützt.");
         }
     }
 
-    function generateMockReviews(name, rating) {
-        const authors = ["Jannik Schroeder", "Lena M.", "Markus W.", "Sarah B.", "Tobias K.", "Laura H."];
-        const comments = [
-            "Wunderschöner Ort, absolut empfehlenswert für Ausflüge!",
-            "War ganz in Ordnung, aber beim nächsten Mal schaue ich mir woanders um.",
-            "Absolutes Highlight! Sehr sauber und freundliches Personal.",
-            "Hat meine Erwartungen voll und ganz erfüllt. Gerne wieder!",
-            "Guter Service und tolle Atmosphäre."
-        ];
-        let count = 5 + (name.length % 6);
-        let list = [];
-        for (let i = 0; i < count; i++) {
-            let stars = Math.min(5, Math.max(1, Math.round(rating + ((i % 3) - 1) * 0.5)));
-            list.push({
-                author: authors[i % authors.length],
-                stars: stars,
-                date: new Date(Date.now() - i * 86400000 * 3).toLocaleDateString('de-DE'),
-                timestamp: Date.now() - i * 86400000 * 3,
-                text: comments[i % comments.length]
+    let poiLayers = {
+        sights: L.layerGroup().addTo(map),
+        restaurants: L.layerGroup().addTo(map),
+        hotels: L.layerGroup().addTo(map),
+        parking: L.layerGroup().addTo(map),
+        shops: L.layerGroup().addTo(map)
+    };
+
+    let fetchedPoiData = [];
+
+    function toggleLegend() {
+        const box = document.getElementById('mapLegendBox');
+        box.style.display = box.style.display === 'flex' ? 'none' : 'flex';
+    }
+
+    function onRadiusChange(val) {
+        document.getElementById('radiusValue').innerText = val;
+        radiusCircle.setRadius(val * 1000);
+        const pos = currentMarker.getLatLng();
+        fetchPOIs(pos.lat, pos.lng);
+    }
+
+    function togglePoiLayer(type) {
+        const checkbox = document.getElementById(`toggle${type.charAt(0).toUpperCase() + type.slice(1)}`);
+        if (checkbox.checked) map.addLayer(poiLayers[type]);
+        else map.removeLayer(poiLayers[type]);
+    }
+
+    async function searchLocation() {
+        const query = document.getElementById('citySearch').value.trim();
+        if(!query) return;
+        const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`);
+        const data = await res.json();
+        if (data && data.length > 0) {
+            const lat = parseFloat(data[0].lat);
+            const lon = parseFloat(data[0].lon);
+            currentMarker.setLatLng([lat, lon]);
+            radiusCircle.setLatLng([lat, lon]);
+            map.setView([lat, lon], 13);
+            fetchRealWeather(lat, lon);
+            reverseGeocode(lat, lon);
+            fetchPOIs(lat, lon);
+        }
+    }
+
+    async function reverseGeocode(lat, lon) {
+        const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
+        const data = await res.json();
+        if(data && data.address) {
+            const country = data.address.country || "Deutschland";
+            const state = data.address.state || data.address.region || "Baden-Württemberg";
+            const city = data.address.city || data.address.town || data.address.village || "Ort";
+
+            document.getElementById('citySearch').value = city;
+            document.getElementById('infoCountry').innerText = country;
+            document.getElementById('infoState').innerText = state;
+            document.getElementById('infoCity').innerText = city;
+            document.getElementById('weatherCityName').innerText = city;
+
+            updateEmblemsForLocation(country, state, city);
+        }
+    }
+
+    // Flag-only Emblem Database
+    const emblemDatabase = {
+        "Deutschland": {
+            flagUrl: "https://upload.wikimedia.org/wikipedia/commons/b/ba/Flag_of_Germany.svg",
+            flagWiki: "https://de.wikipedia.org/wiki/Deutschland"
+        },
+        "Frankreich": {
+            flagUrl: "https://upload.wikimedia.org/wikipedia/commons/c/c3/Flag_of_France.svg",
+            flagWiki: "https://de.wikipedia.org/wiki/Frankreich"
+        },
+        "Vereinigte Staaten": {
+            flagUrl: "https://upload.wikimedia.org/wikipedia/commons/a/a4/Flag_of_the_United_States.svg",
+            flagWiki: "https://de.wikipedia.org/wiki/Vereinigte_Staaten"
+        },
+        "Baden-Württemberg": {
+            flagUrl: "https://upload.wikimedia.org/wikipedia/commons/e/e3/Flag_of_Baden-W%C3%BCrttemberg_%28state%29.svg",
+            flagWiki: "https://de.wikipedia.org/wiki/Baden-W%C3%BCrttemberg"
+        },
+        "Bayern": {
+            flagUrl: "https://upload.wikimedia.org/wikipedia/commons/c/c1/Flag_of_Bavaria_%28lozengy%29.svg",
+            flagWiki: "https://de.wikipedia.org/wiki/Bayern"
+        }
+    };
+
+    function renderFlagHtml(name) {
+        const entry = emblemDatabase[name];
+        const url = entry ? entry.flagUrl : null;
+        const wikiUrl = entry ? entry.flagWiki : `https://de.wikipedia.org/wiki/Special:Search?search=${encodeURIComponent(name)}`;
+        const label = `Flagge von ${name}`;
+
+        if (url) {
+            return `<a href="${wikiUrl}" target="_blank" class="emblem-item" title="${label} (Wikipedia öffnen)"><img src="${url}" alt="${label}" class="emblem-img"></a>`;
+        } else {
+            return `<a href="${wikiUrl}" target="_blank" class="emblem-item" title="${label} - Wikipedia öffnen"><div class="emblem-fallback" title="Keine Flagge gefunden"></div></a>`;
+        }
+    }
+
+    function updateEmblemsForLocation(country, state, city) {
+        document.getElementById('countryEmblems').innerHTML = renderFlagHtml(country);
+        document.getElementById('stateEmblems').innerHTML = renderFlagHtml(state);
+        document.getElementById('cityEmblems').innerHTML = renderFlagHtml(city);
+    }
+
+    // Distance calculation helper (Haversine formula)
+    function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
+        const R = 6371;
+        const dLat = deg2rad(lat2 - lat1);
+        const dLon = deg2rad(lon2 - lon1);
+        const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                  Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+                  Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return R * c;
+    }
+    function deg2rad(deg) { return deg * (Math.PI / 180); }
+
+    // Overpass API Query with Swivel Loading Animation for Sights, Restaurants & Hotels
+    async function fetchPOIs(lat, lon, isBackground = false) {
+        const radiusMeters = document.getElementById('radiusRange').value * 1000;
+        if (!isBackground) {
+            document.getElementById('loadingStatus').innerHTML = '<span class="swivel-loader" title="Lädt Ergebnisse..."></span>';
+            document.getElementById('sightsLoading').innerHTML = '<span class="swivel-loader"></span>';
+            document.getElementById('restaurantsLoading').innerHTML = '<span class="swivel-loader"></span>';
+            document.getElementById('hotelsLoading').innerHTML = '<span class="swivel-loader"></span>';
+        }
+
+        const query = `[out:json][timeout:15];
+        (
+          node(around:${radiusMeters},${lat},${lon})[tourism~"hotel|guest_house|hostel|motel|apartment"];
+          way(around:${radiusMeters},${lat},${lon})[tourism~"hotel|guest_house|hostel|motel|apartment"];
+          node(around:${radiusMeters},${lat},${lon})[amenity~"restaurant|cafe|bar|pub|fast_food"];
+          way(around:${radiusMeters},${lat},${lon})[amenity~"restaurant|cafe|bar|pub|fast_food"];
+          node(around:${radiusMeters},${lat},${lon})[~"tourism|historic"~"attraction|castle|museum|monument|viewpoint|artwork"];
+          way(around:${radiusMeters},${lat},${lon})[~"tourism|historic"~"attraction|castle|museum|monument|viewpoint|artwork"];
+          node(around:${radiusMeters},${lat},${lon})[amenity="parking"];
+          node(around:${radiusMeters},${lat},${lon})[shop="supermarket"];
+        );
+        out center;`;
+
+        try {
+            const response = await fetch('https://overpass-api.de/api/interpreter', {
+                method: 'POST',
+                body: query
             });
+            const data = await response.json();
+            processPOIData(data.elements, lat, lon);
+            if (!isBackground) {
+                document.getElementById('loadingStatus').innerText = '';
+                document.getElementById('sightsLoading').innerText = '';
+                document.getElementById('restaurantsLoading').innerText = '';
+                document.getElementById('hotelsLoading').innerText = '';
+            }
+        } catch (err) {
+            console.error("Overpass API Error:", err);
+            if (!isBackground) {
+                document.getElementById('loadingStatus').innerHTML = '<span style="color:#ef4444; font-size:0.8rem;">(Fehler)</span>';
+                document.getElementById('sightsLoading').innerText = '';
+                document.getElementById('restaurantsLoading').innerText = '';
+                document.getElementById('hotelsLoading').innerText = '';
+            }
         }
-        return list;
     }
 
-    function renderReviewsModalContent() {
-        if (!currentReviewItemData) return;
-        const filterVal = document.getElementById('reviewFilterSelect').value;
-        let reviews = [...currentReviewItemData.reviews];
+    function processPOIData(elements, centerLat, centerLon) {
+        poiLayers.sights.clearLayers();
+        poiLayers.restaurants.clearLayers();
+        poiLayers.hotels.clearLayers();
+        poiLayers.parking.clearLayers();
+        poiLayers.shops.clearLayers();
 
-        if (filterVal === 'newest') {
-            reviews.sort((a, b) => b.timestamp - a.timestamp);
-        } else if (filterVal === 'oldest') {
-            reviews.sort((a, b) => a.timestamp - b.timestamp);
-        } else if (['1', '2', '3', '4', '5'].includes(filterVal)) {
-            const targetStars = parseInt(filterVal);
-            reviews = reviews.filter(r => r.stars === targetStars);
-        }
+        fetchedPoiData = [];
 
-        let starCounts = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
-        currentReviewItemData.reviews.forEach(r => {
-            if (starCounts[r.stars] !== undefined) starCounts[r.stars]++;
-        });
+        elements.forEach(el => {
+            const lat = el.lat || (el.center ? el.center.lat : null);
+            const lon = el.lon || (el.center ? el.center.lon : null);
+            if (!lat || !lon) return;
 
-        const ctx = document.getElementById('reviewsBarChart').getContext('2d');
-        if (reviewsChartInstance) reviewsChartInstance.destroy();
-        reviewsChartInstance = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: ['1 Stern', '2 Sterne', '3 Sterne', '4 Sterne', '5 Sterne'],
-                datasets: [{
-                    label: 'Vergebene Sterne',
-                    data: [starCounts[1], starCounts[2], starCounts[3], starCounts[4], starCounts[5]],
-                    backgroundColor: '#3b82f6',
-                    borderRadius: 4
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
-                scales: {
-                    y: { beginAtZero: true, ticks: { stepSize: 1, color: '#94a3b8' }, grid: { color: '#334155' } },
-                    x: { ticks: { color: '#94a3b8' }, grid: { display: false } }
-                }
+            const tags = el.tags || {};
+            const name = tags.name || tags['addr:street'] || "Unbekannter Ort";
+            
+            let category = 'other';
+            let markerColor = '#64748b';
+            let iconSymbol = '📍';
+
+            if (tags.tourism && ['hotel', 'guest_house', 'hostel', 'motel', 'apartment'].includes(tags.tourism)) {
+                category = 'hotels';
+                markerColor = '#f59e0b';
+                iconSymbol = '🏨';
+            } else if (tags.amenity && ['restaurant', 'cafe', 'bar', 'pub', 'fast_food'].includes(tags.amenity)) {
+                category = 'restaurants';
+                markerColor = '#3b82f6';
+                iconSymbol = '🍽️';
+            } else if (tags.tourism === 'attraction' || tags.historic || tags.tourism === 'museum' || tags.tourism === 'viewpoint') {
+                category = 'sights';
+                markerColor = '#ef4444';
+                iconSymbol = '🏛️';
+            } else if (tags.amenity === 'parking') {
+                category = 'parking';
+                markerColor = '#64748b';
+                iconSymbol = '🅿️';
+            } else if (tags.shop === 'supermarket') {
+                category = 'shops';
+                markerColor = '#ec4899';
+                iconSymbol = '🛍️';
+            }
+
+            let stars = tags.stars ? parseInt(tags.stars) : (3 + (el.id % 3));
+            if (stars > 5) stars = 5;
+            if (stars < 1) stars = 3;
+
+            const address = `${tags['addr:street'] || ''} ${tags['addr:housenumber'] || ''}, ${tags['addr:postcode'] || ''} ${tags['addr:city'] || ''}`.trim() || "Adresse via OpenStreetMap";
+            const distance = getDistanceFromLatLonInKm(centerLat, centerLon, lat, lon);
+
+            const poiObj = {
+                id: el.id,
+                name: name,
+                category: category,
+                lat: lat,
+                lon: lon,
+                stars: stars,
+                address: address,
+                iconSymbol: iconSymbol,
+                distance: distance
+            };
+
+            fetchedPoiData.push(poiObj);
+
+            if (poiLayers[category]) {
+                const marker = L.circleMarker([lat, lon], {
+                    color: markerColor,
+                    radius: 7,
+                    fillOpacity: 0.8
+                });
+
+                const starStr = '⭐'.repeat(stars);
+                marker.bindPopup(`
+                    <div style="min-width: 160px;">
+                        <strong>${iconSymbol} ${name}</strong><br>
+                        <span class="stars-badge" onclick="openPoiDetails(${el.id})">${starStr}</span><br>
+                        <span style="font-size:0.8rem; color:var(--text-muted);">${address}</span><br>
+                        <button onclick="openPoiDetails(${el.id})" style="margin-top:6px; padding:4px 8px; font-size:0.75rem; width:100%;">Details & Navigation</button>
+                    </div>
+                `);
+
+                poiLayers[category].addLayer(marker);
             }
         });
 
-        const container = document.getElementById('reviewsListContainer');
-        if (reviews.length === 0) {
-            container.innerHTML = '<p style="color: var(--text-muted); text-align: center; font-size: 0.85rem; padding: 10px;">Keine Bewertungen für diesen Filter gefunden.</p>';
+        renderPOIs();
+    }
+
+    function renderPOIs() {
+        renderCategorySection('sights', 'sightsListContainer', 'sightsMoreBtnContainer');
+        renderCategorySection('restaurants', 'restaurantsListContainer', 'restaurantsMoreBtnContainer');
+        renderCategorySection('hotels', 'hotelsListContainer', 'hotelsMoreBtnContainer');
+    }
+
+    function renderCategorySection(cat, listId, btnContainerId) {
+        const listEl = document.getElementById(listId);
+        const btnContainerEl = document.getElementById(btnContainerId);
+        if (!listEl) return;
+
+        const items = fetchedPoiData.filter(item => item.category === cat);
+        const top5 = items.slice(0, 5);
+
+        if (top5.length === 0) {
+            listEl.innerHTML = '<li style="color: var(--text-muted); text-align: center; padding: 6px; font-size: 0.85rem;">Keine Einträge gefunden.</li>';
+            if (btnContainerEl) btnContainerEl.innerHTML = '';
             return;
         }
 
         let html = '';
-        reviews.forEach(rev => {
-            const starsStr = '⭐'.repeat(rev.stars);
+        top5.forEach(poi => {
+            const starStr = '⭐'.repeat(poi.stars);
+            const distStr = poi.distance < 1 ? `${Math.round(poi.distance * 1000)} m` : `${poi.distance.toFixed(1)} km`;
             html += `
-                <div style="background: #0f172a; border: 1px solid var(--border-color); border-radius: 6px; padding: 10px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-                        <strong>${rev.author}</strong>
-                        <span style="font-size: 0.8rem; color: #fbbf24;">${starsStr} <span style="color: var(--text-muted); font-size: 0.75rem;">(${rev.date})</span></span>
+                <li class="poi-item-card" onclick="openPoiDetails(${poi.id})">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span style="font-size: 1.3rem;">${poi.iconSymbol}</span>
+                        <div>
+                            <strong style="font-size: 0.95rem; color: var(--text-color);">${poi.name}</strong><br>
+                            <span style="font-size: 0.75rem; color: var(--text-muted);">📍 ${distStr} • ${poi.address}</span>
+                        </div>
                     </div>
-                    <p style="margin: 0; font-size: 0.85rem; color: var(--text-color);">${rev.text}</p>
+                    <div>
+                        <span class="stars-badge">${starStr}</span>
+                    </div>
+                </li>
+            `;
+        });
+        listEl.innerHTML = html;
+
+        if (items.length > 5) {
+            if (btnContainerEl) {
+                btnContainerEl.innerHTML = `<button onclick="openAllPoiModal('${cat}')" style="width: 100%; margin-top: 6px; padding: 6px; font-size: 0.8rem; background: #334155;">Hier klicken, um alle anzuzeigen (${items.length} gesamt)</button>`;
+            }
+        } else {
+            if (btnContainerEl) btnContainerEl.innerHTML = '';
+        }
+    }
+
+    function openAllPoiModal(category = 'all') {
+        document.getElementById('allPoiCategorySelect').value = category;
+        document.getElementById('allPoiSearchInput').value = '';
+        document.getElementById('allPoiSortSelect').value = 'distance';
+
+        const titles = {
+            'all': '📍 Alle POIs im Umkreis',
+            'sights': '🏛️ Alle Sehenswürdigkeiten',
+            'restaurants': '🍽️ Alle Restaurants & Cafés',
+            'hotels': '🏨 Alle Unterkünfte'
+        };
+        document.getElementById('allPoiModalTitle').innerText = titles[category] || '📍 Alle POIs im Umkreis';
+        document.getElementById('allPoiModal').style.display = 'flex';
+        renderAllPoiModalList();
+    }
+
+    function closeAllPoiModal() {
+        document.getElementById('allPoiModal').style.display = 'none';
+    }
+
+    function renderAllPoiModalList() {
+        const container = document.getElementById('allPoiModalListContainer');
+        const search = document.getElementById('allPoiSearchInput').value.toLowerCase();
+        const cat = document.getElementById('allPoiCategorySelect').value;
+        const sort = document.getElementById('allPoiSortSelect').value;
+
+        let items = fetchedPoiData.filter(item => {
+            if (item.category === 'parking' || item.category === 'shops' || item.category === 'other') return false;
+            if (cat !== 'all' && item.category !== cat) return false;
+            if (search && !item.name.toLowerCase().includes(search) && !item.address.toLowerCase().includes(search)) return false;
+            return true;
+        });
+
+        if (sort === 'distance') {
+            items.sort((a, b) => a.distance - b.distance);
+        } else if (sort === 'newest') {
+            items.sort((a, b) => b.id - a.id);
+        } else if (sort === 'name') {
+            items.sort((a, b) => a.name.localeCompare(b.name));
+        } else if (sort === 'stars_desc') {
+            items.sort((a, b) => b.stars - a.stars);
+        } else if (sort === 'stars_asc') {
+            items.sort((a, b) => a.stars - b.stars);
+        }
+
+        if (items.length === 0) {
+            container.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 20px;">Keine Einträge gefunden.</p>';
+            return;
+        }
+
+        let html = '';
+        items.forEach(poi => {
+            const starStr = '⭐'.repeat(poi.stars);
+            const distStr = poi.distance < 1 ? `${Math.round(poi.distance * 1000)} m` : `${poi.distance.toFixed(1)} km`;
+            let catName = poi.category === 'sights' ? 'Sehenswürdigkeit' : (poi.category === 'restaurants' ? 'Restaurant' : 'Unterkunft');
+
+            html += `
+                <div class="poi-item-card" onclick="closeAllPoiModal(); openPoiDetails(${poi.id})">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span style="font-size: 1.4rem;">${poi.iconSymbol}</span>
+                        <div>
+                            <strong style="font-size: 0.95rem; color: var(--text-color);">${poi.name}</strong><br>
+                            <span style="font-size: 0.75rem; color: var(--text-muted);">${catName} • 📍 ${distStr} • ${poi.address}</span>
+                        </div>
+                    </div>
+                    <div>
+                        <span class="stars-badge">${starStr}</span>
+                    </div>
                 </div>
             `;
         });
         container.innerHTML = html;
     }
 
-    /* --- ACCOUNT & EINSTELLUNGEN --- */
-    function openUserSettingsModal() {
-        const currentUser = localStorage.getItem('jannik_current_user');
-        document.getElementById('modalTitle').innerText = "⚙️ Account- & Benutzereinstellungen";
+    function openPoiDetails(poiId) {
+        const poi = fetchedPoiData.find(p => p.id === poiId);
+        if (!poi) return;
+
+        const starStr = '⭐'.repeat(poi.stars);
+        const distStr = poi.distance < 1 ? `${Math.round(poi.distance * 1000)} m` : `${poi.distance.toFixed(2)} km`;
+
+        document.getElementById('modalTitle').innerText = `${poi.iconSymbol} ${poi.name}`;
         document.getElementById('modalBody').innerHTML = `
-            <div>
-                <h4 style="margin: 0 0 8px 0; color: var(--accent-color);">🔑 Passwort ändern</h4>
-                <div class="auth-form-group" style="margin-bottom: 8px;">
-                    <label>Neues Passwort für ${currentUser}</label>
-                    <input type="password" id="userNewPass" placeholder="Neues Passwort...">
-                </div>
-                <button onclick="userSavePassword()" style="font-size: 0.85rem; padding: 8px 12px;">Passwort aktualisieren</button>
+            <p><strong>Kategorie:</strong> ${poi.category.toUpperCase()}</p>
+            <p><strong>Bewertung:</strong> <span class="stars-badge">${starStr} (${poi.stars} von 5 Sternen)</span></p>
+            <p><strong>Entfernung:</strong> 📍 ${distStr}</p>
+            <p><strong>Genaue Adresse:</strong><br>${poi.address}</p>
+            <p><strong>Koordinaten:</strong> Lat: ${poi.lat.toFixed(4)}, Lon: ${poi.lon.toFixed(4)}</p>
+            <div style="display: flex; gap: 10px; margin-top: 15px;">
+                <button onclick="window.open('https://www.google.com/maps/search/?api=1&query=${poi.lat},${poi.lon}', '_blank')" style="background: #10b981; flex: 1;">
+                    🧭 Direkt dorthin navigieren
+                </button>
+                <button onclick="closeModal()" style="background: #334155;">Schließen</button>
             </div>
         `;
-        document.getElementById('modalFooterNav').style.display = 'none';
         document.getElementById('detailModal').style.display = 'flex';
     }
 
-    function userSavePassword() {
-        const newPass = document.getElementById('userNewPass').value.trim();
-        if(!newPass) {
-            alert("Bitte gib ein neues Passwort ein.");
-            return;
+    let globalWeatherData = null;
+    let weatherViewMode = 'hourly';
+    let tempChartInstance = null;
+    let rainChartInstance = null;
+    let windChartInstance = null;
+
+    async function fetchRealWeather(lat, lon) {
+        const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_sum,windspeed_10m_max&hourly=temperature_2m,precipitation,windspeed_10m,weathercode&timezone=auto`);
+        const data = await res.json();
+        globalWeatherData = data;
+
+        if (data && data.daily) {
+            let gridHtml = '';
+            for (let i = 0; i < 7; i++) {
+                const date = new Date(data.daily.time[i]).toLocaleDateString('de-DE', { weekday: 'short', day: 'numeric' });
+                const code = data.daily.weathercode[i];
+                const icon = getWeatherIconAndDesc(code).icon;
+                gridHtml += `<div class="weather-day" onclick="openWeatherDetailsModal()"><strong>${date}</strong><br>${icon}<br>${Math.round(data.daily.temperature_2m_max[i])}°C</div>`;
+            }
+            document.getElementById('weatherGrid').innerHTML = gridHtml;
         }
-        const currentUser = localStorage.getItem('jannik_current_user');
-        const users = getUsers();
-        users[currentUser].pass = newPass;
-        localStorage.setItem('jannik_users', JSON.stringify(users));
-        alert("Passwort aktualisiert!");
-        document.getElementById('userNewPass').value = '';
+        if (data && data.hourly) {
+            let hourlyHtml = '';
+            const now = new Date();
+            let startIndex = 0;
+            for (let i = 0; i < data.hourly.time.length; i++) {
+                if (new Date(data.hourly.time[i]) >= now) {
+                    startIndex = i;
+                    break;
+                }
+            }
+            let lastDateStr = '';
+            for (let i = startIndex; i < data.hourly.time.length; i++) {
+                const fullTimeStr = data.hourly.time[i];
+                const dateObj = new Date(fullTimeStr);
+                const currentDateStr = dateObj.toLocaleDateString('de-DE', { weekday: 'short', day: 'numeric', month: 'short' });
+                const timeOnly = fullTimeStr.split('T')[1];
+
+                if (currentDateStr !== lastDateStr) {
+                    lastDateStr = currentDateStr;
+                    hourlyHtml += `
+                        <div class="day-separator-slot">
+                            <strong>📅 Neuer Tag</strong>
+                            <span style="margin-top: 4px; font-weight: 600; color: var(--text-color);">${currentDateStr}</span>
+                        </div>
+                    `;
+                }
+                const code = data.hourly.weathercode[i];
+                const icon = getWeatherIconAndDesc(code).icon;
+                hourlyHtml += `
+                    <div class="hour-slot">
+                        <span>${timeOnly}</span><br>
+                        ${icon}<br>
+                        <strong>${Math.round(data.hourly.temperature_2m[i])}°C</strong>
+                    </div>
+                `;
+            }
+            document.getElementById('weatherHoursGrid').innerHTML = hourlyHtml;
+        }
     }
 
-    function closeModal() {
-        document.getElementById('detailModal').style.display = 'none';
+    function getWeatherIconAndDesc(code) {
+        if (code === 0) return { icon: "☀️", desc: "Sonnig & Klar", animClass: "anim-sun", symbol: "☀️" };
+        if ([1, 2, 3].includes(code)) return { icon: "⛅", desc: "Teilweise bewölkt", animClass: "anim-cloud", symbol: "⛅" };
+        if ([45, 48].includes(code)) return { icon: "🌫️", desc: "Neblig", animClass: "anim-cloud", symbol: "🌫️" };
+        if ([51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 80, 81, 82].includes(code)) return { icon: "🌧️", desc: "Regen", animClass: "anim-rain", symbol: "🌧️" };
+        if ([71, 73, 75, 77].includes(code)) return { icon: "❄️", desc: "Schneefall", animClass: "anim-snow", symbol: "❄️" };
+        if ([95, 96, 99].includes(code)) return { icon: "⚡", desc: "Gewitter", animClass: "anim-storm", symbol: "⚡" };
+        return { icon: "🌤️", desc: "Wechselhaft", animClass: "anim-cloud", symbol: "🌤️" };
     }
 
-    /* --- HAUPTAPP (KARTE, WETTER, POIS ETC.) --- */
-    let map = L.map('map', { fadeAnimation: false, zoomAnimation: false }).setView([48.2544, 7.8181], 13);
-    let currentMarker = L.marker([48.2544, 7.8181]).addTo(map);
-    let radiusCircle = L.circle([48.2544, 7.8181], { radius: 1000, color: '#3b82f6', fillColor: '#3b82f6', fillOpacity: 0.1 }).addTo(map);
-    let categoryMarkersLayer = L.layerGroup().addTo(map);
-
-    let searchDebounceTimer = null;
-    const OVERPASS_API_URL = 'https://overpass-api.de/api/interpreter';
-
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-        attribution: '&copy; OpenStreetMap'
-    }).addTo(map);
-
-    let currentCityData = {
-        name: "Ettenheim",
-        lat: 48.2544,
-        lon: 7.8181,
-        state: "Baden-Württemberg",
-        country: "Deutschland",
-        zip: "77960",
-        radius: 1,
-        allSights: [],
-        restaurants: [],
-        hotels: []
-    };
-
-    function toggleLegend() {
-        const legendBox = document.getElementById('mapLegendBox');
-        legendBox.style.display = (legendBox.style.display === 'flex') ? 'none' : 'flex';
+    function openWeatherDetailsModal() {
+        if (!globalWeatherData) return;
+        document.getElementById('weatherDetailsModal').style.display = 'flex';
+        updateWeatherAnimationDisplay();
+        renderWeatherCharts();
     }
 
-    function onRadiusChange(val) {
-        document.getElementById('radiusValue').innerText = val;
-        currentCityData.radius = parseInt(val);
-        radiusCircle.setRadius(val * 1000);
+    function closeWeatherDetailsModal() {
+        document.getElementById('weatherDetailsModal').style.display = 'none';
+    }
 
-        clearTimeout(searchDebounceTimer);
-        searchDebounceTimer = setTimeout(() => {
-            loadLocationData(currentCityData.lat, currentCityData.lon, currentCityData.radius, currentCityData.name, currentCityData.state, currentCityData.country, currentCityData.zip);
-        }, 600);
+    function setWeatherViewMode(mode) {
+        weatherViewMode = mode;
+        document.getElementById('btnViewHourly').style.background = (mode === 'hourly') ? 'var(--accent-color)' : '#334155';
+        document.getElementById('btnViewDaily').style.background = (mode === 'daily') ? 'var(--accent-color)' : '#334155';
+        renderWeatherCharts();
+    }
+
+    function updateWeatherAnimationDisplay() {
+        const code = globalWeatherData && globalWeatherData.current_weather ? globalWeatherData.current_weather.weathercode : (globalWeatherData.hourly.weathercode[0] || 0);
+        const info = getWeatherIconAndDesc(code);
+        const animBox = document.getElementById('weatherAnimElement');
+        animBox.className = info.animClass;
+        animBox.innerText = info.symbol;
+        document.getElementById('weatherConditionText').innerText = info.desc;
+    }
+
+    function renderWeatherCharts() {
+        if (!globalWeatherData) return;
+        let labels = [], tempData = [], rainData = [], windData = [];
+
+        if (weatherViewMode === 'hourly') {
+            for (let i = 0; i < 24; i++) {
+                labels.push(globalWeatherData.hourly.time[i].split('T')[1]);
+                tempData.push(globalWeatherData.hourly.temperature_2m[i]);
+                rainData.push(globalWeatherData.hourly.precipitation[i]);
+                windData.push(globalWeatherData.hourly.windspeed_10m[i]);
+            }
+        } else {
+            for (let i = 0; i < globalWeatherData.daily.time.length; i++) {
+                labels.push(new Date(globalWeatherData.daily.time[i]).toLocaleDateString('de-DE', { weekday: 'short', day: 'numeric' }));
+                tempData.push(globalWeatherData.daily.temperature_2m_max[i]);
+                rainData.push(globalWeatherData.daily.precipitation_sum ? globalWeatherData.daily.precipitation_sum[i] : 0);
+                windData.push(globalWeatherData.daily.windspeed_10m_max ? globalWeatherData.daily.windspeed_10m_max[i] : 0);
+            }
+        }
+
+        const commonOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                x: { ticks: { color: '#94a3b8', font: { size: 10 } }, grid: { color: '#334155' } },
+                y: { ticks: { color: '#94a3b8', font: { size: 10 } }, grid: { color: '#334155' } }
+            }
+        };
+
+        if (tempChartInstance) tempChartInstance.destroy();
+        tempChartInstance = new Chart(document.getElementById('tempChart').getContext('2d'), {
+            type: 'line',
+            data: { labels: labels, datasets: [{ data: tempData, borderColor: '#3b82f6', backgroundColor: 'rgba(59, 130, 246, 0.1)', fill: true, tension: 0.3 }] },
+            options: commonOptions
+        });
+
+        if (rainChartInstance) rainChartInstance.destroy();
+        rainChartInstance = new Chart(document.getElementById('rainChart').getContext('2d'), {
+            type: 'bar',
+            data: { labels: labels, datasets: [{ data: rainData, backgroundColor: '#06b6d4', borderRadius: 4 }] },
+            options: commonOptions
+        });
+
+        if (windChartInstance) windChartInstance.destroy();
+        windChartInstance = new Chart(document.getElementById('windChart').getContext('2d'), {
+            type: 'line',
+            data: { labels: labels, datasets: [{ data: windData, borderColor: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.1)', fill: true, tension: 0.3 }] },
+            options: commonOptions
+        });
     }
 
     function openGoogleMapsNavigation() {
-        const query = document.getElementById('citySearch').value.trim() || currentCityData.name;
-        const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query + ', ' + currentCityData.state)}`;
-        window.open(mapsUrl, '_blank');
-    }
-
-    async function searchLocation() {
-        const query = document.getElementById('citySearch').value.trim();
-        if(!query) return;
-
-        document.getElementById('loadingStatus').innerHTML = '<span class="loading-indicator"></span> Lade Stadt-Informationen...';
-
-        try {
-            const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`);
-            const data = await response.json();
-            if(data && data.length > 0) {
-                const lat = parseFloat(data[0].lat);
-                const lon = parseFloat(data[0].lon);
-                
-                currentMarker.setLatLng([lat, lon]);
-                radiusCircle.setLatLng([lat, lon]);
-                map.setView([lat, lon], 12);
-                
-                await reverseGeocodeAndFetch(lat, lon, true);
-            } else {
-                alert("Ort nicht gefunden.");
-                document.getElementById('loadingStatus').innerHTML = '';
-            }
-        } catch (error) {
-            alert("Fehler bei der Ortssuche.");
-            document.getElementById('loadingStatus').innerHTML = '';
-        }
-    }
-
-    map.on('click', async function(e) {
-        const lat = e.latlng.lat;
-        const lon = e.latlng.lng;
-        currentMarker.setLatLng([lat, lon]);
-        radiusCircle.setLatLng([lat, lon]);
-        await reverseGeocodeAndFetch(lat, lon, true);
-    });
-
-    async function reverseGeocodeAndFetch(lat, lon, resetRadius = false) {
-        if (resetRadius) {
-            document.getElementById('radiusRange').value = 1;
-            document.getElementById('radiusValue').innerText = 1;
-            currentCityData.radius = 1;
-            radiusCircle.setRadius(1000);
-        }
-
-        let cityName = "Ausgewählter Ort";
-        let stateName = "Region / Bundesland";
-        let countryName = "Deutschland";
-        let zipCode = "77960";
-
-        document.getElementById('loadingStatus').innerHTML = '<span class="loading-indicator"></span> Lade Stadt-Informationen...';
-
-        try {
-            const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
-            const data = await res.json();
-            const address = data.address || {};
-            cityName = address.city || address.town || address.village || address.municipality || address.county || "Standort";
-            stateName = address.state || address.region || "Bundesland";
-            countryName = address.country || "Deutschland";
-            zipCode = address.postcode || "77960";
-        } catch (err) {}
-
-        await loadLocationData(lat, lon, currentCityData.radius, cityName, stateName, countryName, zipCode);
-    }
-
-    async function fetchWikipediaImages(title, imgElId, coatElId, linkElId) {
-        const linkEl = document.getElementById(linkElId);
-        const imgEl = document.getElementById(imgElId);
-        const coatEl = document.getElementById(coatElId);
-        const wikiUrl = `https://de.wikipedia.org/wiki/${encodeURIComponent(title)}`;
-
-        if (linkEl) { linkEl.innerText = title; linkEl.href = wikiUrl; }
-
-        if (imgEl) {
-            imgEl.style.display = 'none';
-            if(imgEl.previousElementSibling) imgEl.previousElementSibling.style.display = 'block';
-            if(imgEl.nextElementSibling) imgEl.nextElementSibling.style.display = 'none';
-        }
-        if (coatEl) {
-            coatEl.style.display = 'none';
-            if(coatEl.previousElementSibling) coatEl.previousElementSibling.style.display = 'block';
-            if(coatEl.nextElementSibling) coatEl.nextElementSibling.style.display = 'none';
-        }
-
-        const cleanTitle = title.trim();
-        const lowerTitle = cleanTitle.toLowerCase();
-
-        const flagMap = {
-            'deutschland': 'https://flagcdn.com/w80/de.png',
-            'baden-württemberg': 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Flag_of_Baden-W%C3%BCrttemberg.svg/200px-Flag_of_Baden-W%C3%BCrttemberg.svg.png',
-            'baden-wuerttemberg': 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Flag_of_Baden-W%C3%BCrttemberg.svg/200px-Flag_of_Baden-W%C3%BCrttemberg.svg.png',
-            'bayern': 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/Flag_of_Bavaria_%28lozengy%29.svg/200px-Flag_of_Bavaria_%28lozengy%29.svg.png',
-            'hessen': 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Flag_of_Hesse.svg/200px-Flag_of_Hesse.svg.png',
-            'ettenheim': 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/DE-BW_Ettenheim_Wappen.svg/150px-DE-BW_Ettenheim_Wappen.svg.png',
-            'lahr': 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/DE-BW_Lahr_Schwarzwald_Wappen.svg/150px-DE-BW_Lahr_Schwarzwald_Wappen.svg.png',
-            'freiburg': 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Wappen_Freiburg_im_Breisgau.svg/150px-Wappen_Freiburg_im_Breisgau.svg.png'
-        };
-
-        const coatMap = {
-            'deutschland': 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Coat_of_arms_of_Germany.svg/200px-Coat_of_arms_of_Germany.svg.png',
-            'baden-württemberg': 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Coat_of_arms_of_Baden-W%C3%BCrttemberg_%28minor%29.svg/200px-Coat_of_arms_of_Baden-W%C3%BCrttemberg_%28minor%29.svg.png',
-            'baden-wuerttemberg': 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Coat_of_arms_of_Baden-W%C3%BCrttemberg_%28minor%29.svg/200px-Coat_of_arms_of_Baden-W%C3%BCrttemberg_%28minor%29.svg.png',
-            'bayern': 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Coat_of_arms_of_Bavaria.svg/200px-Coat_of_arms_of_Bavaria.svg.png',
-            'hessen': 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Coat_of_arms_of_Hesse.svg/200px-Coat_of_arms_of_Hesse.svg.png',
-            'ettenheim': 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/DE-BW_Ettenheim_Wappen.svg/150px-DE-BW_Ettenheim_Wappen.svg.png',
-            'lahr': 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/DE-BW_Lahr_Schwarzwald_Wappen.svg/150px-DE-BW_Lahr_Schwarzwald_Wappen.svg.png',
-            'freiburg': 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Wappen_Freiburg_im_Breisgau.svg/150px-Wappen_Freiburg_im_Breisgau.svg.png'
-        };
-
-        let flagLoaded = false;
-        if (flagMap[lowerTitle]) {
-            if (imgEl) {
-                imgEl.src = flagMap[lowerTitle];
-                imgEl.style.display = 'block';
-                if(imgEl.previousElementSibling) imgEl.previousElementSibling.style.display = 'none';
-                flagLoaded = true;
-            }
-        } else {
-            try {
-                const res = await fetch(`https://de.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(cleanTitle)}`);
-                if (res.ok) {
-                    const data = await res.json();
-                    if (data && data.thumbnail && data.thumbnail.source) {
-                        if (imgEl) {
-                            imgEl.src = data.thumbnail.source;
-                            imgEl.style.display = 'block';
-                            if(imgEl.previousElementSibling) imgEl.previousElementSibling.style.display = 'none';
-                            flagLoaded = true;
-                        }
-                    }
-                }
-            } catch (e) {}
-        }
-
-        if (!flagLoaded) {
-            if (imgEl) {
-                if(imgEl.previousElementSibling) imgEl.previousElementSibling.style.display = 'none';
-                imgEl.style.display = 'none';
-                if(imgEl.nextElementSibling) imgEl.nextElementSibling.style.display = 'flex';
-            }
-        }
-
-        let coatLoaded = false;
-        if (coatMap[lowerTitle]) {
-            if (coatEl) {
-                coatEl.src = coatMap[lowerTitle];
-                coatEl.style.display = 'block';
-                if(coatEl.previousElementSibling) coatEl.previousElementSibling.style.display = 'none';
-                coatLoaded = true;
-            }
-        } else {
-            const coatQueries = [
-                `Wappen_${encodeURIComponent(cleanTitle)}`,
-                `Wappen_von_${encodeURIComponent(cleanTitle)}`,
-                `Stadtwappen_${encodeURIComponent(cleanTitle)}`
-            ];
-
-            for (let q of coatQueries) {
-                try {
-                    const coatRes = await fetch(`https://de.wikipedia.org/api/rest_v1/page/summary/${q}`);
-                    if (coatRes.ok) {
-                        const coatData = await coatRes.json();
-                        if (coatData && coatData.thumbnail && coatData.thumbnail.source) {
-                            if (coatEl) {
-                                coatEl.src = coatData.thumbnail.source;
-                                coatEl.style.display = 'block';
-                                if(coatEl.previousElementSibling) coatEl.previousElementSibling.style.display = 'none';
-                                coatLoaded = true;
-                                break;
-                            }
-                        }
-                    }
-                } catch (err) {}
-            }
-        }
-
-        if (!coatLoaded) {
-            if (coatEl) {
-                if(coatEl.previousElementSibling) coatEl.previousElementSibling.style.display = 'none';
-                coatEl.style.display = 'none';
-                if(coatEl.nextElementSibling) coatEl.nextElementSibling.style.display = 'flex';
-            }
-        }
-    }
-
-    async function loadLocationData(lat, lon, radiusKm, cityName, stateName, countryName, zipCode) {
-        currentCityData.name = cityName;
-        currentCityData.lat = lat;
-        currentCityData.lon = lon;
-        currentCityData.state = stateName;
-        currentCityData.country = countryName;
-        currentCityData.zip = zipCode;
-        
-        document.getElementById('loadingStatus').innerHTML = '<span class="loading-indicator"></span> Lade Stadt-Informationen...';
-        document.getElementById('infoZip').innerText = currentCityData.zip;
-        document.getElementById('weatherCityName').innerText = currentCityData.name;
-
-        document.getElementById('weatherGrid').innerHTML = '<div style="text-align:center; padding:20px; grid-column:1/-1; color:var(--text-muted);"><div class="spinner" style="position:relative; margin:0 auto 8px auto;"></div>Lade Wetter...</div>';
-        document.getElementById('weatherHoursGrid').innerHTML = '<div style="text-align:center; padding:10px; color:var(--text-muted);"><div class="spinner" style="position:relative; margin:0 auto 4px auto;"></div>Lade stündliche Vorhersage...</div>';
-
-        await Promise.all([
-            fetchAllData(),
-            fetchRealWeather(lat, lon, cityName),
-            fetchWikipediaImages(countryName, 'infoCountryFlag', 'infoCountryCoatImg', 'infoCountryLink'),
-            fetchWikipediaImages(stateName, 'infoStateFlag', 'infoStateCoatImg', 'infoStateLink'),
-            fetchWikipediaImages(cityName, 'infoCityFlagImg', 'infoCoatOfArmsImg', 'infoCityLink')
-        ]);
-
-        document.getElementById('loadingStatus').innerHTML = '';
-    }
-
-    async function fetchRealWeather(lat, lon, cityName) {
-        try {
-            const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_sum,windspeed_10m_max&hourly=temperature_2m,relativehumidity_2m,windspeed_10m,precipitation,weathercode&current_weather=true&timezone=auto`);
-            const data = await res.json();
-            
-            if (data && data.daily) {
-                let gridHtml = '';
-                for (let i = 0; i < 7; i++) {
-                    const date = new Date(data.daily.time[i]).toLocaleDateString('de-DE', { weekday: 'short', day: 'numeric', month: 'short' });
-                    const tMax = Math.round(data.daily.temperature_2m_max[i]);
-                    const tMin = Math.round(data.daily.temperature_2m_min[i]);
-                    const code = data.daily.weathercode[i];
-                    gridHtml += `
-                        <div class="weather-day" onclick="openDayFullscreenModal(${i})">
-                            <strong>${date}</strong>
-                            <span style="font-size: 1.2rem;">${getWeatherEmoji(code)}</span>
-                            <span>${tMax}°C / ${tMin}°C</span>
-                        </div>
-                    `;
-                }
-                document.getElementById('weatherGrid').innerHTML = gridHtml;
-                window.currentWeatherDataCache = data;
-            }
-
-            if (data && data.hourly) {
-                let hoursHtml = '';
-                const nowIndex = new Date().getHours();
-                for (let i = nowIndex; i < nowIndex + 24 && i < data.hourly.time.length; i++) {
-                    const timeStr = data.hourly.time[i].split('T')[1].substring(0, 5);
-                    const temp = Math.round(data.hourly.temperature_2m[i]);
-                    const code = data.hourly.weathercode[i];
-                    hoursHtml += `
-                        <div class="hour-slot">
-                            <strong>${timeStr}</strong>
-                            <span style="font-size: 1rem; margin: 2px 0;">${getWeatherEmoji(code)}</span>
-                            <span>${temp}°C</span>
-                        </div>
-                    `;
-                }
-                document.getElementById('weatherHoursGrid').innerHTML = hoursHtml;
-            }
-        } catch (e) {
-            document.getElementById('weatherGrid').innerHTML = '<p style="color:#ef4444; text-align:center; grid-column:1/-1;">Fehler beim Laden der Wetterdaten.</p>';
-            document.getElementById('weatherHoursGrid').innerHTML = '<p style="color:#ef4444; text-align:center;">Fehler beim Laden.</p>';
-        }
-    }
-
-    function getWeatherEmoji(code) {
-        if (code === 0) return '☀️';
-        if ([1, 2, 3].includes(code)) return '⛅';
-        if ([45, 48].includes(code)) return '🌫️';
-        if ([51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 80, 81, 82].includes(code)) return '🌧️';
-        if ([71, 73, 75, 77, 85, 86].includes(code)) return '🌨️';
-        if ([95, 96, 99].includes(code)) return '⛈️';
-        return '🌡️';
-    }
-
-    function getWeatherAnimationClass(code) {
-        if (code === 0) return 'anim-sun';
-        if ([48].includes(code)) return 'anim-heavy-fog';
-        if ([45].includes(code)) return 'anim-fog';
-        if ([75, 86].includes(code)) return 'anim-heavy-snow';
-        if ([71, 73, 77, 85].includes(code)) return 'anim-snow';
-        if ([65, 82, 99].includes(code)) return 'anim-heavy-rain';
-        if ([51, 53, 55, 56, 57, 61, 63, 66, 67, 80, 81, 95, 96].includes(code)) return 'anim-rain';
-        return '';
-    }
-
-    let dayTempChartInstance = null;
-    let dayRainChartInstance = null;
-    let dayWindChartInstance = null;
-
-    function openDayFullscreenModal(index) {
-        const data = window.currentWeatherDataCache;
-        if (!data || !data.daily) return;
-        
-        const dateStr = data.daily.time[index];
-        const dateObj = new Date(dateStr);
-        const dateFormatted = dateObj.toLocaleDateString('de-DE', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
-        
-        const tMax = Math.round(data.daily.temperature_2m_max[index]);
-        const tMin = Math.round(data.daily.temperature_2m_min[index]);
-        const precipSum = data.daily.precipitation_sum[index];
-        const windMax = data.daily.windspeed_10m_max[index];
-        const code = data.daily.weathercode[index];
-        const animClass = getWeatherAnimationClass(code);
-
-        let hourlyLabels = [];
-        let hourlyTemps = [];
-        let hourlyPrecip = [];
-        let hourlyWind = [];
-
-        if (data.hourly && data.hourly.time) {
-            for (let i = 0; i < data.hourly.time.length; i++) {
-                if (data.hourly.time[i].startsWith(dateStr)) {
-                    const timePart = data.hourly.time[i].split('T')[1].substring(0, 5);
-                    hourlyLabels.push(timePart);
-                    hourlyTemps.push(data.hourly.temperature_2m[i]);
-                    if (data.hourly.precipitation) {
-                        hourlyPrecip.push(data.hourly.precipitation[i] || 0);
-                    } else {
-                        hourlyPrecip.push(0);
-                    }
-                    if (data.hourly.windspeed_10m) {
-                        hourlyWind.push(data.hourly.windspeed_10m[i] || 0);
-                    } else {
-                        hourlyWind.push(0);
-                    }
-                }
-            }
-        }
-
-        document.getElementById('fsModalTitle').innerText = `📅 Tagesinfopaket: ${dateFormatted}`;
-        document.getElementById('fsModalBody').innerHTML = `
-            <div style="display: flex; align-items: center; gap: 16px; background: #0f172a; padding: 14px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 14px; flex-wrap: wrap;">
-                <div class="weather-anim-box ${animClass}">
-                    ${getWeatherEmoji(code)}
-                </div>
-                <div style="flex-grow: 1;">
-                    <h4 style="margin: 0 0 4px 0; font-size: 1.1rem; color: var(--text-color);">${currentCityData.name}</h4>
-                    <p style="margin: 0; font-size: 0.9rem; color: var(--text-muted);">Max: <strong>${tMax}°C</strong> | Min: <strong>${tMin}°C</strong> | Niederschlag: <strong>${precipSum} mm</strong> | Wind: <strong>${windMax} km/h</strong></p>
-                </div>
-            </div>
-
-            <div class="chart-box">
-                <h4>📈 Stündlicher Temperaturverlauf</h4>
-                <canvas id="dayTempChart"></canvas>
-            </div>
-            <div class="chart-box">
-                <h4>🌧️ Stündlicher Niederschlag</h4>
-                <canvas id="dayRainChart"></canvas>
-            </div>
-            <div class="chart-box">
-                <h4>💨 Stündliche Windgeschwindigkeit</h4>
-                <canvas id="dayWindChart"></canvas>
-            </div>
-        `;
-
-        document.getElementById('fullscreenDayModal').style.display = 'flex';
-
-        setTimeout(() => {
-            const ctxTemp = document.getElementById('dayTempChart').getContext('2d');
-            if (dayTempChartInstance) dayTempChartInstance.destroy();
-            dayTempChartInstance = new Chart(ctxTemp, {
-                type: 'line',
-                data: {
-                    labels: hourlyLabels,
-                    datasets: [{
-                        label: 'Temperatur (°C)',
-                        data: hourlyTemps,
-                        borderColor: '#3b82f6',
-                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                        fill: true,
-                        tension: 0.3
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        y: { ticks: { color: '#94a3b8' }, grid: { color: '#334155' } },
-                        x: { ticks: { color: '#94a3b8', maxTicksLimit: 8 }, grid: { display: false } }
-                    }
-                }
-            });
-
-            const ctxRain = document.getElementById('dayRainChart').getContext('2d');
-            if (dayRainChartInstance) dayRainChartInstance.destroy();
-            dayRainChartInstance = new Chart(ctxRain, {
-                type: 'bar',
-                data: {
-                    labels: hourlyLabels,
-                    datasets: [{
-                        label: 'Niederschlag (mm)',
-                        data: hourlyPrecip,
-                        backgroundColor: '#06b6d4',
-                        borderRadius: 3
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        y: { beginAtZero: true, ticks: { color: '#94a3b8' }, grid: { color: '#334155' } },
-                        x: { ticks: { color: '#94a3b8', maxTicksLimit: 8 }, grid: { display: false } }
-                    }
-                }
-            });
-
-            const ctxWind = document.getElementById('dayWindChart').getContext('2d');
-            if (dayWindChartInstance) dayWindChartInstance.destroy();
-            dayWindChartInstance = new Chart(ctxWind, {
-                type: 'line',
-                data: {
-                    labels: hourlyLabels,
-                    datasets: [{
-                        label: 'Wind (km/h)',
-                        data: hourlyWind,
-                        borderColor: '#10b981',
-                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
-                        fill: true,
-                        tension: 0.3
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        y: { beginAtZero: true, ticks: { color: '#94a3b8' }, grid: { color: '#334155' } },
-                        x: { ticks: { color: '#94a3b8', maxTicksLimit: 8 }, grid: { display: false } }
-                    }
-                }
-            });
-        }, 100);
-    }
-
-    function closeFullscreenModal() {
-        document.getElementById('fullscreenDayModal').style.display = 'none';
-        if (dayTempChartInstance) { dayTempChartInstance.destroy(); dayTempChartInstance = null; }
-        if (dayRainChartInstance) { dayRainChartInstance.destroy(); dayRainChartInstance = null; }
-        if (dayWindChartInstance) { dayWindChartInstance.destroy(); dayWindChartInstance = null; }
-    }
-
-    async function fetchAllData() {
-        await fetchCategoryData('sights');
-        await fetchCategoryData('restaurants');
-        await fetchCategoryData('hotels');
-    }
-
-    async function fetchCategoryData(category) {
-        const lat = currentCityData.lat;
-        const lon = currentCityData.lon;
-        const radiusMeters = currentCityData.radius * 1000;
-
-        let query = '';
-        if (category === 'sights') {
-            document.getElementById('sightsLoadingStatus').innerHTML = '<span class="loading-indicator"></span>';
-            query = `[out:json][timeout:25];(node["tourism"~"attraction|museum|viewpoint|castle|artwork"](around:${radiusMeters},${lat},${lon});way["tourism"~"attraction|museum|viewpoint|castle|artwork"](around:${radiusMeters},${lat},${lon}););out center;`;
-        } else if (category === 'restaurants') {
-            document.getElementById('restaurantsLoadingStatus').innerHTML = '<span class="loading-indicator"></span>';
-            query = `[out:json][timeout:25];(node["amenity"~"restaurant|cafe|bar|pub|fast_food"](around:${radiusMeters},${lat},${lon});way["amenity"~"restaurant|cafe|bar|pub|fast_food"](around:${radiusMeters},${lat},${lon}););out center;`;
-        } else if (category === 'hotels') {
-            document.getElementById('hotelsLoadingStatus').innerHTML = '<span class="loading-indicator"></span>';
-            query = `[out:json][timeout:25];(node["tourism"~"hotel|guest_house|hostel|apartment|camp_site"](around:${radiusMeters},${lat},${lon});way["tourism"~"hotel|guest_house|hostel|apartment|camp_site"](around:${radiusMeters},${lat},${lon}););out center;`;
-        }
-
-        try {
-            const response = await fetch(OVERPASS_API_URL, {
-                method: 'POST',
-                body: 'data=' + encodeURIComponent(query)
-            });
-            const data = await response.json();
-            const elements = data.elements || [];
-
-            let items = elements.map(el => {
-                const elLat = el.lat || (el.center ? el.center.lat : lat);
-                const elLon = el.lon || (el.center ? el.center.lon : lon);
-                const name = (el.tags && el.tags.name) ? el.tags.name : "Unbenannter Ort";
-                const dist = calculateDistance(lat, lon, elLat, elLon);
-                const rating = parseFloat(((name.length % 3) + 3.2).toFixed(1));
-
-                return {
-                    id: el.id,
-                    name: name,
-                    lat: elLat,
-                    lon: elLon,
-                    distance: dist,
-                    rating: rating,
-                    tags: el.tags || {}
-                };
-            });
-
-            if (category === 'sights') {
-                currentCityData.allSights = items;
-                renderSightsList();
-                document.getElementById('sightsLoadingStatus').innerText = `(${items.length})`;
-            } else if (category === 'restaurants') {
-                currentCityData.restaurants = items;
-                renderRestaurantsList();
-                document.getElementById('restaurantsLoadingStatus').innerText = `(${items.length})`;
-            } else if (category === 'hotels') {
-                currentCityData.hotels = items;
-                renderHotelsList();
-                document.getElementById('hotelsLoadingStatus').innerText = `(${items.length})`;
-            }
-
-            updateMapMarkers();
-        } catch (e) {
-            if (category === 'sights') document.getElementById('sightsLoadingStatus').innerText = '(0)';
-            if (category === 'restaurants') document.getElementById('restaurantsLoadingStatus').innerText = '(0)';
-            if (category === 'hotels') document.getElementById('hotelsLoadingStatus').innerText = '(0)';
-        }
-    }
-
-    function calculateDistance(lat1, lon1, lat2, lon2) {
-        const R = 6371;
-        const dLat = (lat2 - lat1) * Math.PI / 180;
-        const dLon = (lon2 - lon1) * Math.PI / 180;
-        const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-                  Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-                  Math.sin(dLon/2) * Math.sin(dLon/2);
-        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-        return R * c;
-    }
-
-    function sortItems(items, sortMode) {
-        let sorted = [...items];
-        if (sortMode === 'distance') {
-            sorted.sort((a, b) => a.distance - b.distance);
-        } else if (sortMode === 'rating') {
-            sorted.sort((a, b) => b.rating - a.rating);
-        } else if (sortMode === 'alpha') {
-            sorted.sort((a, b) => a.name.localeCompare(b.name));
-        }
-        return sorted;
-    }
-
-    function renderSightsList() {
-        const sortMode = document.getElementById('sightSort').value;
-        const sorted = sortItems(currentCityData.allSights, sortMode);
-        const listEl = document.getElementById('sightList');
-        const moreBtn = document.getElementById('sightMoreBtn');
-
-        if (sorted.length === 0) {
-            listEl.innerHTML = '<li style="color:var(--text-muted); font-size:0.85rem; padding:6px;">Keine Sehenswürdigkeiten im Umkreis gefunden.</li>';
-            moreBtn.style.display = 'none';
-            return;
-        }
-
-        const visible = sorted.slice(0, 5);
-        let html = '';
-        visible.forEach(item => {
-            html += generateItemRowHtml(item, 'sight');
-        });
-        listEl.innerHTML = html;
-        moreBtn.style.display = sorted.length > 5 ? 'block' : 'none';
-    }
-
-    function renderRestaurantsList() {
-        const sortMode = document.getElementById('restaurantSort').value;
-        const sorted = sortItems(currentCityData.restaurants, sortMode);
-        const listEl = document.getElementById('restaurantList');
-        const moreBtn = document.getElementById('restaurantMoreBtn');
-
-        if (sorted.length === 0) {
-            listEl.innerHTML = '<li style="color:var(--text-muted); font-size:0.85rem; padding:6px;">Keine Restaurants im Umkreis gefunden.</li>';
-            moreBtn.style.display = 'none';
-            return;
-        }
-
-        const visible = sorted.slice(0, 5);
-        let html = '';
-        visible.forEach(item => {
-            html += generateItemRowHtml(item, 'restaurant');
-        });
-        listEl.innerHTML = html;
-        moreBtn.style.display = sorted.length > 5 ? 'block' : 'none';
-    }
-
-    function renderHotelsList() {
-        const sortMode = document.getElementById('hotelSort').value;
-        const sorted = sortItems(currentCityData.hotels, sortMode);
-        const listEl = document.getElementById('hotelList');
-        const moreBtn = document.getElementById('hotelMoreBtn');
-
-        if (sorted.length === 0) {
-            listEl.innerHTML = '<li style="color:var(--text-muted); font-size:0.85rem; padding:0 6px;">Keine Unterkünfte im Umkreis gefunden.</li>';
-            moreBtn.style.display = 'none';
-            return;
-        }
-
-        const visible = sorted.slice(0, 5);
-        let html = '';
-        visible.forEach(item => {
-            html += generateItemRowHtml(item, 'hotel');
-        });
-        listEl.innerHTML = html;
-        moreBtn.style.display = sorted.length > 5 ? 'block' : 'none';
-    }
-
-    function generateItemRowHtml(item, type) {
-        const distStr = item.distance < 1 ? `${Math.round(item.distance * 1000)} m` : `${item.distance.toFixed(1)} km`;
-        return `
-            <li class="item-row" onclick="focusItemOnMap(${item.lat}, ${item.lon}, '${item.name.replace(/'/g, "\\'")}')">
-                <div class="item-info-left">
-                    <div class="item-text-details">
-                        <strong style="font-size:0.9rem; display:block;">${item.name}</strong>
-                        <span style="font-size:0.75rem; color:var(--text-muted);">Entfernung: ${distStr}</span>
-                    </div>
-                </div>
-                <div class="rating-badge" onclick="event.stopPropagation(); openReviewsModal('${item.name.replace(/'/g, "\\'")}', ${item.rating})">
-                    ⭐ ${item.rating}
-                </div>
-            </li>
-        `;
-    }
-
-    function focusItemOnMap(lat, lon, name) {
-        map.setView([lat, lon], 16);
-        L.popup().setLatLng([lat, lon]).setContent(`<strong>${name}</strong>`).openOn(map);
-    }
-
-    function openAllItemsModal(category) {
-        let items = [];
-        let title = "";
-        if (category === 'sights') {
-            items = currentCityData.allSights;
-            title = "🏛️ Alle Sehenswürdigkeiten im Umkreis";
-        } else if (category === 'restaurants') {
-            items = currentCityData.restaurants;
-            title = "🍽️ Alle Restaurants im Umkreis";
-        } else if (category === 'hotels') {
-            items = currentCityData.hotels;
-            title = "🏨 Alle Unterkünfte im Umkreis";
-        }
-
-        document.getElementById('modalTitle').innerText = title;
-        let html = '<ul class="item-list">';
-        items.forEach(item => {
-            const distStr = item.distance < 1 ? `${Math.round(item.distance * 1000)} m` : `${item.distance.toFixed(1)} km`;
-            html += `
-                <li class="item-row" onclick="closeModal(); focusItemOnMap(${item.lat}, ${item.lon}, '${item.name.replace(/'/g, "\\'")}')">
-                    <div class="item-info-left">
-                        <div class="item-text-details">
-                            <strong style="font-size:0.9rem; display:block;">${item.name}</strong>
-                            <span style="font-size:0.75rem; color:var(--text-muted);">Entfernung: ${distStr}</span>
-                        </div>
-                    </div>
-                    <div class="rating-badge" onclick="event.stopPropagation(); openReviewsModal('${item.name.replace(/'/g, "\\'")}', ${item.rating})">
-                        ⭐ ${item.rating}
-                    </div>
-                </li>
-            `;
-        });
-        html += '</ul>';
-        document.getElementById('modalBody').innerHTML = html;
-        document.getElementById('modalFooterNav').style.display = 'none';
-        document.getElementById('detailModal').style.display = 'flex';
-    }
-
-    function updateMapMarkers() {
-        categoryMarkersLayer.clearLayers();
-
-        const showSights = document.getElementById('toggleSights').checked;
-        const showRestaurants = document.getElementById('toggleRestaurants').checked;
-        const showHotels = document.getElementById('toggleHotels').checked;
-
-        if (showSights) {
-            currentCityData.allSights.forEach(item => {
-                let marker = L.circleMarker([item.lat, item.lon], { radius: 6, color: '#ef4444', fillColor: '#ef4444', fillOpacity: 0.8 });
-                marker.bindPopup(`<strong>${item.name}</strong><br>Sehenswürdigkeit ⭐ ${item.rating}`);
-                categoryMarkersLayer.addLayer(marker);
-            });
-        }
-
-        if (showRestaurants) {
-            currentCityData.restaurants.forEach(item => {
-                let marker = L.circleMarker([item.lat, item.lon], { radius: 6, color: '#3b82f6', fillColor: '#3b82f6', fillOpacity: 0.8 });
-                marker.bindPopup(`<strong>${item.name}</strong><br>Restaurant ⭐ ${item.rating}`);
-                categoryMarkersLayer.addLayer(marker);
-            });
-        }
-
-        if (showHotels) {
-            currentCityData.hotels.forEach(item => {
-                let marker = L.circleMarker([item.lat, item.lon], { radius: 6, color: '#f59e0b', fillColor: '#f59e0b', fillOpacity: 0.8 });
-                marker.bindPopup(`<strong>${item.name}</strong><br>Unterkunft ⭐ ${item.rating}`);
-                categoryMarkersLayer.addLayer(marker);
-            });
-        }
+        const query = document.getElementById('citySearch').value.trim() || "Freiburg";
+        window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`, '_blank');
     }
 
     function resetToHome() {
-        document.getElementById('citySearch').value = 'Ettenheim';
-        searchLocation();
+        document.getElementById('startLocationOverlay').style.display = 'flex';
+        document.getElementById('startAddrInput').value = '';
+        document.getElementById('startAddrInput').focus();
+    }
+
+    function closeModal() { document.getElementById('detailModal').style.display = 'none'; }
+    function openUserSettingsModal() {
+        document.getElementById('modalTitle').innerText = "⚙️ Einstellungen";
+        document.getElementById('modalBody').innerHTML = `<p>Angemeldet als: <strong>${localStorage.getItem('jannik_current_user')}</strong></p>`;
+        document.getElementById('detailModal').style.display = 'flex';
     }
 </script>
 </body>
