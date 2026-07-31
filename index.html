@@ -100,194 +100,6 @@
             padding-bottom: 8px;
         }
 
-        /* Admin Banner */
-        .admin-banner {
-            background: linear-gradient(135deg, #1e3a8a, #1e293b);
-            border: 1px solid #3b82f6;
-            border-radius: 8px;
-            padding: 12px 16px;
-            margin-bottom: 4px;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-        .admin-banner-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.85rem;
-            color: #93c5fd;
-            font-weight: bold;
-        }
-
-        /* Chat Styles */
-        .chat-box-container {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-        .chat-messages-list {
-            background: #0f172a;
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            height: 180px;
-            overflow-y: auto;
-            padding: 10px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            font-size: 0.9rem;
-        }
-        .chat-msg {
-            background: #1e293b;
-            padding: 6px 10px;
-            border-radius: 6px;
-            border: 1px solid var(--border-color);
-        }
-        .chat-msg-header {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            margin-bottom: 2px;
-        }
-        .chat-input-row {
-            display: flex;
-            gap: 8px;
-        }
-
-        /* Post & Poll Creator Styles */
-        .post-creation-container {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-        .form-group label {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: var(--text-color);
-        }
-        .form-group input[type="text"],
-        .form-group textarea,
-        .poll-option-input,
-        .form-row select {
-            width: 100%;
-            padding: 10px 12px;
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            background: #0f172a;
-            color: white;
-            font-size: 0.95rem;
-            box-sizing: border-box;
-        }
-        .form-group textarea {
-            resize: vertical;
-            min-height: 100px;
-        }
-        .poll-creator-section {
-            background: #0f172a;
-            padding: 14px;
-            border-radius: 6px;
-            border: 1px solid var(--border-color);
-        }
-        .poll-creator-section h3 {
-            margin-top: 0;
-            font-size: 0.95rem;
-            margin-bottom: 4px;
-            border-bottom: none;
-            padding-bottom: 0;
-        }
-        .hint {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            margin-top: 0;
-            margin-bottom: 10px;
-        }
-        .poll-option-inputs {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            margin-bottom: 10px;
-        }
-        .btn-secondary {
-            background-color: #334155;
-            color: white;
-            border: none;
-            padding: 8px 12px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.85rem;
-            font-weight: 500;
-            transition: background 0.2s;
-        }
-        .btn-secondary:hover {
-            background-color: #475569;
-        }
-        .section-divider {
-            border: none;
-            border-top: 1px solid var(--border-color);
-            margin: 4px 0;
-        }
-        .additional-features-section h4 {
-            margin-top: 0;
-            margin-bottom: 10px;
-            font-size: 0.95rem;
-            color: var(--text-color);
-        }
-        .form-row {
-            margin-bottom: 10px;
-        }
-        .form-row label {
-            font-size: 0.9rem;
-            font-weight: normal;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .form-row input[type="checkbox"] {
-            cursor: pointer;
-            width: 16px;
-            height: 16px;
-        }
-
-        /* Poll Styles */
-        .poll-option {
-            background: #0f172a;
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            padding: 8px 12px;
-            margin-bottom: 6px;
-            cursor: pointer;
-            transition: background 0.2s;
-            position: relative;
-            overflow: hidden;
-        }
-        .poll-option:hover {
-            border-color: var(--accent-color);
-            background: #1e293b;
-        }
-        .poll-bar {
-            position: absolute;
-            top: 0; left: 0; bottom: 0;
-            background: rgba(59, 130, 246, 0.2);
-            z-index: 1;
-            transition: width 0.3s ease;
-        }
-        .poll-content {
-            position: relative;
-            z-index: 2;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.9rem;
-        }
-
         .map-wrapper {
             position: relative;
         }
@@ -357,6 +169,7 @@
         .legend-dot.blue { background: #3b82f6; }
         .legend-dot.orange { background: #f59e0b; }
         .legend-dot.green { background: #10b981; }
+        .legend-dot.darkgray { background: #334155; border: 1px solid #94a3b8; }
 
         .search-box {
             display: flex;
@@ -741,4 +554,1135 @@
             border: 2px solid var(--text-muted);
             border-top-color: var(--accent-color);
             border-radius: 50%;
-            animation: spin 0.8s
+            animation: spin 0.8s linear infinite;
+            margin-left: 6px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .weather-anim-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #0f172a;
+            padding: 12px 16px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 12px;
+        }
+
+        .weather-anim-stage {
+            width: 60px;
+            height: 60px;
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+            background: rgba(30, 41, 59, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .anim-sun {
+            width: 28px;
+            height: 28px;
+            background: #f59e0b;
+            border-radius: 50%;
+            box-shadow: 0 0 12px #f59e0b;
+            animation: sunPulse 3s infinite alternate;
+            position: relative;
+        }
+        .anim-sun::after {
+            content: '';
+            position: absolute;
+            top: -5px; left: -5px; right: -5px; bottom: -5px;
+            border: 2px dashed rgba(245, 158, 11, 0.6);
+            border-radius: 50%;
+            animation: spin 10s linear infinite;
+        }
+        @keyframes sunPulse {
+            0% { transform: scale(0.9); box-shadow: 0 0 8px #f59e0b; }
+            100% { transform: scale(1.1); box-shadow: 0 0 16px #fbbf24; }
+        }
+
+        .anim-rain-drop {
+            position: absolute;
+            width: 2px;
+            height: 10px;
+            background: #38bdf8;
+            opacity: 0.8;
+            top: -10px;
+            animation: fallDrop 0.8s linear infinite;
+        }
+        @keyframes fallDrop {
+            0% { transform: translateY(0); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateY(75px); opacity: 0; }
+        }
+
+        .anim-wind-line {
+            position: absolute;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #94a3b8, transparent);
+            width: 40px;
+            left: -40px;
+            animation: blowWind 1.2s linear infinite;
+        }
+        @keyframes blowWind {
+            0% { transform: translateX(0); opacity: 0; }
+            30% { opacity: 1; }
+            100% { transform: translateX(100px); opacity: 0; }
+        }
+
+        .chart-box {
+            background: #0f172a;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 12px;
+            position: relative;
+            height: 220px;
+            box-sizing: border-box;
+        }
+
+        .chart-box h4 {
+            margin: 0 0 8px 0;
+            font-size: 0.9rem;
+            color: var(--text-color);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .leaflet-popup-content-wrapper, .leaflet-popup-tip {
+            background: var(--card-bg) !important;
+            color: var(--text-color) !important;
+            border: 1px solid var(--border-color);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1 onclick="resetToHome()">Jannik Reisen 🌍✈️</h1>
+        <div class="header-controls">
+            <span class="badge">admin (👤 Admin)</span>
+            <label style="cursor:pointer;"><input type="checkbox" id="trafficToggle"> Live-Verkehr</label>
+        </div>
+    </header>
+
+    <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <h3 style="margin:0; border:none; padding:0;">🗺️ Weltkarte & Umkreis-Suche</h3>
+        </div>
+        <div class="search-box">
+            <input type="text" id="citySearch" placeholder="Ort, Stadt oder PLZ suchen (z.B. Berlin, Hamburg, München)..." onkeydown="if(event.key==='Enter') searchLocation()">
+            <button id="searchBtn" onclick="searchLocation()">Suchen</button>
+        </div>
+        <div class="radius-control">
+            <label for="radiusRange">Such-Umkreis: <strong id="radiusValue">5</strong> km</label>
+            <input type="range" id="radiusRange" min="1" max="100" value="5" oninput="onRadiusChange(this.value)">
+        </div>
+        <div class="map-wrapper">
+            <div id="map" class="map-container"></div>
+            <div class="map-legend-container">
+                <div id="mapLegendBox" class="map-legend">
+                    <label><input type="checkbox" id="toggleSights" checked onchange="updateMapMarkers()"> <span class="legend-dot red"></span> Sehenswürdigkeiten</label>
+                    <label><input type="checkbox" id="toggleRestaurants" checked onchange="updateMapMarkers()"> <span class="legend-dot blue"></span> Restaurants</label>
+                    <label><input type="checkbox" id="toggleHotels" checked onchange="updateMapMarkers()"> <span class="legend-dot orange"></span> Übernachtung</label>
+                    <label><input type="checkbox" id="toggleStations" checked onchange="updateMapMarkers()"> 🚂 Bahnhöfe</label>
+                    <label><input type="checkbox" id="toggleHospitals" checked onchange="updateMapMarkers()"> <span class="legend-dot green"></span> Krankenhäuser</label>
+                </div>
+                <button class="legend-toggle-btn" onclick="toggleLegend()">🗺️ Legende</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3 id="weatherTitle">🌤️ Wetter-Vorschau (Tage) <small style="font-size: 0.75rem; color:var(--text-muted); font-weight:normal;">(Klicke auf einen Tag für das volle Infopaket)</small></h3>
+        <div class="weather-grid" id="weatherGrid"></div>
+        <h3 style="margin-top: 15px;">⏱️ Stündliche Vorschau ab JETZT <small style="font-size: 0.75rem; color:var(--text-muted); font-weight:normal;">(Klicke auf eine Stunde für Details)</small></h3>
+        <div class="weather-hours" id="weatherHoursGrid"></div>
+        <p style="font-size: 0.8rem; color: #4ade80; margin-top: 8px; margin-bottom: 0;">⚡ Wetter-Datenpunkt aktiv für <span id="weatherCityName">München</span></p>
+    </div>
+
+    <div class="card">
+        <h3>ℹ️ Infos zur Stadt <span id="loadingStatus"></span></h3>
+        <p><strong>Name:</strong> <span id="infoName" class="clickable" onclick="showCityDetails()">München</span></p>
+        <p><strong>Postleitzahl(en):</strong> <span id="infoZip">80331, 80333, 80335</span></p>
+        <p><strong>Region / Bundesland:</strong> <span id="infoState" class="clickable" onclick="showStateDetails()">Bayern</span></p>
+        <p><strong>Bevölkerung:</strong> <span id="infoPopulation">ca. 1.5 Millionen</span></p>
+        <p><strong>Gründungsjahr:</strong> <span id="infoFounded">1158</span></p>
+        
+        <div class="section-header-bar">
+            <strong>🏛️ Sehenswürdigkeiten: <span id="sightsLoadingStatus"></span></strong>
+            <div class="inline-filter">
+                <label for="sightSort">Sortieren:</label>
+                <select id="sightSort" onchange="renderSightsList()">
+                    <option value="distance">Entfernung</option>
+                    <option value="rating">Bewertung</option>
+                    <option value="alpha">A-Z</option>
+                </select>
+            </div>
+        </div>
+        <ul id="sightList" class="item-list"></ul>
+        <button id="sightMoreBtn" class="load-more-btn" style="display:none;" onclick="openAllItemsModal('sights')">Hier klicken, um alle anzuzeigen</button>
+
+        <div class="section-header-bar">
+            <strong>🍽️ Restaurants: <span id="restaurantsLoadingStatus"></span></strong>
+            <div class="inline-filter">
+                <label for="restaurantSort">Sortieren:</label>
+                <select id="restaurantSort" onchange="renderRestaurantsList()">
+                    <option value="distance">Entfernung</option>
+                    <option value="rating">Bewertung</option>
+                    <option value="alpha">A-Z</option>
+                </select>
+            </div>
+        </div>
+        <ul id="restaurantList" class="item-list"></ul>
+        <button id="restaurantMoreBtn" class="load-more-btn" style="display:none;" onclick="openAllItemsModal('restaurants')">Hier klicken, um alle anzuzeigen</button>
+
+        <div class="section-header-bar">
+            <strong>🏨 Übernachtungsmöglichkeiten: <span id="hotelsLoadingStatus"></span></strong>
+            <div class="inline-filter">
+                <label for="hotelSort">Sortieren:</label>
+                <select id="hotelSort" onchange="renderHotelsList()">
+                    <option value="distance">Entfernung</option>
+                    <option value="rating">Bewertung</option>
+                    <option value="alpha">A-Z</option>
+                </select>
+            </div>
+        </div>
+        <ul id="hotelList" class="item-list"></ul>
+        <button id="hotelMoreBtn" class="load-more-btn" style="display:none;" onclick="openAllItemsModal('hotels')">Hier klicken, um alle anzuzeigen</button>
+    </div>
+</div>
+
+<!-- Standard Modal -->
+<div id="detailModal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal" onclick="closeModal()" style="float:right; width:auto; height:auto; border-radius:0; background:none; font-size:1.4rem;">&times;</span>
+        <h2 id="modalTitle" style="margin-top:0; font-size: 1.2rem; color: var(--accent-color);">Titel</h2>
+        <div id="modalBody" style="font-size: 0.95rem; line-height: 1.5;">Inhalt...</div>
+        <div id="modalFooterNav" class="nav-button-container" style="display:none;"></div>
+    </div>
+</div>
+
+<!-- Kompaktes Modal für Tages-Infopaket -->
+<div id="fullscreenDayModal" class="fullscreen-modal">
+    <div class="fullscreen-content-box">
+        <div class="fullscreen-header">
+            <h2 id="fsModalTitle" style="margin:0; font-size: 1.15rem; color: var(--accent-color);">Tagesinfopaket</h2>
+            <div class="close-modal" onclick="closeFullscreenModal()">&times;</div>
+        </div>
+        <div class="fullscreen-body" id="fsModalBody"></div>
+    </div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+    let map = L.map('map', { fadeAnimation: false, zoomAnimation: false }).setView([48.1351, 11.5820], 13);
+    let currentMarker = L.marker([48.1351, 11.5820]).addTo(map);
+    let radiusCircle = L.circle([48.1351, 11.5820], { radius: 5000, color: '#3b82f6', fillColor: '#3b82f6', fillOpacity: 0.1 }).addTo(map);
+    let categoryMarkersLayer = L.layerGroup().addTo(map);
+
+    let searchDebounceTimer = null;
+    let globalHourlyCache = null;
+    let globalDailyCache = null;
+
+    let chartTempInstance = null;
+    let chartRainInstance = null;
+    let chartWindInstance = null;
+
+    const OVERPASS_API_URL = 'https://overpass.private.coffee/api/interpreter';
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; OpenStreetMap'
+    }).addTo(map);
+
+    let currentCityData = {
+        name: "München",
+        lat: 48.1351,
+        lon: 11.5820,
+        state: "Bayern",
+        zip: "80331, 80333",
+        radius: 5,
+        allSights: [],
+        restaurants: [],
+        hotels: [],
+        stations: [],
+        hospitals: []
+    };
+
+    function toggleLegend() {
+        const legendBox = document.getElementById('mapLegendBox');
+        legendBox.style.display = (legendBox.style.display === 'flex') ? 'none' : 'flex';
+    }
+
+    function onRadiusChange(val) {
+        document.getElementById('radiusValue').innerText = val;
+        currentCityData.radius = parseInt(val);
+        radiusCircle.setRadius(val * 1000);
+
+        clearTimeout(searchDebounceTimer);
+        searchDebounceTimer = setTimeout(() => {
+            loadLocationData(currentCityData.lat, currentCityData.lon, currentCityData.radius, currentCityData.name, currentCityData.state, currentCityData.zip);
+        }, 600);
+    }
+
+    async function searchLocation() {
+        const query = document.getElementById('citySearch').value.trim();
+        if(!query) return;
+
+        document.getElementById('loadingStatus').innerHTML = '<span class="loading-indicator" title="Suche Ort..."></span>';
+
+        try {
+            const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`);
+            const data = await response.json();
+            if(data && data.length > 0) {
+                const lat = parseFloat(data[0].lat);
+                const lon = parseFloat(data[0].lon);
+                
+                currentMarker.setLatLng([lat, lon]);
+                radiusCircle.setLatLng([lat, lon]);
+                map.setView([lat, lon], 12);
+                
+                await reverseGeocodeAndFetch(lat, lon, true);
+            } else {
+                alert("Ort nicht gefunden.");
+                document.getElementById('loadingStatus').innerHTML = '';
+            }
+        } catch (error) {
+            console.error("Fehler bei der Ortssuche:", error);
+            alert("Fehler bei der Verbindung zum Suchdienst.");
+            document.getElementById('loadingStatus').innerHTML = '';
+        }
+    }
+
+    map.on('click', async function(e) {
+        const lat = e.latlng.lat;
+        const lon = e.latlng.lng;
+        currentMarker.setLatLng([lat, lon]);
+        radiusCircle.setLatLng([lat, lon]);
+        
+        await reverseGeocodeAndFetch(lat, lon, true);
+    });
+
+    async function reverseGeocodeAndFetch(lat, lon, resetRadius = false) {
+        if (resetRadius) {
+            document.getElementById('radiusRange').value = 5;
+            document.getElementById('radiusValue').innerText = 5;
+            currentCityData.radius = 5;
+            radiusCircle.setRadius(5000);
+        }
+
+        let cityName = "Ausgewählter Ort";
+        let stateName = "Region / Bundesland";
+        let zipCode = "77790";
+
+        document.getElementById('loadingStatus').innerHTML = '<span class="loading-indicator" title="Lade Daten..."></span>';
+
+        try {
+            const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
+            const data = await res.json();
+            const address = data.address || {};
+            cityName = address.city || address.town || address.village || address.municipality || address.county || "Standort";
+            stateName = address.state || address.region || "Bundesland";
+            zipCode = address.postcode || "77790";
+        } catch (err) {
+            console.error("Reverse Geocoding Fehler:", err);
+        }
+
+        await loadLocationData(lat, lon, currentCityData.radius, cityName, stateName, zipCode);
+    }
+
+    async function loadLocationData(lat, lon, radiusKm, cityName, stateName, zipCode) {
+        document.getElementById('loadingStatus').innerHTML = '<span class="loading-indicator" title="Lade Daten..."></span>';
+        document.getElementById('sightsLoadingStatus').innerHTML = '<span class="loading-indicator" title="Lade Sehenswürdigkeiten..."></span>';
+        document.getElementById('restaurantsLoadingStatus').innerHTML = '<span class="loading-indicator" title="Lade Restaurants..."></span>';
+        document.getElementById('hotelsLoadingStatus').innerHTML = '<span class="loading-indicator" title="Lade Übernachtungen..."></span>';
+
+        await Promise.all([
+            fetchRealOverpassData(lat, lon, radiusKm, cityName, stateName, zipCode),
+            fetchRealWeather(lat, lon, cityName)
+        ]);
+
+        document.getElementById('loadingStatus').innerHTML = '';
+        document.getElementById('sightsLoadingStatus').innerHTML = '';
+        document.getElementById('restaurantsLoadingStatus').innerHTML = '';
+        document.getElementById('hotelsLoadingStatus').innerHTML = '';
+    }
+
+    async function fetchRealOverpassData(lat, lon, radiusKm, cityName, stateName, zipCode) {
+        currentCityData.name = cityName;
+        currentCityData.lat = lat;
+        currentCityData.lon = lon;
+        currentCityData.state = stateName;
+        currentCityData.zip = zipCode;
+
+        const radiusMeters = radiusKm * 1000;
+        const overpassQuery = `
+            [out:json][timeout:15];
+            (
+              node(around:${radiusMeters},${lat},${lon})[tourism];
+              way(around:${radiusMeters},${lat},${lon})[tourism];
+              node(around:${radiusMeters},${lat},${lon})[amenity=restaurant];
+              way(around:${radiusMeters},${lat},${lon})[amenity=restaurant];
+              node(around:${radiusMeters},${lat},${lon})[amenity=cafe];
+              way(around:${radiusMeters},${lat},${lon})[amenity=cafe];
+              node(around:${radiusMeters},${lat},${lon})[railway=station];
+              way(around:${radiusMeters},${lat},${lon})[railway=station];
+              node(around:${radiusMeters},${lat},${lon})[amenity=hospital];
+              way(around:${radiusMeters},${lat},${lon})[amenity=hospital];
+            );
+            out center 50;
+        `;
+
+        try {
+            const response = await fetch(OVERPASS_API_URL, {
+                method: 'POST',
+                body: overpassQuery
+            });
+            const data = await response.json();
+            
+            let sights = [];
+            let restaurants = [];
+            let hotels = [];
+            let stations = [];
+            let hospitals = [];
+
+            if (data && data.elements) {
+                data.elements.forEach((el, index) => {
+                    const elLat = el.lat || (el.center ? el.center.lat : null);
+                    const elLon = el.lon || (el.center ? el.center.lon : null);
+                    if (!elLat || !elLon) return;
+
+                    const tags = el.tags || {};
+                    const name = tags.name || tags.amenity || tags.tourism || tags.railway || `Punkt ${index + 1}`;
+                    const distVal = calculateDistance(lat, lon, elLat, elLon);
+                    const rating = (4.0 + ((index * 3) % 10) * 0.05).toFixed(1);
+                    const street = tags['addr:street'] || 'Beispielstraße';
+                    const houseNumber = tags['addr:housenumber'] || (index + 1);
+                    const address = `${street} ${houseNumber}, ${cityName}`;
+                    const description = tags.description || tags.cuisine ? `Küche/Art: ${tags.cuisine}` : `Wichtiger Punkt in ${cityName}.`;
+
+                    const itemObj = {
+                        id: el.id || index,
+                        name: name,
+                        dist: distVal.toFixed(1) + " km",
+                        rating: rating,
+                        address: address,
+                        description: description,
+                        lat: elLat,
+                        lon: elLon,
+                        images: ["https://images.unsplash.com/photo-1595867818082-083862f3d630?w=500&q=80"]
+                    };
+
+                    const tourismVal = tags.tourism;
+                    const isAccommodation = ['hotel', 'guest_house', 'hostel', 'apartment', 'motel', 'chalet'].includes(tourismVal);
+
+                    if (isAccommodation) {
+                        hotels.push(itemObj);
+                    } else if (tags.tourism) {
+                        sights.push(itemObj);
+                    } else if (tags.amenity === 'restaurant' || tags.amenity === 'cafe') {
+                        restaurants.push(itemObj);
+                    } else if (tags.railway === 'station') {
+                        stations.push(itemObj);
+                    } else if (tags.amenity === 'hospital') {
+                        hospitals.push(itemObj);
+                    }
+                });
+            }
+
+            if (sights.length === 0) {
+                for (let i = 1; i <= 5; i++) {
+                    sights.push({
+                        id: i,
+                        name: `Sehenswürdigkeit ${i} in ${cityName}`,
+                        dist: (0.4 * i).toFixed(1) + " km",
+                        rating: "4.5",
+                        address: `Hauptstraße ${i}, ${cityName}`,
+                        description: `Lokales Highlight in ${cityName}.`,
+                        lat: lat + (0.002 * i),
+                        lon: lon + (0.002 * i),
+                        images: ["https://images.unsplash.com/photo-1595867818082-083862f3d630?w=500&q=80"]
+                    });
+                }
+            }
+
+            if (restaurants.length === 0) {
+                for (let i = 1; i <= 5; i++) {
+                    restaurants.push({
+                        id: i,
+                        name: `Restaurant ${i} in ${cityName}`,
+                        dist: (0.3 * i).toFixed(1) + " km",
+                        rating: "4.3",
+                        address: `Marktplatz ${i}, ${cityName}`,
+                        description: `Gemütliche Gastronomie in ${cityName}.`,
+                        lat: lat - (0.002 * i),
+                        lon: lon - (0.002 * i),
+                        images: ["https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=500&q=80"]
+                    });
+                }
+            }
+
+            if (hotels.length === 0) {
+                for (let i = 1; i <= 5; i++) {
+                    hotels.push({
+                        id: i,
+                        name: `Hotel & Unterkunft ${i} in ${cityName}`,
+                        dist: (0.5 * i).toFixed(1) + " km",
+                        rating: "4.4",
+                        address: `Hotelstraße ${i}, ${cityName}`,
+                        description: `Komfortable Übernachtungsmöglichkeit in ${cityName}.`,
+                        lat: lat + (0.0025 * i),
+                        lon: lon - (0.0025 * i),
+                        images: ["https://images.unsplash.com/photo-1566073771259-6a8506099945?w=500&q=80"]
+                    });
+                }
+            }
+
+            if (stations.length === 0) {
+                for (let i = 1; i <= 2; i++) {
+                    stations.push({
+                        id: i,
+                        name: `Hauptbahnhof ${cityName}`,
+                        dist: (0.8 * i).toFixed(1) + " km",
+                        rating: "4.0",
+                        address: `Bahnhofsplatz ${i}, ${cityName}`,
+                        description: `Zentraler Bahnknotenpunkt.`,
+                        lat: lat + (0.003 * i),
+                        lon: lon - (0.003 * i),
+                        images: ["https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=500&q=80"]
+                    });
+                }
+            }
+
+            if (hospitals.length === 0) {
+                for (let i = 1; i <= 2; i++) {
+                    hospitals.push({
+                        id: i,
+                        name: `Klinikum ${cityName}`,
+                        dist: (1.2 * i).toFixed(1) + " km",
+                        rating: "4.7",
+                        address: `Gesundheitsweg ${i}, ${cityName}`,
+                        description: `Medizinische Versorgung und Notaufnahme.`,
+                        lat: lat - (0.004 * i),
+                        lon: lon + (0.004 * i),
+                        images: ["https://images.unsplash.com/photo-1587351021759-3e566b6af7cc?w=500&q=80"]
+                    });
+                }
+            }
+
+            currentCityData.allSights = sights;
+            currentCityData.restaurants = restaurants;
+            currentCityData.hotels = hotels;
+            currentCityData.stations = stations;
+            currentCityData.hospitals = hospitals;
+
+        } catch (e) {
+            console.error("Fehler beim Laden der Overpass-Daten:", e);
+        }
+
+        document.getElementById('infoName').innerText = currentCityData.name;
+        document.getElementById('infoZip').innerText = currentCityData.zip;
+        document.getElementById('infoState').innerText = currentCityData.state;
+        document.getElementById('weatherCityName').innerText = currentCityData.name;
+
+        renderSightsList();
+        renderRestaurantsList();
+        renderHotelsList();
+        updateMapMarkers();
+    }
+
+    function calculateDistance(lat1, lon1, lat2, lon2) {
+        const R = 6371;
+        const dLat = (lat2 - lat1) * Math.PI / 180;
+        const dLon = (lon2 - lon1) * Math.PI / 180;
+        const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                  Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                  Math.sin(dLon/2) * Math.sin(dLon/2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        return R * c;
+    }
+
+    async function fetchRealWeather(lat, lon, cityName) {
+        try {
+            const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_max,windspeed_10m_max&hourly=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation_probability,precipitation,weathercode,windspeed_10m&timezone=auto`);
+            const data = await res.json();
+            
+            globalHourlyCache = data.hourly;
+            globalDailyCache = data.daily;
+
+            const daysNames = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'];
+            const fullDaysNames = ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'];
+
+            if (data && data.daily) {
+                const grid = document.getElementById('weatherGrid');
+                grid.innerHTML = '';
+                
+                for (let i = 0; i < 7; i++) {
+                    const dateObj = new Date(data.daily.time[i]);
+                    const dayName = daysNames[dateObj.getDay()];
+                    
+                    const dayNum = String(dateObj.getDate()).padStart(2, '0');
+                    const monthNum = String(dateObj.getMonth() + 1).padStart(2, '0');
+                    const dateStr = `${dayNum}.${monthNum}.`;
+
+                    const tempMax = Math.round(data.daily.temperature_2m_max[i]);
+                    const tempMin = Math.round(data.daily.temperature_2m_min[i]);
+                    const rainProbMax = data.daily.precipitation_probability_max ? data.daily.precipitation_probability_max[i] : 0;
+                    const windMax = data.daily.windspeed_10m_max ? data.daily.windspeed_10m_max[i] : 0;
+
+                    grid.innerHTML += `
+                        <div class="weather-day" onclick="openFullscreenDayModal(${i})">
+                            <div style="border-bottom:1px solid var(--border-color); padding-bottom:3px; margin-bottom:3px;">
+                                <strong>${dayName}</strong> <span style="font-size:0.7rem; color:var(--text-muted);">${dateStr}</span>
+                            </div>
+                            <div style="font-size: 1.2rem; margin: 2px 0;">☀️</div>
+                            <div>
+                                <span style="font-size: 0.95rem; font-weight:bold;">${tempMax}°</span>
+                                <span style="font-size: 0.75rem; color:var(--text-muted);">/ ${tempMin}°</span>
+                            </div>
+                            <div style="font-size: 0.7rem; color:var(--text-muted); margin-top:2px;">
+                                🌧️ ${rainProbMax}% | 💨 ${windMax}
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+
+            if (data && data.hourly && data.hourly.time) {
+                const hoursGrid = document.getElementById('weatherHoursGrid');
+                hoursGrid.innerHTML = '';
+                
+                const nowTimestamp = Date.now();
+                let startIndex = 0;
+                let minDiff = Infinity;
+
+                for(let i = 0; i < data.hourly.time.length; i++) {
+                    const timeMs = new Date(data.hourly.time[i]).getTime();
+                    const diff = timeMs - nowTimestamp;
+                    if(diff >= 0 && diff < minDiff) {
+                        minDiff = diff;
+                        startIndex = i;
+                        break;
+                    }
+                }
+                if (minDiff === Infinity) startIndex = Math.max(0, data.hourly.time.length - 36);
+
+                let lastDateStr = "";
+
+                for (let i = 0; i < 36; i++) {
+                    const idx = startIndex + i;
+                    if (!data.hourly.time[idx]) break;
+
+                    const timeFull = data.hourly.time[idx];
+                    const dateObj = new Date(timeFull);
+                    const currentDateStr = timeFull.slice(0, 10);
+
+                    if (currentDateStr !== lastDateStr) {
+                        if (lastDateStr !== "") {
+                            const dayNameLong = fullDaysNames[dateObj.getDay()];
+                            const dayNum = String(dateObj.getDate()).padStart(2, '0');
+                            const monthNum = String(dateObj.getMonth() + 1).padStart(2, '0');
+                            
+                            hoursGrid.innerHTML += `
+                                <div class="day-divider">
+                                    <b>${dayNameLong}</b>
+                                    <span>${dayNum}.${monthNum}.</span>
+                                </div>
+                            `;
+                        }
+                        lastDateStr = currentDateStr;
+                    }
+                    
+                    const timeStr = timeFull.slice(11, 16);
+                    const temp = Math.round(data.hourly.temperature_2m[idx] || 20);
+                    
+                    hoursGrid.innerHTML += `
+                        <div class="hour-slot" onclick="openHourDetailModal(${idx})">
+                            <b>${timeStr}</b><br>☀️<br>${temp}°C
+                        </div>
+                    `;
+                }
+            }
+        } catch (err) {
+            console.error("Wetter-Ladefehler:", err);
+        }
+    }
+
+    function openFullscreenDayModal(dayIndex) {
+        if (!globalDailyCache || !globalHourlyCache) return;
+
+        const dateStr = globalDailyCache.time[dayIndex];
+        const dateObj = new Date(dateStr);
+        const dayFormatted = dateObj.toLocaleDateString('de-DE', { weekday: 'long', day: '2-digit', month: '2-digit', year: 'numeric' });
+
+        const maxT = Math.round(globalDailyCache.temperature_2m_max[dayIndex]);
+        const minT = Math.round(globalDailyCache.temperature_2m_min[dayIndex]);
+        const rainProbMax = globalDailyCache.precipitation_probability_max ? globalDailyCache.precipitation_probability_max[dayIndex] : 15;
+        const windMax = globalDailyCache.windspeed_10m_max ? globalDailyCache.windspeed_10m_max[dayIndex] : 18;
+
+        let animHTML = `
+            <div class="weather-anim-stage">
+                <div class="anim-sun"></div>
+            </div>
+        `;
+        let desc = "Sonnig bis heiterer Tagesverlauf";
+
+        if (rainProbMax > 50) {
+            desc = "Regnerischer Tag mit Schauern";
+            animHTML = `
+                <div class="weather-anim-stage">
+                    <div class="anim-rain-drop" style="left: 12px; animation-delay: 0s;"></div>
+                    <div class="anim-rain-drop" style="left: 28px; animation-delay: 0.3s;"></div>
+                    <div class="anim-rain-drop" style="left: 44px; animation-delay: 0.6s;"></div>
+                </div>
+            `;
+        } else if (windMax > 30) {
+            desc = "Windiger Tag mit kräftigen Böen";
+            animHTML = `
+                <div class="weather-anim-stage">
+                    <div class="anim-wind-line" style="top: 12px; animation-delay: 0s;"></div>
+                    <div class="anim-wind-line" style="top: 30px; animation-delay: 0.5s;"></div>
+                    <div class="anim-wind-line" style="top: 45px; animation-delay: 0.2s;"></div>
+                </div>
+            `;
+        }
+
+        let hoursLabels = [];
+        let tempValues = [];
+        let apparentTempValues = [];
+        let rainProbValues = [];
+        let windValues = [];
+
+        let dayStartHourIdx = -1;
+        for (let i = 0; i < globalHourlyCache.time.length; i++) {
+            if (globalHourlyCache.time[i].startsWith(dateStr)) {
+                if (dayStartHourIdx === -1) dayStartHourIdx = i;
+            }
+        }
+
+        if (dayStartHourIdx !== -1) {
+            for (let h = 0; h < 24; h++) {
+                const idx = dayStartHourIdx + h;
+                if (idx >= globalHourlyCache.time.length) break;
+
+                hoursLabels.push(globalHourlyCache.time[idx].slice(11, 16));
+                tempValues.push(globalHourlyCache.temperature_2m[idx]);
+                apparentTempValues.push(globalHourlyCache.apparent_temperature[idx]);
+                rainProbValues.push(globalHourlyCache.precipitation_probability ? globalHourlyCache.precipitation_probability[idx] : 0);
+                windValues.push(globalHourlyCache.windspeed_10m ? globalHourlyCache.windspeed_10m[idx] : 0);
+            }
+        }
+
+        document.getElementById('fsModalTitle').innerText = `Tagesinfopaket: ${dayFormatted}`;
+        document.getElementById('fsModalBody').innerHTML = `
+            <div class="weather-anim-container">
+                <div>
+                    <div style="font-size: 1.05rem; font-weight: bold; margin-bottom: 2px;">Temperatur: ${maxT}°C (Max) / ${minT}°C (Min)</div>
+                    <div style="font-size: 0.9rem; color: var(--accent-color);">${desc}</div>
+                </div>
+                ${animHTML}
+            </div>
+            <div style="display: flex; gap: 16px; margin-bottom: 12px; font-size: 0.85rem; flex-wrap: wrap; background: #0f172a; padding: 10px 14px; border-radius: 8px; border: 1px solid var(--border-color);">
+                <div>🌧️ <strong>Max. Regenrisiko:</strong> ${rainProbMax}%</div>
+                <div>💨 <strong>Max. Windstärke:</strong> ${windMax} km/h</div>
+                <div>📍 <strong>Ort:</strong> ${currentCityData.name}</div>
+            </div>
+
+            <h3 style="margin: 14px 0 8px 0; font-size: 0.95rem; border-bottom: 1px solid var(--border-color); padding-bottom: 4px;">📈 Wetter-Graphen im stündlichen Verlauf</h3>
+
+            <div class="chart-box">
+                <h4>🌡️ Temperatur & Gefühlte Temperatur (°C)</h4>
+                <canvas id="chartTemp"></canvas>
+            </div>
+
+            <div class="chart-box">
+                <h4>🌧️ Regenwahrscheinlichkeit (%)</h4>
+                <canvas id="chartRain"></canvas>
+            </div>
+
+            <div class="chart-box">
+                <h4>💨 Windstärke (km/h)</h4>
+                <canvas id="chartWind"></canvas>
+            </div>
+        `;
+
+        document.getElementById('fullscreenDayModal').style.display = 'flex';
+
+        if (chartTempInstance) chartTempInstance.destroy();
+        if (chartRainInstance) chartRainInstance.destroy();
+        if (chartWindInstance) chartWindInstance.destroy();
+
+        Chart.defaults.color = '#94a3b8';
+        Chart.defaults.borderColor = '#334155';
+
+        const ctxTemp = document.getElementById('chartTemp').getContext('2d');
+        chartTempInstance = new Chart(ctxTemp, {
+            type: 'line',
+            data: {
+                labels: hoursLabels,
+                datasets: [
+                    {
+                        label: 'Temperatur (°C)',
+                        data: tempValues,
+                        borderColor: '#f59e0b',
+                        backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                        borderWidth: 2,
+                        tension: 0.3,
+                        fill: true
+                    },
+                    {
+                        label: 'Gefühlt (°C)',
+                        data: apparentTempValues,
+                        borderColor: '#38bdf8',
+                        borderWidth: 1.5,
+                        borderDash: [4, 4],
+                        tension: 0.3,
+                        fill: false
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 11 } } } },
+                scales: {
+                    y: { grid: { color: '#334155' } },
+                    x: { grid: { display: false }, ticks: { font: { size: 10 } } }
+                }
+            }
+        });
+
+        const ctxRain = document.getElementById('chartRain').getContext('2d');
+        chartRainInstance = new Chart(ctxRain, {
+            type: 'bar',
+            data: {
+                labels: hoursLabels,
+                datasets: [{
+                    label: 'Regenrisiko (%)',
+                    data: rainProbValues,
+                    backgroundColor: '#38bdf8',
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { min: 0, max: 100, grid: { color: '#334155' } },
+                    x: { grid: { display: false }, ticks: { font: { size: 10 } } }
+                }
+            }
+        });
+
+        const ctxWind = document.getElementById('chartWind').getContext('2d');
+        chartWindInstance = new Chart(ctxWind, {
+            type: 'line',
+            data: {
+                labels: hoursLabels,
+                datasets: [{
+                    label: 'Windstärke (km/h)',
+                    data: windValues,
+                    borderColor: '#10b981',
+                    backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                    borderWidth: 2,
+                    tension: 0.3,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { min: 0, grid: { color: '#334155' } },
+                    x: { grid: { display: false }, ticks: { font: { size: 10 } } }
+                }
+            }
+        });
+    }
+
+    function closeFullscreenModal() {
+        document.getElementById('fullscreenDayModal').style.display = 'none';
+    }
+
+    function openHourDetailModal(idx) {
+        if (!globalHourlyCache) return;
+
+        const timeFull = globalHourlyCache.time[idx];
+        const dateObj = new Date(timeFull);
+        const timeStr = timeFull.slice(11, 16) + " Uhr";
+        const dayFormatted = dateObj.toLocaleDateString('de-DE', { weekday: 'long', day: '2-digit', month: '2-digit', year: 'numeric' });
+
+        const temp = Math.round(globalHourlyCache.temperature_2m[idx]);
+        const feelsLike = Math.round(globalHourlyCache.apparent_temperature[idx]);
+        const humidity = globalHourlyCache.relative_humidity_2m[idx];
+        const rainProb = globalHourlyCache.precipitation_probability ? globalHourlyCache.precipitation_probability[idx] : 0;
+        const rainAmount = globalHourlyCache.precipitation ? globalHourlyCache.precipitation[idx] : 0;
+        const windSpeed = globalHourlyCache.windspeed_10m[idx];
+        const wcode = globalHourlyCache.weathercode ? globalHourlyCache.weathercode[idx] : 0;
+
+        let animHTML = '';
+        let weatherDesc = 'Sonnig & Klar';
+
+        if ([51, 53, 55, 61, 63, 65, 80, 81, 82].includes(wcode)) {
+            weatherDesc = 'Regen';
+            animHTML = `
+                <div class="weather-anim-stage">
+                    <div class="anim-rain-drop" style="left: 12px; animation-delay: 0s;"></div>
+                    <div class="anim-rain-drop" style="left: 26px; animation-delay: 0.3s;"></div>
+                    <div class="anim-rain-drop" style="left: 40px; animation-delay: 0.6s;"></div>
+                </div>
+            `;
+        } else if (windSpeed > 25) {
+            weatherDesc = 'Starker Wind';
+            animHTML = `
+                <div class="weather-anim-stage">
+                    <div class="anim-wind-line" style="top: 12px; animation-delay: 0s;"></div>
+                    <div class="anim-wind-line" style="top: 28px; animation-delay: 0.5s;"></div>
+                    <div class="anim-wind-line" style="top: 42px; animation-delay: 0.2s;"></div>
+                </div>
+            `;
+        } else {
+            weatherDesc = 'Sonnig / Heiter';
+            animHTML = `
+                <div class="weather-anim-stage">
+                    <div class="anim-sun"></div>
+                </div>
+            `;
+        }
+
+        document.getElementById('modalTitle').innerText = `Stündliche Details: ${dayFormatted}, ${timeStr}`;
+        document.getElementById('modalBody').innerHTML = `
+            <div class="weather-anim-container">
+                <div>
+                    <div style="font-size: 1.05rem; font-weight: bold; margin-bottom: 2px;">${temp}°C <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: normal;">(Gefühlt ${feelsLike}°C)</span></div>
+                    <div style="font-size: 0.85rem; color: var(--accent-color);">${weatherDesc}</div>
+                </div>
+                ${animHTML}
+            </div>
+            <p style="margin: 6px 0;">💧 <strong>Regenwahrscheinlichkeit:</strong> ${rainProb}% (${rainAmount} mm)</p>
+            <p style="margin: 6px 0;">💨 <strong>Windgeschwindigkeit:</strong> ${windSpeed} km/h</p>
+            <p style="margin: 6px 0;">💧 <strong>Luftfeuchtigkeit:</strong> ${humidity}%</p>
+        `;
+        document.getElementById('modalFooterNav').style.display = 'none';
+        document.getElementById('detailModal').style.display = 'flex';
+    }
+
+    function sortData(items, sortValue) {
+        let sorted = [...items];
+        if (sortValue === 'rating') {
+            sorted.sort((a, b) => b.rating - a.rating);
+        } else if (sortValue === 'alpha') {
+            sorted.sort((a, b) => a.name.localeCompare(b.name));
+        } else if (sortValue === 'distance') {
+            sorted.sort((a, b) => parseFloat(a.dist) - parseFloat(b.dist));
+        }
+        return sorted;
+    }
+
+    function renderItemList(type, customListId = null, customBtnId = null, customSortId = null, limit = 10) {
+        const isSights = type === 'sights';
+        const isHotels = type === 'hotels';
+        
+        const listId = customListId || (isSights ? 'sightList' : (isHotels ? 'hotelList' : 'restaurantList'));
+        const btnId = customBtnId || (isSights ? 'sightMoreBtn' : (isHotels ? 'hotelMoreBtn' : 'restaurantMoreBtn'));
+        const sortId = customSortId || (isSights ? 'sightSort' : (isHotels ? 'hotelSort' : 'restaurantSort'));
+        
+        const listEl = document.getElementById(listId);
+        const btnEl = document.getElementById(btnId);
+        const sortSelect = document.getElementById(sortId);
+        const sortVal = sortSelect ? sortSelect.value : 'distance';
+        
+        if (!listEl) return;
+        listEl.innerHTML = '';
+
+        let items = isSights ? [...currentCityData.allSights] : (isHotels ? [...currentCityData.hotels] : [...currentCityData.restaurants]);
+        let sorted = sortData(items, sortVal);
+        const displayedItems = limit ? sorted.slice(0, limit) : sorted;
+
+        const fragment = document.createDocumentFragment();
+
+        displayedItems.forEach(item => {
+            const li = document.createElement('li');
+            li.className = 'item-row';
+            li.onclick = () => openItemModal(item, isSights ? 'Sehenswürdigkeit' : (isHotels ? 'Übernachtung' : 'Restaurant'));
+            li.innerHTML = `
+                <div class="item-info-left">
+                    <img class="item-thumb" src="${item.images[0]}" alt="${item.name}">
+                    <div class="item-text-details">
+                        <strong>${item.name}</strong><br>
+                        <small style="color:var(--text-muted);">${item.dist}</small>
+                    </div>
+                </div>
+                <span class="rating-badge">★ ${item.rating}</span>
+            `;
+            fragment.appendChild(li);
+        });
+
+        listEl.appendChild(fragment);
+
+        if (btnEl) {
+            if (limit && items.length > limit) {
+                btnEl.style.display = 'block';
+                btnEl.innerText = `Hier klicken, um alle anzuzeigen (${items.length})`;
+            } else {
+                btnEl.style.display = 'none';
+            }
+        }
+    }
+
+    function renderSightsList() {
+        renderItemList('sights', 'sightList', 'sightMoreBtn', 'sightSort', 10);
+    }
+
+    function renderRestaurantsList() {
+        renderItemList('restaurants', 'restaurantList', 'restaurantMoreBtn', 'restaurantSort', 10);
+    }
+
+    function renderHotelsList() {
+        renderItemList('hotels', 'hotelList', 'hotelMoreBtn', 'hotelSort', 10);
+    }
+
+    function openAllItemsModal(type) {
+        const isSight = (type === 'sights');
+        const isHotel = (type === 'hotels');
+        const totalCount = isSight ? currentCityData.allSights.length : (isHotel ? currentCityData.hotels.length : currentCityData.restaurants.length);
+        
+        let title = `🍽️ Alle Restaurants (${totalCount})`;
+        if (isSight) title = `🏛️ Alle Sehenswürdigkeiten (${totalCount})`;
+        if (isHotel) title = `🏨 Alle Übernachtungsmöglichkeiten (${totalCount})`;
+
+        document.getElementById('modalTitle').innerText = title;
+        
+        let html = `
+            <div style="margin-bottom: 12px;" class="inline-filter">
+                <label for="modalSortSelect">Sortieren nach:</label>
+                <select id="modalSortSelect" onchange="updateModalList('${type}')">
+                    <option value="distance">Entfernung</option>
+                    <option value="rating">Bewertung</option>
+                    <option value="alpha">A-Z</option>
+                </select>
+            </div>
+            <ul id="modalItemList" class="item-list"></ul>
+        `;
+
+        document.getElementById('modalBody').innerHTML = html;
+        document.getElementById('modalFooterNav').style.display = 'none';
+        document.getElementById('detailModal').style.display = 'flex';
+
+        updateModalList(type);
+    }
+
+    function updateModalList(type) {
+        renderItemList(type, 'modalItemList', null, 'modalSortSelect', null);
+    }
+
+    function openItemModal(item, type) {
+        document.getElementById('modalTitle').innerText = `${item.name} (${type})`;
+        
+        let galleryHTML = '<div class="gallery-container">';
+        item.images.forEach(imgUrl => {
+            galleryHTML += `<img class="gallery-img" src="${imgUrl}" alt="${item.name}">`;
+        });
+        galleryHTML += '</div>';
+
+        document.getElementById('modalBody').innerHTML = `
+            ${galleryHTML}
+            <p><strong>Bewertung:</strong> ★ ${item.rating} / 5.0</p>
+            <p><strong>Entfernung zum Zentrum:</strong> ${item.dist}</p>
+            <p><strong>Standortadresse:</strong> ${item.address || 'Keine Adresse vorhanden'}</p>
+            <p><strong>Beschreibung:</strong> ${item.description || 'Keine Beschreibung vorhanden.'}</p>
+        `;
+
+        const footerNav = document.getElementById('modalFooterNav');
+        footerNav.style.display = 'flex';
+        footerNav.innerHTML = `
+            <a class="navigate-btn" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.name + ' ' + (item.address || currentCityData.name))}" target="_blank">
+                🧭 Route in Google Maps
+            </a>
+        `;
+
+        document.getElementById('detailModal').style.display = 'flex';
+    }
+
+    function closeModal() {
+        document.getElementById('detailModal').style.display = 'none';
+    }
+
+    window.onclick = function(event) {
+        const modal = document.getElementById('detailModal');
+        if (event.target === modal) {
+            closeModal();
+        }
+    };
+
+    function updateMapMarkers() {
+        categoryMarkersLayer.clearLayers();
+        if(document.getElementById('toggleSights').checked) {
+            currentCityData.allSights.forEach(s => {
+                L.circleMarker([s.lat, s.lon], { radius: 6, color: '#ef4444', fillColor: '#ef4444', fillOpacity: 0.8 }).addTo(categoryMarkersLayer).bindPopup(`<b>${s.name}</b>`);
+            });
+        }
+        if(document.getElementById('toggleRestaurants').checked) {
+            currentCityData.restaurants.forEach(r => {
+                L.circleMarker([r.lat, r.lon], { radius: 6, color: '#3b82f6', fillColor: '#3b82f6', fillOpacity: 0.8 }).addTo(categoryMarkersLayer).bindPopup(`<b>${r.name}</b>`);
+            });
+        }
+        if(document.getElementById('toggleHotels').checked) {
+            currentCityData.hotels.forEach(h => {
+                L.circleMarker([h.lat, h.lon], { radius: 6, color: '#f59e0b', fillColor: '#f59e0b', fillOpacity: 0.8 }).addTo(categoryMarkersLayer).bindPopup(`<b>🏨 ${h.name}</b>`);
+            });
+        }
+        if(document.getElementById('toggleStations').checked) {
+            currentCityData.stations.forEach(st => {
+                L.circleMarker([st.lat, st.lon], { radius: 6, color: '#334155', fillColor: '#1e293b', fillOpacity: 0.9, weight: 2 }).addTo(categoryMarkersLayer).bindPopup(`<b>🚂 ${st.name}</b>`);
+            });
+        }
+        if(document.getElementById('toggleHospitals').checked) {
+            currentCityData.hospitals.forEach(h => {
+                L.circleMarker([h.lat, h.lon], { radius: 6, color: '#10b981', fillColor: '#10b981', fillOpacity: 0.8 }).addTo(categoryMarkersLayer).bindPopup(`<b>🏥 ${h.name}</b>`);
+            });
+        }
+    }
+
+    function resetToHome() {
+        document.getElementById('citySearch').value = "";
+        document.getElementById('radiusRange').value = 5;
+        document.getElementById('radiusValue').innerText = 5;
+        map.setView([48.1351, 11.5820], 13);
+        radiusCircle.setLatLng([48.1351, 11.5820]);
+        radiusCircle.setRadius(5000);
+        loadLocationData(48.1351, 11.5820, 5, "München", "Bayern", "80331");
+    }
+
+    function showCityDetails() {
+        document.getElementById('modalTitle').innerText = "Stadt-Infos: " + currentCityData.name;
+        document.getElementById('modalBody').innerHTML = `<p>${currentCityData.name} ist ein ausgewählter Standort auf deiner Reisekarte.</p>`;
+        document.getElementById('modalFooterNav').style.display = 'none';
+        document.getElementById('detailModal').style.display = 'flex';
+    }
+
+    function showStateDetails() {
+        document.getElementById('modalTitle').innerText = "Region: " + currentCityData.state;
+        document.getElementById('modalBody').innerHTML = `<p>Region rund um ${currentCityData.name}.</p>`;
+        document.getElementById('modalFooterNav').style.display = 'none';
+        document.getElementById('detailModal').style.display = 'flex';
+    }
+
+    loadLocationData(48.1351, 11.5820, 5, "München", "Bayern", "80331");
+</script>
+</body>
+</html>
+
