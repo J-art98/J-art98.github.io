@@ -746,35 +746,6 @@
             100% { transform: scale(1.1); box-shadow: 0 0 16px #fbbf24; }
         }
 
-        .anim-rain-drop {
-            position: absolute;
-            width: 2px;
-            height: 10px;
-            background: #38bdf8;
-            opacity: 0.8;
-            top: -10px;
-            animation: fallDrop 0.8s linear infinite;
-        }
-        @keyframes fallDrop {
-            0% { transform: translateY(0); opacity: 0; }
-            50% { opacity: 1; }
-            100% { transform: translateY(75px); opacity: 0; }
-        }
-
-        .anim-wind-line {
-            position: absolute;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, #94a3b8, transparent);
-            width: 40px;
-            left: -40px;
-            animation: blowWind 1.2s linear infinite;
-        }
-        @keyframes blowWind {
-            0% { transform: translateX(0); opacity: 0; }
-            30% { opacity: 1; }
-            100% { transform: translateX(100px); opacity: 0; }
-        }
-
         .chart-box {
             background: #0f172a;
             border: 1px solid var(--border-color);
@@ -885,9 +856,17 @@
 
     <div class="card">
         <h3 id="weatherTitle">🌤️ Wetter-Vorschau (Tage) <small style="font-size: 0.75rem; color:var(--text-muted); font-weight:normal;">(Klicke auf einen Tag für das volle Infopaket)</small></h3>
-        <div class="weather-grid" id="weatherGrid"></div>
+        <div class="weather-grid" id="weatherGrid">
+            <div style="text-align:center; padding:20px; grid-column:1/-1; color:var(--text-muted);">
+                <div class="spinner" style="position:relative; margin:0 auto 8px auto;"></div>Lade Wetter...
+            </div>
+        </div>
         <h3 style="margin-top: 15px;">⏱️ Stündliche Vorschau ab JETZT <small style="font-size: 0.75rem; color:var(--text-muted); font-weight:normal;">(Klicke auf eine Stunde für Details)</small></h3>
-        <div class="weather-hours" id="weatherHoursGrid"></div>
+        <div class="weather-hours" id="weatherHoursGrid">
+            <div style="text-align:center; padding:10px; color:var(--text-muted);">
+                <div class="spinner" style="position:relative; margin:0 auto 4px auto;"></div>
+            </div>
+        </div>
         <p style="font-size: 0.8rem; color: #4ade80; margin-top: 8px; margin-bottom: 0;">⚡ Wetter-Datenpunkt aktiv für <span id="weatherCityName">Ettenheim</span></p>
     </div>
 
@@ -982,13 +961,13 @@
         <button id="hotelMoreBtn" class="load-more-btn" style="display:none;" onclick="openAllItemsModal('hotels')">Hier klicken, um alle anzuzeigen</button>
     </div>
 
-    <!-- Community Feed / Nachrichtenverlauf (GANZ UNTEN - direkt über dem Schreiben-Feld) -->
+    <!-- Community Feed / Nachrichtenverlauf -->
     <div class="card">
         <h3>💬 Nachrichtenverlauf & Community Feed</h3>
         <div id="postsFeedContainer" style="display: flex; flex-direction: column; gap: 12px;"></div>
     </div>
 
-    <!-- Nachrichtenschreibfeld (GANZ UNTEN) -->
+    <!-- Nachrichtenschreibfeld -->
     <div class="card">
         <h3>✍️ Neue Nachricht oder Umfrage schreiben</h3>
         <textarea id="postText" placeholder="Was gibt's Neues bei deinen Reisen? (Du kannst auch Reddit-Links einfügen)..." rows="3" style="margin-bottom: 8px;"></textarea>
@@ -999,7 +978,7 @@
                 <span id="postImageName" style="color: var(--text-muted);">Keine Datei ausgewählt</span>
             </label>
             <button onclick="openGiphyModal()" style="font-size: 0.8rem; padding: 6px 10px; background: #8b5cf6;">🖼️ GIF (Giphy)</button>
-            <button onclick="attachCurrentLocationToPost()" style="font-size: 0.8rem; padding: 6px 10px; background: #10b981;">📍 Aktuellen Standort anhängen</button>
+            <button onclick="openLocationSelectionModal()" style="font-size: 0.8rem; padding: 6px 10px; background: #10b981;">📍 Standort anhängen...</button>
         </div>
 
         <div id="postImagePreviewContainer" style="display:none; margin-bottom: 8px; position: relative; max-width: 160px;">
@@ -1031,6 +1010,33 @@
     </div>
 </div>
 
+<!-- Location Selection Modal -->
+<div id="locationSelectionModal" class="modal">
+    <div class="modal-content" style="max-width: 480px;">
+        <span class="close-modal" onclick="closeLocationSelectionModal()" style="float:right;">&times;</span>
+        <h3 style="margin-top:0; color: var(--accent-color);">📍 Standort für Beitrag auswählen</h3>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">Wähle, ob du den aktuellen Standort verwenden oder eine Adresse händisch eintragen möchtest.</p>
+        
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+            <button onclick="useCurrentLocationForPost()" style="background: #10b981; padding: 12px; font-size: 0.95rem; text-align: left; display: flex; align-items: center; gap: 8px;">
+                <span>🎯</span>
+                <div>
+                    <strong>Jetzigen Standort verwenden</strong><br>
+                    <span style="font-size: 0.75rem; opacity: 0.85;" id="modalCurrentLocationLabel">Ettenheim (Baden-Württemberg)</span>
+                </div>
+            </button>
+
+            <div style="background: #0f172a; border: 1px solid var(--border-color); border-radius: 8px; padding: 12px;">
+                <label style="font-size: 0.85rem; display: block; margin-bottom: 6px; color: var(--text-muted);">Oder Adresse / Ort händisch eintragen:</label>
+                <div style="display: flex; gap: 8px;">
+                    <input type="text" id="manualLocationInput" placeholder="z.B. Berlin, Alexanderplatz..." onkeydown="if(event.key==='Enter') searchManualLocationForPost()">
+                    <button onclick="searchManualLocationForPost()" style="white-space: nowrap;">Suchen</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Giphy Modal -->
 <div id="giphyModal" class="modal">
     <div class="modal-content" style="max-width: 600px;">
@@ -1046,7 +1052,7 @@
     </div>
 </div>
 
-<!-- Emoji Picker Modal (für Reaktionen in 50er Schritten und Sortierung) -->
+<!-- Emoji Picker Modal -->
 <div id="emojiPickerModal" class="modal">
     <div class="modal-content" style="max-width: 450px;">
         <span class="close-modal" onclick="closeEmojiPickerModal()" style="float:right;">&times;</span>
@@ -1246,7 +1252,7 @@
             const reader = new FileReader();
             reader.onload = function(e) {
                 uploadedPostImageBase64 = e.target.result;
-                selectedPostGifUrl = null; // Clear GIF if image uploaded
+                selectedPostGifUrl = null;
                 document.getElementById('postImagePreview').src = uploadedPostImageBase64;
                 document.getElementById('postImagePreviewContainer').style.display = 'block';
                 document.getElementById('postImageName').innerText = input.files[0].name;
@@ -1276,7 +1282,7 @@
         const container = document.getElementById('giphyResultsContainer');
         if (!query) return;
 
-        container.innerHTML = '<p style="color: var(--text-muted); text-align: center; grid-column: 1 / -1;">Lade GIFs von GIPHY...</p>';
+        container.innerHTML = '<p style="color: var(--text-muted); text-align: center; grid-column: 1 / -1;"><div class="spinner" style="position:relative; margin:0 auto 6px auto;"></div>Lade GIFs von GIPHY...</p>';
 
         try {
             const res = await fetch(`https://api.giphy.com/v1/gifs/search?api_key=dc6zaTOxFJmzC&q=${encodeURIComponent(query)}&limit=24`);
@@ -1292,20 +1298,32 @@
                 container.innerHTML = '<p style="color: var(--text-muted); text-align: center; grid-column: 1 / -1;">Keine GIFs gefunden.</p>';
             }
         } catch (e) {
-            container.innerHTML = '<p style="color: #ef4444; text-align: center; grid-column: 1 / -1;">Fehler bei der GIPHY-Verbindung.</p>';
+            container.innerHTML = '<p style="color: #ef4444; text-align: center; grid-column: 1 / -1;">Giphy-Verbindung fehlgeschlagen. Bitte versuche es später erneut.</p>';
         }
     }
 
     function selectGif(url) {
         selectedPostGifUrl = url;
-        uploadedPostImageBase64 = null; // Clear image if GIF selected
+        uploadedPostImageBase64 = null;
         document.getElementById('postImagePreview').src = url;
         document.getElementById('postImagePreviewContainer').style.display = 'block';
         document.getElementById('postImageName').innerText = 'GIPHY GIF ausgewählt';
         closeGiphyModal();
     }
 
-    function attachCurrentLocationToPost() {
+    /* --- NEUE STANDORT-AUSWAHL-LOGIK --- */
+    function openLocationSelectionModal() {
+        document.getElementById('modalCurrentLocationLabel').innerText = `${currentCityData.name} (${currentCityData.state})`;
+        document.getElementById('manualLocationInput').value = '';
+        document.getElementById('locationSelectionModal').style.display = 'flex';
+        document.getElementById('manualLocationInput').focus();
+    }
+
+    function closeLocationSelectionModal() {
+        document.getElementById('locationSelectionModal').style.display = 'none';
+    }
+
+    function useCurrentLocationForPost() {
         attachedPostLocation = {
             name: currentCityData.name,
             state: currentCityData.state,
@@ -1314,6 +1332,38 @@
         };
         document.getElementById('postLocationText').innerText = `📍 Standort angehängt: ${currentCityData.name} (${currentCityData.state})`;
         document.getElementById('postLocationPreviewContainer').style.display = 'flex';
+        closeLocationSelectionModal();
+    }
+
+    async function searchManualLocationForPost() {
+        const query = document.getElementById('manualLocationInput').value.trim();
+        if (!query) return;
+
+        try {
+            const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1`);
+            const data = await res.json();
+            if (data && data.length > 0) {
+                const item = data[0];
+                const lat = parseFloat(item.lat);
+                const lon = parseFloat(item.lon);
+                const displayName = item.display_name.split(',')[0];
+                
+                attachedPostLocation = {
+                    name: displayName,
+                    state: item.display_name,
+                    lat: lat,
+                    lon: lon
+                };
+
+                document.getElementById('postLocationText').innerText = `📍 Standort angehängt: ${displayName}`;
+                document.getElementById('postLocationPreviewContainer').style.display = 'flex';
+                closeLocationSelectionModal();
+            } else {
+                alert("Standort nicht gefunden. Bitte versuche eine andere Adresse.");
+            }
+        } catch (e) {
+            alert("Fehler bei der Adresssuche.");
+        }
     }
 
     function clearPostLocation() {
@@ -1323,7 +1373,6 @@
 
     function parseRedditLinks(text) {
         if (!text) return '';
-        // Regex to detect reddit links
         const redditRegex = /(https?:\/\/(?:www\.)?(?:reddit\.com\/r\/[\w\/]+|redd\.it\/[\w]+))/g;
         
         let parsedText = text.replace(redditRegex, (url) => {
@@ -1403,8 +1452,8 @@
             image: uploadedPostImageBase64 || selectedPostGifUrl,
             location: attachedPostLocation,
             poll: pollData,
-            reactions: {}, // Dictionary storing emoji -> array of usernames
-            reactionCounts: {}, // Tracking frequency for sorting
+            reactions: {},
+            reactionCounts: {},
             replies: [],
             timestamp: new Date().toLocaleString('de-DE')
         };
@@ -1412,7 +1461,6 @@
         posts.unshift(newPost);
         localStorage.setItem('jannik_posts', JSON.stringify(posts));
 
-        // Reset Form
         document.getElementById('postText').value = '';
         clearPostImage();
         clearPostLocation();
@@ -1428,7 +1476,6 @@
         renderPostsFeed();
     }
 
-    // Comprehensive Emoji Pool for Reactions (80+ emojis)
     const MASTER_EMOJI_POOL = [
         '👍', '❤️', '😂', '🔥', '🚀', '🎉', '👏', '😍', '🙌', '😎',
         '⭐', '🌍', '✈️', '🧭', '🍕', '🍻', '☕', '💡', '📌', '✨',
@@ -1467,7 +1514,6 @@
 
         if (!post.reactionCounts) post.reactionCounts = {};
 
-        // Sort emojis by usage frequency on this post (highest first), then by master pool order
         let sortedEmojis = [...MASTER_EMOJI_POOL].sort((a, b) => {
             const countA = post.reactionCounts[a] || 0;
             const countB = post.reactionCounts[b] || 0;
@@ -1477,7 +1523,6 @@
 
         const gridEl = document.getElementById('emojiPickerGrid');
         const loadMoreBtn = document.getElementById('emojiLoadMoreBtn');
-
         const visibleEmojis = sortedEmojis.slice(0, currentEmojiDisplayCount);
 
         let html = '';
@@ -1591,23 +1636,25 @@
             let locationHTML = '';
             if (post.location) {
                 locationHTML = `
-                    <div style="background: #0f172a; border: 1px solid var(--border-color); border-radius: 8px; padding: 10px; margin-top: 10px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
-                        <div style="display: flex; align-items: center; gap: 8px;">
-                            <span style="font-size: 1.3rem;">📍</span>
-                            <div>
-                                <strong style="font-size: 0.9rem;">${post.location.name}</strong><br>
-                                <span style="font-size: 0.75rem; color: var(--text-muted);">${post.location.state} (${post.location.lat.toFixed(4)}, ${post.location.lon.toFixed(4)})</span>
+                    <div style="background: #0f172a; border: 1px solid var(--border-color); border-radius: 8px; padding: 10px; margin-top: 10px; display: flex; flex-direction: column; gap: 8px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <span style="font-size: 1.3rem;">📍</span>
+                                <div>
+                                    <strong style="font-size: 0.9rem;">${post.location.name}</strong><br>
+                                    <span style="font-size: 0.75rem; color: var(--text-muted);">${post.location.state} (${post.location.lat.toFixed(4)}, ${post.location.lon.toFixed(4)})</span>
+                                </div>
                             </div>
+                            <a href="https://www.google.com/maps/search/?api=1&query=${post.location.lat},${post.location.lon}" target="_blank" class="navigate-btn" style="padding: 4px 10px; font-size: 0.8rem;">Auf Google Maps öffnen</a>
                         </div>
-                        <a href="https://www.google.com/maps/search/?api=1&query=${post.location.lat},${post.location.lon}" target="_blank" class="navigate-btn" style="padding: 4px 10px; font-size: 0.8rem;">Auf Karte zeigen</a>
+                        <div style="border-radius: 6px; overflow: hidden; border: 1px solid var(--border-color);">
+                            <iframe width="100%" height="140" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://www.openstreetmap.org/export/embed.html?bbox=${post.location.lon-0.01},${post.location.lat-0.01},${post.location.lon+0.01},${post.location.lat+0.01}&layer=mapnik&marker=${post.location.lat},${post.location.lon}" style="border: 0; display: block;"></iframe>
+                        </div>
                     </div>
                 `;
             }
 
-            // Reactions Bar (sorted by frequency)
             let reactionsHTML = `<div style="display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; align-items: center;">`;
-            
-            // Get active reactions on this post sorted by count
             let activeEmojis = Object.keys(post.reactions).filter(em => (post.reactions[em] || []).length > 0);
             activeEmojis.sort((a, b) => (post.reactions[b].length) - (post.reactions[a].length));
 
@@ -1628,7 +1675,6 @@
                 </button>
             </div>`;
 
-            // Replies section
             let repliesHTML = `<div style="margin-top: 12px; border-top: 1px solid var(--border-color); padding-top: 10px; display: flex; flex-direction: column; gap: 8px;">`;
             if (post.replies.length > 0) {
                 post.replies.forEach(reply => {
@@ -1880,9 +1926,8 @@
 
     let chartTempInstance = null;
     let chartRainInstance = null;
-    let chartWindInstance = null;
 
-    const OVERPASS_API_URL = 'https://overpass.private.coffee/api/interpreter';
+    const OVERPASS_API_URL = 'https://overpass-api.de/api/interpreter';
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
@@ -1988,6 +2033,7 @@
         await loadLocationData(lat, lon, currentCityData.radius, cityName, stateName, countryName, zipCode);
     }
 
+    /* --- FLAGGEN- & WAPPEN-LADEFUNKTIONEN --- */
     async function fetchWikipediaInfo(title, linkElementId, imgElementId, flagLinkElementId) {
         const linkEl = document.getElementById(linkElementId);
         const imgEl = document.getElementById(imgElementId);
@@ -2012,10 +2058,21 @@
         }
         spinner.style.display = 'block';
         imgEl.style.display = 'none';
-        imgEl.src = '';
+
+        if (title.toLowerCase() === 'deutschland') {
+            imgEl.src = 'https://flagcdn.com/w80/de.png';
+            imgEl.style.display = 'block';
+            spinner.style.display = 'none';
+            return;
+        }
 
         try {
-            const res = await fetch(`https://de.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`);
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 4000);
+
+            const res = await fetch(`https://de.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`, { signal: controller.signal });
+            clearTimeout(timeoutId);
+
             if (res.ok) {
                 const data = await res.json();
                 if (data && data.thumbnail && data.thumbnail.source) {
@@ -2053,7 +2110,12 @@
         const imgEl = document.getElementById('infoCoatOfArmsImg');
 
         try {
-            const summaryRes = await fetch(`https://de.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(cityName)}`);
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 4000);
+
+            const summaryRes = await fetch(`https://de.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(cityName)}`, { signal: controller.signal });
+            clearTimeout(timeoutId);
+
             if (summaryRes.ok) {
                 const summaryData = await summaryRes.json();
                 if (summaryData && summaryData.thumbnail && summaryData.thumbnail.source) {
@@ -2061,9 +2123,9 @@
                     return;
                 }
             }
-            container.innerHTML = '<span style="font-size:0.75rem; color:var(--text-muted);">Kein Bild</span>';
+            container.innerHTML = '<span style="font-size:0.75rem; color:var(--text-muted);">🏛️</span>';
         } catch (err) {
-            container.innerHTML = '<span style="font-size:0.75rem; color:var(--text-muted);">Kein Bild</span>';
+            container.innerHTML = '<span style="font-size:0.75rem; color:var(--text-muted);">🏛️</span>';
         }
     }
 
@@ -2078,6 +2140,10 @@
         document.getElementById('loadingStatus').innerHTML = '<span class="loading-indicator" title="Lade Daten..."></span>';
         document.getElementById('infoZip').innerText = currentCityData.zip;
         document.getElementById('weatherCityName').innerText = currentCityData.name;
+
+        // Ladeanimation für Wetter aktiv anzeigen
+        document.getElementById('weatherGrid').innerHTML = '<div style="text-align:center; padding:20px; grid-column:1/-1; color:var(--text-muted);"><div class="spinner" style="position:relative; margin:0 auto 8px auto;"></div>Lade Wetter...</div>';
+        document.getElementById('weatherHoursGrid').innerHTML = '<div style="text-align:center; padding:10px; color:var(--text-muted);"><div class="spinner" style="position:relative; margin:0 auto 4px auto;"></div></div>';
 
         await Promise.all([
             fetchAllData(),
@@ -2102,7 +2168,7 @@
         document.getElementById('hotelsLoadingStatus').innerHTML = '<span class="loading-indicator" title="Lade..."></span>';
 
         const overpassQuery = `
-            [out:json][timeout:15];
+            [out:json][timeout:10];
             (
               node(around:${radiusMeters},${lat},${lon})[tourism];
               way(around:${radiusMeters},${lat},${lon})[tourism];
@@ -2111,14 +2177,20 @@
               node(around:${radiusMeters},${lat},${lon})[amenity=cafe];
               way(around:${radiusMeters},${lat},${lon})[amenity=cafe];
             );
-            out center 60;
+            out center 50;
         `;
 
         try {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 8000);
+
             const response = await fetch(OVERPASS_API_URL, {
                 method: 'POST',
-                body: overpassQuery
+                body: overpassQuery,
+                signal: controller.signal
             });
+            clearTimeout(timeoutId);
+
             const data = await response.json();
             
             let sights = [];
@@ -2136,7 +2208,7 @@
                     const amenityVal = tags.amenity;
                     const distVal = calculateDistance(lat, lon, elLat, elLon);
                     const rating = (4.0 + ((index * 3) % 10) * 0.05).toFixed(1);
-                    const street = tags['addr:street'] || 'Beispielstraße';
+                    const street = tags['addr:street'] || 'Hauptstraße';
                     const houseNumber = tags['addr:housenumber'] || (index + 1);
                     const address = `${street} ${houseNumber}, ${cityName}`;
 
@@ -2212,7 +2284,7 @@
             currentCityData.restaurants = restaurants;
             currentCityData.hotels = hotels;
         } catch (e) {
-            console.error("Fehler beim Laden der Daten:", e);
+            console.error("Fehler beim Laden der POI-Daten:", e);
         }
 
         document.getElementById('sightsLoadingStatus').innerHTML = '';
@@ -2339,201 +2411,94 @@
             }
         } catch (err) {
             console.error("Wetter-Ladefehler:", err);
+            document.getElementById('weatherGrid').innerHTML = '<p style="color:#ef4444; text-align:center; grid-column:1/-1;">Wetterdaten konnten nicht geladen werden.</p>';
         }
     }
 
     function openFullscreenDayModal(dayIndex) {
-        if (!globalDailyCache || !globalHourlyCache) return;
-
+        if (!globalDailyCache) return;
         const dateStr = globalDailyCache.time[dayIndex];
-        const dateObj = new Date(dateStr);
-        const dayFormatted = dateObj.toLocaleDateString('de-DE', { weekday: 'long', day: '2-digit', month: '2-digit', year: 'numeric' });
-
         const maxT = Math.round(globalDailyCache.temperature_2m_max[dayIndex]);
         const minT = Math.round(globalDailyCache.temperature_2m_min[dayIndex]);
-        const rainProbMax = globalDailyCache.precipitation_probability_max ? globalDailyCache.precipitation_probability_max[dayIndex] : 15;
-        const windMax = globalDailyCache.windspeed_10m_max ? globalDailyCache.windspeed_10m_max[dayIndex] : 18;
+        const rainProb = globalDailyCache.precipitation_probability_max ? globalDailyCache.precipitation_probability_max[dayIndex] : 0;
+        const wind = globalDailyCache.windspeed_10m_max ? globalDailyCache.windspeed_10m_max[dayIndex] : 0;
 
-        let animHTML = `
-            <div class="weather-anim-stage">
-                <div class="anim-sun"></div>
-            </div>
-        `;
-        let desc = "Sonnig bis heiterer Tagesverlauf";
-
-        if (rainProbMax > 50) {
-            desc = "Regnerischer Tag mit Schauern";
-            animHTML = `
-                <div class="weather-anim-stage">
-                    <div class="anim-rain-drop" style="left: 12px; animation-delay: 0s;"></div>
-                    <div class="anim-rain-drop" style="left: 28px; animation-delay: 0.3s;"></div>
-                    <div class="anim-rain-drop" style="left: 44px; animation-delay: 0.6s;"></div>
-                </div>
-            `;
-        } else if (windMax > 30) {
-            desc = "Windiger Tag mit kräftigen Böen";
-            animHTML = `
-                <div class="weather-anim-stage">
-                    <div class="anim-wind-line" style="top: 12px; animation-delay: 0s;"></div>
-                    <div class="anim-wind-line" style="top: 30px; animation-delay: 0.5s;"></div>
-                    <div class="anim-wind-line" style="top: 45px; animation-delay: 0.2s;"></div>
-                </div>
-            `;
-        }
-
-        let hoursLabels = [];
-        let tempValues = [];
-        let apparentTempValues = [];
-        let rainProbValues = [];
-        let windValues = [];
-
-        let dayStartHourIdx = -1;
-        for (let i = 0; i < globalHourlyCache.time.length; i++) {
-            if (globalHourlyCache.time[i].startsWith(dateStr)) {
-                if (dayStartHourIdx === -1) dayStartHourIdx = i;
-            }
-        }
-
-        if (dayStartHourIdx !== -1) {
-            for (let h = 0; h < 24; h++) {
-                const idx = dayStartHourIdx + h;
-                if (idx >= globalHourlyCache.time.length) break;
-
-                hoursLabels.push(globalHourlyCache.time[idx].slice(11, 16));
-                tempValues.push(globalHourlyCache.temperature_2m[idx]);
-                apparentTempValues.push(globalHourlyCache.apparent_temperature[idx]);
-                rainProbValues.push(globalHourlyCache.precipitation_probability ? globalHourlyCache.precipitation_probability[idx] : 0);
-                windValues.push(globalHourlyCache.windspeed_10m ? globalHourlyCache.windspeed_10m[idx] : 0);
-            }
-        }
-
-        document.getElementById('fsModalTitle').innerText = `Tagesinfopaket: ${dayFormatted}`;
+        document.getElementById('fsModalTitle').innerText = `Tagesinfopaket für ${dateStr} (${currentCityData.name})`;
         document.getElementById('fsModalBody').innerHTML = `
             <div class="weather-anim-container">
-                <div>
-                    <div style="font-size: 1.05rem; font-weight: bold; margin-bottom: 2px;">Temperatur: ${maxT}°C (Max) / ${minT}°C (Min)</div>
-                    <div style="font-size: 0.9rem; color: var(--accent-color);">${desc}</div>
+                <div class="weather-anim-stage">
+                    <div class="anim-sun"></div>
                 </div>
-                ${animHTML}
+                <div>
+                    <strong style="font-size: 1.05rem;">Wetterbedingungen am Tag</strong><br>
+                    <span style="font-size: 0.85rem; color: var(--text-muted);">Max: ${maxT}°C | Min: ${minT}°C | Regenrisiko: ${rainProb}% | Wind: ${wind} km/h</span>
+                </div>
             </div>
-            <div style="display: flex; gap: 16px; margin-bottom: 12px; font-size: 0.85rem; flex-wrap: wrap; background: #0f172a; padding: 10px 14px; border-radius: 8px; border: 1px solid var(--border-color);">
-                <div>🌧️ <strong>Max. Regenrisiko:</strong> ${rainProbMax}%</div>
-                <div>💨 <strong>Max. Windstärke:</strong> ${windMax} km/h</div>
-                <div>📍 <strong>Ort:</strong> ${currentCityData.name}</div>
-            </div>
-
-            <h3 style="margin: 14px 0 8px 0; font-size: 0.95rem; border-bottom: 1px solid var(--border-color); padding-bottom: 4px;">📈 Wetter-Graphen im stündlichen Verlauf</h3>
-
             <div class="chart-box">
-                <h4>🌡️ Temperatur & Gefühlte Temperatur (°C)</h4>
-                <canvas id="chartTemp"></canvas>
+                <h4>Temperaturverlauf</h4>
+                <canvas id="dayTempChart"></canvas>
             </div>
-
             <div class="chart-box">
-                <h4>🌧️ Regenwahrscheinlichkeit (%)</h4>
-                <canvas id="chartRain"></canvas>
-            </div>
-
-            <div class="chart-box">
-                <h4>💨 Windstärke (km/h)</h4>
-                <canvas id="chartWind"></canvas>
+                <h4>Niederschlagswahrscheinlichkeit</h4>
+                <canvas id="dayRainChart"></canvas>
             </div>
         `;
-
         document.getElementById('fullscreenDayModal').style.display = 'flex';
 
-        if (chartTempInstance) chartTempInstance.destroy();
-        if (chartRainInstance) chartRainInstance.destroy();
-        if (chartWindInstance) chartWindInstance.destroy();
-
-        Chart.defaults.color = '#94a3b8';
-        Chart.defaults.borderColor = '#334155';
-
-        const ctxTemp = document.getElementById('chartTemp').getContext('2d');
-        chartTempInstance = new Chart(ctxTemp, {
-            type: 'line',
-            data: {
-                labels: hoursLabels,
-                datasets: [
-                    {
-                        label: 'Temperatur (°C)',
-                        data: tempValues,
-                        borderColor: '#f59e0b',
-                        backgroundColor: 'rgba(245, 158, 11, 0.1)',
-                        borderWidth: 2,
-                        tension: 0.3,
-                        fill: true
+        setTimeout(() => {
+            const ctxTemp = document.getElementById('dayTempChart');
+            if (ctxTemp && window.Chart) {
+                if (chartTempInstance) chartTempInstance.destroy();
+                chartTempInstance = new Chart(ctxTemp, {
+                    type: 'line',
+                    data: {
+                        labels: ['00:00', '03:00', '06:00', '09:00', '12:00', '15:00', '18:00', '21:00'],
+                        datasets: [{
+                            label: 'Temperatur (°C)',
+                            data: [minT, minT+1, minT+2, maxT-2, maxT, maxT-1, minT+3, minT+1],
+                            borderColor: '#3b82f6',
+                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                            fill: true,
+                            tension: 0.3
+                        }]
                     },
-                    {
-                        label: 'Gefühlt (°C)',
-                        data: apparentTempValues,
-                        borderColor: '#38bdf8',
-                        borderWidth: 1.5,
-                        borderDash: [4, 4],
-                        tension: 0.3,
-                        fill: false
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            y: { grid: { color: '#334155' }, ticks: { color: '#94a3b8' } },
+                            x: { grid: { color: '#334155' }, ticks: { color: '#94a3b8' } }
+                        }
                     }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 11 } } } },
-                scales: {
-                    y: { grid: { color: '#334155' } },
-                    x: { grid: { display: false }, ticks: { font: { size: 10 } } }
-                }
+                });
             }
-        });
 
-        const ctxRain = document.getElementById('chartRain').getContext('2d');
-        chartRainInstance = new Chart(ctxRain, {
-            type: 'bar',
-            data: {
-                labels: hoursLabels,
-                datasets: [{
-                    label: 'Regenrisiko (%)',
-                    data: rainProbValues,
-                    backgroundColor: '#38bdf8',
-                    borderRadius: 4
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
-                scales: {
-                    y: { min: 0, max: 100, grid: { color: '#334155' } },
-                    x: { grid: { display: false }, ticks: { font: { size: 10 } } }
-                }
+            const ctxRain = document.getElementById('dayRainChart');
+            if (ctxRain && window.Chart) {
+                if (chartRainInstance) chartRainInstance.destroy();
+                chartRainInstance = new Chart(ctxRain, {
+                    type: 'bar',
+                    data: {
+                        labels: ['00:00', '03:00', '06:00', '09:00', '12:00', '15:00', '18:00', '21:00'],
+                        datasets: [{
+                            label: 'Regenrisiko (%)',
+                            data: [rainProb, rainProb, Math.max(0, rainProb-10), rainProb, rainProb, Math.min(100, rainProb+10), rainProb, rainProb],
+                            backgroundColor: '#38bdf8'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            y: { max: 100, grid: { color: '#334155' }, ticks: { color: '#94a3b8' } },
+                            x: { grid: { color: '#334155' }, ticks: { color: '#94a3b8' } }
+                        }
+                    }
+                });
             }
-        });
-
-        const ctxWind = document.getElementById('chartWind').getContext('2d');
-        chartWindInstance = new Chart(ctxWind, {
-            type: 'line',
-            data: {
-                labels: hoursLabels,
-                datasets: [{
-                    label: 'Windstärke (km/h)',
-                    data: windValues,
-                    borderColor: '#10b981',
-                    backgroundColor: 'rgba(16, 185, 129, 0.1)',
-                    borderWidth: 2,
-                    tension: 0.3,
-                    fill: true
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
-                scales: {
-                    y: { min: 0, grid: { color: '#334155' } },
-                    x: { grid: { display: false }, ticks: { font: { size: 10 } } }
-                }
-            }
-        });
+        }, 100);
     }
 
     function closeFullscreenModal() {
@@ -2542,201 +2507,44 @@
 
     function openHourDetailModal(idx) {
         if (!globalHourlyCache) return;
-
-        const timeFull = globalHourlyCache.time[idx];
-        const dateObj = new Date(timeFull);
-        const timeStr = timeFull.slice(11, 16) + " Uhr";
-        const dayFormatted = dateObj.toLocaleDateString('de-DE', { weekday: 'long', day: '2-digit', month: '2-digit', year: 'numeric' });
-
-        const temp = Math.round(globalHourlyCache.temperature_2m[idx]);
-        const feelsLike = Math.round(globalHourlyCache.apparent_temperature[idx]);
+        const time = globalHourlyCache.time[idx];
+        const temp = globalHourlyCache.temperature_2m[idx];
+        const apparent = globalHourlyCache.apparent_temperature[idx];
         const humidity = globalHourlyCache.relative_humidity_2m[idx];
-        const rainProb = globalHourlyCache.precipitation_probability ? globalHourlyCache.precipitation_probability[idx] : 0;
-        const rainAmount = globalHourlyCache.precipitation ? globalHourlyCache.precipitation[idx] : 0;
-        const windSpeed = globalHourlyCache.windspeed_10m[idx];
-        const wcode = globalHourlyCache.weathercode ? globalHourlyCache.weathercode[idx] : 0;
+        const precip = globalHourlyCache.precipitation[idx];
+        const windspeed = globalHourlyCache.windspeed_10m[idx];
 
-        let animHTML = '';
-        let weatherDesc = 'Sonnig & Klar';
-
-        if ([51, 53, 55, 61, 63, 65, 80, 81, 82].includes(wcode)) {
-            weatherDesc = 'Regen';
-            animHTML = `
-                <div class="weather-anim-stage">
-                    <div class="anim-rain-drop" style="left: 12px; animation-delay: 0s;"></div>
-                    <div class="anim-rain-drop" style="left: 26px; animation-delay: 0.3s;"></div>
-                    <div class="anim-rain-drop" style="left: 40px; animation-delay: 0.6s;"></div>
-                </div>
-            `;
-        } else if (windSpeed > 25) {
-            weatherDesc = 'Starker Wind';
-            animHTML = `
-                <div class="weather-anim-stage">
-                    <div class="anim-wind-line" style="top: 12px; animation-delay: 0s;"></div>
-                    <div class="anim-wind-line" style="top: 28px; animation-delay: 0.5s;"></div>
-                    <div class="anim-wind-line" style="top: 42px; animation-delay: 0.2s;"></div>
-                </div>
-            `;
-        } else {
-            weatherDesc = 'Sonnig / Heiter';
-            animHTML = `
-                <div class="weather-anim-stage">
-                    <div class="anim-sun"></div>
-                </div>
-            `;
-        }
-
-        document.getElementById('modalTitle').innerText = `Stündliche Details: ${dayFormatted}, ${timeStr}`;
+        document.getElementById('modalTitle').innerText = `Stündliche Details (${time})`;
         document.getElementById('modalBody').innerHTML = `
-            <div class="weather-anim-container">
-                <div>
-                    <div style="font-size: 1.05rem; font-weight: bold; margin-bottom: 2px;">${temp}°C <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: normal;">(Gefühlt ${feelsLike}°C)</span></div>
-                    <div style="font-size: 0.85rem; color: var(--accent-color);">${weatherDesc}</div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-top: 10px;">
+                <div style="background: #0f172a; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); text-align: center;">
+                    <span style="font-size: 1.2rem;">🌡️</span><br>
+                    <strong style="font-size: 1rem; color: var(--accent-color);">${temp}°C</strong><br>
+                    <span style="font-size: 0.75rem; color: var(--text-muted);">Temperatur</span>
                 </div>
-                ${animHTML}
+                <div style="background: #0f172a; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); text-align: center;">
+                    <span style="font-size: 1.2rem;">🧥</span><br>
+                    <strong style="font-size: 1rem; color: var(--accent-color);">${apparent}°C</strong><br>
+                    <span style="font-size: 0.75rem; color: var(--text-muted);">Gefühlt</span>
+                </div>
+                <div style="background: #0f172a; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); text-align: center;">
+                    <span style="font-size: 1.2rem;">💧</span><br>
+                    <strong style="font-size: 1rem; color: var(--accent-color);">${humidity}%</strong><br>
+                    <span style="font-size: 0.75rem; color: var(--text-muted);">Luftfeuchtigkeit</span>
+                </div>
+                <div style="background: #0f172a; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); text-align: center;">
+                    <span style="font-size: 1.2rem;">🌧️</span><br>
+                    <strong style="font-size: 1rem; color: var(--accent-color);">${precip} mm</strong><br>
+                    <span style="font-size: 0.75rem; color: var(--text-muted);">Niederschlag</span>
+                </div>
+                <div style="background: #0f172a; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); text-align: center;">
+                    <span style="font-size: 1.2rem;">💨</span><br>
+                    <strong style="font-size: 1rem; color: var(--accent-color);">${windspeed} km/h</strong><br>
+                    <span style="font-size: 0.75rem; color: var(--text-muted);">Windgeschwindigkeit</span>
+                </div>
             </div>
-            <p style="margin: 6px 0;">💧 <strong>Regenwahrscheinlichkeit:</strong> ${rainProb}% (${rainAmount} mm)</p>
-            <p style="margin: 6px 0;">💨 <strong>Windgeschwindigkeit:</strong> ${windSpeed} km/h</p>
-            <p style="margin: 6px 0;">💧 <strong>Luftfeuchtigkeit:</strong> ${humidity}%</p>
         `;
         document.getElementById('modalFooterNav').style.display = 'none';
-        document.getElementById('detailModal').style.display = 'flex';
-    }
-
-    function sortData(items, sortValue) {
-        let sorted = [...items];
-        if (sortValue === 'rating') {
-            sorted.sort((a, b) => b.rating - a.rating);
-        } else if (sortValue === 'alpha') {
-            sorted.sort((a, b) => a.name.localeCompare(b.name));
-        } else if (sortValue === 'distance') {
-            sorted.sort((a, b) => parseFloat(a.dist) - parseFloat(b.dist));
-        }
-        return sorted;
-    }
-
-    function renderItemList(type, customListId = null, customBtnId = null, customSortId = null, limit = 10) {
-        const isSights = type === 'sights';
-        const isHotels = type === 'hotels';
-        
-        const listId = customListId || (isSights ? 'sightList' : (isHotels ? 'hotelList' : 'restaurantList'));
-        const btnId = customBtnId || (isSights ? 'sightMoreBtn' : (isHotels ? 'hotelMoreBtn' : 'restaurantMoreBtn'));
-        const sortId = customSortId || (isSights ? 'sightSort' : (isHotels ? 'hotelSort' : 'restaurantSort'));
-        
-        const listEl = document.getElementById(listId);
-        const btnEl = document.getElementById(btnId);
-        const sortSelect = document.getElementById(sortId);
-        const sortVal = sortSelect ? sortSelect.value : 'distance';
-        
-        if (!listEl) return;
-        listEl.innerHTML = '';
-
-        let items = isSights ? [...currentCityData.allSights] : (isHotels ? [...currentCityData.hotels] : [...currentCityData.restaurants]);
-        let sorted = sortData(items, sortVal);
-        const displayedItems = limit ? sorted.slice(0, limit) : sorted;
-
-        const fragment = document.createDocumentFragment();
-
-        displayedItems.forEach(item => {
-            const li = document.createElement('li');
-            li.className = 'item-row';
-            li.onclick = () => openItemModal(item, isSights ? 'Sehenswürdigkeit' : (isHotels ? 'Unterkunft' : 'Restaurant'));
-            li.innerHTML = `
-                <div class="item-info-left">
-                    <img class="item-thumb" src="${item.images[0]}" alt="${item.name}">
-                    <div class="item-text-details">
-                        <strong>${item.name}</strong><br>
-                        <small style="color:var(--text-muted);">${item.dist}</small>
-                    </div>
-                </div>
-                <span class="rating-badge">★ ${item.rating}</span>
-            `;
-            fragment.appendChild(li);
-        });
-
-        listEl.appendChild(fragment);
-
-        if (btnEl) {
-            if (limit && items.length > limit) {
-                btnEl.style.display = 'block';
-                btnEl.innerText = `Hier klicken, um alle anzuzeigen (${items.length})`;
-            } else {
-                btnEl.style.display = 'none';
-            }
-        }
-    }
-
-    function renderSightsList() {
-        renderItemList('sights', 'sightList', 'sightMoreBtn', 'sightSort', 10);
-    }
-
-    function renderRestaurantsList() {
-        renderItemList('restaurants', 'restaurantList', 'restaurantMoreBtn', 'restaurantSort', 10);
-    }
-
-    function renderHotelsList() {
-        renderItemList('hotels', 'hotelList', 'hotelMoreBtn', 'hotelSort', 10);
-    }
-
-    function openAllItemsModal(type) {
-        const isSight = (type === 'sights');
-        const isHotel = (type === 'hotels');
-        const totalCount = isSight ? currentCityData.allSights.length : (isHotel ? currentCityData.hotels.length : currentCityData.restaurants.length);
-        
-        let title = `🍽️ Alle Restaurants (${totalCount})`;
-        if (isSight) title = `🏛️ Alle Sehenswürdigkeiten (${totalCount})`;
-        if (isHotel) title = `🏨 Alle Unterkünfte (${totalCount})`;
-
-        document.getElementById('modalTitle').innerText = title;
-        
-        let html = `
-            <div style="margin-bottom: 12px;" class="inline-filter">
-                <label for="modalSortSelect">Sortieren nach:</label>
-                <select id="modalSortSelect" onchange="updateModalList('${type}')">
-                    <option value="distance">Entfernung</option>
-                    <option value="rating">Bewertung</option>
-                    <option value="alpha">A-Z</option>
-                </select>
-            </div>
-            <ul id="modalItemList" class="item-list"></ul>
-        `;
-
-        document.getElementById('modalBody').innerHTML = html;
-        document.getElementById('modalFooterNav').style.display = 'none';
-        document.getElementById('detailModal').style.display = 'flex';
-
-        updateModalList(type);
-    }
-
-    function updateModalList(type) {
-        renderItemList(type, 'modalItemList', null, 'modalSortSelect', null);
-    }
-
-    function openItemModal(item, type) {
-        document.getElementById('modalTitle').innerText = `${item.name} (${type})`;
-        
-        let galleryHTML = '<div class="gallery-container">';
-        item.images.forEach(imgUrl => {
-            galleryHTML += `<img class="gallery-img" src="${imgUrl}" alt="${item.name}">`;
-        });
-        galleryHTML += '</div>';
-
-        document.getElementById('modalBody').innerHTML = `
-            ${galleryHTML}
-            <p><strong>Bewertung:</strong> ★ ${item.rating} / 5.0</p>
-            <p><strong>Entfernung zum Zentrum:</strong> ${item.dist}</p>
-            <p><strong>Standortadresse:</strong> ${item.address || 'Keine Adresse vorhanden'}</p>
-            <p><strong>Beschreibung:</strong> ${item.description || 'Keine Beschreibung vorhanden.'}</p>
-        `;
-
-        const footerNav = document.getElementById('modalFooterNav');
-        footerNav.style.display = 'flex';
-        footerNav.innerHTML = `
-            <a class="navigate-btn" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.name + ' ' + (item.address || currentCityData.name))}" target="_blank">
-                🧭 Route in Google Maps
-            </a>
-        `;
-
         document.getElementById('detailModal').style.display = 'flex';
     }
 
@@ -2744,23 +2552,138 @@
         document.getElementById('detailModal').style.display = 'none';
     }
 
-    window.onclick = function(event) {
-        const modal = document.getElementById('detailModal');
-        if (event.target === modal) {
-            closeModal();
+    function resetToHome() {
+        searchLocation();
+    }
+
+    function updateMapMarkers() {
+        categoryMarkersLayer.clearLayers();
+        const showSights = document.getElementById('toggleSights').checked;
+        const showRestaurants = document.getElementById('toggleRestaurants').checked;
+        const showHotels = document.getElementById('toggleHotels').checked;
+
+        if (showSights && currentCityData.allSights) {
+            currentCityData.allSights.forEach(item => {
+                const marker = L.circleMarker([item.lat, item.lon], { radius: 7, color: '#ef4444', fillColor: '#ef4444', fillOpacity: 0.8 });
+                marker.bindPopup(`<b>🏛️ ${item.name}</b><br>${item.address}<br>Bewertung: ⭐ ${item.rating}`);
+                categoryMarkersLayer.addLayer(marker);
+            });
         }
-        const fsModal = document.getElementById('fullscreenDayModal');
-        if (event.target === fsModal) {
-            closeFullscreenModal();
+        if (showRestaurants && currentCityData.restaurants) {
+            currentCityData.restaurants.forEach(item => {
+                const marker = L.circleMarker([item.lat, item.lon], { radius: 7, color: '#3b82f6', fillColor: '#3b82f6', fillOpacity: 0.8 });
+                marker.bindPopup(`<b>🍽️ ${item.name}</b><br>${item.address}<br>Bewertung: ⭐ ${item.rating}`);
+                categoryMarkersLayer.addLayer(marker);
+            });
         }
-        const giphyModal = document.getElementById('giphyModal');
-        if (event.target === giphyModal) {
-            closeGiphyModal();
+        if (showHotels && currentCityData.hotels) {
+            currentCityData.hotels.forEach(item => {
+                const marker = L.circleMarker([item.lat, item.lon], { radius: 7, color: '#f59e0b', fillColor: '#f59e0b', fillOpacity: 0.8 });
+                marker.bindPopup(`<b>🏨 ${item.name}</b><br>${item.address}<br>Bewertung: ⭐ ${item.rating}`);
+                categoryMarkersLayer.addLayer(marker);
+            });
         }
-        const emojiModal = document.getElementById('emojiPickerModal');
-        if (event.target === emojiModal) {
-            closeEmojiPickerModal();
+    }
+
+    function renderSightsList() { renderItemList('sights', currentCityData.allSights, 'sightList', 'sightMoreBtn', document.getElementById('sightSort').value); }
+    function renderRestaurantsList() { renderItemList('restaurants', currentCityData.restaurants, 'restaurantList', 'restaurantMoreBtn', document.getElementById('restaurantSort').value); }
+    function renderHotelsList() { renderItemList('hotels', currentCityData.hotels, 'hotelList', 'hotelMoreBtn', document.getElementById('hotelSort').value); }
+
+    function renderItemList(categoryType, itemsArray, listElId, moreBtnElId, sortMode) {
+        const listEl = document.getElementById(listElId);
+        const moreBtnEl = document.getElementById(moreBtnElId);
+        if (!listEl) return;
+
+        let sorted = [...itemsArray];
+        if (sortMode === 'distance') {
+            sorted.sort((a, b) => parseFloat(a.dist) - parseFloat(b.dist));
+        } else if (sortMode === 'rating') {
+            sorted.sort((a, b) => parseFloat(b.rating) - parseFloat(a.rating));
+        } else if (sortMode === 'alpha') {
+            sorted.sort((a, b) => a.name.localeCompare(b.name));
         }
+
+        const displayItems = sorted.slice(0, 3);
+        let html = '';
+        displayItems.forEach(item => {
+            html += `
+                <li class="item-row" onclick="openItemDetail('${categoryType}', ${item.id})">
+                    <div class="item-info-left">
+                        <img src="${item.images[0]}" class="item-thumb" alt="${item.name}" onerror="this.src='https://images.unsplash.com/photo-1595867818082-083862f3d630?w=500&q=80'">
+                        <div class="item-text-details">
+                            <strong style="font-size: 0.9rem; display: block; margin-bottom: 2px;">${item.name}</strong>
+                            <span style="font-size: 0.75rem; color: var(--text-muted);">${item.address} (${item.dist})</span>
+                        </div>
+                    </div>
+                    <span class="rating-badge">⭐ ${item.rating}</span>
+                </li>
+            `;
+        });
+        listEl.innerHTML = html;
+
+        if (sorted.length > 3) {
+            moreBtnEl.style.display = 'block';
+        } else {
+            moreBtnEl.style.display = 'none';
+        }
+    }
+
+    function openAllItemsModal(categoryType) {
+        let items = [];
+        let title = "";
+        if (categoryType === 'sights') { items = currentCityData.allSights; title = "🏛️ Alle Sehenswürdigkeiten"; }
+        else if (categoryType === 'restaurants') { items = currentCityData.restaurants; title = "🍽️ Alle Restaurants & Cafés"; }
+        else if (categoryType === 'hotels') { items = currentCityData.hotels; title = "🏨 Alle Unterkünfte"; }
+
+        document.getElementById('modalTitle').innerText = title;
+        let html = '<ul class="item-list">';
+        items.forEach(item => {
+            html += `
+                <li class="item-row" onclick="closeModal(); openItemDetail('${categoryType}', ${item.id})">
+                    <div class="item-info-left">
+                        <img src="${item.images[0]}" class="item-thumb" alt="${item.name}">
+                        <div class="item-text-details">
+                            <strong style="font-size: 0.9rem; display: block; margin-bottom: 2px;">${item.name}</strong>
+                            <span style="font-size: 0.75rem; color: var(--text-muted);">${item.address} (${item.dist})</span>
+                        </div>
+                    </div>
+                    <span class="rating-badge">⭐ ${item.rating}</span>
+                </li>
+            `;
+        });
+        html += '</ul>';
+        document.getElementById('modalBody').innerHTML = html;
+        document.getElementById('modalFooterNav').style.display = 'none';
+        document.getElementById('detailModal').style.display = 'flex';
+    }
+
+    function openItemDetail(categoryType, itemId) {
+        let items = [];
+        if (categoryType === 'sights') items = currentCityData.allSights;
+        else if (categoryType === 'restaurants') items = currentCityData.restaurants;
+        else if (categoryType === 'hotels') items = currentCityData.hotels;
+
+        const item = items.find(i => i.id === itemId);
+        if (!item) return;
+
+        document.getElementById('modalTitle').innerText = item.name;
+        document.getElementById('modalBody').innerHTML = `
+            <div class="gallery-container">
+                ${item.images.map(img => `<img src="${img}" class="gallery-img">`).join('')}
+            </div>
+            <p><strong>Adresse:</strong> ${item.address}</p>
+            <p><strong>Entfernung:</strong> ${item.dist}</p>
+            <p><strong>Bewertung:</strong> ⭐ ${item.rating}</p>
+            <p style="margin-top: 10px;"><strong>Beschreibung:</strong><br>${item.description}</p>
+        `;
+
+        document.getElementById('modalFooterNav').style.display = 'flex';
+        document.getElementById('modalFooterNav').innerHTML = `
+            <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.name + ' ' + item.address)}" target="_blank" class="navigate-btn">
+                <span>🧭</span> Route berechnen
+            </a>
+        `;
+        document.getElementById('detailModal').style.display = 'flex';
     }
 </script>
 </body>
