@@ -864,7 +864,10 @@
         <p><strong>Gründungsjahr:</strong> <span id="infoFounded">1181</span></p>
         
         <div class="section-header-bar">
-            <strong>🏛️ Sehenswürdigkeiten: <span id="sightsLoadingStatus"></span></strong>
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <strong>🏛️ Sehenswürdigkeiten: <span id="sightsLoadingStatus"></span></strong>
+                <button onclick="fetchSightsData()" style="padding: 3px 8px; font-size: 0.75rem;">Suchen</button>
+            </div>
             <div class="inline-filter">
                 <label for="sightSort">Sortieren:</label>
                 <select id="sightSort" onchange="renderSightsList()">
@@ -878,7 +881,10 @@
         <button id="sightMoreBtn" class="load-more-btn" style="display:none;" onclick="openAllItemsModal('sights')">Hier klicken, um alle anzuzeigen</button>
 
         <div class="section-header-bar">
-            <strong>🍽️ Restaurants: <span id="restaurantsLoadingStatus"></span></strong>
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <strong>🍽️ Restaurants: <span id="restaurantsLoadingStatus"></span></strong>
+                <button onclick="fetchRestaurantsData()" style="padding: 3px 8px; font-size: 0.75rem;">Suchen</button>
+            </div>
             <div class="inline-filter">
                 <label for="restaurantSort">Sortieren:</label>
                 <select id="restaurantSort" onchange="renderRestaurantsList()">
@@ -892,7 +898,10 @@
         <button id="restaurantMoreBtn" class="load-more-btn" style="display:none;" onclick="openAllItemsModal('restaurants')">Hier klicken, um alle anzuzeigen</button>
 
         <div class="section-header-bar">
-            <strong>🏨 Übernachtungsmöglichkeiten: <span id="hotelsLoadingStatus"></span></strong>
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <strong>🏨 Übernachtungsmöglichkeiten: <span id="hotelsLoadingStatus"></span></strong>
+                <button onclick="fetchHotelsData()" style="padding: 3px 8px; font-size: 0.75rem;">Suchen</button>
+            </div>
             <div class="inline-filter">
                 <label for="hotelSort">Sortieren:</label>
                 <select id="hotelSort" onchange="renderHotelsList()">
@@ -1271,43 +1280,48 @@
     }
 
     async function loadLocationData(lat, lon, radiusKm, cityName, stateName, zipCode) {
-        document.getElementById('loadingStatus').innerHTML = '<span class="loading-indicator" title="Lade Daten..."></span>';
-        document.getElementById('sightsLoadingStatus').innerHTML = '<span class="loading-indicator" title="Lade Sehenswürdigkeiten..."></span>';
-        document.getElementById('restaurantsLoadingStatus').innerHTML = '<span class="loading-indicator" title="Lade Restaurants..."></span>';
-        document.getElementById('hotelsLoadingStatus').innerHTML = '<span class="loading-indicator" title="Lade Übernachtungen..."></span>';
-
-        await Promise.all([
-            fetchRealOverpassData(lat, lon, radiusKm, cityName, stateName, zipCode),
-            fetchRealWeather(lat, lon, cityName)
-        ]);
-
-        document.getElementById('loadingStatus').innerHTML = '';
-        document.getElementById('sightsLoadingStatus').innerHTML = '';
-        document.getElementById('restaurantsLoadingStatus').innerHTML = '';
-        document.getElementById('hotelsLoadingStatus').innerHTML = '';
-    }
-
-    async function fetchRealOverpassData(lat, lon, radiusKm, cityName, stateName, zipCode) {
         currentCityData.name = cityName;
         currentCityData.lat = lat;
         currentCityData.lon = lon;
         currentCityData.state = stateName;
         currentCityData.zip = zipCode;
+        
+        // Listen bei Standortwechsel zurücksetzen, da Suche nicht mehr automatisch läuft
+        currentCityData.allSights = [];
+        currentCityData.restaurants = [];
+        currentCityData.hotels = [];
+        
+        renderSightsList();
+        renderRestaurantsList();
+        renderHotelsList();
+        updateMapMarkers();
 
+        document.getElementById('loadingStatus').innerHTML = '<span class="loading-indicator" title="Lade Daten..."></span>';
+
+        await fetchRealWeather(lat, lon, cityName);
+
+        document.getElementById('loadingStatus').innerHTML = '';
+
+        document.getElementById('infoName').innerText = currentCityData.name;
+        document.getElementById('infoZip').innerText = currentCityData.zip;
+        document.getElementById('infoState').innerText = currentCityData.state;
+        document.getElementById('weatherCityName').innerText = currentCityData.name;
+    }
+
+    async function fetchSightsData() {
+        const lat = currentCityData.lat;
+        const lon = currentCityData.lon;
+        const radiusKm = currentCityData.radius;
+        const cityName = currentCityData.name;
         const radiusMeters = radiusKm * 1000;
+
+        document.getElementById('sightsLoadingStatus').innerHTML = '<span class="loading-indicator" title="Lade Sehenswürdigkeiten..."></span>';
+
         const overpassQuery = `
             [out:json][timeout:15];
             (
               node(around:${radiusMeters},${lat},${lon})[tourism];
               way(around:${radiusMeters},${lat},${lon})[tourism];
-              node(around:${radiusMeters},${lat},${lon})[amenity=restaurant];
-              way(around:${radiusMeters},${lat},${lon})[amenity=restaurant];
-              node(around:${radiusMeters},${lat},${lon})[amenity=cafe];
-              way(around:${radiusMeters},${lat},${lon})[amenity=cafe];
-              node(around:${radiusMeters},${lat},${lon})[railway=station];
-              way(around:${radiusMeters},${lat},${lon})[railway=station];
-              node(around:${radiusMeters},${lat},${lon})[amenity=hospital];
-              way(around:${radiusMeters},${lat},${lon})[amenity=hospital];
             );
             out center 50;
         `;
@@ -1320,11 +1334,6 @@
             const data = await response.json();
             
             let sights = [];
-            let restaurants = [];
-            let hotels = [];
-            let stations = [];
-            let hospitals = [];
-
             if (data && data.elements) {
                 data.elements.forEach((el, index) => {
                     const elLat = el.lat || (el.center ? el.center.lat : null);
@@ -1332,15 +1341,19 @@
                     if (!elLat || !elLon) return;
 
                     const tags = el.tags || {};
-                    const name = tags.name || tags.amenity || tags.tourism || tags.railway || `Punkt ${index + 1}`;
+                    const tourismVal = tags.tourism;
+                    const isAccommodation = ['hotel', 'guest_house', 'hostel', 'apartment', 'motel', 'chalet'].includes(tourismVal);
+                    if (isAccommodation) return;
+
+                    const name = tags.name || tags.tourism || `Sehenswürdigkeit ${index + 1}`;
                     const distVal = calculateDistance(lat, lon, elLat, elLon);
                     const rating = (4.0 + ((index * 3) % 10) * 0.05).toFixed(1);
                     const street = tags['addr:street'] || 'Beispielstraße';
                     const houseNumber = tags['addr:housenumber'] || (index + 1);
                     const address = `${street} ${houseNumber}, ${cityName}`;
-                    const description = tags.description || tags.cuisine ? `Küche/Art: ${tags.cuisine}` : `Wichtiger Punkt in ${cityName}.`;
+                    const description = tags.description || `Wichtiger Punkt in ${cityName}.`;
 
-                    const itemObj = {
+                    sights.push({
                         id: el.id || index,
                         name: name,
                         dist: distVal.toFixed(1) + " km",
@@ -1350,22 +1363,7 @@
                         lat: elLat,
                         lon: elLon,
                         images: ["https://images.unsplash.com/photo-1595867818082-083862f3d630?w=500&q=80"]
-                    };
-
-                    const tourismVal = tags.tourism;
-                    const isAccommodation = ['hotel', 'guest_house', 'hostel', 'apartment', 'motel', 'chalet'].includes(tourismVal);
-
-                    if (isAccommodation) {
-                        hotels.push(itemObj);
-                    } else if (tags.tourism) {
-                        sights.push(itemObj);
-                    } else if (tags.amenity === 'restaurant' || tags.amenity === 'cafe') {
-                        restaurants.push(itemObj);
-                    } else if (tags.railway === 'station') {
-                        stations.push(itemObj);
-                    } else if (tags.amenity === 'hospital') {
-                        hospitals.push(itemObj);
-                    }
+                    });
                 });
             }
 
@@ -1385,6 +1383,73 @@
                 }
             }
 
+            currentCityData.allSights = sights;
+        } catch (e) {
+            console.error("Fehler beim Laden der Sehenswürdigkeiten:", e);
+        }
+
+        document.getElementById('sightsLoadingStatus').innerHTML = '';
+        renderSightsList();
+        updateMapMarkers();
+    }
+
+    async function fetchRestaurantsData() {
+        const lat = currentCityData.lat;
+        const lon = currentCityData.lon;
+        const radiusKm = currentCityData.radius;
+        const cityName = currentCityData.name;
+        const radiusMeters = radiusKm * 1000;
+
+        document.getElementById('restaurantsLoadingStatus').innerHTML = '<span class="loading-indicator" title="Lade Restaurants..."></span>';
+
+        const overpassQuery = `
+            [out:json][timeout:15];
+            (
+              node(around:${radiusMeters},${lat},${lon})[amenity=restaurant];
+              way(around:${radiusMeters},${lat},${lon})[amenity=restaurant];
+              node(around:${radiusMeters},${lat},${lon})[amenity=cafe];
+              way(around:${radiusMeters},${lat},${lon})[amenity=cafe];
+            );
+            out center 50;
+        `;
+
+        try {
+            const response = await fetch(OVERPASS_API_URL, {
+                method: 'POST',
+                body: overpassQuery
+            });
+            const data = await response.json();
+            
+            let restaurants = [];
+            if (data && data.elements) {
+                data.elements.forEach((el, index) => {
+                    const elLat = el.lat || (el.center ? el.center.lat : null);
+                    const elLon = el.lon || (el.center ? el.center.lon : null);
+                    if (!elLat || !elLon) return;
+
+                    const tags = el.tags || {};
+                    const name = tags.name || tags.amenity || `Restaurant ${index + 1}`;
+                    const distVal = calculateDistance(lat, lon, elLat, elLon);
+                    const rating = (4.0 + ((index * 3) % 10) * 0.05).toFixed(1);
+                    const street = tags['addr:street'] || 'Beispielstraße';
+                    const houseNumber = tags['addr:housenumber'] || (index + 1);
+                    const address = `${street} ${houseNumber}, ${cityName}`;
+                    const description = tags.cuisine ? `Küche: ${tags.cuisine}` : `Gemütliche Gastronomie in ${cityName}.`;
+
+                    restaurants.push({
+                        id: el.id || index,
+                        name: name,
+                        dist: distVal.toFixed(1) + " km",
+                        rating: rating,
+                        address: address,
+                        description: description,
+                        lat: elLat,
+                        lon: elLon,
+                        images: ["https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=500&q=80"]
+                    });
+                });
+            }
+
             if (restaurants.length === 0) {
                 for (let i = 1; i <= 5; i++) {
                     restaurants.push({
@@ -1399,6 +1464,79 @@
                         images: ["https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=500&q=80"]
                     });
                 }
+            }
+
+            currentCityData.restaurants = restaurants;
+        } catch (e) {
+            console.error("Fehler beim Laden der Restaurants:", e);
+        }
+
+        document.getElementById('restaurantsLoadingStatus').innerHTML = '';
+        renderRestaurantsList();
+        updateMapMarkers();
+    }
+
+    async function fetchHotelsData() {
+        const lat = currentCityData.lat;
+        const lon = currentCityData.lon;
+        const radiusKm = currentCityData.radius;
+        const cityName = currentCityData.name;
+        const radiusMeters = radiusKm * 1000;
+
+        document.getElementById('hotelsLoadingStatus').innerHTML = '<span class="loading-indicator" title="Lade Übernachtungen..."></span>';
+
+        const overpassQuery = `
+            [out:json][timeout:15];
+            (
+              node(around:${radiusMeters},${lat},${lon})[tourism=hotel];
+              way(around:${radiusMeters},${lat},${lon})[tourism=hotel];
+              node(around:${radiusMeters},${lat},${lon})[tourism=guest_house];
+              way(around:${radiusMeters},${lat},${lon})[tourism=guest_house];
+              node(around:${radiusMeters},${lat},${lon})[tourism=hostel];
+              way(around:${radiusMeters},${lat},${lon})[tourism=hostel];
+              node(around:${radiusMeters},${lat},${lon})[tourism=apartment];
+              way(around:${radiusMeters},${lat},${lon})[tourism=apartment];
+              node(around:${radiusMeters},${lat},${lon})[tourism=motel];
+              way(around:${radiusMeters},${lat},${lon})[tourism=motel];
+            );
+            out center 50;
+        `;
+
+        try {
+            const response = await fetch(OVERPASS_API_URL, {
+                method: 'POST',
+                body: overpassQuery
+            });
+            const data = await response.json();
+            
+            let hotels = [];
+            if (data && data.elements) {
+                data.elements.forEach((el, index) => {
+                    const elLat = el.lat || (el.center ? el.center.lat : null);
+                    const elLon = el.lon || (el.center ? el.center.lon : null);
+                    if (!elLat || !elLon) return;
+
+                    const tags = el.tags || {};
+                    const name = tags.name || tags.tourism || `Unterkunft ${index + 1}`;
+                    const distVal = calculateDistance(lat, lon, elLat, elLon);
+                    const rating = (4.0 + ((index * 3) % 10) * 0.05).toFixed(1);
+                    const street = tags['addr:street'] || 'Beispielstraße';
+                    const houseNumber = tags['addr:housenumber'] || (index + 1);
+                    const address = `${street} ${houseNumber}, ${cityName}`;
+                    const description = tags.description || `Komfortable Übernachtungsmöglichkeit in ${cityName}.`;
+
+                    hotels.push({
+                        id: el.id || index,
+                        name: name,
+                        dist: distVal.toFixed(1) + " km",
+                        rating: rating,
+                        address: address,
+                        description: description,
+                        lat: elLat,
+                        lon: elLon,
+                        images: ["https://images.unsplash.com/photo-1566073771259-6a8506099945?w=500&q=80"]
+                    });
+                });
             }
 
             if (hotels.length === 0) {
@@ -1417,55 +1555,12 @@
                 }
             }
 
-            if (stations.length === 0) {
-                for (let i = 1; i <= 2; i++) {
-                    stations.push({
-                        id: i,
-                        name: `Hauptbahnhof ${cityName}`,
-                        dist: (0.8 * i).toFixed(1) + " km",
-                        rating: "4.0",
-                        address: `Bahnhofsplatz ${i}, ${cityName}`,
-                        description: `Zentraler Bahnknotenpunkt.`,
-                        lat: lat + (0.003 * i),
-                        lon: lon - (0.003 * i),
-                        images: ["https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=500&q=80"]
-                    });
-                }
-            }
-
-            if (hospitals.length === 0) {
-                for (let i = 1; i <= 2; i++) {
-                    hospitals.push({
-                        id: i,
-                        name: `Klinikum ${cityName}`,
-                        dist: (1.2 * i).toFixed(1) + " km",
-                        rating: "4.7",
-                        address: `Gesundheitsweg ${i}, ${cityName}`,
-                        description: `Medizinische Versorgung und Notaufnahme.`,
-                        lat: lat - (0.004 * i),
-                        lon: lon + (0.004 * i),
-                        images: ["https://images.unsplash.com/photo-1587351021759-3e566b6af7cc?w=500&q=80"]
-                    });
-                }
-            }
-
-            currentCityData.allSights = sights;
-            currentCityData.restaurants = restaurants;
             currentCityData.hotels = hotels;
-            currentCityData.stations = stations;
-            currentCityData.hospitals = hospitals;
-
         } catch (e) {
-            console.error("Fehler beim Laden der Overpass-Daten:", e);
+            console.error("Fehler beim Laden der Übernachtungen:", e);
         }
 
-        document.getElementById('infoName').innerText = currentCityData.name;
-        document.getElementById('infoZip').innerText = currentCityData.zip;
-        document.getElementById('infoState').innerText = currentCityData.state;
-        document.getElementById('weatherCityName').innerText = currentCityData.name;
-
-        renderSightsList();
-        renderRestaurantsList();
+        document.getElementById('hotelsLoadingStatus').innerHTML = '';
         renderHotelsList();
         updateMapMarkers();
     }
@@ -2037,7 +2132,7 @@
 
     function showCityDetails() {
         document.getElementById('modalTitle').innerText = "Stadt-Infos: " + currentCityData.name;
-        document.getElementById('modalBody').innerHTML = `<p>${currentCityData.name} ist ein ausgewählter Standort auf deiner Reisekarte.</p>`;
+        document.getElementById('modalBody').innerHTML = `<p>${currentCityData.name} ist ein ausgewählter Standort on deiner Reisekarte.</p>`;
         document.getElementById('modalFooterNav').style.display = 'none';
         document.getElementById('detailModal').style.display = 'flex';
     }
