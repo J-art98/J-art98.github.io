@@ -422,23 +422,6 @@
             background: #1e293b;
         }
 
-        .day-divider {
-            background: #020617;
-            border: 1px dashed var(--border-color);
-            border-radius: 6px;
-            min-width: 85px;
-            padding: 8px 4px;
-            text-align: center;
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            flex-shrink: 0;
-            gap: 2px;
-        }
-
         .clickable {
             color: #60a5fa;
             cursor: pointer;
@@ -506,6 +489,13 @@
             font-size: 0.8rem;
             color: #fbbf24;
             flex-shrink: 0;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+        }
+
+        .rating-badge:hover {
+            background: #475569;
+            transform: scale(1.05);
         }
 
         .load-more-btn {
@@ -609,23 +599,6 @@
             background: #475569;
             color: white;
         }
-        
-        .gallery-container {
-            display: flex;
-            gap: 8px;
-            overflow-x: auto;
-            padding-bottom: 8px;
-            margin-bottom: 12px;
-        }
-
-        .gallery-img {
-            height: 140px;
-            border-radius: 6px;
-            object-fit: cover;
-            background: #000;
-            flex-shrink: 0;
-            width: 180px;
-        }
 
         .nav-button-container {
             margin-top: 16px;
@@ -696,54 +669,6 @@
 
         @keyframes spin {
             to { transform: rotate(360deg); }
-        }
-
-        .weather-anim-container {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: #0f172a;
-            padding: 12px 16px;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-            margin-bottom: 12px;
-            flex-wrap: wrap;
-            gap: 12px;
-        }
-
-        .weather-anim-stage {
-            width: 60px;
-            height: 60px;
-            position: relative;
-            overflow: hidden;
-            border-radius: 8px;
-            background: rgba(30, 41, 59, 0.5);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-
-        .anim-sun {
-            width: 28px;
-            height: 28px;
-            background: #f59e0b;
-            border-radius: 50%;
-            box-shadow: 0 0 12px #f59e0b;
-            animation: sunPulse 3s infinite alternate;
-            position: relative;
-        }
-        .anim-sun::after {
-            content: '';
-            position: absolute;
-            top: -5px; left: -5px; right: -5px; bottom: -5px;
-            border: 2px dashed rgba(245, 158, 11, 0.6);
-            border-radius: 50%;
-            animation: spin 10s linear infinite;
-        }
-        @keyframes sunPulse {
-            0% { transform: scale(0.9); box-shadow: 0 0 8px #f59e0b; }
-            100% { transform: scale(1.1); box-shadow: 0 0 16px #fbbf24; }
         }
 
         .chart-box {
@@ -847,10 +772,13 @@
                 <button class="legend-toggle-btn" onclick="toggleLegend()">🗺️ Legende</button>
             </div>
         </div>
-        <div style="margin-top: 10px; display: flex; align-items: center; flex-wrap: wrap;">
+        <div style="margin-top: 10px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
             <label style="cursor:pointer; display: flex; align-items: center; gap: 6px; font-size: 0.9rem;">
                 <input type="checkbox" id="trafficToggle"> Live-Verkehr aktivieren
             </label>
+            <button onclick="openGoogleMapsNavigation()" style="background: #10b981; color: white; padding: 6px 14px; border-radius: 6px; font-weight: 600; font-size: 0.85rem; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
+                🧭 Navigation Google Maps
+            </button>
         </div>
     </div>
 
@@ -864,7 +792,7 @@
         <h3 style="margin-top: 15px;">⏱️ Stündliche Vorschau ab JETZT <small style="font-size: 0.75rem; color:var(--text-muted); font-weight:normal;">(Klicke auf eine Stunde für Details)</small></h3>
         <div class="weather-hours" id="weatherHoursGrid">
             <div style="text-align:center; padding:10px; color:var(--text-muted);">
-                <div class="spinner" style="position:relative; margin:0 auto 4px auto;"></div>
+                <div class="spinner" style="position:relative; margin:0 auto 4px auto;"></div>Lade stündliche Vorhersage...
             </div>
         </div>
         <p style="font-size: 0.8rem; color: #4ade80; margin-top: 8px; margin-bottom: 0;">⚡ Wetter-Datenpunkt aktiv für <span id="weatherCityName">Ettenheim</span></p>
@@ -878,7 +806,7 @@
             <div><strong>Land:</strong> <a id="infoCountryLink" href="#" target="_blank" class="clickable">Deutschland</a></div>
             <a id="infoCountryFlagLink" href="#" target="_blank" style="display:inline-block; text-decoration:none;">
                 <div class="img-container" id="infoCountryContainer">
-                    <div class="spinner"></div>
+                    <div class="spinner" title="Lade Landesflagge..."></div>
                     <img id="infoCountryFlag" src="" alt="Landesflagge" class="flag" style="display:none;" onload="this.previousElementSibling.style.display='none'; this.style.display='block';" onerror="this.style.display='none'; this.previousElementSibling.style.display='none';">
                 </div>
             </a>
@@ -889,7 +817,7 @@
             <div><strong>Region / Bundesland:</strong> <a id="infoStateLink" href="#" target="_blank" class="clickable">Baden-Württemberg</a></div>
             <a id="infoStateFlagLink" href="#" target="_blank" style="display:inline-block; text-decoration:none;">
                 <div class="img-container" id="infoStateContainer">
-                    <div class="spinner"></div>
+                    <div class="spinner" title="Lade Regionsflagge..."></div>
                     <img id="infoStateFlag" src="" alt="Regionsflagge" class="flag" style="display:none;" onload="this.previousElementSibling.style.display='none'; this.style.display='block';" onerror="this.style.display='none'; this.previousElementSibling.style.display='none';">
                 </div>
             </a>
@@ -900,7 +828,7 @@
             <div><strong>Stadt:</strong> <a id="infoCityLink" href="#" target="_blank" class="clickable">Ettenheim</a></div>
             <a id="infoCityFlagLink" href="#" target="_blank" style="display:inline-block; text-decoration:none;">
                 <div id="infoCoatOfArmsContainer" class="img-container" style="width: 40px; height: 40px;">
-                    <div class="spinner"></div>
+                    <div class="spinner" title="Lade Stadtwappen..."></div>
                 </div>
             </a>
         </div>
@@ -961,10 +889,29 @@
         <button id="hotelMoreBtn" class="load-more-btn" style="display:none;" onclick="openAllItemsModal('hotels')">Hier klicken, um alle anzuzeigen</button>
     </div>
 
-    <!-- Community Feed / Nachrichtenverlauf -->
+    <!-- Community Feed / Nachrichtenverlauf mit Filter und Paginierung -->
     <div class="card">
-        <h3>💬 Nachrichtenverlauf & Community Feed</h3>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 8px;">
+            <h3 style="margin: 0; border: none; padding: 0;">💬 Nachrichtenverlauf & Community Feed</h3>
+            <div class="inline-filter">
+                <label for="postSortSelect">Filter & Sortierung:</label>
+                <select id="postSortSelect" onchange="renderPostsFeed()">
+                    <option value="newest" selected>Neueste Nachricht</option>
+                    <option value="oldest">Älteste Nachricht</option>
+                    <option value="most_replies">Nachrichten mit meisten Antworten</option>
+                    <option value="most_emojis">Nachrichten mit meisten Emojis</option>
+                    <option value="fewest_emojis">Nachricht mit wenigsten Emojis</option>
+                    <option value="fewest_replies">Nachricht mit wenigsten Antworten</option>
+                </select>
+            </div>
+        </div>
         <div id="postsFeedContainer" style="display: flex; flex-direction: column; gap: 12px;"></div>
+        <!-- Paginierung für den Nachrichtenverlauf -->
+        <div id="postsPaginationContainer" style="display: none; justify-content: space-between; align-items: center; margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--border-color);">
+            <button onclick="prevPostPage()" id="postPrevBtn" style="padding: 6px 12px; font-size: 0.85rem; background: #334155;">◀ Zurück</button>
+            <span id="postPageIndicator" style="font-size: 0.85rem; color: var(--text-muted);">Seite 1 von 1</span>
+            <button onclick="nextPostPage()" id="postNextBtn" style="padding: 6px 12px; font-size: 0.85rem; background: #334155;">Weiter ▶</button>
+        </div>
     </div>
 
     <!-- Nachrichtenschreibfeld -->
@@ -973,10 +920,12 @@
         <textarea id="postText" placeholder="Was gibt's Neues bei deinen Reisen? (Du kannst auch Reddit-Links einfügen)..." rows="3" style="margin-bottom: 8px;"></textarea>
         
         <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 8px;">
-            <label style="font-size: 0.85rem; color: var(--accent-color); cursor: pointer; display: flex; align-items: center; gap: 6px;">
-                📷 Bild hochladen: <input type="file" id="postImage" accept="image/*" style="display:none;" onchange="previewPostImage(this)">
-                <span id="postImageName" style="color: var(--text-muted);">Keine Datei ausgewählt</span>
+            <label style="background: var(--accent-color); color: white; border: none; padding: 6px 10px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 6px; transition: background 0.2s;" onmouseover="this.style.background='var(--accent-hover)'" onmouseout="this.style.background='var(--accent-color)'">
+                📷 Bild hochladen
+                <input type="file" id="postImage" accept="image/*" style="display:none;" onchange="previewPostImage(this)">
             </label>
+            <span id="postImageName" style="font-size: 0.8rem; color: var(--text-muted);">Keine Datei ausgewählt</span>
+            
             <button onclick="openGiphyModal()" style="font-size: 0.8rem; padding: 6px 10px; background: #8b5cf6;">🖼️ GIF (Giphy)</button>
             <button onclick="openLocationSelectionModal()" style="font-size: 0.8rem; padding: 6px 10px; background: #10b981;">📍 Standort anhängen...</button>
         </div>
@@ -1052,14 +1001,19 @@
     </div>
 </div>
 
-<!-- Emoji Picker Modal -->
+<!-- Emoji Picker Modal mit Paginierung -->
 <div id="emojiPickerModal" class="modal">
-    <div class="modal-content" style="max-width: 450px;">
+    <div class="modal-content" style="max-width: 480px;">
         <span class="close-modal" onclick="closeEmojiPickerModal()" style="float:right;">&times;</span>
         <h3 style="margin-top:0; color: var(--accent-color);">😀 Emoji auswählen</h3>
-        <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 10px;">Sortiert nach am häufigsten genutzten Reaktionen.</p>
+        <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 10px;">Wähle aus einer riesigen Auswahl an Emojis (über mehrere Seiten).</p>
         <div id="emojiPickerGrid" style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; max-height: 280px; overflow-y: auto; margin-bottom: 10px;"></div>
-        <button id="emojiLoadMoreBtn" class="load-more-btn" style="display:none;" onclick="loadMoreEmojis()">Weitere anzeigen (+50)</button>
+        
+        <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 8px; border-top: 1px solid var(--border-color);">
+            <button onclick="prevEmojiPage()" id="emojiPrevBtn" style="padding: 6px 12px; font-size: 0.85rem; background: #334155;">◀ Zurück</button>
+            <span id="emojiPageIndicator" style="font-size: 0.85rem; color: var(--text-muted);">Seite 1 von 1</span>
+            <button onclick="nextEmojiPage()" id="emojiNextBtn" style="padding: 6px 12px; font-size: 0.85rem; background: #334155;">Weiter ▶</button>
+        </div>
     </div>
 </div>
 
@@ -1242,7 +1196,27 @@
         }
     });
 
-    /* --- COMMUNITY FEED, GIPHY, REDDIT & EMOJI REACTION LOGIK --- */
+    /* --- COMMUNITY FEED PAGINIERUNG & FILTERUNG --- */
+    let currentPostPage = 1;
+    const postsPerPage = 50;
+
+    function prevPostPage() {
+        if (currentPostPage > 1) {
+            currentPostPage--;
+            renderPostsFeed();
+        }
+    }
+
+    function nextPostPage() {
+        const posts = JSON.parse(localStorage.getItem('jannik_posts') || '[]');
+        const totalPages = Math.ceil(posts.length / postsPerPage) || 1;
+        if (currentPostPage < totalPages) {
+            currentPostPage++;
+            renderPostsFeed();
+        }
+    }
+
+    /* --- COMMUNITY FEED, GIPHY, REDDIT & EMOJI --- */
     let uploadedPostImageBase64 = null;
     let selectedPostGifUrl = null;
     let attachedPostLocation = null;
@@ -1282,7 +1256,7 @@
         const container = document.getElementById('giphyResultsContainer');
         if (!query) return;
 
-        container.innerHTML = '<p style="color: var(--text-muted); text-align: center; grid-column: 1 / -1;"><div class="spinner" style="position:relative; margin:0 auto 6px auto;"></div>Lade GIFs von GIPHY...</p>';
+        container.innerHTML = '<p style="color: var(--text-muted); text-align: center; grid-column: 1 / -1;"><div class="spinner" style="position:relative; margin:0 auto 6px auto;"></div>Lade GIFs...</p>';
 
         try {
             const res = await fetch(`https://api.giphy.com/v1/gifs/search?api_key=dc6zaTOxFJmzC&q=${encodeURIComponent(query)}&limit=24`);
@@ -1298,7 +1272,7 @@
                 container.innerHTML = '<p style="color: var(--text-muted); text-align: center; grid-column: 1 / -1;">Keine GIFs gefunden.</p>';
             }
         } catch (e) {
-            container.innerHTML = '<p style="color: #ef4444; text-align: center; grid-column: 1 / -1;">Giphy-Verbindung fehlgeschlagen. Bitte versuche es später erneut.</p>';
+            container.innerHTML = '<p style="color: #ef4444; text-align: center; grid-column: 1 / -1;">Giphy-Verbindung fehlgeschlagen.</p>';
         }
     }
 
@@ -1311,7 +1285,6 @@
         closeGiphyModal();
     }
 
-    /* --- NEUE STANDORT-AUSWAHL-LOGIK --- */
     function openLocationSelectionModal() {
         document.getElementById('modalCurrentLocationLabel').innerText = `${currentCityData.name} (${currentCityData.state})`;
         document.getElementById('manualLocationInput').value = '';
@@ -1359,7 +1332,7 @@
                 document.getElementById('postLocationPreviewContainer').style.display = 'flex';
                 closeLocationSelectionModal();
             } else {
-                alert("Standort nicht gefunden. Bitte versuche eine andere Adresse.");
+                alert("Standort nicht gefunden.");
             }
         } catch (e) {
             alert("Fehler bei der Adresssuche.");
@@ -1473,6 +1446,7 @@
             <input type="text" class="poll-option-input" placeholder="Antwortmöglichkeit 2" style="font-size: 0.85rem; padding: 6px;">
         `;
 
+        currentPostPage = 1;
         renderPostsFeed();
     }
 
@@ -1480,19 +1454,40 @@
         '👍', '❤️', '😂', '🔥', '🚀', '🎉', '👏', '😍', '🙌', '😎',
         '⭐', '🌍', '✈️', '🧭', '🍕', '🍻', '☕', '💡', '📌', '✨',
         '🙏', '💪', '🥳', '👇', '💯', '✅', '❌', '❤️‍🔥', '🎯', '🏆',
-        '🤩', '😜', '😇', '🤔', '👀', '💡', '🍀', '🌸', '☀️', '🌈',
-        '🚗', '🚆', '🏨', '🏖️', '⛰️', '🏰', '🗺️', '📸', '🍔', '🍷',
-        '⚡', '🌧️', '💨', '🌊', '🍁', '❄️', '⛄', '🎃', '🎁', '🎈',
-        '🎵', '🎸', '🎮', '🎲', '💻', '📱', '🔋', '🛠️', '🧱', '🏠',
-        '🐶', '🐱', '🦊', '🦁', '🐯', '🦄', '🐲', '🐉', '🦖', '🦕'
+        '😊', '😁', '😅', '😆', '😉', '😋', '😘', '🥰', '😗', '😙',
+        '😚', '🙂', '🤗', '🤩', '🤔', '🤨', '😐', '😑', '😶', '🙄',
+        '😏', '😣', '😥', '😮', '🤐', '😯', '😪', '😫', '🥱', '😴',
+        '😌', '😛', '😜', '😝', '🤤', '😒', '😓', '😔', '😕', '🙃',
+        '🤑', '😲', '☹️', '🙁', '💥', '👻', '💀', '👽', '🤖', '💩',
+        '🐶', '🐱', '🐭', '🐹', '🐰', '🦊', '🐻', '🐼', '🐨', '🐯',
+        '🦁', '🐮', '🐷', '🐸', '🐵', '🐔', '🐧', '🐦', '🐤', '🐣',
+        '🦆', '🦅', '🦉', '🦇', '🐺', '🐗', '🐴', '🦄', '🐝', '🐛',
+        '🦋', '🐌', '🐞', '🐜', '🐢', '🐍', '🦎', '🦖', '🦕', '🐙',
+        '🦑', '🦀', '🐡', '🐠', '🐟', '🐬', '🐳', '🍎', '🍏', '🍐',
+        '🍊', '🍋', '🍌', '🍉', '🍇', '🍓', '🫐', '🍈', '🍒', '🍑',
+        '🥭', '🍍', '🥥', '🥝', '🍅', '🍆', '🥑', '🥦', '🥬', '🥒',
+        '🌶️', '🌽', '🥕', '🥔', '🥐', '🥯', '🍞', '🥖', '🥨', '🧀',
+        '🥚', '🍳', '🥞', '🥓', '🥩', '🍗', '🍖', '🌭', '🍔', '🍟',
+        '🌮', '🌯', '🥗', '🥘', '🍝', '🍜', '🍲', '🍛', '🍣', '🍱',
+        '🍤', '🍙', '🍚', '🍘', '🍥', '🍡', '🍧', '🍨', '🍦', '🧁',
+        '🍰', '🎂', '🍮', '🍭', '🍬', '🍫', '🍿', '🍩', '🍪', '🌰',
+        '🥜', '🍯', '🥛', '🍼', '🍵', '🍾', '🍷', '🍸', '🍹', '🍺',
+        '🥂', '🥃', '🥤', '🧋', '🧃', '🧊', '🍽️', '🎨', '🎬', '🎤',
+        '🎧', '🎼', '🎹', '🥁', '🎷', '🎺', '🎸', '🪕', '🎻', '🎲',
+        '♟️', '🎯', '🎳', '🎮', '🎰', '🧩', '🚗', '🚕', '🚙', '🚌',
+        '🚎', '🏎️', '🚓', '🚑', '🚐', '🚚', '🚛', '🚜', '🛵',
+        '🏍️', '🛺', '🚲', '🛴', '🛹', '🛼', '🚏', '🛤️', '⛽', '🚨',
+        '🚥', '🚦', '🛑', '🚧', '⚓', '⛵', '🚤', '🛳️', '🚢', '✈️',
+        '🛩️', '🛫', '🛬', '🪂', '💺', '🚁', '🚟', '🚠', '🚡', '🛰️'
     ];
 
     let currentActivePostForEmoji = null;
-    let currentEmojiDisplayCount = 30;
+    let currentEmojiPage = 1;
+    const emojisPerPage = 30;
 
     function openEmojiPicker(postId) {
         currentActivePostForEmoji = postId;
-        currentEmojiDisplayCount = 30;
+        currentEmojiPage = 1;
         renderEmojiPickerGrid();
         document.getElementById('emojiPickerModal').style.display = 'flex';
     }
@@ -1502,9 +1497,19 @@
         currentActivePostForEmoji = null;
     }
 
-    function loadMoreEmojis() {
-        currentEmojiDisplayCount += 50;
-        renderEmojiPickerGrid();
+    function prevEmojiPage() {
+        if (currentEmojiPage > 1) {
+            currentEmojiPage--;
+            renderEmojiPickerGrid();
+        }
+    }
+
+    function nextEmojiPage() {
+        const totalPages = Math.ceil(MASTER_EMOJI_POOL.length / emojisPerPage);
+        if (currentEmojiPage < totalPages) {
+            currentEmojiPage++;
+            renderEmojiPickerGrid();
+        }
     }
 
     function renderEmojiPickerGrid() {
@@ -1514,17 +1519,21 @@
 
         if (!post.reactionCounts) post.reactionCounts = {};
 
-        let sortedEmojis = [...MASTER_EMOJI_POOL].sort((a, b) => {
+        let sortedEmojis = [...MASTER_EMOJI_POOL];
+        sortedEmojis.sort((a, b) => {
             const countA = post.reactionCounts[a] || 0;
             const countB = post.reactionCounts[b] || 0;
             if (countB !== countA) return countB - countA;
             return MASTER_EMOJI_POOL.indexOf(a) - MASTER_EMOJI_POOL.indexOf(b);
         });
 
-        const gridEl = document.getElementById('emojiPickerGrid');
-        const loadMoreBtn = document.getElementById('emojiLoadMoreBtn');
-        const visibleEmojis = sortedEmojis.slice(0, currentEmojiDisplayCount);
+        const totalPages = Math.ceil(sortedEmojis.length / emojisPerPage) || 1;
+        if (currentEmojiPage > totalPages) currentEmojiPage = totalPages;
 
+        const startIndex = (currentEmojiPage - 1) * emojisPerPage;
+        const visibleEmojis = sortedEmojis.slice(startIndex, startIndex + emojisPerPage);
+
+        const gridEl = document.getElementById('emojiPickerGrid');
         let html = '';
         visibleEmojis.forEach(emoji => {
             const count = (post.reactions[emoji] || []).length;
@@ -1537,12 +1546,11 @@
         });
         gridEl.innerHTML = html;
 
-        if (sortedEmojis.length > currentEmojiDisplayCount) {
-            loadMoreBtn.style.display = 'block';
-            loadMoreBtn.innerText = `Weitere anzeigen (+50) [${currentEmojiDisplayCount}/${sortedEmojis.length}]`;
-        } else {
-            loadMoreBtn.style.display = 'none';
-        }
+        document.getElementById('emojiPageIndicator').innerText = `Seite ${currentEmojiPage} von ${totalPages}`;
+        document.getElementById('emojiPrevBtn').disabled = (currentEmojiPage <= 1);
+        document.getElementById('emojiPrevBtn').style.opacity = (currentEmojiPage <= 1) ? '0.5' : '1';
+        document.getElementById('emojiNextBtn').disabled = (currentEmojiPage >= totalPages);
+        document.getElementById('emojiNextBtn').style.opacity = (currentEmojiPage >= totalPages) ? '0.5' : '1';
     }
 
     function selectEmojiReaction(emoji) {
@@ -1580,17 +1588,66 @@
 
     function renderPostsFeed() {
         const container = document.getElementById('postsFeedContainer');
+        const paginationContainer = document.getElementById('postsPaginationContainer');
         if (!container) return;
-        const posts = JSON.parse(localStorage.getItem('jannik_posts') || '[]');
+        let posts = JSON.parse(localStorage.getItem('jannik_posts') || '[]');
         const currentUser = localStorage.getItem('jannik_current_user');
 
+        const sortMode = document.getElementById('postSortSelect') ? document.getElementById('postSortSelect').value : 'newest';
+
+        posts.sort((a, b) => {
+            const timeA = a.id || 0;
+            const timeB = b.id || 0;
+            const repliesA = (a.replies || []).length;
+            const repliesB = (b.replies || []).length;
+            const emojisA = Object.values(a.reactionCounts || {}).reduce((sum, val) => sum + val, 0);
+            const emojisB = Object.values(b.reactionCounts || {}).reduce((sum, val) => sum + val, 0);
+
+            if (sortMode === 'newest') {
+                return timeB - timeA;
+            } else if (sortMode === 'oldest') {
+                return timeA - timeB;
+            } else if (sortMode === 'most_replies') {
+                if (repliesB !== repliesA) return repliesB - repliesA;
+                return timeB - timeA;
+            } else if (sortMode === 'fewest_replies') {
+                if (repliesA !== repliesB) return repliesA - repliesB;
+                return timeB - timeA;
+            } else if (sortMode === 'most_emojis') {
+                if (emojisB !== emojisA) return emojisB - emojisA;
+                return timeB - timeA;
+            } else if (sortMode === 'fewest_emojis') {
+                if (emojisA !== emojisB) return emojisA - emojisB;
+                return timeB - timeA;
+            }
+            return timeB - timeA;
+        });
+
         if (posts.length === 0) {
-            container.innerHTML = '<p style="color: var(--text-muted); font-size: 0.85rem; text-align: center; margin: 10px 0;">Noch keine Beiträge im Nachrichtenverlauf vorhanden. Schreibe die erste Nachricht!</p>';
+            container.innerHTML = '<p style="color: var(--text-muted); font-size: 0.85rem; text-align: center; margin: 10px 0;">Noch keine Beiträge im Nachrichtenverlauf vorhanden.</p>';
+            if (paginationContainer) paginationContainer.style.display = 'none';
             return;
         }
 
+        const totalPages = Math.ceil(posts.length / postsPerPage) || 1;
+        if (currentPostPage > totalPages) currentPostPage = totalPages;
+
+        const startIndex = (currentPostPage - 1) * postsPerPage;
+        const paginatedPosts = posts.slice(startIndex, startIndex + postsPerPage);
+
+        if (posts.length > postsPerPage) {
+            paginationContainer.style.display = 'flex';
+            document.getElementById('postPageIndicator').innerText = `Seite ${currentPostPage} von ${totalPages}`;
+            document.getElementById('postPrevBtn').disabled = (currentPostPage <= 1);
+            document.getElementById('postPrevBtn').style.opacity = (currentPostPage <= 1) ? '0.5' : '1';
+            document.getElementById('postNextBtn').disabled = (currentPostPage >= totalPages);
+            document.getElementById('postNextBtn').style.opacity = (currentPostPage >= totalPages) ? '0.5' : '1';
+        } else {
+            paginationContainer.style.display = 'none';
+        }
+
         let html = '';
-        posts.forEach(post => {
+        paginatedPosts.forEach(post => {
             if (!post.reactions) post.reactions = {};
             if (!post.reactionCounts) post.reactionCounts = {};
             if (!post.replies) post.replies = [];
@@ -1615,7 +1672,7 @@
                     const percentage = totalVotes > 0 ? Math.round((optVotesCount / totalVotes) * 100) : 0;
 
                     pollHTML += `
-                        <div onclick="voteOnPoll(${post.id}, ${optIdx})" style="background: #0f172a; border: 1px solid ${hasVotedThisOpt ? 'var(--accent-color)' : 'var(--border-color)'}; border-radius: 6px; padding: 8px; cursor: pointer; position: relative; overflow: hidden; transition: border-color 0.2s;">
+                        <div onclick="voteOnPoll(${post.id}, ${optIdx})" style="background: #0f172a; border: 1px solid ${hasVotedThisOpt ? 'var(--accent-color)' : 'var(--border-color)'}; border-radius: 6px; padding: 8px; cursor: pointer; position: relative; overflow: hidden;">
                             <div style="position: absolute; top: 0; left: 0; bottom: 0; width: ${percentage}%; background: rgba(59, 130, 246, 0.25); z-index: 1;"></div>
                             <div style="display: flex; justify-content: space-between; align-items: center; position: relative; z-index: 2; font-size: 0.85rem;">
                                 <span>${hasVotedThisOpt ? '✅ ' : ''}${opt.text}</span>
@@ -1642,13 +1699,10 @@
                                 <span style="font-size: 1.3rem;">📍</span>
                                 <div>
                                     <strong style="font-size: 0.9rem;">${post.location.name}</strong><br>
-                                    <span style="font-size: 0.75rem; color: var(--text-muted);">${post.location.state} (${post.location.lat.toFixed(4)}, ${post.location.lon.toFixed(4)})</span>
+                                    <span style="font-size: 0.75rem; color: var(--text-muted);">${post.location.state}</span>
                                 </div>
                             </div>
                             <a href="https://www.google.com/maps/search/?api=1&query=${post.location.lat},${post.location.lon}" target="_blank" class="navigate-btn" style="padding: 4px 10px; font-size: 0.8rem;">Auf Google Maps öffnen</a>
-                        </div>
-                        <div style="border-radius: 6px; overflow: hidden; border: 1px solid var(--border-color);">
-                            <iframe width="100%" height="140" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://www.openstreetmap.org/export/embed.html?bbox=${post.location.lon-0.01},${post.location.lat-0.01},${post.location.lon+0.01},${post.location.lat+0.01}&layer=mapnik&marker=${post.location.lat},${post.location.lon}" style="border: 0; display: block;"></iframe>
                         </div>
                     </div>
                 `;
@@ -1670,7 +1724,7 @@
             });
 
             reactionsHTML += `
-                <button onclick="openEmojiPicker(${post.id})" style="background: #334155; border: 1px solid var(--border-color); padding: 4px 10px; border-radius: 6px; font-size: 0.85rem; cursor: pointer; color: white;" title="Mehr Emojis hinzufügen">
+                <button onclick="openEmojiPicker(${post.id})" style="background: #334155; border: 1px solid var(--border-color); padding: 4px 10px; border-radius: 6px; font-size: 0.85rem; cursor: pointer; color: white;">
                     ➕ Emoji
                 </button>
             </div>`;
@@ -1692,7 +1746,7 @@
             }
             repliesHTML += `
                 <div style="display: flex; gap: 6px; margin-top: 6px;">
-                    <input type="text" id="replyInput_${post.id}" placeholder="Antwort schreiben (auch mit Reddit-Link)..." style="font-size: 0.85rem; padding: 6px;" onkeydown="if(event.key==='Enter') handleAddReply(${post.id})">
+                    <input type="text" id="replyInput_${post.id}" placeholder="Antwort schreiben..." style="font-size: 0.85rem; padding: 6px;" onkeydown="if(event.key==='Enter') handleAddReply(${post.id})">
                     <button onclick="handleAddReply(${post.id})" style="padding: 6px 12px; font-size: 0.8rem; white-space: nowrap;">Antworten</button>
                 </div>
             </div>`;
@@ -1786,14 +1840,12 @@
         const users = getUsers();
         
         document.getElementById('modalTitle').innerText = "⚙️ Account- & Benutzereinstellungen";
-        
         let bodyHTML = '';
         
         if (isAdmin(currentUser)) {
             bodyHTML += `
                 <div style="margin-bottom: 16px;">
-                    <h4 style="margin: 0 0 8px 0; color: var(--accent-color);">👑 Admin-Bereich: Benutzer & Registrierungen verwalten</h4>
-                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px;">Hier siehst du alle registrierten Accounts, kannst neue Registrierungen annehmen oder ablehnen, Admin-Rechte verwalten und Passwörter ändern.</p>
+                    <h4 style="margin: 0 0 8px 0; color: var(--accent-color);">👑 Admin-Bereich: Benutzer verwalten</h4>
                     <div style="display: flex; flex-direction: column; gap: 8px;">
             `;
             
@@ -1810,16 +1862,12 @@
                             </div>
                             <div style="display: flex; gap: 6px; flex-wrap: wrap; align-items: center;">
                                 ${!isApproved ? `
-                                    <button style="background: #10b981; padding: 4px 10px; font-size: 0.8rem; font-weight: bold;" onclick="approveUser('${uname}')" title="Annehmen">✔ Annehmen</button>
-                                    <button style="background: #ef4444; padding: 4px 10px; font-size: 0.8rem; font-weight: bold;" onclick="adminDeleteUser('${uname}')" title="Ablehnen">❌ Ablehnen</button>
+                                    <button style="background: #10b981; padding: 4px 10px; font-size: 0.8rem;" onclick="approveUser('${uname}')">✔ Annehmen</button>
+                                    <button style="background: #ef4444; padding: 4px 10px; font-size: 0.8rem;" onclick="adminDeleteUser('${uname}')">❌ Ablehnen</button>
                                 ` : ''}
                                 ${uname !== 'admin' ? `<button style="background: ${isUserAdmin ? '#f59e0b' : '#334155'}; padding: 4px 8px; font-size: 0.75rem;" onclick="toggleAdminRole('${uname}')">${isUserAdmin ? 'Admin entziehen' : 'Admin geben'}</button>` : ''}
                                 ${uname !== 'admin' && isApproved ? `<button style="background: #ef4444; padding: 4px 8px; font-size: 0.75rem;" onclick="adminDeleteUser('${uname}')">Löschen</button>` : ''}
                             </div>
-                        </div>
-                        <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap;">
-                            <input type="text" id="admin_pwd_${uname}" value="${udata.pass}" placeholder="Neues Passwort" style="font-size: 0.85rem; padding: 6px; flex: 1; min-width: 140px;">
-                            <button style="padding: 6px 10px; font-size: 0.8rem; white-space: nowrap;" onclick="adminSavePassword('${uname}')">Passwort speichern</button>
                         </div>
                     </div>
                 `;
@@ -1827,19 +1875,13 @@
             bodyHTML += `</div></div>`;
         } else {
             bodyHTML += `
-                <div style="margin-bottom: 16px;">
+                <div>
                     <h4 style="margin: 0 0 8px 0; color: var(--accent-color);">🔑 Passwort ändern</h4>
                     <div class="auth-form-group" style="margin-bottom: 8px;">
                         <label>Neues Passwort für ${currentUser}</label>
-                        <input type="password" id="userNewPass" placeholder="Neues Passwort eingeben...">
+                        <input type="password" id="userNewPass" placeholder="Neues Passwort...">
                     </div>
                     <button onclick="userSavePassword()" style="font-size: 0.85rem; padding: 8px 12px;">Passwort aktualisieren</button>
-                </div>
-                <hr style="border-color: var(--border-color); margin: 16px 0;">
-                <div>
-                    <h4 style="margin: 0 0 8px 0; color: #ef4444;">⚠️ Account löschen</h4>
-                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 8px;">Wenn du deinen Account löschst, werden deine Anmeldedaten unwiderruflich entfernt.</p>
-                    <button style="background: #ef4444; font-size: 0.85rem; padding: 8px 12px;" onclick="userDeleteOwnAccount()">Meinen Account unwiderruflich löschen</button>
                 </div>
             `;
         }
@@ -1867,20 +1909,8 @@
         }
     }
 
-    function adminSavePassword(username) {
-        const newPass = document.getElementById(`admin_pwd_${username}`).value.trim();
-        if(!newPass) {
-            alert("Passwort darf nicht leer sein.");
-            return;
-        }
-        const users = getUsers();
-        users[username].pass = newPass;
-        localStorage.setItem('jannik_users', JSON.stringify(users));
-        alert(`Passwort für ${username} erfolgreich aktualisiert!`);
-    }
-
     function adminDeleteUser(username) {
-        if(confirm(`Möchtest du den Benutzer "${username}" wirklich löschen bzw. ablehnen?`)) {
+        if(confirm(`Möchtest du den Benutzer "${username}" wirklich löschen?`)) {
             const users = getUsers();
             delete users[username];
             localStorage.setItem('jannik_users', JSON.stringify(users));
@@ -1898,35 +1928,17 @@
         const users = getUsers();
         users[currentUser].pass = newPass;
         localStorage.setItem('jannik_users', JSON.stringify(users));
-        alert("Dein Passwort wurde erfolgreich aktualisiert!");
+        alert("Passwort aktualisiert!");
         document.getElementById('userNewPass').value = '';
     }
 
-    function userDeleteOwnAccount() {
-        const currentUser = localStorage.getItem('jannik_current_user');
-        if(confirm("Bist du sicher, dass du deinen Account löschen möchtest? Diese Aktion kann nicht rückgängig gemacht werden.")) {
-            const users = getUsers();
-            delete users[currentUser];
-            localStorage.setItem('jannik_users', JSON.stringify(users));
-            alert("Dein Account wurde gelöscht.");
-            closeModal();
-            handleLogout();
-        }
-    }
-
-    /* --- HAUPTAPP-LOGIK (KARTE, WETTER, ETC.) --- */
+    /* --- HAUPTAPP-LOGIK (KARTE, WETTER, POIS ETC.) --- */
     let map = L.map('map', { fadeAnimation: false, zoomAnimation: false }).setView([48.2544, 7.8181], 13);
     let currentMarker = L.marker([48.2544, 7.8181]).addTo(map);
     let radiusCircle = L.circle([48.2544, 7.8181], { radius: 1000, color: '#3b82f6', fillColor: '#3b82f6', fillOpacity: 0.1 }).addTo(map);
     let categoryMarkersLayer = L.layerGroup().addTo(map);
 
     let searchDebounceTimer = null;
-    let globalHourlyCache = null;
-    let globalDailyCache = null;
-
-    let chartTempInstance = null;
-    let chartRainInstance = null;
-
     const OVERPASS_API_URL = 'https://overpass-api.de/api/interpreter';
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -1944,9 +1956,7 @@
         radius: 1,
         allSights: [],
         restaurants: [],
-        hotels: [],
-        stations: [],
-        hospitals: []
+        hotels: []
     };
 
     function toggleLegend() {
@@ -1965,11 +1975,17 @@
         }, 600);
     }
 
+    function openGoogleMapsNavigation() {
+        const query = document.getElementById('citySearch').value.trim() || currentCityData.name;
+        const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query + ', ' + currentCityData.state)}`;
+        window.open(mapsUrl, '_blank');
+    }
+
     async function searchLocation() {
         const query = document.getElementById('citySearch').value.trim();
         if(!query) return;
 
-        document.getElementById('loadingStatus').innerHTML = '<span class="loading-indicator" title="Suche Ort..."></span>';
+        document.getElementById('loadingStatus').innerHTML = '<span class="loading-indicator"></span> Lade Stadt-Informationen...';
 
         try {
             const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`);
@@ -1988,8 +2004,7 @@
                 document.getElementById('loadingStatus').innerHTML = '';
             }
         } catch (error) {
-            console.error("Fehler bei der Ortssuche:", error);
-            alert("Fehler bei der Verbindung zum Suchdienst.");
+            alert("Fehler bei der Ortssuche.");
             document.getElementById('loadingStatus').innerHTML = '';
         }
     }
@@ -1999,7 +2014,6 @@
         const lon = e.latlng.lng;
         currentMarker.setLatLng([lat, lon]);
         radiusCircle.setLatLng([lat, lon]);
-        
         await reverseGeocodeAndFetch(lat, lon, true);
     });
 
@@ -2016,7 +2030,7 @@
         let countryName = "Deutschland";
         let zipCode = "77960";
 
-        document.getElementById('loadingStatus').innerHTML = '<span class="loading-indicator" title="Lade Daten..."></span>';
+        document.getElementById('loadingStatus').innerHTML = '<span class="loading-indicator"></span> Lade Stadt-Informationen...';
 
         try {
             const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
@@ -2026,27 +2040,19 @@
             stateName = address.state || address.region || "Bundesland";
             countryName = address.country || "Deutschland";
             zipCode = address.postcode || "77960";
-        } catch (err) {
-            console.error("Reverse Geocoding Fehler:", err);
-        }
+        } catch (err) {}
 
         await loadLocationData(lat, lon, currentCityData.radius, cityName, stateName, countryName, zipCode);
     }
 
-    /* --- FLAGGEN- & WAPPEN-LADEFUNKTIONEN --- */
     async function fetchWikipediaInfo(title, linkElementId, imgElementId, flagLinkElementId) {
         const linkEl = document.getElementById(linkElementId);
         const imgEl = document.getElementById(imgElementId);
         const flagLinkEl = document.getElementById(flagLinkElementId);
         const wikiUrl = `https://de.wikipedia.org/wiki/${encodeURIComponent(title)}`;
         
-        if (linkEl) {
-            linkEl.innerText = title;
-            linkEl.href = wikiUrl;
-        }
-        if (flagLinkEl) {
-            flagLinkEl.href = wikiUrl;
-        }
+        if (linkEl) { linkEl.innerText = title; linkEl.href = wikiUrl; }
+        if (flagLinkEl) { flagLinkEl.href = wikiUrl; }
 
         if (!imgEl) return;
         const container = imgEl.parentElement.parentElement;
@@ -2067,12 +2073,7 @@
         }
 
         try {
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 4000);
-
-            const res = await fetch(`https://de.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`, { signal: controller.signal });
-            clearTimeout(timeoutId);
-
+            const res = await fetch(`https://de.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`);
             if (res.ok) {
                 const data = await res.json();
                 if (data && data.thumbnail && data.thumbnail.source) {
@@ -2083,10 +2084,8 @@
                 }
             }
             spinner.style.display = 'none';
-            imgEl.style.display = 'none';
         } catch (e) {
-            if (spinner) spinner.style.display = 'none';
-            if (imgEl) imgEl.style.display = 'none';
+            spinner.style.display = 'none';
         }
     }
 
@@ -2095,27 +2094,17 @@
         const flagLinkEl = document.getElementById('infoCityFlagLink');
         const wikiUrl = `https://de.wikipedia.org/wiki/${encodeURIComponent(cityName)}`;
         
-        if (linkEl) {
-            linkEl.innerText = cityName;
-            linkEl.href = wikiUrl;
-        }
-        if (flagLinkEl) {
-            flagLinkEl.href = wikiUrl;
-        }
+        if (linkEl) { linkEl.innerText = cityName; linkEl.href = wikiUrl; }
+        if (flagLinkEl) { flagLinkEl.href = wikiUrl; }
 
         const container = document.getElementById('infoCoatOfArmsContainer');
         if (!container) return;
         
-        container.innerHTML = '<div class="spinner"></div><img id="infoCoatOfArmsImg" src="" alt="Stadtwappen" style="max-height: 40px; max-width: 40px; object-fit: contain; border-radius: 4px; display:none;" onload="this.previousElementSibling.style.display=\'none\'; this.style.display=\'block\';" onerror="this.style.display=\'none\'; this.previousElementSibling.style.display=\'none\';">';
+        container.innerHTML = '<div class="spinner" title="Lade Stadtwappen..."></div><img id="infoCoatOfArmsImg" src="" alt="Stadtwappen" style="max-height: 40px; max-width: 40px; object-fit: contain; border-radius: 4px; display:none;" onload="this.previousElementSibling.style.display=\'none\'; this.style.display=\'block\';" onerror="this.style.display=\'none\'; this.previousElementSibling.style.display=\'none\';">';
         const imgEl = document.getElementById('infoCoatOfArmsImg');
 
         try {
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 4000);
-
-            const summaryRes = await fetch(`https://de.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(cityName)}`, { signal: controller.signal });
-            clearTimeout(timeoutId);
-
+            const summaryRes = await fetch(`https://de.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(cityName)}`);
             if (summaryRes.ok) {
                 const summaryData = await summaryRes.json();
                 if (summaryData && summaryData.thumbnail && summaryData.thumbnail.source) {
@@ -2123,10 +2112,7 @@
                     return;
                 }
             }
-            container.innerHTML = '<span style="font-size:0.75rem; color:var(--text-muted);">🏛️</span>';
-        } catch (err) {
-            container.innerHTML = '<span style="font-size:0.75rem; color:var(--text-muted);">🏛️</span>';
-        }
+        } catch (err) {}
     }
 
     async function loadLocationData(lat, lon, radiusKm, cityName, stateName, countryName, zipCode) {
@@ -2137,13 +2123,12 @@
         currentCityData.country = countryName;
         currentCityData.zip = zipCode;
         
-        document.getElementById('loadingStatus').innerHTML = '<span class="loading-indicator" title="Lade Daten..."></span>';
+        document.getElementById('loadingStatus').innerHTML = '<span class="loading-indicator"></span> Lade Stadt-Informationen...';
         document.getElementById('infoZip').innerText = currentCityData.zip;
         document.getElementById('weatherCityName').innerText = currentCityData.name;
 
-        // Ladeanimation für Wetter aktiv anzeigen
         document.getElementById('weatherGrid').innerHTML = '<div style="text-align:center; padding:20px; grid-column:1/-1; color:var(--text-muted);"><div class="spinner" style="position:relative; margin:0 auto 8px auto;"></div>Lade Wetter...</div>';
-        document.getElementById('weatherHoursGrid').innerHTML = '<div style="text-align:center; padding:10px; color:var(--text-muted);"><div class="spinner" style="position:relative; margin:0 auto 4px auto;"></div></div>';
+        document.getElementById('weatherHoursGrid').innerHTML = '<div style="text-align:center; padding:10px; color:var(--text-muted);"><div class="spinner" style="position:relative; margin:0 auto 4px auto;"></div>Lade stündliche Vorhersage...</div>';
 
         await Promise.all([
             fetchAllData(),
@@ -2156,19 +2141,124 @@
         document.getElementById('loadingStatus').innerHTML = '';
     }
 
+    async function fetchRealWeather(lat, lon, cityName) {
+        try {
+            const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_sum,windspeed_10m_max&hourly=temperature_2m,relativehumidity_2m,windspeed_10m,weathercode&current_weather=true&timezone=auto`);
+            const data = await res.json();
+            
+            if (data && data.daily) {
+                let gridHtml = '';
+                for (let i = 0; i < 7; i++) {
+                    const date = new Date(data.daily.time[i]).toLocaleDateString('de-DE', { weekday: 'short', day: 'numeric', month: 'short' });
+                    const tMax = Math.round(data.daily.temperature_2m_max[i]);
+                    const tMin = Math.round(data.daily.temperature_2m_min[i]);
+                    const code = data.daily.weathercode[i];
+                    gridHtml += `
+                        <div class="weather-day" onclick="openDayFullscreenModal(${i})">
+                            <strong>${date}</strong>
+                            <span style="font-size: 1.2rem;">${getWeatherEmoji(code)}</span>
+                            <span>${tMax}°C / ${tMin}°C</span>
+                        </div>
+                    `;
+                }
+                document.getElementById('weatherGrid').innerHTML = gridHtml;
+                window.currentWeatherDataCache = data;
+            }
+
+            if (data && data.hourly) {
+                let hoursHtml = '';
+                const nowIndex = new Date().getHours();
+                for (let i = nowIndex; i < nowIndex + 24 && i < data.hourly.time.length; i++) {
+                    const timeStr = data.hourly.time[i].split('T')[1].substring(0, 5);
+                    const temp = Math.round(data.hourly.temperature_2m[i]);
+                    const code = data.hourly.weathercode[i];
+                    hoursHtml += `
+                        <div class="hour-slot">
+                            <strong>${timeStr}</strong>
+                            <span style="font-size: 1rem; margin: 2px 0;">${getWeatherEmoji(code)}</span>
+                            <span>${temp}°C</span>
+                        </div>
+                    `;
+                }
+                document.getElementById('weatherHoursGrid').innerHTML = hoursHtml;
+            }
+        } catch (e) {
+            document.getElementById('weatherGrid').innerHTML = '<p style="color:#ef4444; text-align:center; grid-column:1/-1;">Fehler beim Laden der Wetterdaten.</p>';
+            document.getElementById('weatherHoursGrid').innerHTML = '<p style="color:#ef4444; text-align:center;">Fehler beim Laden.</p>';
+        }
+    }
+
+    function getWeatherEmoji(code) {
+        if (code === 0) return '☀️';
+        if ([1, 2, 3].includes(code)) return '⛅';
+        if ([45, 48].includes(code)) return '🌫️';
+        if ([51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 80, 81, 82].includes(code)) return '🌧️';
+        if ([71, 73, 75, 77, 85, 86].includes(code)) return '🌨️';
+        if ([95, 96, 99].includes(code)) return '⛈️';
+        return '🌡️';
+    }
+
+    function openDayFullscreenModal(index) {
+        const data = window.currentWeatherDataCache;
+        if (!data || !data.daily) return;
+        const date = new Date(data.daily.time[index]).toLocaleDateString('de-DE', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+        const tMax = data.daily.temperature_2m_max[index];
+        const tMin = data.daily.temperature_2m_min[index];
+        const precip = data.daily.precipitation_sum[index];
+        const wind = data.daily.windspeed_10m_max[index];
+        const code = data.daily.weathercode[index];
+
+        document.getElementById('fsModalTitle').innerText = `Wetter am ${date}`;
+        document.getElementById('fsModalBody').innerHTML = `
+            <div style="display: flex; flex-direction: column; gap: 14px;">
+                <div style="display: flex; align-items: center; gap: 16px; background: #0f172a; padding: 14px; border-radius: 8px; border: 1px solid var(--border-color);">
+                    <span style="font-size: 2.5rem;">${getWeatherEmoji(code)}</span>
+                    <div>
+                        <h4 style="margin: 0 0 4px 0; font-size: 1.1rem;">Max: ${tMax}°C / Min: ${tMin}°C</h4>
+                        <p style="margin: 0; font-size: 0.85rem; color: var(--text-muted);">Zustand: ${getWeatherDescription(code)}</p>
+                    </div>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px;">
+                    <div style="background: #0f172a; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color);">
+                        <strong style="font-size: 0.85rem; color: var(--text-muted);">Niederschlag</strong>
+                        <div style="font-size: 1.1rem; font-weight: bold; margin-top: 4px;">${precip} mm</div>
+                    </div>
+                    <div style="background: #0f172a; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color);">
+                        <strong style="font-size: 0.85rem; color: var(--text-muted);">Max. Windgeschwindigkeit</strong>
+                        <div style="font-size: 1.1rem; font-weight: bold; margin-top: 4px;">${wind} km/h</div>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.getElementById('fullscreenDayModal').style.display = 'flex';
+    }
+
+    function closeFullscreenModal() {
+        document.getElementById('fullscreenDayModal').style.display = 'none';
+    }
+
+    function getWeatherDescription(code) {
+        if (code === 0) return 'Klarer Himmel';
+        if ([1, 2, 3].includes(code)) return 'Teilweise bewölkt';
+        if ([45, 48].includes(code)) return 'Nebel';
+        if ([51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 80, 81, 82].includes(code)) return 'Regen';
+        if ([71, 73, 75, 77, 85, 86].includes(code)) return 'Schneefall';
+        if ([95, 96, 99].includes(code)) return 'Gewitter';
+        return 'Wechselhaft';
+    }
+
     async function fetchAllData() {
         const lat = currentCityData.lat;
         const lon = currentCityData.lon;
-        const radiusKm = currentCityData.radius;
+        const radiusMeters = currentCityData.radius * 1000;
         const cityName = currentCityData.name;
-        const radiusMeters = radiusKm * 1000;
 
-        document.getElementById('sightsLoadingStatus').innerHTML = '<span class="loading-indicator" title="Lade..."></span>';
-        document.getElementById('restaurantsLoadingStatus').innerHTML = '<span class="loading-indicator" title="Lade..."></span>';
-        document.getElementById('hotelsLoadingStatus').innerHTML = '<span class="loading-indicator" title="Lade..."></span>';
+        document.getElementById('sightsLoadingStatus').innerHTML = '<span class="loading-indicator"></span> Lade Sehenswürdigkeiten...';
+        document.getElementById('restaurantsLoadingStatus').innerHTML = '<span class="loading-indicator"></span> Lade Restaurants...';
+        document.getElementById('hotelsLoadingStatus').innerHTML = '<span class="loading-indicator"></span> Lade Unterkünfte...';
 
         const overpassQuery = `
-            [out:json][timeout:10];
+            [out:json][timeout:20];
             (
               node(around:${radiusMeters},${lat},${lon})[tourism];
               way(around:${radiusMeters},${lat},${lon})[tourism];
@@ -2176,21 +2266,19 @@
               way(around:${radiusMeters},${lat},${lon})[amenity=restaurant];
               node(around:${radiusMeters},${lat},${lon})[amenity=cafe];
               way(around:${radiusMeters},${lat},${lon})[amenity=cafe];
+              node(around:${radiusMeters},${lat},${lon})[tourism=hotel];
+              way(around:${radiusMeters},${lat},${lon})[tourism=hotel];
+              node(around:${radiusMeters},${lat},${lon})[tourism=guest_house];
+              way(around:${radiusMeters},${lat},${lon})[tourism=guest_house];
             );
-            out center 50;
+            out center 60;
         `;
 
         try {
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 8000);
-
             const response = await fetch(OVERPASS_API_URL, {
                 method: 'POST',
-                body: overpassQuery,
-                signal: controller.signal
+                body: overpassQuery
             });
-            clearTimeout(timeoutId);
-
             const data = await response.json();
             
             let sights = [];
@@ -2204,97 +2292,50 @@
                     if (!elLat || !elLon) return;
 
                     const tags = el.tags || {};
-                    const tourismVal = tags.tourism;
-                    const amenityVal = tags.amenity;
-                    const distVal = calculateDistance(lat, lon, elLat, elLon);
+                    const name = tags.name || tags['name:de'] || "Unbekannter Ort";
+                    const dist = calculateDistance(lat, lon, elLat, elLon);
                     const rating = (4.0 + ((index * 3) % 10) * 0.05).toFixed(1);
                     const street = tags['addr:street'] || 'Hauptstraße';
                     const houseNumber = tags['addr:housenumber'] || (index + 1);
                     const address = `${street} ${houseNumber}, ${cityName}`;
 
-                    if (amenityVal === 'restaurant' || amenityVal === 'cafe') {
-                        restaurants.push({
-                            id: el.id || index,
-                            name: tags.name || amenityVal,
-                            dist: distVal.toFixed(1) + " km",
-                            rating: rating,
-                            address: address,
-                            description: tags.cuisine ? `Küche: ${tags.cuisine}` : `Gemütliche Gastronomie in ${cityName}.`,
-                            lat: elLat,
-                            lon: elLon,
-                            images: ["https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=500&q=80"]
-                        });
-                    } else if (['hotel', 'guest_house', 'hostel', 'apartment', 'motel', 'chalet'].includes(tourismVal)) {
-                        hotels.push({
-                            id: el.id || index,
-                            name: tags.name || tourismVal,
-                            dist: distVal.toFixed(1) + " km",
-                            rating: rating,
-                            address: address,
-                            description: tags.description || `Komfortable Unterkunft in ${cityName}.`,
-                            lat: elLat,
-                            lon: elLon,
-                            images: ["https://images.unsplash.com/photo-1566073771259-6a8506099945?w=500&q=80"]
-                        });
-                    } else {
-                        sights.push({
-                            id: el.id || index,
-                            name: tags.name || tourismVal || `Sehenswürdigkeit ${index + 1}`,
-                            dist: distVal.toFixed(1) + " km",
-                            rating: rating,
-                            address: address,
-                            description: tags.description || `Wichtiger Punkt in ${cityName}.`,
-                            lat: elLat,
-                            lon: elLon,
-                            images: ["https://images.unsplash.com/photo-1595867818082-083862f3d630?w=500&q=80"]
-                        });
+                    const itemObj = {
+                        id: el.id || index,
+                        name: name,
+                        lat: elLat,
+                        lon: elLon,
+                        distance: dist,
+                        rating: parseFloat(rating),
+                        address: address,
+                        tags: tags
+                    };
+
+                    if (tags.tourism && ['hotel', 'guest_house', 'hostel', 'motel', 'apartment'].includes(tags.tourism)) {
+                        hotels.push(itemObj);
+                    } else if (tags.amenity === 'restaurant' || tags.amenity === 'cafe' || tags.amenity === 'fast_food') {
+                        restaurants.push(itemObj);
+                    } else if (tags.tourism) {
+                        sights.push(itemObj);
                     }
                 });
-            }
-
-            if (sights.length === 0) {
-                for (let i = 1; i <= 3; i++) {
-                    sights.push({
-                        id: i, name: `Sehenswürdigkeit ${i} in ${cityName}`, dist: (0.4 * i).toFixed(1) + " km", rating: "4.5",
-                        address: `Hauptstraße ${i}, ${cityName}`, description: `Lokales Highlight in ${cityName}.`,
-                        lat: lat + (0.002 * i), lon: lon + (0.002 * i), images: ["https://images.unsplash.com/photo-1595867818082-083862f3d630?w=500&q=80"]
-                    });
-                }
-            }
-            if (restaurants.length === 0) {
-                for (let i = 1; i <= 3; i++) {
-                    restaurants.push({
-                        id: i, name: `Restaurant ${i} in ${cityName}`, dist: (0.3 * i).toFixed(1) + " km", rating: "4.3",
-                        address: `Marktplatz ${i}, ${cityName}`, description: `Gemütliche Gastronomie in ${cityName}.`,
-                        lat: lat - (0.002 * i), lon: lon - (0.002 * i), images: ["https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=500&q=80"]
-                    });
-                }
-            }
-            if (hotels.length === 0) {
-                for (let i = 1; i <= 3; i++) {
-                    hotels.push({
-                        id: i, name: `Hotel & Unterkunft ${i} in ${cityName}`, dist: (0.5 * i).toFixed(1) + " km", rating: "4.4",
-                        address: `Hotelstraße ${i}, ${cityName}`, description: `Komfortable Unterkunft in ${cityName}.`,
-                        lat: lat + (0.0025 * i), lon: lon - (0.0025 * i), images: ["https://images.unsplash.com/photo-1566073771259-6a8506099945?w=500&q=80"]
-                    });
-                }
             }
 
             currentCityData.allSights = sights;
             currentCityData.restaurants = restaurants;
             currentCityData.hotels = hotels;
-        } catch (e) {
-            console.error("Fehler beim Laden der POI-Daten:", e);
+
+            renderSightsList();
+            renderRestaurantsList();
+            renderHotelsList();
+            updateMapMarkers();
+
+        } catch (err) {
+            console.error("Overpass Fehler:", err);
+        } finally {
+            document.getElementById('sightsLoadingStatus').innerHTML = '';
+            document.getElementById('restaurantsLoadingStatus').innerHTML = '';
+            document.getElementById('hotelsLoadingStatus').innerHTML = '';
         }
-
-        document.getElementById('sightsLoadingStatus').innerHTML = '';
-        document.getElementById('restaurantsLoadingStatus').innerHTML = '';
-        document.getElementById('hotelsLoadingStatus').innerHTML = '';
-
-        renderSightsList();
-        renderRestaurantsList();
-        renderHotelsList();
-        updateMapMarkers();
     }
 
     function calculateDistance(lat1, lon1, lat2, lon2) {
@@ -2308,252 +2349,109 @@
         return R * c;
     }
 
-    async function fetchRealWeather(lat, lon, cityName) {
-        try {
-            const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_max,windspeed_10m_max&hourly=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation_probability,precipitation,weathercode,windspeed_10m&timezone=auto`);
-            const data = await res.json();
-            
-            globalHourlyCache = data.hourly;
-            globalDailyCache = data.daily;
+    function renderSightsList() {
+        const container = document.getElementById('sightList');
+        const moreBtn = document.getElementById('sightMoreBtn');
+        const sortMode = document.getElementById('sightSort').value;
+        let list = [...currentCityData.allSights];
 
-            const daysNames = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'];
-            const fullDaysNames = ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'];
+        if (sortMode === 'distance') list.sort((a,b) => a.distance - b.distance);
+        else if (sortMode === 'rating') list.sort((a,b) => b.rating - a.rating);
+        else if (sortMode === 'alpha') list.sort((a,b) => a.name.localeCompare(b.name));
 
-            if (data && data.daily) {
-                const grid = document.getElementById('weatherGrid');
-                grid.innerHTML = '';
-                
-                for (let i = 0; i < 7; i++) {
-                    const dateObj = new Date(data.daily.time[i]);
-                    const dayName = daysNames[dateObj.getDay()];
-                    
-                    const dayNum = String(dateObj.getDate()).padStart(2, '0');
-                    const monthNum = String(dateObj.getMonth() + 1).padStart(2, '0');
-                    const dateStr = `${dayNum}.${monthNum}.`;
-
-                    const tempMax = Math.round(data.daily.temperature_2m_max[i]);
-                    const tempMin = Math.round(data.daily.temperature_2m_min[i]);
-                    const rainProbMax = data.daily.precipitation_probability_max ? data.daily.precipitation_probability_max[i] : 0;
-                    const windMax = data.daily.windspeed_10m_max ? data.daily.windspeed_10m_max[i] : 0;
-
-                    grid.innerHTML += `
-                        <div class="weather-day" onclick="openFullscreenDayModal(${i})">
-                            <div style="border-bottom:1px solid var(--border-color); padding-bottom:3px; margin-bottom:3px;">
-                                <strong>${dayName}</strong> <span style="font-size:0.7rem; color:var(--text-muted);">${dateStr}</span>
-                            </div>
-                            <div style="font-size: 1.2rem; margin: 2px 0;">☀️</div>
-                            <div>
-                                <span style="font-size: 0.95rem; font-weight:bold;">${tempMax}°</span>
-                                <span style="font-size: 0.75rem; color:var(--text-muted);">/ ${tempMin}°</span>
-                            </div>
-                            <div style="font-size: 0.7rem; color:var(--text-muted); margin-top:2px;">
-                                🌧️ ${rainProbMax}% | 💨 ${windMax}
-                            </div>
-                        </div>
-                    `;
-                }
-            }
-
-            if (data && data.hourly && data.hourly.time) {
-                const hoursGrid = document.getElementById('weatherHoursGrid');
-                hoursGrid.innerHTML = '';
-                
-                const nowTimestamp = Date.now();
-                let startIndex = 0;
-                let minDiff = Infinity;
-
-                for(let i = 0; i < data.hourly.time.length; i++) {
-                    const timeMs = new Date(data.hourly.time[i]).getTime();
-                    const diff = timeMs - nowTimestamp;
-                    if(diff >= 0 && diff < minDiff) {
-                        minDiff = diff;
-                        startIndex = i;
-                        break;
-                    }
-                }
-                if (minDiff === Infinity) startIndex = Math.max(0, data.hourly.time.length - 36);
-
-                let lastDateStr = "";
-
-                for (let i = 0; i < 36; i++) {
-                    const idx = startIndex + i;
-                    if (!data.hourly.time[idx]) break;
-
-                    const timeFull = data.hourly.time[idx];
-                    const dateObj = new Date(timeFull);
-                    const currentDateStr = timeFull.slice(0, 10);
-
-                    if (currentDateStr !== lastDateStr) {
-                        if (lastDateStr !== "") {
-                            const dayNameLong = fullDaysNames[dateObj.getDay()];
-                            const dayNum = String(dateObj.getDate()).padStart(2, '0');
-                            const monthNum = String(dateObj.getMonth() + 1).padStart(2, '0');
-                            
-                            hoursGrid.innerHTML += `
-                                <div class="day-divider">
-                                    <b>${dayNameLong}</b>
-                                    <span>${dayNum}.${monthNum}.</span>
-                                </div>
-                            `;
-                        }
-                        lastDateStr = currentDateStr;
-                    }
-                    
-                    const timeStr = timeFull.slice(11, 16);
-                    const temp = Math.round(data.hourly.temperature_2m[idx] || 20);
-                    
-                    hoursGrid.innerHTML += `
-                        <div class="hour-slot" onclick="openHourDetailModal(${idx})">
-                            <b>${timeStr}</b><br>☀️<br>${temp}°C
-                        </div>
-                    `;
-                }
-            }
-        } catch (err) {
-            console.error("Wetter-Ladefehler:", err);
-            document.getElementById('weatherGrid').innerHTML = '<p style="color:#ef4444; text-align:center; grid-column:1/-1;">Wetterdaten konnten nicht geladen werden.</p>';
+        if (list.length === 0) {
+            container.innerHTML = '<p style="color:var(--text-muted); font-size:0.85rem; padding:6px 0;">Keine Sehenswürdigkeiten im Umkreis gefunden.</p>';
+            if(moreBtn) moreBtn.style.display = 'none';
+            return;
         }
+
+        let html = '';
+        list.slice(0, 5).forEach(item => {
+            html += `
+                <li class="item-row" onclick="map.setView([${item.lat}, ${item.lon}], 16)">
+                    <div class="item-info-left">
+                        <div class="item-thumb" style="display:flex; align-items:center; justify-content:center; font-size:1.2rem;">🏛️</div>
+                        <div class="item-text-details">
+                            <strong style="font-size:0.9rem; display:block;">${item.name}</strong>
+                            <span style="font-size:0.75rem; color:var(--text-muted);">${item.distance.toFixed(1)} km entfernt • ${item.address}</span>
+                        </div>
+                    </div>
+                    <span class="rating-badge">⭐ ${item.rating}</span>
+                </li>
+            `;
+        });
+        container.innerHTML = html;
+        if(moreBtn) moreBtn.style.display = list.length > 5 ? 'block' : 'none';
     }
 
-    function openFullscreenDayModal(dayIndex) {
-        if (!globalDailyCache) return;
-        const dateStr = globalDailyCache.time[dayIndex];
-        const maxT = Math.round(globalDailyCache.temperature_2m_max[dayIndex]);
-        const minT = Math.round(globalDailyCache.temperature_2m_min[dayIndex]);
-        const rainProb = globalDailyCache.precipitation_probability_max ? globalDailyCache.precipitation_probability_max[dayIndex] : 0;
-        const wind = globalDailyCache.windspeed_10m_max ? globalDailyCache.windspeed_10m_max[dayIndex] : 0;
+    function renderRestaurantsList() {
+        const container = document.getElementById('restaurantList');
+        const moreBtn = document.getElementById('restaurantMoreBtn');
+        const sortMode = document.getElementById('restaurantSort').value;
+        let list = [...currentCityData.restaurants];
 
-        document.getElementById('fsModalTitle').innerText = `Tagesinfopaket für ${dateStr} (${currentCityData.name})`;
-        document.getElementById('fsModalBody').innerHTML = `
-            <div class="weather-anim-container">
-                <div class="weather-anim-stage">
-                    <div class="anim-sun"></div>
-                </div>
-                <div>
-                    <strong style="font-size: 1.05rem;">Wetterbedingungen am Tag</strong><br>
-                    <span style="font-size: 0.85rem; color: var(--text-muted);">Max: ${maxT}°C | Min: ${minT}°C | Regenrisiko: ${rainProb}% | Wind: ${wind} km/h</span>
-                </div>
-            </div>
-            <div class="chart-box">
-                <h4>Temperaturverlauf</h4>
-                <canvas id="dayTempChart"></canvas>
-            </div>
-            <div class="chart-box">
-                <h4>Niederschlagswahrscheinlichkeit</h4>
-                <canvas id="dayRainChart"></canvas>
-            </div>
-        `;
-        document.getElementById('fullscreenDayModal').style.display = 'flex';
+        if (sortMode === 'distance') list.sort((a,b) => a.distance - b.distance);
+        else if (sortMode === 'rating') list.sort((a,b) => b.rating - a.rating);
+        else if (sortMode === 'alpha') list.sort((a,b) => a.name.localeCompare(b.name));
 
-        setTimeout(() => {
-            const ctxTemp = document.getElementById('dayTempChart');
-            if (ctxTemp && window.Chart) {
-                if (chartTempInstance) chartTempInstance.destroy();
-                chartTempInstance = new Chart(ctxTemp, {
-                    type: 'line',
-                    data: {
-                        labels: ['00:00', '03:00', '06:00', '09:00', '12:00', '15:00', '18:00', '21:00'],
-                        datasets: [{
-                            label: 'Temperatur (°C)',
-                            data: [minT, minT+1, minT+2, maxT-2, maxT, maxT-1, minT+3, minT+1],
-                            borderColor: '#3b82f6',
-                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                            fill: true,
-                            tension: 0.3
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: { legend: { display: false } },
-                        scales: {
-                            y: { grid: { color: '#334155' }, ticks: { color: '#94a3b8' } },
-                            x: { grid: { color: '#334155' }, ticks: { color: '#94a3b8' } }
-                        }
-                    }
-                });
-            }
+        if (list.length === 0) {
+            container.innerHTML = '<p style="color:var(--text-muted); font-size:0.85rem; padding:6px 0;">Keine Restaurants im Umkreis gefunden.</p>';
+            if(moreBtn) moreBtn.style.display = 'none';
+            return;
+        }
 
-            const ctxRain = document.getElementById('dayRainChart');
-            if (ctxRain && window.Chart) {
-                if (chartRainInstance) chartRainInstance.destroy();
-                chartRainInstance = new Chart(ctxRain, {
-                    type: 'bar',
-                    data: {
-                        labels: ['00:00', '03:00', '06:00', '09:00', '12:00', '15:00', '18:00', '21:00'],
-                        datasets: [{
-                            label: 'Regenrisiko (%)',
-                            data: [rainProb, rainProb, Math.max(0, rainProb-10), rainProb, rainProb, Math.min(100, rainProb+10), rainProb, rainProb],
-                            backgroundColor: '#38bdf8'
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: { legend: { display: false } },
-                        scales: {
-                            y: { max: 100, grid: { color: '#334155' }, ticks: { color: '#94a3b8' } },
-                            x: { grid: { color: '#334155' }, ticks: { color: '#94a3b8' } }
-                        }
-                    }
-                });
-            }
-        }, 100);
+        let html = '';
+        list.slice(0, 5).forEach(item => {
+            html += `
+                <li class="item-row" onclick="map.setView([${item.lat}, ${item.lon}], 16)">
+                    <div class="item-info-left">
+                        <div class="item-thumb" style="display:flex; align-items:center; justify-content:center; font-size:1.2rem;">🍽️</div>
+                        <div class="item-text-details">
+                            <strong style="font-size:0.9rem; display:block;">${item.name}</strong>
+                            <span style="font-size:0.75rem; color:var(--text-muted);">${item.distance.toFixed(1)} km entfernt • ${item.address}</span>
+                        </div>
+                    </div>
+                    <span class="rating-badge">⭐ ${item.rating}</span>
+                </li>
+            `;
+        });
+        container.innerHTML = html;
+        if(moreBtn) moreBtn.style.display = list.length > 5 ? 'block' : 'none';
     }
 
-    function closeFullscreenModal() {
-        document.getElementById('fullscreenDayModal').style.display = 'none';
-    }
+    function renderHotelsList() {
+        const container = document.getElementById('hotelList');
+        const moreBtn = document.getElementById('hotelMoreBtn');
+        const sortMode = document.getElementById('hotelSort').value;
+        let list = [...currentCityData.hotels];
 
-    function openHourDetailModal(idx) {
-        if (!globalHourlyCache) return;
-        const time = globalHourlyCache.time[idx];
-        const temp = globalHourlyCache.temperature_2m[idx];
-        const apparent = globalHourlyCache.apparent_temperature[idx];
-        const humidity = globalHourlyCache.relative_humidity_2m[idx];
-        const precip = globalHourlyCache.precipitation[idx];
-        const windspeed = globalHourlyCache.windspeed_10m[idx];
+        if (sortMode === 'distance') list.sort((a,b) => a.distance - b.distance);
+        else if (sortMode === 'rating') list.sort((a,b) => b.rating - a.rating);
+        else if (sortMode === 'alpha') list.sort((a,b) => a.name.localeCompare(b.name));
 
-        document.getElementById('modalTitle').innerText = `Stündliche Details (${time})`;
-        document.getElementById('modalBody').innerHTML = `
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-top: 10px;">
-                <div style="background: #0f172a; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); text-align: center;">
-                    <span style="font-size: 1.2rem;">🌡️</span><br>
-                    <strong style="font-size: 1rem; color: var(--accent-color);">${temp}°C</strong><br>
-                    <span style="font-size: 0.75rem; color: var(--text-muted);">Temperatur</span>
-                </div>
-                <div style="background: #0f172a; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); text-align: center;">
-                    <span style="font-size: 1.2rem;">🧥</span><br>
-                    <strong style="font-size: 1rem; color: var(--accent-color);">${apparent}°C</strong><br>
-                    <span style="font-size: 0.75rem; color: var(--text-muted);">Gefühlt</span>
-                </div>
-                <div style="background: #0f172a; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); text-align: center;">
-                    <span style="font-size: 1.2rem;">💧</span><br>
-                    <strong style="font-size: 1rem; color: var(--accent-color);">${humidity}%</strong><br>
-                    <span style="font-size: 0.75rem; color: var(--text-muted);">Luftfeuchtigkeit</span>
-                </div>
-                <div style="background: #0f172a; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); text-align: center;">
-                    <span style="font-size: 1.2rem;">🌧️</span><br>
-                    <strong style="font-size: 1rem; color: var(--accent-color);">${precip} mm</strong><br>
-                    <span style="font-size: 0.75rem; color: var(--text-muted);">Niederschlag</span>
-                </div>
-                <div style="background: #0f172a; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); text-align: center;">
-                    <span style="font-size: 1.2rem;">💨</span><br>
-                    <strong style="font-size: 1rem; color: var(--accent-color);">${windspeed} km/h</strong><br>
-                    <span style="font-size: 0.75rem; color: var(--text-muted);">Windgeschwindigkeit</span>
-                </div>
-            </div>
-        `;
-        document.getElementById('modalFooterNav').style.display = 'none';
-        document.getElementById('detailModal').style.display = 'flex';
-    }
+        if (list.length === 0) {
+            container.innerHTML = '<p style="color:var(--text-muted); font-size:0.85rem; padding:6px 0;">Keine Unterkünfte im Umkreis gefunden.</p>';
+            if(moreBtn) moreBtn.style.display = 'none';
+            return;
+        }
 
-    function closeModal() {
-        document.getElementById('detailModal').style.display = 'none';
-    }
-
-    function resetToHome() {
-        searchLocation();
+        let html = '';
+        list.slice(0, 5).forEach(item => {
+            html += `
+                <li class="item-row" onclick="map.setView([${item.lat}, ${item.lon}], 16)">
+                    <div class="item-info-left">
+                        <div class="item-thumb" style="display:flex; align-items:center; justify-content:center; font-size:1.2rem;">🏨</div>
+                        <div class="item-text-details">
+                            <strong style="font-size:0.9rem; display:block;">${item.name}</strong>
+                            <span style="font-size:0.75rem; color:var(--text-muted);">${item.distance.toFixed(1)} km entfernt • ${item.address}</span>
+                        </div>
+                    </div>
+                    <span class="rating-badge">⭐ ${item.rating}</span>
+                </li>
+            `;
+        });
+        container.innerHTML = html;
+        if(moreBtn) moreBtn.style.display = list.length > 5 ? 'block' : 'none';
     }
 
     function updateMapMarkers() {
@@ -2562,89 +2460,57 @@
         const showRestaurants = document.getElementById('toggleRestaurants').checked;
         const showHotels = document.getElementById('toggleHotels').checked;
 
-        if (showSights && currentCityData.allSights) {
+        if (showSights) {
             currentCityData.allSights.forEach(item => {
-                const marker = L.circleMarker([item.lat, item.lon], { radius: 7, color: '#ef4444', fillColor: '#ef4444', fillOpacity: 0.8 });
-                marker.bindPopup(`<b>🏛️ ${item.name}</b><br>${item.address}<br>Bewertung: ⭐ ${item.rating}`);
-                categoryMarkersLayer.addLayer(marker);
+                L.circleMarker([item.lat, item.lon], { radius: 6, color: '#ef4444', fillColor: '#ef4444', fillOpacity: 0.8 })
+                    .bindPopup(`<b>🏛️ ${item.name}</b><br>${item.address}<br>⭐ ${item.rating}`)
+                    .addTo(categoryMarkersLayer);
             });
         }
-        if (showRestaurants && currentCityData.restaurants) {
+        if (showRestaurants) {
             currentCityData.restaurants.forEach(item => {
-                const marker = L.circleMarker([item.lat, item.lon], { radius: 7, color: '#3b82f6', fillColor: '#3b82f6', fillOpacity: 0.8 });
-                marker.bindPopup(`<b>🍽️ ${item.name}</b><br>${item.address}<br>Bewertung: ⭐ ${item.rating}`);
-                categoryMarkersLayer.addLayer(marker);
+                L.circleMarker([item.lat, item.lon], { radius: 6, color: '#3b82f6', fillColor: '#3b82f6', fillOpacity: 0.8 })
+                    .bindPopup(`<b>🍽️ ${item.name}</b><br>${item.address}<br>⭐ ${item.rating}`)
+                    .addTo(categoryMarkersLayer);
             });
         }
-        if (showHotels && currentCityData.hotels) {
+        if (showHotels) {
             currentCityData.hotels.forEach(item => {
-                const marker = L.circleMarker([item.lat, item.lon], { radius: 7, color: '#f59e0b', fillColor: '#f59e0b', fillOpacity: 0.8 });
-                marker.bindPopup(`<b>🏨 ${item.name}</b><br>${item.address}<br>Bewertung: ⭐ ${item.rating}`);
-                categoryMarkersLayer.addLayer(marker);
+                L.circleMarker([item.lat, item.lon], { radius: 6, color: '#f59e0b', fillColor: '#f59e0b', fillOpacity: 0.8 })
+                    .bindPopup(`<b>🏨 ${item.name}</b><br>${item.address}<br>⭐ ${item.rating}`)
+                    .addTo(categoryMarkersLayer);
             });
         }
     }
 
-    function renderSightsList() { renderItemList('sights', currentCityData.allSights, 'sightList', 'sightMoreBtn', document.getElementById('sightSort').value); }
-    function renderRestaurantsList() { renderItemList('restaurants', currentCityData.restaurants, 'restaurantList', 'restaurantMoreBtn', document.getElementById('restaurantSort').value); }
-    function renderHotelsList() { renderItemList('hotels', currentCityData.hotels, 'hotelList', 'hotelMoreBtn', document.getElementById('hotelSort').value); }
-
-    function renderItemList(categoryType, itemsArray, listElId, moreBtnElId, sortMode) {
-        const listEl = document.getElementById(listElId);
-        const moreBtnEl = document.getElementById(moreBtnElId);
-        if (!listEl) return;
-
-        let sorted = [...itemsArray];
-        if (sortMode === 'distance') {
-            sorted.sort((a, b) => parseFloat(a.dist) - parseFloat(b.dist));
-        } else if (sortMode === 'rating') {
-            sorted.sort((a, b) => parseFloat(b.rating) - parseFloat(a.rating));
-        } else if (sortMode === 'alpha') {
-            sorted.sort((a, b) => a.name.localeCompare(b.name));
-        }
-
-        const displayItems = sorted.slice(0, 3);
-        let html = '';
-        displayItems.forEach(item => {
-            html += `
-                <li class="item-row" onclick="openItemDetail('${categoryType}', ${item.id})">
-                    <div class="item-info-left">
-                        <img src="${item.images[0]}" class="item-thumb" alt="${item.name}" onerror="this.src='https://images.unsplash.com/photo-1595867818082-083862f3d630?w=500&q=80'">
-                        <div class="item-text-details">
-                            <strong style="font-size: 0.9rem; display: block; margin-bottom: 2px;">${item.name}</strong>
-                            <span style="font-size: 0.75rem; color: var(--text-muted);">${item.address} (${item.dist})</span>
-                        </div>
-                    </div>
-                    <span class="rating-badge">⭐ ${item.rating}</span>
-                </li>
-            `;
-        });
-        listEl.innerHTML = html;
-
-        if (sorted.length > 3) {
-            moreBtnEl.style.display = 'block';
-        } else {
-            moreBtnEl.style.display = 'none';
-        }
+    function closeModal() {
+        document.getElementById('detailModal').style.display = 'none';
     }
 
-    function openAllItemsModal(categoryType) {
-        let items = [];
+    function openAllItemsModal(type) {
         let title = "";
-        if (categoryType === 'sights') { items = currentCityData.allSights; title = "🏛️ Alle Sehenswürdigkeiten"; }
-        else if (categoryType === 'restaurants') { items = currentCityData.restaurants; title = "🍽️ Alle Restaurants & Cafés"; }
-        else if (categoryType === 'hotels') { items = currentCityData.hotels; title = "🏨 Alle Unterkünfte"; }
+        let list = [];
+        if (type === 'sights') {
+            title = "🏛️ Alle Sehenswürdigkeiten";
+            list = currentCityData.allSights;
+        } else if (type === 'restaurants') {
+            title = "🍽️ Alle Restaurants";
+            list = currentCityData.restaurants;
+        } else if (type === 'hotels') {
+            title = "🏨 Alle Unterkünfte";
+            list = currentCityData.hotels;
+        }
 
         document.getElementById('modalTitle').innerText = title;
         let html = '<ul class="item-list">';
-        items.forEach(item => {
+        list.forEach(item => {
             html += `
-                <li class="item-row" onclick="closeModal(); openItemDetail('${categoryType}', ${item.id})">
+                <li class="item-row" onclick="closeModal(); map.setView([${item.lat}, ${item.lon}], 16)">
                     <div class="item-info-left">
-                        <img src="${item.images[0]}" class="item-thumb" alt="${item.name}">
+                        <div class="item-thumb" style="display:flex; align-items:center; justify-content:center; font-size:1.2rem;">📌</div>
                         <div class="item-text-details">
-                            <strong style="font-size: 0.9rem; display: block; margin-bottom: 2px;">${item.name}</strong>
-                            <span style="font-size: 0.75rem; color: var(--text-muted);">${item.address} (${item.dist})</span>
+                            <strong style="font-size:0.9rem; display:block;">${item.name}</strong>
+                            <span style="font-size:0.75rem; color:var(--text-muted);">${item.distance.toFixed(1)} km entfernt • ${item.address}</span>
                         </div>
                     </div>
                     <span class="rating-badge">⭐ ${item.rating}</span>
@@ -2657,33 +2523,8 @@
         document.getElementById('detailModal').style.display = 'flex';
     }
 
-    function openItemDetail(categoryType, itemId) {
-        let items = [];
-        if (categoryType === 'sights') items = currentCityData.allSights;
-        else if (categoryType === 'restaurants') items = currentCityData.restaurants;
-        else if (categoryType === 'hotels') items = currentCityData.hotels;
-
-        const item = items.find(i => i.id === itemId);
-        if (!item) return;
-
-        document.getElementById('modalTitle').innerText = item.name;
-        document.getElementById('modalBody').innerHTML = `
-            <div class="gallery-container">
-                ${item.images.map(img => `<img src="${img}" class="gallery-img">`).join('')}
-            </div>
-            <p><strong>Adresse:</strong> ${item.address}</p>
-            <p><strong>Entfernung:</strong> ${item.dist}</p>
-            <p><strong>Bewertung:</strong> ⭐ ${item.rating}</p>
-            <p style="margin-top: 10px;"><strong>Beschreibung:</strong><br>${item.description}</p>
-        `;
-
-        document.getElementById('modalFooterNav').style.display = 'flex';
-        document.getElementById('modalFooterNav').innerHTML = `
-            <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.name + ' ' + item.address)}" target="_blank" class="navigate-btn">
-                <span>🧭</span> Route berechnen
-            </a>
-        `;
-        document.getElementById('detailModal').style.display = 'flex';
+    function resetToHome() {
+        searchLocation();
     }
 </script>
 </body>
