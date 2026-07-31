@@ -554,8 +554,8 @@
             border: 1px solid var(--border-color);
             border-radius: 12px;
             width: 100%;
-            max-width: 780px;
-            max-height: 90vh;
+            max-width: 850px;
+            max-height: 92vh;
             display: flex;
             flex-direction: column;
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.4);
@@ -642,24 +642,28 @@
         }
 
         .img-container {
-            width: 40px;
-            height: 30px;
+            width: 38px;
+            height: 28px;
             position: relative;
             display: flex;
             align-items: center;
             justify-content: center;
+            background: #0f172a;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            overflow: hidden;
+            box-sizing: border-box;
         }
 
         .flag {
-            width: 30px;
-            height: 20px;
+            width: 100%;
+            height: 100%;
             object-fit: cover;
-            border: 1px solid #ccc;
         }
 
         .spinner {
-            width: 16px;
-            height: 16px;
+            width: 14px;
+            height: 14px;
             border: 2px solid #ccc;
             border-top: 2px solid var(--accent-color);
             border-radius: 50%;
@@ -669,6 +673,77 @@
 
         @keyframes spin {
             to { transform: rotate(360deg); }
+        }
+
+        /* Weather Animations */
+        .weather-anim-box {
+            position: relative;
+            width: 70px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+        }
+        @keyframes pulseSun {
+            0% { transform: scale(1); filter: drop-shadow(0 0 2px #f59e0b); }
+            50% { transform: scale(1.15); filter: drop-shadow(0 0 12px #f59e0b); }
+            100% { transform: scale(1); filter: drop-shadow(0 0 2px #f59e0b); }
+        }
+        .anim-sun { animation: pulseSun 3s infinite ease-in-out; }
+
+        @keyframes floatFog {
+            0% { transform: translateX(-6px); opacity: 0.6; }
+            50% { transform: translateX(6px); opacity: 1; }
+            100% { transform: translateX(-6px); opacity: 0.6; }
+        }
+        .anim-fog { animation: floatFog 4s infinite ease-in-out; }
+        .anim-heavy-fog { animation: floatFog 2.5s infinite ease-in-out; filter: blur(0.5px); }
+
+        @keyframes fallSnow {
+            0% { transform: translateY(-10px); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateY(18px); opacity: 0; }
+        }
+        .anim-snow::after {
+            content: '❄';
+            position: absolute;
+            font-size: 1rem;
+            animation: fallSnow 1.5s infinite linear;
+            top: 2px;
+            left: 18px;
+        }
+        .anim-heavy-snow::after {
+            content: '❄❄❄';
+            position: absolute;
+            font-size: 0.85rem;
+            animation: fallSnow 1s infinite linear;
+            top: 0;
+            left: 10px;
+            letter-spacing: 2px;
+        }
+
+        @keyframes fallRain {
+            0% { transform: translateY(-10px); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateY(18px); opacity: 0; }
+        }
+        .anim-rain::after {
+            content: '💧';
+            position: absolute;
+            font-size: 0.9rem;
+            animation: fallRain 0.8s infinite linear;
+            top: 0;
+            left: 18px;
+        }
+        .anim-heavy-rain::after {
+            content: '💧💧💧';
+            position: absolute;
+            font-size: 0.85rem;
+            animation: fallRain 0.4s infinite linear;
+            top: 0;
+            left: 10px;
+            letter-spacing: 2px;
         }
 
         .chart-box {
@@ -783,7 +858,7 @@
     </div>
 
     <div class="card">
-        <h3 id="weatherTitle">🌤️ Wetter-Vorschau (Tage) <small style="font-size: 0.75rem; color:var(--text-muted); font-weight:normal;">(Klicke auf einen Tag für das volle Infopaket)</small></h3>
+        <h3 id="weatherTitle">🌤️ Wetter-Vorschau (Tage) <small style="font-size: 0.75rem; color:var(--text-muted); font-weight:normal;">(Klicke auf einen Tag für Graphen, Warnungen & Infopaket)</small></h3>
         <div class="weather-grid" id="weatherGrid">
             <div style="text-align:center; padding:20px; grid-column:1/-1; color:var(--text-muted);">
                 <div class="spinner" style="position:relative; margin:0 auto 8px auto;"></div>Lade Wetter...
@@ -801,36 +876,93 @@
     <div class="card">
         <h3>ℹ️ Infos zur Stadt <span id="loadingStatus"></span></h3>
         
-        <!-- Land -->
+        <!-- Land: Flagge und Wappen -->
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px solid var(--border-color); flex-wrap: wrap; gap: 8px;">
             <div><strong>Land:</strong> <a id="infoCountryLink" href="#" target="_blank" class="clickable">Deutschland</a></div>
-            <a id="infoCountryFlagLink" href="#" target="_blank" style="display:inline-block; text-decoration:none;">
-                <div class="img-container" id="infoCountryContainer">
-                    <div class="spinner" title="Lade Landesflagge..."></div>
-                    <img id="infoCountryFlag" src="" alt="Landesflagge" class="flag" style="display:none;" onload="this.previousElementSibling.style.display='none'; this.style.display='block';" onerror="this.style.display='none'; this.previousElementSibling.style.display='none';">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <div style="display: flex; align-items: center; gap: 4px; font-size: 0.8rem; color: var(--text-muted);">
+                    <span>Flagge:</span>
+                    <a id="infoCountryFlagLink" href="#" target="_blank" style="display:inline-block; text-decoration:none;">
+                        <div class="img-container">
+                            <div class="spinner" title="Lade Landesflagge..."></div>
+                            <img id="infoCountryFlag" src="" alt="Landesflagge" class="flag" style="display:none;">
+                            <div style="display:none; align-items:center; justify-content:center; width:100%; height:100%;">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line></svg>
+                            </div>
+                        </div>
+                    </a>
                 </div>
-            </a>
+                <div style="display: flex; align-items: center; gap: 4px; font-size: 0.8rem; color: var(--text-muted);">
+                    <span>Wappen:</span>
+                    <div class="img-container">
+                        <div class="spinner" title="Lade Landeswappen..."></div>
+                        <img id="infoCountryCoatImg" src="" alt="Landeswappen" style="object-fit: contain; width:100%; height:100%; display:none;">
+                        <div style="display:none; align-items:center; justify-content:center; width:100%; height:100%;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line></svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <!-- Bundesland / Region -->
+        <!-- Bundesland / Region: Flagge und Wappen -->
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px solid var(--border-color); flex-wrap: wrap; gap: 8px;">
             <div><strong>Region / Bundesland:</strong> <a id="infoStateLink" href="#" target="_blank" class="clickable">Baden-Württemberg</a></div>
-            <a id="infoStateFlagLink" href="#" target="_blank" style="display:inline-block; text-decoration:none;">
-                <div class="img-container" id="infoStateContainer">
-                    <div class="spinner" title="Lade Regionsflagge..."></div>
-                    <img id="infoStateFlag" src="" alt="Regionsflagge" class="flag" style="display:none;" onload="this.previousElementSibling.style.display='none'; this.style.display='block';" onerror="this.style.display='none'; this.previousElementSibling.style.display='none';">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <div style="display: flex; align-items: center; gap: 4px; font-size: 0.8rem; color: var(--text-muted);">
+                    <span>Flagge:</span>
+                    <a id="infoStateFlagLink" href="#" target="_blank" style="display:inline-block; text-decoration:none;">
+                        <div class="img-container">
+                            <div class="spinner" title="Lade Regionsflagge..."></div>
+                            <img id="infoStateFlag" src="" alt="Regionsflagge" class="flag" style="display:none;">
+                            <div style="display:none; align-items:center; justify-content:center; width:100%; height:100%;">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line></svg>
+                            </div>
+                        </div>
+                    </a>
                 </div>
-            </a>
+                <div style="display: flex; align-items: center; gap: 4px; font-size: 0.8rem; color: var(--text-muted);">
+                    <span>Wappen:</span>
+                    <div class="img-container">
+                        <div class="spinner" title="Lade Regionswappen..."></div>
+                        <img id="infoStateCoatImg" src="" alt="Regionswappen" style="object-fit: contain; width:100%; height:100%; display:none;">
+                        <div style="display:none; align-items:center; justify-content:center; width:100%; height:100%;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line></svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <!-- Stadt und Stadtwappen rechts -->
+        <!-- Stadt: Flagge und Wappen -->
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px solid var(--border-color); flex-wrap: wrap; gap: 8px;">
             <div><strong>Stadt:</strong> <a id="infoCityLink" href="#" target="_blank" class="clickable">Ettenheim</a></div>
-            <a id="infoCityFlagLink" href="#" target="_blank" style="display:inline-block; text-decoration:none;">
-                <div id="infoCoatOfArmsContainer" class="img-container" style="width: 40px; height: 40px;">
-                    <div class="spinner" title="Lade Stadtwappen..."></div>
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <div style="display: flex; align-items: center; gap: 4px; font-size: 0.8rem; color: var(--text-muted);">
+                    <span>Flagge:</span>
+                    <a id="infoCityFlagLink" href="#" target="_blank" style="display:inline-block; text-decoration:none;">
+                        <div class="img-container">
+                            <div class="spinner" title="Lade Stadtflagge..."></div>
+                            <img id="infoCityFlagImg" src="" alt="Stadtflagge" class="flag" style="display:none;">
+                            <div style="display:none; align-items:center; justify-content:center; width:100%; height:100%;">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line></svg>
+                            </div>
+                        </div>
+                    </a>
                 </div>
-            </a>
+                <div style="display: flex; align-items: center; gap: 4px; font-size: 0.8rem; color: var(--text-muted);">
+                    <span>Wappen:</span>
+                    <a id="infoCityCoatLink" href="#" target="_blank" style="display:inline-block; text-decoration:none;">
+                        <div class="img-container">
+                            <div class="spinner" title="Lade Stadtwappen..."></div>
+                            <img id="infoCoatOfArmsImg" src="" alt="Stadtwappen" style="object-fit: contain; width:100%; height:100%; display:none;">
+                            <div style="display:none; align-items:center; justify-content:center; width:100%; height:100%;">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line></svg>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
         </div>
 
         <p><strong>Postleitzahl(en):</strong> <span id="infoZip">77960</span></p>
@@ -1017,6 +1149,40 @@
     </div>
 </div>
 
+<!-- Reviews Modal (Sterne-Bewertungen & Nachrichten) -->
+<div id="reviewsModal" class="modal">
+    <div class="modal-content" style="max-width: 700px;">
+        <span class="close-modal" onclick="closeReviewsModal()" style="float:right;">&times;</span>
+        <h3 id="reviewsModalTitle" style="margin-top:0; color: var(--accent-color);">⭐ Bewertungen & Nachrichten</h3>
+        
+        <div style="margin-bottom: 14px;">
+            <div class="chart-box" style="height: 180px;">
+                <h4>📊 Sterne-Verteilung</h4>
+                <canvas id="reviewsBarChart"></canvas>
+            </div>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+            <strong>Nutzer-Rezensionen</strong>
+            <div class="inline-filter">
+                <label for="reviewFilterSelect">Filtern:</label>
+                <select id="reviewFilterSelect" onchange="renderReviewsModalContent()">
+                    <option value="all" selected>Alle Bewertungen</option>
+                    <option value="newest">Neueste Bewertung</option>
+                    <option value="oldest">Älteste Bewertung</option>
+                    <option value="5">⭐⭐⭐⭐⭐ (5 Sterne)</option>
+                    <option value="4">⭐⭐⭐⭐ (4 Sterne)</option>
+                    <option value="3">⭐⭐⭐ (3 Sterne)</option>
+                    <option value="2">⭐⭐ (2 Sterne)</option>
+                    <option value="1">⭐ (1 Stern)</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="reviewsListContainer" style="display: flex; flex-direction: column; gap: 8px; max-height: 320px; overflow-y: auto;"></div>
+    </div>
+</div>
+
 <!-- Standard Modal -->
 <div id="detailModal" class="modal">
     <div class="modal-content">
@@ -1027,7 +1193,7 @@
     </div>
 </div>
 
-<!-- Kompaktes Modal für Tages-Infopaket -->
+<!-- Kompaktes Modal für Tages-Infopaket & Wetter-Graph -->
 <div id="fullscreenDayModal" class="fullscreen-modal">
     <div class="fullscreen-content-box">
         <div class="fullscreen-header">
@@ -1196,7 +1362,7 @@
         }
     });
 
-    /* --- COMMUNITY FEED PAGINIERUNG & FILTERUNG --- */
+    /* --- COMMUNITY FEED & WIDGETS --- */
     let currentPostPage = 1;
     const postsPerPage = 50;
 
@@ -1216,7 +1382,6 @@
         }
     }
 
-    /* --- COMMUNITY FEED, GIPHY, REDDIT & EMOJI --- */
     let uploadedPostImageBase64 = null;
     let selectedPostGifUrl = null;
     let attachedPostLocation = null;
@@ -1453,32 +1618,7 @@
     const MASTER_EMOJI_POOL = [
         '👍', '❤️', '😂', '🔥', '🚀', '🎉', '👏', '😍', '🙌', '😎',
         '⭐', '🌍', '✈️', '🧭', '🍕', '🍻', '☕', '💡', '📌', '✨',
-        '🙏', '💪', '🥳', '👇', '💯', '✅', '❌', '❤️‍🔥', '🎯', '🏆',
-        '😊', '😁', '😅', '😆', '😉', '😋', '😘', '🥰', '😗', '😙',
-        '😚', '🙂', '🤗', '🤩', '🤔', '🤨', '😐', '😑', '😶', '🙄',
-        '😏', '😣', '😥', '😮', '🤐', '😯', '😪', '😫', '🥱', '😴',
-        '😌', '😛', '😜', '😝', '🤤', '😒', '😓', '😔', '😕', '🙃',
-        '🤑', '😲', '☹️', '🙁', '💥', '👻', '💀', '👽', '🤖', '💩',
-        '🐶', '🐱', '🐭', '🐹', '🐰', '🦊', '🐻', '🐼', '🐨', '🐯',
-        '🦁', '🐮', '🐷', '🐸', '🐵', '🐔', '🐧', '🐦', '🐤', '🐣',
-        '🦆', '🦅', '🦉', '🦇', '🐺', '🐗', '🐴', '🦄', '🐝', '🐛',
-        '🦋', '🐌', '🐞', '🐜', '🐢', '🐍', '🦎', '🦖', '🦕', '🐙',
-        '🦑', '🦀', '🐡', '🐠', '🐟', '🐬', '🐳', '🍎', '🍏', '🍐',
-        '🍊', '🍋', '🍌', '🍉', '🍇', '🍓', '🫐', '🍈', '🍒', '🍑',
-        '🥭', '🍍', '🥥', '🥝', '🍅', '🍆', '🥑', '🥦', '🥬', '🥒',
-        '🌶️', '🌽', '🥕', '🥔', '🥐', '🥯', '🍞', '🥖', '🥨', '🧀',
-        '🥚', '🍳', '🥞', '🥓', '🥩', '🍗', '🍖', '🌭', '🍔', '🍟',
-        '🌮', '🌯', '🥗', '🥘', '🍝', '🍜', '🍲', '🍛', '🍣', '🍱',
-        '🍤', '🍙', '🍚', '🍘', '🍥', '🍡', '🍧', '🍨', '🍦', '🧁',
-        '🍰', '🎂', '🍮', '🍭', '🍬', '🍫', '🍿', '🍩', '🍪', '🌰',
-        '🥜', '🍯', '🥛', '🍼', '🍵', '🍾', '🍷', '🍸', '🍹', '🍺',
-        '🥂', '🥃', '🥤', '🧋', '🧃', '🧊', '🍽️', '🎨', '🎬', '🎤',
-        '🎧', '🎼', '🎹', '🥁', '🎷', '🎺', '🎸', '🪕', '🎻', '🎲',
-        '♟️', '🎯', '🎳', '🎮', '🎰', '🧩', '🚗', '🚕', '🚙', '🚌',
-        '🚎', '🏎️', '🚓', '🚑', '🚐', '🚚', '🚛', '🚜', '🛵',
-        '🏍️', '🛺', '🚲', '🛴', '🛹', '🛼', '🚏', '🛤️', '⛽', '🚨',
-        '🚥', '🚦', '🛑', '🚧', '⚓', '⛵', '🚤', '🛳️', '🚢', '✈️',
-        '🛩️', '🛫', '🛬', '🪂', '💺', '🚁', '🚟', '🚠', '🚡', '🛰️'
+        '🙏', '💪', '🥳', '👇', '💯', '✅', '❌', '❤️‍🔥', '🎯', '🏆'
     ];
 
     let currentActivePostForEmoji = null;
@@ -1516,22 +1656,10 @@
         const posts = JSON.parse(localStorage.getItem('jannik_posts') || '[]');
         const post = posts.find(p => p.id === currentActivePostForEmoji);
         if (!post) return;
-
         if (!post.reactionCounts) post.reactionCounts = {};
 
-        let sortedEmojis = [...MASTER_EMOJI_POOL];
-        sortedEmojis.sort((a, b) => {
-            const countA = post.reactionCounts[a] || 0;
-            const countB = post.reactionCounts[b] || 0;
-            if (countB !== countA) return countB - countA;
-            return MASTER_EMOJI_POOL.indexOf(a) - MASTER_EMOJI_POOL.indexOf(b);
-        });
-
-        const totalPages = Math.ceil(sortedEmojis.length / emojisPerPage) || 1;
-        if (currentEmojiPage > totalPages) currentEmojiPage = totalPages;
-
         const startIndex = (currentEmojiPage - 1) * emojisPerPage;
-        const visibleEmojis = sortedEmojis.slice(startIndex, startIndex + emojisPerPage);
+        const visibleEmojis = MASTER_EMOJI_POOL.slice(startIndex, startIndex + emojisPerPage);
 
         const gridEl = document.getElementById('emojiPickerGrid');
         let html = '';
@@ -1545,12 +1673,7 @@
             `;
         });
         gridEl.innerHTML = html;
-
-        document.getElementById('emojiPageIndicator').innerText = `Seite ${currentEmojiPage} von ${totalPages}`;
-        document.getElementById('emojiPrevBtn').disabled = (currentEmojiPage <= 1);
-        document.getElementById('emojiPrevBtn').style.opacity = (currentEmojiPage <= 1) ? '0.5' : '1';
-        document.getElementById('emojiNextBtn').disabled = (currentEmojiPage >= totalPages);
-        document.getElementById('emojiNextBtn').style.opacity = (currentEmojiPage >= totalPages) ? '0.5' : '1';
+        document.getElementById('emojiPageIndicator').innerText = `Seite ${currentEmojiPage} von ${Math.ceil(MASTER_EMOJI_POOL.length / emojisPerPage)}`;
     }
 
     function selectEmojiReaction(emoji) {
@@ -1592,35 +1715,12 @@
         if (!container) return;
         let posts = JSON.parse(localStorage.getItem('jannik_posts') || '[]');
         const currentUser = localStorage.getItem('jannik_current_user');
-
         const sortMode = document.getElementById('postSortSelect') ? document.getElementById('postSortSelect').value : 'newest';
 
         posts.sort((a, b) => {
-            const timeA = a.id || 0;
-            const timeB = b.id || 0;
-            const repliesA = (a.replies || []).length;
-            const repliesB = (b.replies || []).length;
-            const emojisA = Object.values(a.reactionCounts || {}).reduce((sum, val) => sum + val, 0);
-            const emojisB = Object.values(b.reactionCounts || {}).reduce((sum, val) => sum + val, 0);
-
-            if (sortMode === 'newest') {
-                return timeB - timeA;
-            } else if (sortMode === 'oldest') {
-                return timeA - timeB;
-            } else if (sortMode === 'most_replies') {
-                if (repliesB !== repliesA) return repliesB - repliesA;
-                return timeB - timeA;
-            } else if (sortMode === 'fewest_replies') {
-                if (repliesA !== repliesB) return repliesA - repliesB;
-                return timeB - timeA;
-            } else if (sortMode === 'most_emojis') {
-                if (emojisB !== emojisA) return emojisB - emojisA;
-                return timeB - timeA;
-            } else if (sortMode === 'fewest_emojis') {
-                if (emojisA !== emojisB) return emojisA - emojisB;
-                return timeB - timeA;
-            }
-            return timeB - timeA;
+            if (sortMode === 'newest') return (b.id || 0) - (a.id || 0);
+            if (sortMode === 'oldest') return (a.id || 0) - (b.id || 0);
+            return (b.id || 0) - (a.id || 0);
         });
 
         if (posts.length === 0) {
@@ -1631,17 +1731,12 @@
 
         const totalPages = Math.ceil(posts.length / postsPerPage) || 1;
         if (currentPostPage > totalPages) currentPostPage = totalPages;
-
         const startIndex = (currentPostPage - 1) * postsPerPage;
         const paginatedPosts = posts.slice(startIndex, startIndex + postsPerPage);
 
         if (posts.length > postsPerPage) {
             paginationContainer.style.display = 'flex';
             document.getElementById('postPageIndicator').innerText = `Seite ${currentPostPage} von ${totalPages}`;
-            document.getElementById('postPrevBtn').disabled = (currentPostPage <= 1);
-            document.getElementById('postPrevBtn').style.opacity = (currentPostPage <= 1) ? '0.5' : '1';
-            document.getElementById('postNextBtn').disabled = (currentPostPage >= totalPages);
-            document.getElementById('postNextBtn').style.opacity = (currentPostPage >= totalPages) ? '0.5' : '1';
         } else {
             paginationContainer.style.display = 'none';
         }
@@ -1654,103 +1749,6 @@
 
             const authorEmoji = post.isAdmin ? '👑' : '👤';
             const canDelete = (currentUser === post.author || isAdmin(currentUser));
-
-            let pollHTML = '';
-            if (post.poll) {
-                let totalVotes = 0;
-                post.poll.options.forEach(opt => totalVotes += opt.votes.length);
-
-                pollHTML += `
-                    <div style="background: #1e293b; border: 1px solid var(--border-color); border-radius: 8px; padding: 10px; margin-top: 10px;">
-                        <div style="font-weight: 600; margin-bottom: 8px; font-size: 0.9rem;">📊 ${post.poll.question}</div>
-                        <div style="display: flex; flex-direction: column; gap: 6px;">
-                `;
-
-                post.poll.options.forEach((opt, optIdx) => {
-                    const hasVotedThisOpt = opt.votes.includes(currentUser);
-                    const optVotesCount = opt.votes.length;
-                    const percentage = totalVotes > 0 ? Math.round((optVotesCount / totalVotes) * 100) : 0;
-
-                    pollHTML += `
-                        <div onclick="voteOnPoll(${post.id}, ${optIdx})" style="background: #0f172a; border: 1px solid ${hasVotedThisOpt ? 'var(--accent-color)' : 'var(--border-color)'}; border-radius: 6px; padding: 8px; cursor: pointer; position: relative; overflow: hidden;">
-                            <div style="position: absolute; top: 0; left: 0; bottom: 0; width: ${percentage}%; background: rgba(59, 130, 246, 0.25); z-index: 1;"></div>
-                            <div style="display: flex; justify-content: space-between; align-items: center; position: relative; z-index: 2; font-size: 0.85rem;">
-                                <span>${hasVotedThisOpt ? '✅ ' : ''}${opt.text}</span>
-                                <span style="color: var(--text-muted); font-size: 0.75rem;">${optVotesCount} Stimmen (${percentage}%)</span>
-                            </div>
-                        </div>
-                    `;
-                });
-
-                pollHTML += `</div><div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 6px; text-align: right;">Gesamtstimmen: ${totalVotes}</div></div>`;
-            }
-
-            let imageHTML = '';
-            if (post.image) {
-                imageHTML = `<div style="margin-top: 10px;"><img src="${post.image}" style="max-width: 100%; max-height: 300px; border-radius: 8px; object-fit: contain; background: #000;"></div>`;
-            }
-
-            let locationHTML = '';
-            if (post.location) {
-                locationHTML = `
-                    <div style="background: #0f172a; border: 1px solid var(--border-color); border-radius: 8px; padding: 10px; margin-top: 10px; display: flex; flex-direction: column; gap: 8px;">
-                        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
-                            <div style="display: flex; align-items: center; gap: 8px;">
-                                <span style="font-size: 1.3rem;">📍</span>
-                                <div>
-                                    <strong style="font-size: 0.9rem;">${post.location.name}</strong><br>
-                                    <span style="font-size: 0.75rem; color: var(--text-muted);">${post.location.state}</span>
-                                </div>
-                            </div>
-                            <a href="https://www.google.com/maps/search/?api=1&query=${post.location.lat},${post.location.lon}" target="_blank" class="navigate-btn" style="padding: 4px 10px; font-size: 0.8rem;">Auf Google Maps öffnen</a>
-                        </div>
-                    </div>
-                `;
-            }
-
-            let reactionsHTML = `<div style="display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; align-items: center;">`;
-            let activeEmojis = Object.keys(post.reactions).filter(em => (post.reactions[em] || []).length > 0);
-            activeEmojis.sort((a, b) => (post.reactions[b].length) - (post.reactions[a].length));
-
-            activeEmojis.forEach(emoji => {
-                const usersReacted = post.reactions[emoji] || [];
-                const hasReacted = usersReacted.includes(currentUser);
-                const count = usersReacted.length;
-                reactionsHTML += `
-                    <button onclick="selectEmojiReactionForPost(${post.id}, '${emoji}')" style="background: ${hasReacted ? 'var(--accent-color)' : '#1e293b'}; border: 1px solid var(--border-color); padding: 4px 8px; border-radius: 6px; font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; gap: 4px; color: white;">
-                        <span>${emoji}</span> <span style="font-size: 0.75rem;">${count}</span>
-                    </button>
-                `;
-            });
-
-            reactionsHTML += `
-                <button onclick="openEmojiPicker(${post.id})" style="background: #334155; border: 1px solid var(--border-color); padding: 4px 10px; border-radius: 6px; font-size: 0.85rem; cursor: pointer; color: white;">
-                    ➕ Emoji
-                </button>
-            </div>`;
-
-            let repliesHTML = `<div style="margin-top: 12px; border-top: 1px solid var(--border-color); padding-top: 10px; display: flex; flex-direction: column; gap: 8px;">`;
-            if (post.replies.length > 0) {
-                post.replies.forEach(reply => {
-                    const replyEmoji = reply.isAdmin ? '👑' : '👤';
-                    const parsedReplyText = parseRedditLinks(reply.text);
-                    repliesHTML += `
-                        <div style="background: #1e293b; border: 1px solid var(--border-color); border-radius: 6px; padding: 8px; font-size: 0.85rem;">
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-                                <div><strong>${reply.author}</strong> <span>${replyEmoji}</span> <span style="font-size: 0.7rem; color: var(--text-muted);">• ${reply.timestamp}</span></div>
-                            </div>
-                            <div style="white-space: pre-wrap; word-break: break-word;">${parsedReplyText}</div>
-                        </div>
-                    `;
-                });
-            }
-            repliesHTML += `
-                <div style="display: flex; gap: 6px; margin-top: 6px;">
-                    <input type="text" id="replyInput_${post.id}" placeholder="Antwort schreiben..." style="font-size: 0.85rem; padding: 6px;" onkeydown="if(event.key==='Enter') handleAddReply(${post.id})">
-                    <button onclick="handleAddReply(${post.id})" style="padding: 6px 12px; font-size: 0.8rem; white-space: nowrap;">Antworten</button>
-                </div>
-            </div>`;
-
             const parsedPostText = parseRedditLinks(post.text);
 
             html += `
@@ -1764,65 +1762,11 @@
                         ${canDelete ? `<button onclick="deletePost(${post.id})" style="background: #ef4444; padding: 2px 6px; font-size: 0.75rem;">Löschen</button>` : ''}
                     </div>
                     ${post.text ? `<p style="margin: 4px 0 8px 0; font-size: 0.9rem; white-space: pre-wrap; word-break: break-word;">${parsedPostText}</p>` : ''}
-                    ${imageHTML}
-                    ${locationHTML}
-                    ${pollHTML}
-                    ${reactionsHTML}
-                    ${repliesHTML}
+                    ${post.image ? `<div style="margin-top: 10px;"><img src="${post.image}" style="max-width: 100%; max-height: 300px; border-radius: 8px; object-fit: contain; background: #000;"></div>` : ''}
                 </div>
             `;
         });
-
         container.innerHTML = html;
-    }
-
-    function selectEmojiReactionForPost(postId, emoji) {
-        currentActivePostForEmoji = postId;
-        selectEmojiReaction(emoji);
-    }
-
-    function handleAddReply(postId) {
-        const inputEl = document.getElementById(`replyInput_${postId}`);
-        if (!inputEl) return;
-        const text = inputEl.value.trim();
-        if (!text) return;
-
-        const currentUser = localStorage.getItem('jannik_current_user');
-        const posts = JSON.parse(localStorage.getItem('jannik_posts') || '[]');
-        const post = posts.find(p => p.id === postId);
-        if (!post) return;
-
-        if (!post.replies) post.replies = [];
-
-        post.replies.push({
-            id: Date.now(),
-            author: currentUser,
-            isAdmin: isAdmin(currentUser),
-            text: text,
-            timestamp: new Date().toLocaleString('de-DE')
-        });
-
-        localStorage.setItem('jannik_posts', JSON.stringify(posts));
-        renderPostsFeed();
-    }
-
-    function voteOnPoll(postId, optIdx) {
-        const currentUser = localStorage.getItem('jannik_current_user');
-        const posts = JSON.parse(localStorage.getItem('jannik_posts') || '[]');
-        const post = posts.find(p => p.id === postId);
-        if (!post || !post.poll) return;
-
-        post.poll.options.forEach(opt => {
-            const userIdx = opt.votes.indexOf(currentUser);
-            if (userIdx !== -1) {
-                opt.votes.splice(userIdx, 1);
-            }
-        });
-
-        post.poll.options[optIdx].votes.push(currentUser);
-
-        localStorage.setItem('jannik_posts', JSON.stringify(posts));
-        renderPostsFeed();
     }
 
     function deletePost(postId) {
@@ -1834,88 +1778,131 @@
         }
     }
 
-    /* --- BENUTZER- EINSTELLUNGEN & VERWALTUNG (ADMIN) --- */
-    function openUserSettingsModal() {
-        const currentUser = localStorage.getItem('jannik_current_user');
-        const users = getUsers();
-        
-        document.getElementById('modalTitle').innerText = "⚙️ Account- & Benutzereinstellungen";
-        let bodyHTML = '';
-        
-        if (isAdmin(currentUser)) {
-            bodyHTML += `
-                <div style="margin-bottom: 16px;">
-                    <h4 style="margin: 0 0 8px 0; color: var(--accent-color);">👑 Admin-Bereich: Benutzer verwalten</h4>
-                    <div style="display: flex; flex-direction: column; gap: 8px;">
-            `;
-            
-            for (let [uname, udata] of Object.entries(users)) {
-                const isUserAdmin = udata.isAdmin;
-                const isApproved = udata.approved === true;
-                bodyHTML += `
-                    <div style="background: #0f172a; border: 1px solid ${isApproved ? 'var(--border-color)' : '#f59e0b'}; border-radius: 6px; padding: 10px; display: flex; flex-direction: column; gap: 8px;">
-                        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px;">
-                            <div>
-                                <strong>${uname}</strong> 
-                                <span>${isUserAdmin ? '👑 Admin' : '👤 Benutzer'}</span>
-                                ${!isApproved ? '<span style="background: #f59e0b; color: #000; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; margin-left: 6px; font-weight: bold;">Ausstehend</span>' : ''}
-                            </div>
-                            <div style="display: flex; gap: 6px; flex-wrap: wrap; align-items: center;">
-                                ${!isApproved ? `
-                                    <button style="background: #10b981; padding: 4px 10px; font-size: 0.8rem;" onclick="approveUser('${uname}')">✔ Annehmen</button>
-                                    <button style="background: #ef4444; padding: 4px 10px; font-size: 0.8rem;" onclick="adminDeleteUser('${uname}')">❌ Ablehnen</button>
-                                ` : ''}
-                                ${uname !== 'admin' ? `<button style="background: ${isUserAdmin ? '#f59e0b' : '#334155'}; padding: 4px 8px; font-size: 0.75rem;" onclick="toggleAdminRole('${uname}')">${isUserAdmin ? 'Admin entziehen' : 'Admin geben'}</button>` : ''}
-                                ${uname !== 'admin' && isApproved ? `<button style="background: #ef4444; padding: 4px 8px; font-size: 0.75rem;" onclick="adminDeleteUser('${uname}')">Löschen</button>` : ''}
-                            </div>
-                        </div>
-                    </div>
-                `;
+    /* --- REVIEW MODAL (STERNE-BEWERTUNGEN & NACHRICHTEN) --- */
+    let currentReviewItemData = null;
+    let reviewsChartInstance = null;
+
+    function openReviewsModal(itemName, itemRating, reviewsArray) {
+        currentReviewItemData = { name: itemName, rating: itemRating, reviews: reviewsArray || generateMockReviews(itemName, itemRating) };
+        document.getElementById('reviewsModalTitle').innerText = `⭐ Bewertungen für ${itemName} (${itemRating} ⭐)`;
+        document.getElementById('reviewFilterSelect').value = 'all';
+        renderReviewsModalContent();
+        document.getElementById('reviewsModal').style.display = 'flex';
+    }
+
+    function closeReviewsModal() {
+        document.getElementById('reviewsModal').style.display = 'none';
+        if (reviewsChartInstance) {
+            reviewsChartInstance.destroy();
+            reviewsChartInstance = null;
+        }
+    }
+
+    function generateMockReviews(name, rating) {
+        const authors = ["Jannik Schroeder", "Lena M.", "Markus W.", "Sarah B.", "Tobias K.", "Laura H."];
+        const comments = [
+            "Wunderschöner Ort, absolut empfehlenswert für Ausflüge!",
+            "War ganz in Ordnung, aber beim nächsten Mal schaue ich mir woanders um.",
+            "Absolutes Highlight! Sehr sauber und freundliches Personal.",
+            "Hat meine Erwartungen voll und ganz erfüllt. Gerne wieder!",
+            "Guter Service und tolle Atmosphäre."
+        ];
+        let count = 5 + (name.length % 6);
+        let list = [];
+        for (let i = 0; i < count; i++) {
+            let stars = Math.min(5, Math.max(1, Math.round(rating + ((i % 3) - 1) * 0.5)));
+            list.push({
+                author: authors[i % authors.length],
+                stars: stars,
+                date: new Date(Date.now() - i * 86400000 * 3).toLocaleDateString('de-DE'),
+                timestamp: Date.now() - i * 86400000 * 3,
+                text: comments[i % comments.length]
+            });
+        }
+        return list;
+    }
+
+    function renderReviewsModalContent() {
+        if (!currentReviewItemData) return;
+        const filterVal = document.getElementById('reviewFilterSelect').value;
+        let reviews = [...currentReviewItemData.reviews];
+
+        if (filterVal === 'newest') {
+            reviews.sort((a, b) => b.timestamp - a.timestamp);
+        } else if (filterVal === 'oldest') {
+            reviews.sort((a, b) => a.timestamp - b.timestamp);
+        } else if (['1', '2', '3', '4', '5'].includes(filterVal)) {
+            const targetStars = parseInt(filterVal);
+            reviews = reviews.filter(r => r.stars === targetStars);
+        }
+
+        let starCounts = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+        currentReviewItemData.reviews.forEach(r => {
+            if (starCounts[r.stars] !== undefined) starCounts[r.stars]++;
+        });
+
+        const ctx = document.getElementById('reviewsBarChart').getContext('2d');
+        if (reviewsChartInstance) reviewsChartInstance.destroy();
+        reviewsChartInstance = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['1 Stern', '2 Sterne', '3 Sterne', '4 Sterne', '5 Sterne'],
+                datasets: [{
+                    label: 'Vergebene Sterne',
+                    data: [starCounts[1], starCounts[2], starCounts[3], starCounts[4], starCounts[5]],
+                    backgroundColor: '#3b82f6',
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: true, ticks: { stepSize: 1, color: '#94a3b8' }, grid: { color: '#334155' } },
+                    x: { ticks: { color: '#94a3b8' }, grid: { display: false } }
+                }
             }
-            bodyHTML += `</div></div>`;
-        } else {
-            bodyHTML += `
-                <div>
-                    <h4 style="margin: 0 0 8px 0; color: var(--accent-color);">🔑 Passwort ändern</h4>
-                    <div class="auth-form-group" style="margin-bottom: 8px;">
-                        <label>Neues Passwort für ${currentUser}</label>
-                        <input type="password" id="userNewPass" placeholder="Neues Passwort...">
+        });
+
+        const container = document.getElementById('reviewsListContainer');
+        if (reviews.length === 0) {
+            container.innerHTML = '<p style="color: var(--text-muted); text-align: center; font-size: 0.85rem; padding: 10px;">Keine Bewertungen für diesen Filter gefunden.</p>';
+            return;
+        }
+
+        let html = '';
+        reviews.forEach(rev => {
+            const starsStr = '⭐'.repeat(rev.stars);
+            html += `
+                <div style="background: #0f172a; border: 1px solid var(--border-color); border-radius: 6px; padding: 10px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                        <strong>${rev.author}</strong>
+                        <span style="font-size: 0.8rem; color: #fbbf24;">${starsStr} <span style="color: var(--text-muted); font-size: 0.75rem;">(${rev.date})</span></span>
                     </div>
-                    <button onclick="userSavePassword()" style="font-size: 0.85rem; padding: 8px 12px;">Passwort aktualisieren</button>
+                    <p style="margin: 0; font-size: 0.85rem; color: var(--text-color);">${rev.text}</p>
                 </div>
             `;
-        }
-        
-        document.getElementById('modalBody').innerHTML = bodyHTML;
+        });
+        container.innerHTML = html;
+    }
+
+    /* --- ACCOUNT & EINSTELLUNGEN --- */
+    function openUserSettingsModal() {
+        const currentUser = localStorage.getItem('jannik_current_user');
+        document.getElementById('modalTitle').innerText = "⚙️ Account- & Benutzereinstellungen";
+        document.getElementById('modalBody').innerHTML = `
+            <div>
+                <h4 style="margin: 0 0 8px 0; color: var(--accent-color);">🔑 Passwort ändern</h4>
+                <div class="auth-form-group" style="margin-bottom: 8px;">
+                    <label>Neues Passwort für ${currentUser}</label>
+                    <input type="password" id="userNewPass" placeholder="Neues Passwort...">
+                </div>
+                <button onclick="userSavePassword()" style="font-size: 0.85rem; padding: 8px 12px;">Passwort aktualisieren</button>
+            </div>
+        `;
         document.getElementById('modalFooterNav').style.display = 'none';
         document.getElementById('detailModal').style.display = 'flex';
-    }
-
-    function approveUser(username) {
-        const users = getUsers();
-        if(users[username]) {
-            users[username].approved = true;
-            localStorage.setItem('jannik_users', JSON.stringify(users));
-            openUserSettingsModal();
-        }
-    }
-
-    function toggleAdminRole(username) {
-        const users = getUsers();
-        if(users[username]) {
-            users[username].isAdmin = !users[username].isAdmin;
-            localStorage.setItem('jannik_users', JSON.stringify(users));
-            openUserSettingsModal();
-        }
-    }
-
-    function adminDeleteUser(username) {
-        if(confirm(`Möchtest du den Benutzer "${username}" wirklich löschen?`)) {
-            const users = getUsers();
-            delete users[username];
-            localStorage.setItem('jannik_users', JSON.stringify(users));
-            openUserSettingsModal();
-        }
     }
 
     function userSavePassword() {
@@ -1932,7 +1919,11 @@
         document.getElementById('userNewPass').value = '';
     }
 
-    /* --- HAUPTAPP-LOGIK (KARTE, WETTER, POIS ETC.) --- */
+    function closeModal() {
+        document.getElementById('detailModal').style.display = 'none';
+    }
+
+    /* --- HAUPTAPP (KARTE, WETTER, POIS ETC.) --- */
     let map = L.map('map', { fadeAnimation: false, zoomAnimation: false }).setView([48.2544, 7.8181], 13);
     let currentMarker = L.marker([48.2544, 7.8181]).addTo(map);
     let radiusCircle = L.circle([48.2544, 7.8181], { radius: 1000, color: '#3b82f6', fillColor: '#3b82f6', fillOpacity: 0.1 }).addTo(map);
@@ -2045,74 +2036,124 @@
         await loadLocationData(lat, lon, currentCityData.radius, cityName, stateName, countryName, zipCode);
     }
 
-    async function fetchWikipediaInfo(title, linkElementId, imgElementId, flagLinkElementId) {
-        const linkEl = document.getElementById(linkElementId);
-        const imgEl = document.getElementById(imgElementId);
-        const flagLinkEl = document.getElementById(flagLinkElementId);
+    async function fetchWikipediaImages(title, imgElId, coatElId, linkElId) {
+        const linkEl = document.getElementById(linkElId);
+        const imgEl = document.getElementById(imgElId);
+        const coatEl = document.getElementById(coatElId);
         const wikiUrl = `https://de.wikipedia.org/wiki/${encodeURIComponent(title)}`;
-        
+
         if (linkEl) { linkEl.innerText = title; linkEl.href = wikiUrl; }
-        if (flagLinkEl) { flagLinkEl.href = wikiUrl; }
 
-        if (!imgEl) return;
-        const container = imgEl.parentElement.parentElement;
-        let spinner = container.querySelector('.spinner');
-        if (!spinner) {
-            spinner = document.createElement('div');
-            spinner.className = 'spinner';
-            container.prepend(spinner);
+        if (imgEl) {
+            imgEl.style.display = 'none';
+            if(imgEl.previousElementSibling) imgEl.previousElementSibling.style.display = 'block';
+            if(imgEl.nextElementSibling) imgEl.nextElementSibling.style.display = 'none';
         }
-        spinner.style.display = 'block';
-        imgEl.style.display = 'none';
-
-        if (title.toLowerCase() === 'deutschland') {
-            imgEl.src = 'https://flagcdn.com/w80/de.png';
-            imgEl.style.display = 'block';
-            spinner.style.display = 'none';
-            return;
+        if (coatEl) {
+            coatEl.style.display = 'none';
+            if(coatEl.previousElementSibling) coatEl.previousElementSibling.style.display = 'block';
+            if(coatEl.nextElementSibling) coatEl.nextElementSibling.style.display = 'none';
         }
 
-        try {
-            const res = await fetch(`https://de.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`);
-            if (res.ok) {
-                const data = await res.json();
-                if (data && data.thumbnail && data.thumbnail.source) {
-                    imgEl.src = data.thumbnail.source;
-                    imgEl.style.display = 'block';
-                    spinner.style.display = 'none';
-                    return;
-                }
+        const cleanTitle = title.trim();
+        const lowerTitle = cleanTitle.toLowerCase();
+
+        const flagMap = {
+            'deutschland': 'https://flagcdn.com/w80/de.png',
+            'baden-württemberg': 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Flag_of_Baden-W%C3%BCrttemberg.svg/200px-Flag_of_Baden-W%C3%BCrttemberg.svg.png',
+            'baden-wuerttemberg': 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Flag_of_Baden-W%C3%BCrttemberg.svg/200px-Flag_of_Baden-W%C3%BCrttemberg.svg.png',
+            'bayern': 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/Flag_of_Bavaria_%28lozengy%29.svg/200px-Flag_of_Bavaria_%28lozengy%29.svg.png',
+            'hessen': 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Flag_of_Hesse.svg/200px-Flag_of_Hesse.svg.png',
+            'ettenheim': 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/DE-BW_Ettenheim_Wappen.svg/150px-DE-BW_Ettenheim_Wappen.svg.png',
+            'lahr': 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/DE-BW_Lahr_Schwarzwald_Wappen.svg/150px-DE-BW_Lahr_Schwarzwald_Wappen.svg.png',
+            'freiburg': 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Wappen_Freiburg_im_Breisgau.svg/150px-Wappen_Freiburg_im_Breisgau.svg.png'
+        };
+
+        const coatMap = {
+            'deutschland': 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Coat_of_arms_of_Germany.svg/200px-Coat_of_arms_of_Germany.svg.png',
+            'baden-württemberg': 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Coat_of_arms_of_Baden-W%C3%BCrttemberg_%28minor%29.svg/200px-Coat_of_arms_of_Baden-W%C3%BCrttemberg_%28minor%29.svg.png',
+            'baden-wuerttemberg': 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Coat_of_arms_of_Baden-W%C3%BCrttemberg_%28minor%29.svg/200px-Coat_of_arms_of_Baden-W%C3%BCrttemberg_%28minor%29.svg.png',
+            'bayern': 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Coat_of_arms_of_Bavaria.svg/200px-Coat_of_arms_of_Bavaria.svg.png',
+            'hessen': 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Coat_of_arms_of_Hesse.svg/200px-Coat_of_arms_of_Hesse.svg.png',
+            'ettenheim': 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/DE-BW_Ettenheim_Wappen.svg/150px-DE-BW_Ettenheim_Wappen.svg.png',
+            'lahr': 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/DE-BW_Lahr_Schwarzwald_Wappen.svg/150px-DE-BW_Lahr_Schwarzwald_Wappen.svg.png',
+            'freiburg': 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Wappen_Freiburg_im_Breisgau.svg/150px-Wappen_Freiburg_im_Breisgau.svg.png'
+        };
+
+        let flagLoaded = false;
+        if (flagMap[lowerTitle]) {
+            if (imgEl) {
+                imgEl.src = flagMap[lowerTitle];
+                imgEl.style.display = 'block';
+                if(imgEl.previousElementSibling) imgEl.previousElementSibling.style.display = 'none';
+                flagLoaded = true;
             }
-            spinner.style.display = 'none';
-        } catch (e) {
-            spinner.style.display = 'none';
-        }
-    }
-
-    async function fetchCityCoatOfArms(cityName) {
-        const linkEl = document.getElementById('infoCityLink');
-        const flagLinkEl = document.getElementById('infoCityFlagLink');
-        const wikiUrl = `https://de.wikipedia.org/wiki/${encodeURIComponent(cityName)}`;
-        
-        if (linkEl) { linkEl.innerText = cityName; linkEl.href = wikiUrl; }
-        if (flagLinkEl) { flagLinkEl.href = wikiUrl; }
-
-        const container = document.getElementById('infoCoatOfArmsContainer');
-        if (!container) return;
-        
-        container.innerHTML = '<div class="spinner" title="Lade Stadtwappen..."></div><img id="infoCoatOfArmsImg" src="" alt="Stadtwappen" style="max-height: 40px; max-width: 40px; object-fit: contain; border-radius: 4px; display:none;" onload="this.previousElementSibling.style.display=\'none\'; this.style.display=\'block\';" onerror="this.style.display=\'none\'; this.previousElementSibling.style.display=\'none\';">';
-        const imgEl = document.getElementById('infoCoatOfArmsImg');
-
-        try {
-            const summaryRes = await fetch(`https://de.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(cityName)}`);
-            if (summaryRes.ok) {
-                const summaryData = await summaryRes.json();
-                if (summaryData && summaryData.thumbnail && summaryData.thumbnail.source) {
-                    imgEl.src = summaryData.thumbnail.source;
-                    return;
+        } else {
+            try {
+                const res = await fetch(`https://de.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(cleanTitle)}`);
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data && data.thumbnail && data.thumbnail.source) {
+                        if (imgEl) {
+                            imgEl.src = data.thumbnail.source;
+                            imgEl.style.display = 'block';
+                            if(imgEl.previousElementSibling) imgEl.previousElementSibling.style.display = 'none';
+                            flagLoaded = true;
+                        }
+                    }
                 }
+            } catch (e) {}
+        }
+
+        if (!flagLoaded) {
+            if (imgEl) {
+                if(imgEl.previousElementSibling) imgEl.previousElementSibling.style.display = 'none';
+                imgEl.style.display = 'none';
+                if(imgEl.nextElementSibling) imgEl.nextElementSibling.style.display = 'flex';
             }
-        } catch (err) {}
+        }
+
+        let coatLoaded = false;
+        if (coatMap[lowerTitle]) {
+            if (coatEl) {
+                coatEl.src = coatMap[lowerTitle];
+                coatEl.style.display = 'block';
+                if(coatEl.previousElementSibling) coatEl.previousElementSibling.style.display = 'none';
+                coatLoaded = true;
+            }
+        } else {
+            const coatQueries = [
+                `Wappen_${encodeURIComponent(cleanTitle)}`,
+                `Wappen_von_${encodeURIComponent(cleanTitle)}`,
+                `Stadtwappen_${encodeURIComponent(cleanTitle)}`
+            ];
+
+            for (let q of coatQueries) {
+                try {
+                    const coatRes = await fetch(`https://de.wikipedia.org/api/rest_v1/page/summary/${q}`);
+                    if (coatRes.ok) {
+                        const coatData = await coatRes.json();
+                        if (coatData && coatData.thumbnail && coatData.thumbnail.source) {
+                            if (coatEl) {
+                                coatEl.src = coatData.thumbnail.source;
+                                coatEl.style.display = 'block';
+                                if(coatEl.previousElementSibling) coatEl.previousElementSibling.style.display = 'none';
+                                coatLoaded = true;
+                                break;
+                            }
+                        }
+                    }
+                } catch (err) {}
+            }
+        }
+
+        if (!coatLoaded) {
+            if (coatEl) {
+                if(coatEl.previousElementSibling) coatEl.previousElementSibling.style.display = 'none';
+                coatEl.style.display = 'none';
+                if(coatEl.nextElementSibling) coatEl.nextElementSibling.style.display = 'flex';
+            }
+        }
     }
 
     async function loadLocationData(lat, lon, radiusKm, cityName, stateName, countryName, zipCode) {
@@ -2133,9 +2174,9 @@
         await Promise.all([
             fetchAllData(),
             fetchRealWeather(lat, lon, cityName),
-            fetchCityCoatOfArms(cityName),
-            fetchWikipediaInfo(countryName, 'infoCountryLink', 'infoCountryFlag', 'infoCountryFlagLink'),
-            fetchWikipediaInfo(stateName, 'infoStateLink', 'infoStateFlag', 'infoStateFlagLink')
+            fetchWikipediaImages(countryName, 'infoCountryFlag', 'infoCountryCoatImg', 'infoCountryLink'),
+            fetchWikipediaImages(stateName, 'infoStateFlag', 'infoStateCoatImg', 'infoStateLink'),
+            fetchWikipediaImages(cityName, 'infoCityFlagImg', 'infoCoatOfArmsImg', 'infoCityLink')
         ]);
 
         document.getElementById('loadingStatus').innerHTML = '';
@@ -2143,7 +2184,7 @@
 
     async function fetchRealWeather(lat, lon, cityName) {
         try {
-            const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_sum,windspeed_10m_max&hourly=temperature_2m,relativehumidity_2m,windspeed_10m,weathercode&current_weather=true&timezone=auto`);
+            const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_sum,windspeed_10m_max&hourly=temperature_2m,relativehumidity_2m,windspeed_10m,precipitation,weathercode&current_weather=true&timezone=auto`);
             const data = await res.json();
             
             if (data && data.daily) {
@@ -2198,143 +2239,243 @@
         return '🌡️';
     }
 
+    function getWeatherAnimationClass(code) {
+        if (code === 0) return 'anim-sun';
+        if ([48].includes(code)) return 'anim-heavy-fog';
+        if ([45].includes(code)) return 'anim-fog';
+        if ([75, 86].includes(code)) return 'anim-heavy-snow';
+        if ([71, 73, 77, 85].includes(code)) return 'anim-snow';
+        if ([65, 82, 99].includes(code)) return 'anim-heavy-rain';
+        if ([51, 53, 55, 56, 57, 61, 63, 66, 67, 80, 81, 95, 96].includes(code)) return 'anim-rain';
+        return '';
+    }
+
+    let dayTempChartInstance = null;
+    let dayRainChartInstance = null;
+    let dayWindChartInstance = null;
+
     function openDayFullscreenModal(index) {
         const data = window.currentWeatherDataCache;
         if (!data || !data.daily) return;
-        const date = new Date(data.daily.time[index]).toLocaleDateString('de-DE', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
-        const tMax = data.daily.temperature_2m_max[index];
-        const tMin = data.daily.temperature_2m_min[index];
-        const precip = data.daily.precipitation_sum[index];
-        const wind = data.daily.windspeed_10m_max[index];
+        
+        const dateStr = data.daily.time[index];
+        const dateObj = new Date(dateStr);
+        const dateFormatted = dateObj.toLocaleDateString('de-DE', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+        
+        const tMax = Math.round(data.daily.temperature_2m_max[index]);
+        const tMin = Math.round(data.daily.temperature_2m_min[index]);
+        const precipSum = data.daily.precipitation_sum[index];
+        const windMax = data.daily.windspeed_10m_max[index];
         const code = data.daily.weathercode[index];
+        const animClass = getWeatherAnimationClass(code);
 
-        document.getElementById('fsModalTitle').innerText = `Wetter am ${date}`;
+        let hourlyLabels = [];
+        let hourlyTemps = [];
+        let hourlyPrecip = [];
+        let hourlyWind = [];
+
+        if (data.hourly && data.hourly.time) {
+            for (let i = 0; i < data.hourly.time.length; i++) {
+                if (data.hourly.time[i].startsWith(dateStr)) {
+                    const timePart = data.hourly.time[i].split('T')[1].substring(0, 5);
+                    hourlyLabels.push(timePart);
+                    hourlyTemps.push(data.hourly.temperature_2m[i]);
+                    if (data.hourly.precipitation) {
+                        hourlyPrecip.push(data.hourly.precipitation[i] || 0);
+                    } else {
+                        hourlyPrecip.push(0);
+                    }
+                    if (data.hourly.windspeed_10m) {
+                        hourlyWind.push(data.hourly.windspeed_10m[i] || 0);
+                    } else {
+                        hourlyWind.push(0);
+                    }
+                }
+            }
+        }
+
+        document.getElementById('fsModalTitle').innerText = `📅 Tagesinfopaket: ${dateFormatted}`;
         document.getElementById('fsModalBody').innerHTML = `
-            <div style="display: flex; flex-direction: column; gap: 14px;">
-                <div style="display: flex; align-items: center; gap: 16px; background: #0f172a; padding: 14px; border-radius: 8px; border: 1px solid var(--border-color);">
-                    <span style="font-size: 2.5rem;">${getWeatherEmoji(code)}</span>
-                    <div>
-                        <h4 style="margin: 0 0 4px 0; font-size: 1.1rem;">Max: ${tMax}°C / Min: ${tMin}°C</h4>
-                        <p style="margin: 0; font-size: 0.85rem; color: var(--text-muted);">Zustand: ${getWeatherDescription(code)}</p>
-                    </div>
+            <div style="display: flex; align-items: center; gap: 16px; background: #0f172a; padding: 14px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 14px; flex-wrap: wrap;">
+                <div class="weather-anim-box ${animClass}">
+                    ${getWeatherEmoji(code)}
                 </div>
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px;">
-                    <div style="background: #0f172a; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color);">
-                        <strong style="font-size: 0.85rem; color: var(--text-muted);">Niederschlag</strong>
-                        <div style="font-size: 1.1rem; font-weight: bold; margin-top: 4px;">${precip} mm</div>
-                    </div>
-                    <div style="background: #0f172a; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color);">
-                        <strong style="font-size: 0.85rem; color: var(--text-muted);">Max. Windgeschwindigkeit</strong>
-                        <div style="font-size: 1.1rem; font-weight: bold; margin-top: 4px;">${wind} km/h</div>
-                    </div>
+                <div style="flex-grow: 1;">
+                    <h4 style="margin: 0 0 4px 0; font-size: 1.1rem; color: var(--text-color);">${currentCityData.name}</h4>
+                    <p style="margin: 0; font-size: 0.9rem; color: var(--text-muted);">Max: <strong>${tMax}°C</strong> | Min: <strong>${tMin}°C</strong> | Niederschlag: <strong>${precipSum} mm</strong> | Wind: <strong>${windMax} km/h</strong></p>
                 </div>
             </div>
+
+            <div class="chart-box">
+                <h4>📈 Stündlicher Temperaturverlauf</h4>
+                <canvas id="dayTempChart"></canvas>
+            </div>
+            <div class="chart-box">
+                <h4>🌧️ Stündlicher Niederschlag</h4>
+                <canvas id="dayRainChart"></canvas>
+            </div>
+            <div class="chart-box">
+                <h4>💨 Stündliche Windgeschwindigkeit</h4>
+                <canvas id="dayWindChart"></canvas>
+            </div>
         `;
+
         document.getElementById('fullscreenDayModal').style.display = 'flex';
+
+        setTimeout(() => {
+            const ctxTemp = document.getElementById('dayTempChart').getContext('2d');
+            if (dayTempChartInstance) dayTempChartInstance.destroy();
+            dayTempChartInstance = new Chart(ctxTemp, {
+                type: 'line',
+                data: {
+                    labels: hourlyLabels,
+                    datasets: [{
+                        label: 'Temperatur (°C)',
+                        data: hourlyTemps,
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        fill: true,
+                        tension: 0.3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { ticks: { color: '#94a3b8' }, grid: { color: '#334155' } },
+                        x: { ticks: { color: '#94a3b8', maxTicksLimit: 8 }, grid: { display: false } }
+                    }
+                }
+            });
+
+            const ctxRain = document.getElementById('dayRainChart').getContext('2d');
+            if (dayRainChartInstance) dayRainChartInstance.destroy();
+            dayRainChartInstance = new Chart(ctxRain, {
+                type: 'bar',
+                data: {
+                    labels: hourlyLabels,
+                    datasets: [{
+                        label: 'Niederschlag (mm)',
+                        data: hourlyPrecip,
+                        backgroundColor: '#06b6d4',
+                        borderRadius: 3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, ticks: { color: '#94a3b8' }, grid: { color: '#334155' } },
+                        x: { ticks: { color: '#94a3b8', maxTicksLimit: 8 }, grid: { display: false } }
+                    }
+                }
+            });
+
+            const ctxWind = document.getElementById('dayWindChart').getContext('2d');
+            if (dayWindChartInstance) dayWindChartInstance.destroy();
+            dayWindChartInstance = new Chart(ctxWind, {
+                type: 'line',
+                data: {
+                    labels: hourlyLabels,
+                    datasets: [{
+                        label: 'Wind (km/h)',
+                        data: hourlyWind,
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        fill: true,
+                        tension: 0.3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, ticks: { color: '#94a3b8' }, grid: { color: '#334155' } },
+                        x: { ticks: { color: '#94a3b8', maxTicksLimit: 8 }, grid: { display: false } }
+                    }
+                }
+            });
+        }, 100);
     }
 
     function closeFullscreenModal() {
         document.getElementById('fullscreenDayModal').style.display = 'none';
-    }
-
-    function getWeatherDescription(code) {
-        if (code === 0) return 'Klarer Himmel';
-        if ([1, 2, 3].includes(code)) return 'Teilweise bewölkt';
-        if ([45, 48].includes(code)) return 'Nebel';
-        if ([51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 80, 81, 82].includes(code)) return 'Regen';
-        if ([71, 73, 75, 77, 85, 86].includes(code)) return 'Schneefall';
-        if ([95, 96, 99].includes(code)) return 'Gewitter';
-        return 'Wechselhaft';
+        if (dayTempChartInstance) { dayTempChartInstance.destroy(); dayTempChartInstance = null; }
+        if (dayRainChartInstance) { dayRainChartInstance.destroy(); dayRainChartInstance = null; }
+        if (dayWindChartInstance) { dayWindChartInstance.destroy(); dayWindChartInstance = null; }
     }
 
     async function fetchAllData() {
+        await fetchCategoryData('sights');
+        await fetchCategoryData('restaurants');
+        await fetchCategoryData('hotels');
+    }
+
+    async function fetchCategoryData(category) {
         const lat = currentCityData.lat;
         const lon = currentCityData.lon;
         const radiusMeters = currentCityData.radius * 1000;
-        const cityName = currentCityData.name;
 
-        document.getElementById('sightsLoadingStatus').innerHTML = '<span class="loading-indicator"></span> Lade Sehenswürdigkeiten...';
-        document.getElementById('restaurantsLoadingStatus').innerHTML = '<span class="loading-indicator"></span> Lade Restaurants...';
-        document.getElementById('hotelsLoadingStatus').innerHTML = '<span class="loading-indicator"></span> Lade Unterkünfte...';
-
-        const overpassQuery = `
-            [out:json][timeout:20];
-            (
-              node(around:${radiusMeters},${lat},${lon})[tourism];
-              way(around:${radiusMeters},${lat},${lon})[tourism];
-              node(around:${radiusMeters},${lat},${lon})[amenity=restaurant];
-              way(around:${radiusMeters},${lat},${lon})[amenity=restaurant];
-              node(around:${radiusMeters},${lat},${lon})[amenity=cafe];
-              way(around:${radiusMeters},${lat},${lon})[amenity=cafe];
-              node(around:${radiusMeters},${lat},${lon})[tourism=hotel];
-              way(around:${radiusMeters},${lat},${lon})[tourism=hotel];
-              node(around:${radiusMeters},${lat},${lon})[tourism=guest_house];
-              way(around:${radiusMeters},${lat},${lon})[tourism=guest_house];
-            );
-            out center 60;
-        `;
+        let query = '';
+        if (category === 'sights') {
+            document.getElementById('sightsLoadingStatus').innerHTML = '<span class="loading-indicator"></span>';
+            query = `[out:json][timeout:25];(node["tourism"~"attraction|museum|viewpoint|castle|artwork"](around:${radiusMeters},${lat},${lon});way["tourism"~"attraction|museum|viewpoint|castle|artwork"](around:${radiusMeters},${lat},${lon}););out center;`;
+        } else if (category === 'restaurants') {
+            document.getElementById('restaurantsLoadingStatus').innerHTML = '<span class="loading-indicator"></span>';
+            query = `[out:json][timeout:25];(node["amenity"~"restaurant|cafe|bar|pub|fast_food"](around:${radiusMeters},${lat},${lon});way["amenity"~"restaurant|cafe|bar|pub|fast_food"](around:${radiusMeters},${lat},${lon}););out center;`;
+        } else if (category === 'hotels') {
+            document.getElementById('hotelsLoadingStatus').innerHTML = '<span class="loading-indicator"></span>';
+            query = `[out:json][timeout:25];(node["tourism"~"hotel|guest_house|hostel|apartment|camp_site"](around:${radiusMeters},${lat},${lon});way["tourism"~"hotel|guest_house|hostel|apartment|camp_site"](around:${radiusMeters},${lat},${lon}););out center;`;
+        }
 
         try {
             const response = await fetch(OVERPASS_API_URL, {
                 method: 'POST',
-                body: overpassQuery
+                body: 'data=' + encodeURIComponent(query)
             });
             const data = await response.json();
-            
-            let sights = [];
-            let restaurants = [];
-            let hotels = [];
+            const elements = data.elements || [];
 
-            if (data && data.elements) {
-                data.elements.forEach((el, index) => {
-                    const elLat = el.lat || (el.center ? el.center.lat : null);
-                    const elLon = el.lon || (el.center ? el.center.lon : null);
-                    if (!elLat || !elLon) return;
+            let items = elements.map(el => {
+                const elLat = el.lat || (el.center ? el.center.lat : lat);
+                const elLon = el.lon || (el.center ? el.center.lon : lon);
+                const name = (el.tags && el.tags.name) ? el.tags.name : "Unbenannter Ort";
+                const dist = calculateDistance(lat, lon, elLat, elLon);
+                const rating = parseFloat(((name.length % 3) + 3.2).toFixed(1));
 
-                    const tags = el.tags || {};
-                    const name = tags.name || tags['name:de'] || "Unbekannter Ort";
-                    const dist = calculateDistance(lat, lon, elLat, elLon);
-                    const rating = (4.0 + ((index * 3) % 10) * 0.05).toFixed(1);
-                    const street = tags['addr:street'] || 'Hauptstraße';
-                    const houseNumber = tags['addr:housenumber'] || (index + 1);
-                    const address = `${street} ${houseNumber}, ${cityName}`;
+                return {
+                    id: el.id,
+                    name: name,
+                    lat: elLat,
+                    lon: elLon,
+                    distance: dist,
+                    rating: rating,
+                    tags: el.tags || {}
+                };
+            });
 
-                    const itemObj = {
-                        id: el.id || index,
-                        name: name,
-                        lat: elLat,
-                        lon: elLon,
-                        distance: dist,
-                        rating: parseFloat(rating),
-                        address: address,
-                        tags: tags
-                    };
-
-                    if (tags.tourism && ['hotel', 'guest_house', 'hostel', 'motel', 'apartment'].includes(tags.tourism)) {
-                        hotels.push(itemObj);
-                    } else if (tags.amenity === 'restaurant' || tags.amenity === 'cafe' || tags.amenity === 'fast_food') {
-                        restaurants.push(itemObj);
-                    } else if (tags.tourism) {
-                        sights.push(itemObj);
-                    }
-                });
+            if (category === 'sights') {
+                currentCityData.allSights = items;
+                renderSightsList();
+                document.getElementById('sightsLoadingStatus').innerText = `(${items.length})`;
+            } else if (category === 'restaurants') {
+                currentCityData.restaurants = items;
+                renderRestaurantsList();
+                document.getElementById('restaurantsLoadingStatus').innerText = `(${items.length})`;
+            } else if (category === 'hotels') {
+                currentCityData.hotels = items;
+                renderHotelsList();
+                document.getElementById('hotelsLoadingStatus').innerText = `(${items.length})`;
             }
 
-            currentCityData.allSights = sights;
-            currentCityData.restaurants = restaurants;
-            currentCityData.hotels = hotels;
-
-            renderSightsList();
-            renderRestaurantsList();
-            renderHotelsList();
             updateMapMarkers();
-
-        } catch (err) {
-            console.error("Overpass Fehler:", err);
-        } finally {
-            document.getElementById('sightsLoadingStatus').innerHTML = '';
-            document.getElementById('restaurantsLoadingStatus').innerHTML = '';
-            document.getElementById('hotelsLoadingStatus').innerHTML = '';
+        } catch (e) {
+            if (category === 'sights') document.getElementById('sightsLoadingStatus').innerText = '(0)';
+            if (category === 'restaurants') document.getElementById('restaurantsLoadingStatus').innerText = '(0)';
+            if (category === 'hotels') document.getElementById('hotelsLoadingStatus').innerText = '(0)';
         }
     }
 
@@ -2349,171 +2490,132 @@
         return R * c;
     }
 
+    function sortItems(items, sortMode) {
+        let sorted = [...items];
+        if (sortMode === 'distance') {
+            sorted.sort((a, b) => a.distance - b.distance);
+        } else if (sortMode === 'rating') {
+            sorted.sort((a, b) => b.rating - a.rating);
+        } else if (sortMode === 'alpha') {
+            sorted.sort((a, b) => a.name.localeCompare(b.name));
+        }
+        return sorted;
+    }
+
     function renderSightsList() {
-        const container = document.getElementById('sightList');
-        const moreBtn = document.getElementById('sightMoreBtn');
         const sortMode = document.getElementById('sightSort').value;
-        let list = [...currentCityData.allSights];
+        const sorted = sortItems(currentCityData.allSights, sortMode);
+        const listEl = document.getElementById('sightList');
+        const moreBtn = document.getElementById('sightMoreBtn');
 
-        if (sortMode === 'distance') list.sort((a,b) => a.distance - b.distance);
-        else if (sortMode === 'rating') list.sort((a,b) => b.rating - a.rating);
-        else if (sortMode === 'alpha') list.sort((a,b) => a.name.localeCompare(b.name));
-
-        if (list.length === 0) {
-            container.innerHTML = '<p style="color:var(--text-muted); font-size:0.85rem; padding:6px 0;">Keine Sehenswürdigkeiten im Umkreis gefunden.</p>';
-            if(moreBtn) moreBtn.style.display = 'none';
+        if (sorted.length === 0) {
+            listEl.innerHTML = '<li style="color:var(--text-muted); font-size:0.85rem; padding:6px;">Keine Sehenswürdigkeiten im Umkreis gefunden.</li>';
+            moreBtn.style.display = 'none';
             return;
         }
 
+        const visible = sorted.slice(0, 5);
         let html = '';
-        list.slice(0, 5).forEach(item => {
-            html += `
-                <li class="item-row" onclick="map.setView([${item.lat}, ${item.lon}], 16)">
-                    <div class="item-info-left">
-                        <div class="item-thumb" style="display:flex; align-items:center; justify-content:center; font-size:1.2rem;">🏛️</div>
-                        <div class="item-text-details">
-                            <strong style="font-size:0.9rem; display:block;">${item.name}</strong>
-                            <span style="font-size:0.75rem; color:var(--text-muted);">${item.distance.toFixed(1)} km entfernt • ${item.address}</span>
-                        </div>
-                    </div>
-                    <span class="rating-badge">⭐ ${item.rating}</span>
-                </li>
-            `;
+        visible.forEach(item => {
+            html += generateItemRowHtml(item, 'sight');
         });
-        container.innerHTML = html;
-        if(moreBtn) moreBtn.style.display = list.length > 5 ? 'block' : 'none';
+        listEl.innerHTML = html;
+        moreBtn.style.display = sorted.length > 5 ? 'block' : 'none';
     }
 
     function renderRestaurantsList() {
-        const container = document.getElementById('restaurantList');
-        const moreBtn = document.getElementById('restaurantMoreBtn');
         const sortMode = document.getElementById('restaurantSort').value;
-        let list = [...currentCityData.restaurants];
+        const sorted = sortItems(currentCityData.restaurants, sortMode);
+        const listEl = document.getElementById('restaurantList');
+        const moreBtn = document.getElementById('restaurantMoreBtn');
 
-        if (sortMode === 'distance') list.sort((a,b) => a.distance - b.distance);
-        else if (sortMode === 'rating') list.sort((a,b) => b.rating - a.rating);
-        else if (sortMode === 'alpha') list.sort((a,b) => a.name.localeCompare(b.name));
-
-        if (list.length === 0) {
-            container.innerHTML = '<p style="color:var(--text-muted); font-size:0.85rem; padding:6px 0;">Keine Restaurants im Umkreis gefunden.</p>';
-            if(moreBtn) moreBtn.style.display = 'none';
+        if (sorted.length === 0) {
+            listEl.innerHTML = '<li style="color:var(--text-muted); font-size:0.85rem; padding:6px;">Keine Restaurants im Umkreis gefunden.</li>';
+            moreBtn.style.display = 'none';
             return;
         }
 
+        const visible = sorted.slice(0, 5);
         let html = '';
-        list.slice(0, 5).forEach(item => {
-            html += `
-                <li class="item-row" onclick="map.setView([${item.lat}, ${item.lon}], 16)">
-                    <div class="item-info-left">
-                        <div class="item-thumb" style="display:flex; align-items:center; justify-content:center; font-size:1.2rem;">🍽️</div>
-                        <div class="item-text-details">
-                            <strong style="font-size:0.9rem; display:block;">${item.name}</strong>
-                            <span style="font-size:0.75rem; color:var(--text-muted);">${item.distance.toFixed(1)} km entfernt • ${item.address}</span>
-                        </div>
-                    </div>
-                    <span class="rating-badge">⭐ ${item.rating}</span>
-                </li>
-            `;
+        visible.forEach(item => {
+            html += generateItemRowHtml(item, 'restaurant');
         });
-        container.innerHTML = html;
-        if(moreBtn) moreBtn.style.display = list.length > 5 ? 'block' : 'none';
+        listEl.innerHTML = html;
+        moreBtn.style.display = sorted.length > 5 ? 'block' : 'none';
     }
 
     function renderHotelsList() {
-        const container = document.getElementById('hotelList');
-        const moreBtn = document.getElementById('hotelMoreBtn');
         const sortMode = document.getElementById('hotelSort').value;
-        let list = [...currentCityData.hotels];
+        const sorted = sortItems(currentCityData.hotels, sortMode);
+        const listEl = document.getElementById('hotelList');
+        const moreBtn = document.getElementById('hotelMoreBtn');
 
-        if (sortMode === 'distance') list.sort((a,b) => a.distance - b.distance);
-        else if (sortMode === 'rating') list.sort((a,b) => b.rating - a.rating);
-        else if (sortMode === 'alpha') list.sort((a,b) => a.name.localeCompare(b.name));
-
-        if (list.length === 0) {
-            container.innerHTML = '<p style="color:var(--text-muted); font-size:0.85rem; padding:6px 0;">Keine Unterkünfte im Umkreis gefunden.</p>';
-            if(moreBtn) moreBtn.style.display = 'none';
+        if (sorted.length === 0) {
+            listEl.innerHTML = '<li style="color:var(--text-muted); font-size:0.85rem; padding:0 6px;">Keine Unterkünfte im Umkreis gefunden.</li>';
+            moreBtn.style.display = 'none';
             return;
         }
 
+        const visible = sorted.slice(0, 5);
         let html = '';
-        list.slice(0, 5).forEach(item => {
-            html += `
-                <li class="item-row" onclick="map.setView([${item.lat}, ${item.lon}], 16)">
-                    <div class="item-info-left">
-                        <div class="item-thumb" style="display:flex; align-items:center; justify-content:center; font-size:1.2rem;">🏨</div>
-                        <div class="item-text-details">
-                            <strong style="font-size:0.9rem; display:block;">${item.name}</strong>
-                            <span style="font-size:0.75rem; color:var(--text-muted);">${item.distance.toFixed(1)} km entfernt • ${item.address}</span>
-                        </div>
-                    </div>
-                    <span class="rating-badge">⭐ ${item.rating}</span>
-                </li>
-            `;
+        visible.forEach(item => {
+            html += generateItemRowHtml(item, 'hotel');
         });
-        container.innerHTML = html;
-        if(moreBtn) moreBtn.style.display = list.length > 5 ? 'block' : 'none';
+        listEl.innerHTML = html;
+        moreBtn.style.display = sorted.length > 5 ? 'block' : 'none';
     }
 
-    function updateMapMarkers() {
-        categoryMarkersLayer.clearLayers();
-        const showSights = document.getElementById('toggleSights').checked;
-        const showRestaurants = document.getElementById('toggleRestaurants').checked;
-        const showHotels = document.getElementById('toggleHotels').checked;
-
-        if (showSights) {
-            currentCityData.allSights.forEach(item => {
-                L.circleMarker([item.lat, item.lon], { radius: 6, color: '#ef4444', fillColor: '#ef4444', fillOpacity: 0.8 })
-                    .bindPopup(`<b>🏛️ ${item.name}</b><br>${item.address}<br>⭐ ${item.rating}`)
-                    .addTo(categoryMarkersLayer);
-            });
-        }
-        if (showRestaurants) {
-            currentCityData.restaurants.forEach(item => {
-                L.circleMarker([item.lat, item.lon], { radius: 6, color: '#3b82f6', fillColor: '#3b82f6', fillOpacity: 0.8 })
-                    .bindPopup(`<b>🍽️ ${item.name}</b><br>${item.address}<br>⭐ ${item.rating}`)
-                    .addTo(categoryMarkersLayer);
-            });
-        }
-        if (showHotels) {
-            currentCityData.hotels.forEach(item => {
-                L.circleMarker([item.lat, item.lon], { radius: 6, color: '#f59e0b', fillColor: '#f59e0b', fillOpacity: 0.8 })
-                    .bindPopup(`<b>🏨 ${item.name}</b><br>${item.address}<br>⭐ ${item.rating}`)
-                    .addTo(categoryMarkersLayer);
-            });
-        }
+    function generateItemRowHtml(item, type) {
+        const distStr = item.distance < 1 ? `${Math.round(item.distance * 1000)} m` : `${item.distance.toFixed(1)} km`;
+        return `
+            <li class="item-row" onclick="focusItemOnMap(${item.lat}, ${item.lon}, '${item.name.replace(/'/g, "\\'")}')">
+                <div class="item-info-left">
+                    <div class="item-text-details">
+                        <strong style="font-size:0.9rem; display:block;">${item.name}</strong>
+                        <span style="font-size:0.75rem; color:var(--text-muted);">Entfernung: ${distStr}</span>
+                    </div>
+                </div>
+                <div class="rating-badge" onclick="event.stopPropagation(); openReviewsModal('${item.name.replace(/'/g, "\\'")}', ${item.rating})">
+                    ⭐ ${item.rating}
+                </div>
+            </li>
+        `;
     }
 
-    function closeModal() {
-        document.getElementById('detailModal').style.display = 'none';
+    function focusItemOnMap(lat, lon, name) {
+        map.setView([lat, lon], 16);
+        L.popup().setLatLng([lat, lon]).setContent(`<strong>${name}</strong>`).openOn(map);
     }
 
-    function openAllItemsModal(type) {
+    function openAllItemsModal(category) {
+        let items = [];
         let title = "";
-        let list = [];
-        if (type === 'sights') {
-            title = "🏛️ Alle Sehenswürdigkeiten";
-            list = currentCityData.allSights;
-        } else if (type === 'restaurants') {
-            title = "🍽️ Alle Restaurants";
-            list = currentCityData.restaurants;
-        } else if (type === 'hotels') {
-            title = "🏨 Alle Unterkünfte";
-            list = currentCityData.hotels;
+        if (category === 'sights') {
+            items = currentCityData.allSights;
+            title = "🏛️ Alle Sehenswürdigkeiten im Umkreis";
+        } else if (category === 'restaurants') {
+            items = currentCityData.restaurants;
+            title = "🍽️ Alle Restaurants im Umkreis";
+        } else if (category === 'hotels') {
+            items = currentCityData.hotels;
+            title = "🏨 Alle Unterkünfte im Umkreis";
         }
 
         document.getElementById('modalTitle').innerText = title;
         let html = '<ul class="item-list">';
-        list.forEach(item => {
+        items.forEach(item => {
+            const distStr = item.distance < 1 ? `${Math.round(item.distance * 1000)} m` : `${item.distance.toFixed(1)} km`;
             html += `
-                <li class="item-row" onclick="closeModal(); map.setView([${item.lat}, ${item.lon}], 16)">
+                <li class="item-row" onclick="closeModal(); focusItemOnMap(${item.lat}, ${item.lon}, '${item.name.replace(/'/g, "\\'")}')">
                     <div class="item-info-left">
-                        <div class="item-thumb" style="display:flex; align-items:center; justify-content:center; font-size:1.2rem;">📌</div>
                         <div class="item-text-details">
                             <strong style="font-size:0.9rem; display:block;">${item.name}</strong>
-                            <span style="font-size:0.75rem; color:var(--text-muted);">${item.distance.toFixed(1)} km entfernt • ${item.address}</span>
+                            <span style="font-size:0.75rem; color:var(--text-muted);">Entfernung: ${distStr}</span>
                         </div>
                     </div>
-                    <span class="rating-badge">⭐ ${item.rating}</span>
+                    <div class="rating-badge" onclick="event.stopPropagation(); openReviewsModal('${item.name.replace(/'/g, "\\'")}', ${item.rating})">
+                        ⭐ ${item.rating}
+                    </div>
                 </li>
             `;
         });
@@ -2523,7 +2625,40 @@
         document.getElementById('detailModal').style.display = 'flex';
     }
 
+    function updateMapMarkers() {
+        categoryMarkersLayer.clearLayers();
+
+        const showSights = document.getElementById('toggleSights').checked;
+        const showRestaurants = document.getElementById('toggleRestaurants').checked;
+        const showHotels = document.getElementById('toggleHotels').checked;
+
+        if (showSights) {
+            currentCityData.allSights.forEach(item => {
+                let marker = L.circleMarker([item.lat, item.lon], { radius: 6, color: '#ef4444', fillColor: '#ef4444', fillOpacity: 0.8 });
+                marker.bindPopup(`<strong>${item.name}</strong><br>Sehenswürdigkeit ⭐ ${item.rating}`);
+                categoryMarkersLayer.addLayer(marker);
+            });
+        }
+
+        if (showRestaurants) {
+            currentCityData.restaurants.forEach(item => {
+                let marker = L.circleMarker([item.lat, item.lon], { radius: 6, color: '#3b82f6', fillColor: '#3b82f6', fillOpacity: 0.8 });
+                marker.bindPopup(`<strong>${item.name}</strong><br>Restaurant ⭐ ${item.rating}`);
+                categoryMarkersLayer.addLayer(marker);
+            });
+        }
+
+        if (showHotels) {
+            currentCityData.hotels.forEach(item => {
+                let marker = L.circleMarker([item.lat, item.lon], { radius: 6, color: '#f59e0b', fillColor: '#f59e0b', fillOpacity: 0.8 });
+                marker.bindPopup(`<strong>${item.name}</strong><br>Unterkunft ⭐ ${item.rating}`);
+                categoryMarkersLayer.addLayer(marker);
+            });
+        }
+    }
+
     function resetToHome() {
+        document.getElementById('citySearch').value = 'Ettenheim';
         searchLocation();
     }
 </script>
