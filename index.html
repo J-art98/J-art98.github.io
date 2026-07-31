@@ -820,12 +820,12 @@
             <h3 style="margin:0; border:none; padding:0;">🗺️ Weltkarte & Umkreis-Suche</h3>
         </div>
         <div class="search-box">
-            <input type="text" id="citySearch" placeholder="Ort, Stadt oder PLZ suchen (z.B. Berlin, Hamburg, München)..." onkeydown="if(event.key==='Enter') searchLocation()">
+            <input type="text" id="citySearch" placeholder="Ort, Stadt oder PLZ suchen (z.B. Ettenheim, Lahr, Freiburg)..." onkeydown="if(event.key==='Enter') searchLocation()">
             <button id="searchBtn" onclick="searchLocation()">Suchen</button>
         </div>
         <div class="radius-control">
-            <label for="radiusRange">Such-Umkreis: <strong id="radiusValue">5</strong> km</label>
-            <input type="range" id="radiusRange" min="1" max="100" value="5" oninput="onRadiusChange(this.value)">
+            <label for="radiusRange">Such-Umkreis: <strong id="radiusValue">1</strong> km</label>
+            <input type="range" id="radiusRange" min="1" max="100" value="1" oninput="onRadiusChange(this.value)">
         </div>
         <div class="map-wrapper">
             <div id="map" class="map-container"></div>
@@ -847,16 +847,16 @@
         <div class="weather-grid" id="weatherGrid"></div>
         <h3 style="margin-top: 15px;">⏱️ Stündliche Vorschau ab JETZT <small style="font-size: 0.75rem; color:var(--text-muted); font-weight:normal;">(Klicke auf eine Stunde für Details)</small></h3>
         <div class="weather-hours" id="weatherHoursGrid"></div>
-        <p style="font-size: 0.8rem; color: #4ade80; margin-top: 8px; margin-bottom: 0;">⚡ Wetter-Datenpunkt aktiv für <span id="weatherCityName">München</span></p>
+        <p style="font-size: 0.8rem; color: #4ade80; margin-top: 8px; margin-bottom: 0;">⚡ Wetter-Datenpunkt aktiv für <span id="weatherCityName">Ettenheim</span></p>
     </div>
 
     <div class="card">
         <h3>ℹ️ Infos zur Stadt <span id="loadingStatus"></span></h3>
-        <p><strong>Name:</strong> <span id="infoName" class="clickable" onclick="showCityDetails()">München</span></p>
-        <p><strong>Postleitzahl(en):</strong> <span id="infoZip">80331, 80333, 80335</span></p>
-        <p><strong>Region / Bundesland:</strong> <span id="infoState" class="clickable" onclick="showStateDetails()">Bayern</span></p>
-        <p><strong>Bevölkerung:</strong> <span id="infoPopulation">ca. 1.5 Millionen</span></p>
-        <p><strong>Gründungsjahr:</strong> <span id="infoFounded">1158</span></p>
+        <p><strong>Name:</strong> <span id="infoName" class="clickable" onclick="showCityDetails()">Ettenheim</span></p>
+        <p><strong>Postleitzahl(en):</strong> <span id="infoZip">77960</span></p>
+        <p><strong>Region / Bundesland:</strong> <span id="infoState" class="clickable" onclick="showStateDetails()">Baden-Württemberg</span></p>
+        <p><strong>Bevölkerung:</strong> <span id="infoPopulation">ca. 13.500</span></p>
+        <p><strong>Gründungsjahr:</strong> <span id="infoFounded">1181</span></p>
         
         <div class="section-header-bar">
             <strong>🏛️ Sehenswürdigkeiten: <span id="sightsLoadingStatus"></span></strong>
@@ -1046,9 +1046,9 @@
 
 
     /* --- HAUPTAPP-LOGIK --- */
-    let map = L.map('map', { fadeAnimation: false, zoomAnimation: false }).setView([48.1351, 11.5820], 13);
-    let currentMarker = L.marker([48.1351, 11.5820]).addTo(map);
-    let radiusCircle = L.circle([48.1351, 11.5820], { radius: 5000, color: '#3b82f6', fillColor: '#3b82f6', fillOpacity: 0.1 }).addTo(map);
+    let map = L.map('map', { fadeAnimation: false, zoomAnimation: false }).setView([48.2544, 7.8181], 13);
+    let currentMarker = L.marker([48.2544, 7.8181]).addTo(map);
+    let radiusCircle = L.circle([48.2544, 7.8181], { radius: 1000, color: '#3b82f6', fillColor: '#3b82f6', fillOpacity: 0.1 }).addTo(map);
     let categoryMarkersLayer = L.layerGroup().addTo(map);
 
     let searchDebounceTimer = null;
@@ -1067,12 +1067,12 @@
     }).addTo(map);
 
     let currentCityData = {
-        name: "München",
-        lat: 48.1351,
-        lon: 11.5820,
-        state: "Bayern",
-        zip: "80331, 80333",
-        radius: 5,
+        name: "Ettenheim",
+        lat: 48.2544,
+        lon: 7.8181,
+        state: "Baden-Württemberg",
+        zip: "77960",
+        radius: 1,
         allSights: [],
         restaurants: [],
         hotels: [],
@@ -1136,15 +1136,15 @@
 
     async function reverseGeocodeAndFetch(lat, lon, resetRadius = false) {
         if (resetRadius) {
-            document.getElementById('radiusRange').value = 5;
-            document.getElementById('radiusValue').innerText = 5;
-            currentCityData.radius = 5;
-            radiusCircle.setRadius(5000);
+            document.getElementById('radiusRange').value = 1;
+            document.getElementById('radiusValue').innerText = 1;
+            currentCityData.radius = 1;
+            radiusCircle.setRadius(1000);
         }
 
         let cityName = "Ausgewählter Ort";
         let stateName = "Region / Bundesland";
-        let zipCode = "77790";
+        let zipCode = "77960";
 
         document.getElementById('loadingStatus').innerHTML = '<span class="loading-indicator" title="Lade Daten..."></span>';
 
@@ -1154,7 +1154,7 @@
             const address = data.address || {};
             cityName = address.city || address.town || address.village || address.municipality || address.county || "Standort";
             stateName = address.state || address.region || "Bundesland";
-            zipCode = address.postcode || "77790";
+            zipCode = address.postcode || "77960";
         } catch (err) {
             console.error("Reverse Geocoding Fehler:", err);
         }
@@ -1919,12 +1919,12 @@
 
     function resetToHome() {
         document.getElementById('citySearch').value = "";
-        document.getElementById('radiusRange').value = 5;
-        document.getElementById('radiusValue').innerText = 5;
-        map.setView([48.1351, 11.5820], 13);
-        radiusCircle.setLatLng([48.1351, 11.5820]);
-        radiusCircle.setRadius(5000);
-        loadLocationData(48.1351, 11.5820, 5, "München", "Bayern", "80331");
+        document.getElementById('radiusRange').value = 1;
+        document.getElementById('radiusValue').innerText = 1;
+        map.setView([48.2544, 7.8181], 13);
+        radiusCircle.setLatLng([48.2544, 7.8181]);
+        radiusCircle.setRadius(1000);
+        loadLocationData(48.2544, 7.8181, 1, "Ettenheim", "Baden-Württemberg", "77960");
     }
 
     function showCityDetails() {
@@ -1941,7 +1941,7 @@
         document.getElementById('detailModal').style.display = 'flex';
     }
 
-    loadLocationData(48.1351, 11.5820, 5, "München", "Bayern", "80331");
+    loadLocationData(48.2544, 7.8181, 1, "Ettenheim", "Baden-Württemberg", "77960");
 </script>
 </body>
 </html>
