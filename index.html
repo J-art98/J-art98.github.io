@@ -155,18 +155,11 @@
             color: var(--accent-color);
         }
 
-        .header-controls {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 0.9rem;
-        }
-
         .badge {
             background: #334155;
-            padding: 6px 10px;
+            padding: 6px 12px;
             border-radius: 6px;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             cursor: pointer;
             transition: background 0.2s;
         }
@@ -662,6 +655,33 @@
             vertical-align: middle;
         }
 
+        /* Neue Stile für Lade-Spinner und Bild-Container */
+        .img-container {
+            width: 40px;
+            height: 30px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .flag {
+            width: 30px;
+            height: 20px;
+            object-fit: cover;
+            border: 1px solid #ccc;
+        }
+
+        .spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid #ccc;
+            border-top: 2px solid var(--accent-color);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            position: absolute;
+        }
+
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
@@ -813,11 +833,8 @@
 <div class="container" id="mainAppContainer" style="display: none;">
     <header>
         <h1 onclick="resetToHome()">Jannik Reisen 🌍✈️</h1>
-        <div class="header-controls">
-            <span class="badge" id="userBadgeLabel" onclick="openUserSettingsModal()" title="Einstellungen öffnen">admin (👤 Admin)</span>
-            <button class="logout-btn" onclick="handleLogout()">Abmelden</button>
-            <label style="cursor:pointer;"><input type="checkbox" id="trafficToggle"> Live-Verkehr</label>
-        </div>
+        <span class="badge" id="userBadgeLabel" onclick="openUserSettingsModal()" title="Einstellungen öffnen">admin (👤 Admin)</span>
+        <button class="logout-btn" onclick="handleLogout()">Abmelden</button>
     </header>
 
     <div class="card">
@@ -845,6 +862,11 @@
                 <button class="legend-toggle-btn" onclick="toggleLegend()">🗺️ Legende</button>
             </div>
         </div>
+        <div style="margin-top: 10px; display: flex; align-items: center;">
+            <label style="cursor:pointer; display: flex; align-items: center; gap: 6px; font-size: 0.9rem;">
+                <input type="checkbox" id="trafficToggle"> Live-Verkehr aktivieren
+            </label>
+        </div>
     </div>
 
     <div class="card">
@@ -857,9 +879,34 @@
 
     <div class="card">
         <h3>ℹ️ Infos zur Stadt <span id="loadingStatus"></span></h3>
-        <p><strong>Name:</strong> <span id="infoName" class="clickable" onclick="showCityDetails()">Ettenheim</span></p>
+        
+        <!-- Land -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px solid var(--border-color);">
+            <div><strong>Land:</strong> <a id="infoCountryLink" href="#" target="_blank" class="clickable">Deutschland</a></div>
+            <div class="img-container" id="infoCountryContainer">
+                <div class="spinner"></div>
+                <img id="infoCountryFlag" src="" alt="Landesflagge" class="flag" style="display:none;" onload="this.previousElementSibling.style.display='none'; this.style.display='block';" onerror="this.style.display='none'; this.previousElementSibling.style.display='none';">
+            </div>
+        </div>
+
+        <!-- Bundesland / Region -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px solid var(--border-color);">
+            <div><strong>Region / Bundesland:</strong> <a id="infoStateLink" href="#" target="_blank" class="clickable" onclick="showStateDetails()">Baden-Württemberg</a></div>
+            <div class="img-container" id="infoStateContainer">
+                <div class="spinner"></div>
+                <img id="infoStateFlag" src="" alt="Regionsflagge" class="flag" style="display:none;" onload="this.previousElementSibling.style.display='none'; this.style.display='block';" onerror="this.style.display='none'; this.previousElementSibling.style.display='none';">
+            </div>
+        </div>
+
+        <!-- Stadt und Stadtwappen rechts -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px solid var(--border-color);">
+            <div><strong>Stadt:</strong> <span id="infoName" class="clickable" onclick="showCityDetails()">Ettenheim</span></div>
+            <div id="infoCoatOfArmsContainer" class="img-container" style="width: 40px; height: 40px;">
+                <div class="spinner"></div>
+            </div>
+        </div>
+
         <p><strong>Postleitzahl(en):</strong> <span id="infoZip">77960</span></p>
-        <p><strong>Region / Bundesland:</strong> <span id="infoState" class="clickable" onclick="showStateDetails()">Baden-Württemberg</span></p>
         <p><strong>Bevölkerung:</strong> <span id="infoPopulation">ca. 13.500</span></p>
         <p><strong>Gründungsjahr:</strong> <span id="infoFounded">1181</span></p>
         
@@ -972,7 +1019,6 @@
 
     function getUsers() {
         const users = JSON.parse(localStorage.getItem('jannik_users') || '{}');
-        // Sicherstellen, dass admin existiert
         if(!users['admin']) {
             users['admin'] = 'admin';
             localStorage.setItem('jannik_users', JSON.stringify(users));
@@ -1033,7 +1079,6 @@
             badge.innerHTML = `${username} (👤 Benutzer)`;
         }
 
-        // Karte initialisieren, falls noch nicht geschehen
         setTimeout(() => {
             if(map) map.invalidateSize();
         }, 200);
@@ -1049,9 +1094,8 @@
         document.getElementById('authSuccess').style.display = 'none';
     }
 
-    // Beim Laden prüfen, ob bereits eingeloggt
     window.addEventListener('DOMContentLoaded', () => {
-        getUsers(); // Initialisiert Standard-Admin falls nötig
+        getUsers();
         const currentUser = localStorage.getItem('jannik_current_user');
         if(currentUser) {
             completeLogin(currentUser);
@@ -1161,7 +1205,6 @@
         }
     }
 
-
     /* --- HAUPTAPP-LOGIK --- */
     let map = L.map('map', { fadeAnimation: false, zoomAnimation: false }).setView([48.2544, 7.8181], 13);
     let currentMarker = L.marker([48.2544, 7.8181]).addTo(map);
@@ -1188,6 +1231,7 @@
         lat: 48.2544,
         lon: 7.8181,
         state: "Baden-Württemberg",
+        country: "Deutschland",
         zip: "77960",
         radius: 1,
         allSights: [],
@@ -1209,7 +1253,7 @@
 
         clearTimeout(searchDebounceTimer);
         searchDebounceTimer = setTimeout(() => {
-            loadLocationData(currentCityData.lat, currentCityData.lon, currentCityData.radius, currentCityData.name, currentCityData.state, currentCityData.zip);
+            loadLocationData(currentCityData.lat, currentCityData.lon, currentCityData.radius, currentCityData.name, currentCityData.state, currentCityData.country, currentCityData.zip);
         }, 600);
     }
 
@@ -1261,6 +1305,7 @@
 
         let cityName = "Ausgewählter Ort";
         let stateName = "Region / Bundesland";
+        let countryName = "Deutschland";
         let zipCode = "77960";
 
         document.getElementById('loadingStatus').innerHTML = '<span class="loading-indicator" title="Lade Daten..."></span>';
@@ -1271,22 +1316,117 @@
             const address = data.address || {};
             cityName = address.city || address.town || address.village || address.municipality || address.county || "Standort";
             stateName = address.state || address.region || "Bundesland";
+            countryName = address.country || "Deutschland";
             zipCode = address.postcode || "77960";
         } catch (err) {
             console.error("Reverse Geocoding Fehler:", err);
         }
 
-        await loadLocationData(lat, lon, currentCityData.radius, cityName, stateName, zipCode);
+        await loadLocationData(lat, lon, currentCityData.radius, cityName, stateName, countryName, zipCode);
     }
 
-    async function loadLocationData(lat, lon, radiusKm, cityName, stateName, zipCode) {
+    async function fetchWikipediaInfo(title, linkElementId, imgElementId) {
+        const linkEl = document.getElementById(linkElementId);
+        const imgEl = document.getElementById(imgElementId);
+        
+        if (linkEl) {
+            linkEl.innerText = title;
+            linkEl.href = `https://de.wikipedia.org/wiki/${encodeURIComponent(title)}`;
+        }
+
+        if (!imgEl) return;
+        const container = imgEl.parentElement;
+        let spinner = container.querySelector('.spinner');
+        if (!spinner) {
+            spinner = document.createElement('div');
+            spinner.className = 'spinner';
+            container.prepend(spinner);
+        }
+        spinner.style.display = 'block';
+        imgEl.style.display = 'none';
+        imgEl.src = '';
+
+        try {
+            const res = await fetch(`https://de.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`);
+            if (res.ok) {
+                const data = await res.json();
+                if (data && data.thumbnail && data.thumbnail.source) {
+                    imgEl.src = data.thumbnail.source;
+                    imgEl.style.display = 'block';
+                    spinner.style.display = 'none';
+                    return;
+                }
+            }
+
+            const searchRes = await fetch(`https://de.wikipedia.org/w/api.php?action=query&generator=search&gsrsearch=Flagge+${encodeURIComponent(title)}&gsrlimit=1&prop=imageinfo&iiprop=url&format=json&origin=*`);
+            const searchData = await searchRes.json();
+            if (searchData.query && searchData.query.pages) {
+                const pages = Object.values(searchData.query.pages);
+                if (pages.length > 0 && pages[0].imageinfo && pages[0].imageinfo.length > 0) {
+                    imgEl.src = pages[0].imageinfo[0].url;
+                    imgEl.style.display = 'block';
+                    spinner.style.display = 'none';
+                    return;
+                }
+            }
+
+            spinner.style.display = 'none';
+            imgEl.style.display = 'none';
+        } catch (e) {
+            console.error("Fehler beim Laden des Wikipedia-Bildes für", title, e);
+            if (spinner) spinner.style.display = 'none';
+            if (imgEl) imgEl.style.display = 'none';
+        }
+    }
+
+    async function fetchCityCoatOfArms(cityName) {
+        const container = document.getElementById('infoCoatOfArmsContainer');
+        if (!container) return;
+        
+        container.innerHTML = '<div class="spinner"></div><img id="infoCoatOfArmsImg" src="" alt="Stadtwappen" style="max-height: 40px; max-width: 40px; object-fit: contain; border-radius: 4px; display:none;" onload="this.previousElementSibling.style.display=\'none\'; this.style.display=\'block\';" onerror="this.style.display=\'none\'; this.previousElementSibling.style.display=\'none\';">';
+        const imgEl = document.getElementById('infoCoatOfArmsImg');
+
+        try {
+            const searchRes = await fetch(`https://de.wikipedia.org/w/api.php?action=query&generator=search&gsrsearch=Wappen+${encodeURIComponent(cityName)}&gsrlimit=1&prop=imageinfo&iiprop=url&format=json&origin=*`);
+            const searchData = await searchRes.json();
+            let imageUrl = null;
+
+            if (searchData.query && searchData.query.pages) {
+                const pages = Object.values(searchData.query.pages);
+                if (pages.length > 0 && pages[0].imageinfo && pages[0].imageinfo.length > 0) {
+                    imageUrl = pages[0].imageinfo[0].url;
+                }
+            }
+
+            if (!imageUrl) {
+                const summaryRes = await fetch(`https://de.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(cityName)}`);
+                if (summaryRes.ok) {
+                    const summaryData = await summaryRes.json();
+                    if (summaryData && summaryData.thumbnail && summaryData.thumbnail.source) {
+                        imageUrl = summaryData.thumbnail.source;
+                    }
+                }
+            }
+
+            if (imageUrl) {
+                imgEl.src = imageUrl;
+            } else {
+                container.innerHTML = '<span style="font-size:0.75rem; color:var(--text-muted);">Kein Bild</span>';
+            }
+        } catch (err) {
+            console.error("Fehler beim Laden des Stadtwappens:", err);
+            container.innerHTML = '<span style="font-size:0.75rem; color:var(--text-muted);">Kein Bild</span>';
+        }
+    }
+
+    async function loadLocationData(lat, lon, radiusKm, cityName, stateName, countryName, zipCode) {
         currentCityData.name = cityName;
         currentCityData.lat = lat;
         currentCityData.lon = lon;
         currentCityData.state = stateName;
+        currentCityData.country = countryName;
         currentCityData.zip = zipCode;
         
-        // Listen bei Standortwechsel zurücksetzen, da Suche nicht mehr automatisch läuft
         currentCityData.allSights = [];
         currentCityData.restaurants = [];
         currentCityData.hotels = [];
@@ -1298,14 +1438,18 @@
 
         document.getElementById('loadingStatus').innerHTML = '<span class="loading-indicator" title="Lade Daten..."></span>';
 
-        await fetchRealWeather(lat, lon, cityName);
-
-        document.getElementById('loadingStatus').innerHTML = '';
-
         document.getElementById('infoName').innerText = currentCityData.name;
         document.getElementById('infoZip').innerText = currentCityData.zip;
-        document.getElementById('infoState').innerText = currentCityData.state;
         document.getElementById('weatherCityName').innerText = currentCityData.name;
+
+        await Promise.all([
+            fetchRealWeather(lat, lon, cityName),
+            fetchCityCoatOfArms(cityName),
+            fetchWikipediaInfo(countryName, 'infoCountryLink', 'infoCountryFlag'),
+            fetchWikipediaInfo(stateName, 'infoStateLink', 'infoStateFlag')
+        ]);
+
+        document.getElementById('loadingStatus').innerHTML = '';
     }
 
     async function fetchSightsData() {
@@ -2127,12 +2271,12 @@
         map.setView([48.2544, 7.8181], 13);
         radiusCircle.setLatLng([48.2544, 7.8181]);
         radiusCircle.setRadius(1000);
-        loadLocationData(48.2544, 7.8181, 1, "Ettenheim", "Baden-Württemberg", "77960");
+        loadLocationData(48.2544, 7.8181, 1, "Ettenheim", "Baden-Württemberg", "Deutschland", "77960");
     }
 
     function showCityDetails() {
         document.getElementById('modalTitle').innerText = "Stadt-Infos: " + currentCityData.name;
-        document.getElementById('modalBody').innerHTML = `<p>${currentCityData.name} ist ein ausgewählter Standort on deiner Reisekarte.</p>`;
+        document.getElementById('modalBody').innerHTML = `<p>${currentCityData.name} ist ein ausgewählter Standort auf deiner Reisekarte.</p>`;
         document.getElementById('modalFooterNav').style.display = 'none';
         document.getElementById('detailModal').style.display = 'flex';
     }
@@ -2144,7 +2288,7 @@
         document.getElementById('detailModal').style.display = 'flex';
     }
 
-    loadLocationData(48.2544, 7.8181, 1, "Ettenheim", "Baden-Württemberg", "77960");
+    loadLocationData(48.2544, 7.8181, 1, "Ettenheim", "Baden-Württemberg", "Deutschland", "77960");
 </script>
 </body>
 </html>
