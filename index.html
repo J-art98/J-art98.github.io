@@ -132,6 +132,7 @@
 
         header {
             display: flex;
+            flex-wrap: wrap;
             justify-content: space-between;
             align-items: center;
             background: var(--card-bg);
@@ -139,6 +140,7 @@
             border-radius: 8px;
             border: 1px solid var(--border-color);
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            gap: 8px;
         }
 
         h1 {
@@ -269,12 +271,19 @@
 
         .search-box {
             display: flex;
+            flex-wrap: wrap;
             gap: 8px;
             margin-bottom: 10px;
+        }
+        
+        .search-box input {
+            flex: 1;
+            min-width: 200px;
         }
 
         .radius-control {
             display: flex;
+            flex-wrap: wrap;
             align-items: center;
             gap: 12px;
             background: #0f172a;
@@ -288,6 +297,7 @@
         .radius-control input[type="range"] {
             flex-grow: 1;
             cursor: pointer;
+            min-width: 150px;
         }
 
         input[type="text"], input[type="password"], textarea, select {
@@ -308,6 +318,7 @@
         .section-header-bar {
             margin-top: 14px;
             display: flex;
+            flex-wrap: wrap;
             justify-content: space-between;
             align-items: center;
             border-bottom: 1px solid var(--border-color);
@@ -324,6 +335,7 @@
             display: flex;
             align-items: center;
             gap: 6px;
+            flex-wrap: wrap;
         }
 
         .inline-filter label {
@@ -621,6 +633,7 @@
             border-top: 1px solid var(--border-color);
             display: flex;
             justify-content: flex-end;
+            flex-wrap: wrap;
         }
 
         .navigate-btn {
@@ -655,7 +668,6 @@
             vertical-align: middle;
         }
 
-        /* Neue Stile für Lade-Spinner und Bild-Container */
         .img-container {
             width: 40px;
             height: 30px;
@@ -695,6 +707,8 @@
             border-radius: 8px;
             border: 1px solid var(--border-color);
             margin-bottom: 12px;
+            flex-wrap: wrap;
+            gap: 12px;
         }
 
         .weather-anim-stage {
@@ -838,7 +852,7 @@
     </header>
 
     <div class="card">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap;">
             <h3 style="margin:0; border:none; padding:0;">🗺️ Weltkarte & Umkreis-Suche</h3>
         </div>
         <div class="search-box">
@@ -855,14 +869,14 @@
                 <div id="mapLegendBox" class="map-legend">
                     <label><input type="checkbox" id="toggleSights" checked onchange="updateMapMarkers()"> <span class="legend-dot red"></span> Sehenswürdigkeiten</label>
                     <label><input type="checkbox" id="toggleRestaurants" checked onchange="updateMapMarkers()"> <span class="legend-dot blue"></span> Restaurants</label>
-                    <label><input type="checkbox" id="toggleHotels" checked onchange="updateMapMarkers()"> <span class="legend-dot orange"></span> Übernachtung</label>
+                    <label><input type="checkbox" id="toggleHotels" checked onchange="updateMapMarkers()"> <span class="legend-dot orange"></span> Unterkünfte</label>
                     <label><input type="checkbox" id="toggleStations" checked onchange="updateMapMarkers()"> 🚂 Bahnhöfe</label>
                     <label><input type="checkbox" id="toggleHospitals" checked onchange="updateMapMarkers()"> <span class="legend-dot green"></span> Krankenhäuser</label>
                 </div>
                 <button class="legend-toggle-btn" onclick="toggleLegend()">🗺️ Legende</button>
             </div>
         </div>
-        <div style="margin-top: 10px; display: flex; align-items: center;">
+        <div style="margin-top: 10px; display: flex; align-items: center; flex-wrap: wrap;">
             <label style="cursor:pointer; display: flex; align-items: center; gap: 6px; font-size: 0.9rem;">
                 <input type="checkbox" id="trafficToggle"> Live-Verkehr aktivieren
             </label>
@@ -881,7 +895,7 @@
         <h3>ℹ️ Infos zur Stadt <span id="loadingStatus"></span></h3>
         
         <!-- Land -->
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px solid var(--border-color);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px solid var(--border-color); flex-wrap: wrap; gap: 8px;">
             <div><strong>Land:</strong> <a id="infoCountryLink" href="#" target="_blank" class="clickable">Deutschland</a></div>
             <div class="img-container" id="infoCountryContainer">
                 <div class="spinner"></div>
@@ -890,7 +904,7 @@
         </div>
 
         <!-- Bundesland / Region -->
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px solid var(--border-color);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px solid var(--border-color); flex-wrap: wrap; gap: 8px;">
             <div><strong>Region / Bundesland:</strong> <a id="infoStateLink" href="#" target="_blank" class="clickable" onclick="showStateDetails()">Baden-Württemberg</a></div>
             <div class="img-container" id="infoStateContainer">
                 <div class="spinner"></div>
@@ -899,7 +913,7 @@
         </div>
 
         <!-- Stadt und Stadtwappen rechts -->
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px solid var(--border-color);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px solid var(--border-color); flex-wrap: wrap; gap: 8px;">
             <div><strong>Stadt:</strong> <span id="infoName" class="clickable" onclick="showCityDetails()">Ettenheim</span></div>
             <div id="infoCoatOfArmsContainer" class="img-container" style="width: 40px; height: 40px;">
                 <div class="spinner"></div>
@@ -911,7 +925,7 @@
         <p><strong>Gründungsjahr:</strong> <span id="infoFounded">1181</span></p>
         
         <div class="section-header-bar">
-            <div style="display: flex; align-items: center; gap: 8px;">
+            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
                 <strong>🏛️ Sehenswürdigkeiten: <span id="sightsLoadingStatus"></span></strong>
                 <button onclick="fetchSightsData()" style="padding: 3px 8px; font-size: 0.75rem;">Suchen</button>
             </div>
@@ -928,7 +942,7 @@
         <button id="sightMoreBtn" class="load-more-btn" style="display:none;" onclick="openAllItemsModal('sights')">Hier klicken, um alle anzuzeigen</button>
 
         <div class="section-header-bar">
-            <div style="display: flex; align-items: center; gap: 8px;">
+            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
                 <strong>🍽️ Restaurants: <span id="restaurantsLoadingStatus"></span></strong>
                 <button onclick="fetchRestaurantsData()" style="padding: 3px 8px; font-size: 0.75rem;">Suchen</button>
             </div>
@@ -945,8 +959,8 @@
         <button id="restaurantMoreBtn" class="load-more-btn" style="display:none;" onclick="openAllItemsModal('restaurants')">Hier klicken, um alle anzuzeigen</button>
 
         <div class="section-header-bar">
-            <div style="display: flex; align-items: center; gap: 8px;">
-                <strong>🏨 Übernachtungsmöglichkeiten: <span id="hotelsLoadingStatus"></span></strong>
+            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                <strong>🏨 Unterkünfte: <span id="hotelsLoadingStatus"></span></strong>
                 <button onclick="fetchHotelsData()" style="padding: 3px 8px; font-size: 0.75rem;">Suchen</button>
             </div>
             <div class="inline-filter">
@@ -1122,12 +1136,12 @@
             for (let [uname, upass] of Object.entries(users)) {
                 bodyHTML += `
                     <div style="background: #0f172a; border: 1px solid var(--border-color); border-radius: 6px; padding: 10px; display: flex; flex-direction: column; gap: 8px;">
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px;">
                             <strong>${uname} ${uname === 'admin' ? '(Admin)' : ''}</strong>
                             ${uname !== 'admin' ? `<button style="background: #ef4444; padding: 4px 8px; font-size: 0.75rem;" onclick="adminDeleteUser('${uname}')">Löschen</button>` : '<span style="font-size: 0.75rem; color: var(--text-muted);">Haupt-Admin</span>'}
                         </div>
-                        <div style="display: flex; gap: 6px; align-items: center;">
-                            <input type="text" id="admin_pwd_${uname}" value="${upass}" placeholder="Neues Passwort" style="font-size: 0.85rem; padding: 6px;">
+                        <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap;">
+                            <input type="text" id="admin_pwd_${uname}" value="${upass}" placeholder="Neues Passwort" style="font-size: 0.85rem; padding: 6px; flex: 1; min-width: 140px;">
                             <button style="padding: 6px 10px; font-size: 0.8rem; white-space: nowrap;" onclick="adminSavePassword('${uname}')">Passwort speichern</button>
                         </div>
                     </div>
@@ -1627,7 +1641,7 @@
         const cityName = currentCityData.name;
         const radiusMeters = radiusKm * 1000;
 
-        document.getElementById('hotelsLoadingStatus').innerHTML = '<span class="loading-indicator" title="Lade Übernachtungen..."></span>';
+        document.getElementById('hotelsLoadingStatus').innerHTML = '<span class="loading-indicator" title="Lade Unterkünfte..."></span>';
 
         const overpassQuery = `
             [out:json][timeout:15];
@@ -1667,7 +1681,7 @@
                     const street = tags['addr:street'] || 'Beispielstraße';
                     const houseNumber = tags['addr:housenumber'] || (index + 1);
                     const address = `${street} ${houseNumber}, ${cityName}`;
-                    const description = tags.description || `Komfortable Übernachtungsmöglichkeit in ${cityName}.`;
+                    const description = tags.description || `Komfortable Unterkunft in ${cityName}.`;
 
                     hotels.push({
                         id: el.id || index,
@@ -1691,7 +1705,7 @@
                         dist: (0.5 * i).toFixed(1) + " km",
                         rating: "4.4",
                         address: `Hotelstraße ${i}, ${cityName}`,
-                        description: `Komfortable Übernachtungsmöglichkeit in ${cityName}.`,
+                        description: `Komfortable Unterkunft in ${cityName}.`,
                         lat: lat + (0.0025 * i),
                         lon: lon - (0.0025 * i),
                         images: ["https://images.unsplash.com/photo-1566073771259-6a8506099945?w=500&q=80"]
@@ -1701,7 +1715,7 @@
 
             currentCityData.hotels = hotels;
         } catch (e) {
-            console.error("Fehler beim Laden der Übernachtungen:", e);
+            console.error("Fehler beim Laden der Unterkünfte:", e);
         }
 
         document.getElementById('hotelsLoadingStatus').innerHTML = '';
@@ -2124,7 +2138,7 @@
         displayedItems.forEach(item => {
             const li = document.createElement('li');
             li.className = 'item-row';
-            li.onclick = () => openItemModal(item, isSights ? 'Sehenswürdigkeit' : (isHotels ? 'Übernachtung' : 'Restaurant'));
+            li.onclick = () => openItemModal(item, isSights ? 'Sehenswürdigkeit' : (isHotels ? 'Unterkunft' : 'Restaurant'));
             li.innerHTML = `
                 <div class="item-info-left">
                     <img class="item-thumb" src="${item.images[0]}" alt="${item.name}">
@@ -2169,7 +2183,7 @@
         
         let title = `🍽️ Alle Restaurants (${totalCount})`;
         if (isSight) title = `🏛️ Alle Sehenswürdigkeiten (${totalCount})`;
-        if (isHotel) title = `🏨 Alle Übernachtungsmöglichkeiten (${totalCount})`;
+        if (isHotel) title = `🏨 Alle Unterkünfte (${totalCount})`;
 
         document.getElementById('modalTitle').innerText = title;
         
