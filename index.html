@@ -839,7 +839,7 @@
                 <label for="regPass">Passwort</label>
                 <input type="password" id="regPass" placeholder="Passwort..." onkeydown="if(event.key==='Enter') handleRegister()">
             </div>
-            <button style="width: 100%; margin-top: 6px;" onclick="handleRegister()">Account erstellen & Einloggen</button>
+            <button style="width: 100%; margin-top: 6px;" onclick="handleRegister()">Account erstellen</button>
         </div>
     </div>
 </div>
@@ -847,7 +847,7 @@
 <div class="container" id="mainAppContainer" style="display: none;">
     <header>
         <h1 onclick="resetToHome()">Jannik Reisen 🌍✈️</h1>
-        <span class="badge" id="userBadgeLabel" onclick="openUserSettingsModal()" title="Einstellungen öffnen">admin (👤 Admin)</span>
+        <span class="badge" id="userBadgeLabel" onclick="openUserSettingsModal()" title="Einstellungen öffnen">admin (👑 Admin)</span>
         <button class="logout-btn" onclick="handleLogout()">Abmelden</button>
     </header>
 
@@ -897,27 +897,33 @@
         <!-- Land -->
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px solid var(--border-color); flex-wrap: wrap; gap: 8px;">
             <div><strong>Land:</strong> <a id="infoCountryLink" href="#" target="_blank" class="clickable">Deutschland</a></div>
-            <div class="img-container" id="infoCountryContainer">
-                <div class="spinner"></div>
-                <img id="infoCountryFlag" src="" alt="Landesflagge" class="flag" style="display:none;" onload="this.previousElementSibling.style.display='none'; this.style.display='block';" onerror="this.style.display='none'; this.previousElementSibling.style.display='none';">
-            </div>
+            <a id="infoCountryFlagLink" href="#" target="_blank" style="display:inline-block; text-decoration:none;">
+                <div class="img-container" id="infoCountryContainer">
+                    <div class="spinner"></div>
+                    <img id="infoCountryFlag" src="" alt="Landesflagge" class="flag" style="display:none;" onload="this.previousElementSibling.style.display='none'; this.style.display='block';" onerror="this.style.display='none'; this.previousElementSibling.style.display='none';">
+                </div>
+            </a>
         </div>
 
         <!-- Bundesland / Region -->
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px solid var(--border-color); flex-wrap: wrap; gap: 8px;">
-            <div><strong>Region / Bundesland:</strong> <a id="infoStateLink" href="#" target="_blank" class="clickable" onclick="showStateDetails()">Baden-Württemberg</a></div>
-            <div class="img-container" id="infoStateContainer">
-                <div class="spinner"></div>
-                <img id="infoStateFlag" src="" alt="Regionsflagge" class="flag" style="display:none;" onload="this.previousElementSibling.style.display='none'; this.style.display='block';" onerror="this.style.display='none'; this.previousElementSibling.style.display='none';">
-            </div>
+            <div><strong>Region / Bundesland:</strong> <a id="infoStateLink" href="#" target="_blank" class="clickable">Baden-Württemberg</a></div>
+            <a id="infoStateFlagLink" href="#" target="_blank" style="display:inline-block; text-decoration:none;">
+                <div class="img-container" id="infoStateContainer">
+                    <div class="spinner"></div>
+                    <img id="infoStateFlag" src="" alt="Regionsflagge" class="flag" style="display:none;" onload="this.previousElementSibling.style.display='none'; this.style.display='block';" onerror="this.style.display='none'; this.previousElementSibling.style.display='none';">
+                </div>
+            </a>
         </div>
 
         <!-- Stadt und Stadtwappen rechts -->
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px solid var(--border-color); flex-wrap: wrap; gap: 8px;">
-            <div><strong>Stadt:</strong> <span id="infoName" class="clickable" onclick="showCityDetails()">Ettenheim</span></div>
-            <div id="infoCoatOfArmsContainer" class="img-container" style="width: 40px; height: 40px;">
-                <div class="spinner"></div>
-            </div>
+            <div><strong>Stadt:</strong> <a id="infoCityLink" href="#" target="_blank" class="clickable">Ettenheim</a></div>
+            <a id="infoCityFlagLink" href="#" target="_blank" style="display:inline-block; text-decoration:none;">
+                <div id="infoCoatOfArmsContainer" class="img-container" style="width: 40px; height: 40px;">
+                    <div class="spinner"></div>
+                </div>
+            </a>
         </div>
 
         <p><strong>Postleitzahl(en):</strong> <span id="infoZip">77960</span></p>
@@ -927,7 +933,7 @@
         <div class="section-header-bar">
             <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
                 <strong>🏛️ Sehenswürdigkeiten: <span id="sightsLoadingStatus"></span></strong>
-                <button onclick="fetchSightsData()" style="padding: 3px 8px; font-size: 0.75rem;">Suchen</button>
+                <button onclick="fetchAllData()" style="padding: 3px 8px; font-size: 0.75rem;">Aktualisieren</button>
             </div>
             <div class="inline-filter">
                 <label for="sightSort">Sortieren:</label>
@@ -944,7 +950,7 @@
         <div class="section-header-bar">
             <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
                 <strong>🍽️ Restaurants: <span id="restaurantsLoadingStatus"></span></strong>
-                <button onclick="fetchRestaurantsData()" style="padding: 3px 8px; font-size: 0.75rem;">Suchen</button>
+                <button onclick="fetchAllData()" style="padding: 3px 8px; font-size: 0.75rem;">Aktualisieren</button>
             </div>
             <div class="inline-filter">
                 <label for="restaurantSort">Sortieren:</label>
@@ -961,7 +967,7 @@
         <div class="section-header-bar">
             <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
                 <strong>🏨 Unterkünfte: <span id="hotelsLoadingStatus"></span></strong>
-                <button onclick="fetchHotelsData()" style="padding: 3px 8px; font-size: 0.75rem;">Suchen</button>
+                <button onclick="fetchAllData()" style="padding: 3px 8px; font-size: 0.75rem;">Aktualisieren</button>
             </div>
             <div class="inline-filter">
                 <label for="hotelSort">Sortieren:</label>
@@ -974,6 +980,80 @@
         </div>
         <ul id="hotelList" class="item-list"></ul>
         <button id="hotelMoreBtn" class="load-more-btn" style="display:none;" onclick="openAllItemsModal('hotels')">Hier klicken, um alle anzuzeigen</button>
+    </div>
+
+    <!-- Community Feed / Nachrichtenverlauf (GANZ UNTEN - direkt über dem Schreiben-Feld) -->
+    <div class="card">
+        <h3>💬 Nachrichtenverlauf & Community Feed</h3>
+        <div id="postsFeedContainer" style="display: flex; flex-direction: column; gap: 12px;"></div>
+    </div>
+
+    <!-- Nachrichtenschreibfeld (GANZ UNTEN) -->
+    <div class="card">
+        <h3>✍️ Neue Nachricht oder Umfrage schreiben</h3>
+        <textarea id="postText" placeholder="Was gibt's Neues bei deinen Reisen? (Du kannst auch Reddit-Links einfügen)..." rows="3" style="margin-bottom: 8px;"></textarea>
+        
+        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 8px;">
+            <label style="font-size: 0.85rem; color: var(--accent-color); cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                📷 Bild hochladen: <input type="file" id="postImage" accept="image/*" style="display:none;" onchange="previewPostImage(this)">
+                <span id="postImageName" style="color: var(--text-muted);">Keine Datei ausgewählt</span>
+            </label>
+            <button onclick="openGiphyModal()" style="font-size: 0.8rem; padding: 6px 10px; background: #8b5cf6;">🖼️ GIF (Giphy)</button>
+            <button onclick="attachCurrentLocationToPost()" style="font-size: 0.8rem; padding: 6px 10px; background: #10b981;">📍 Aktuellen Standort anhängen</button>
+        </div>
+
+        <div id="postImagePreviewContainer" style="display:none; margin-bottom: 8px; position: relative; max-width: 160px;">
+            <img id="postImagePreview" src="" style="width: 100%; border-radius: 6px; max-height: 100px; object-fit: cover;">
+            <button onclick="clearPostImage()" style="position: absolute; top: 4px; right: 4px; background: rgba(0,0,0,0.8); padding: 2px 6px; font-size: 0.7rem;">&times;</button>
+        </div>
+
+        <div id="postLocationPreviewContainer" style="display:none; margin-bottom: 8px; background: #0f172a; padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border-color); font-size: 0.85rem; display: flex; justify-content: space-between; align-items: center;">
+            <span id="postLocationText">📍 Standort angehängt</span>
+            <button onclick="clearPostLocation()" style="background: #ef4444; padding: 2px 6px; font-size: 0.7rem;">Entfernen</button>
+        </div>
+
+        <div style="margin-bottom: 8px;">
+            <label style="font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; gap: 6px; color: #38bdf8;">
+                <input type="checkbox" id="enablePollToggle" onchange="togglePollInputs()"> 📊 Umfrage erstellen (alternativ oder zusätzlich)
+            </label>
+        </div>
+
+        <div id="pollSection" style="display: none; background: #1e293b; padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); margin-bottom: 8px;">
+            <input type="text" id="pollQuestion" placeholder="Frage der Umfrage..." style="margin-bottom: 6px; font-size: 0.85rem;">
+            <div id="pollOptionsContainer" style="display: flex; flex-direction: column; gap: 6px; margin-bottom: 6px;">
+                <input type="text" class="poll-option-input" placeholder="Antwortmöglichkeit 1" style="font-size: 0.85rem; padding: 6px;">
+                <input type="text" class="poll-option-input" placeholder="Antwortmöglichkeit 2" style="font-size: 0.85rem; padding: 6px;">
+            </div>
+            <button onclick="addPollOptionInput()" style="font-size: 0.75rem; padding: 4px 8px; background: #334155;">+ Weitere Option</button>
+        </div>
+
+        <button onclick="handleCreatePost()" style="font-size: 0.9rem; padding: 8px 14px;">Beitrag veröffentlichen</button>
+    </div>
+</div>
+
+<!-- Giphy Modal -->
+<div id="giphyModal" class="modal">
+    <div class="modal-content" style="max-width: 600px;">
+        <span class="close-modal" onclick="closeGiphyModal()" style="float:right;">&times;</span>
+        <h3 style="margin-top:0; color: var(--accent-color);">🖼️ Giphy GIF auswählen</h3>
+        <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+            <input type="text" id="giphySearchInput" placeholder="GIFs suchen (z.B. travel, cat, party)..." onkeydown="if(event.key==='Enter') searchGiphy()">
+            <button onclick="searchGiphy()">Suchen</button>
+        </div>
+        <div id="giphyResultsContainer" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px; max-height: 350px; overflow-y: auto;">
+            <p style="color: var(--text-muted); text-align: center; grid-column: 1 / -1;">Gib einen Suchbegriff ein, um GIFs von GIPHY zu finden.</p>
+        </div>
+    </div>
+</div>
+
+<!-- Emoji Picker Modal (für Reaktionen in 50er Schritten und Sortierung) -->
+<div id="emojiPickerModal" class="modal">
+    <div class="modal-content" style="max-width: 450px;">
+        <span class="close-modal" onclick="closeEmojiPickerModal()" style="float:right;">&times;</span>
+        <h3 style="margin-top:0; color: var(--accent-color);">😀 Emoji auswählen</h3>
+        <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 10px;">Sortiert nach am häufigsten genutzten Reaktionen.</p>
+        <div id="emojiPickerGrid" style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; max-height: 280px; overflow-y: auto; margin-bottom: 10px;"></div>
+        <button id="emojiLoadMoreBtn" class="load-more-btn" style="display:none;" onclick="loadMoreEmojis()">Weitere anzeigen (+50)</button>
     </div>
 </div>
 
@@ -1000,7 +1080,7 @@
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-    /* --- AUTHENTIFIZIERUNGS-LOGIK --- */
+    /* --- AUTHENTIFIZIERUNGS & BENUTZER-LOGIK --- */
     function switchAuthTab(tab) {
         document.getElementById('authError').style.display = 'none';
         document.getElementById('authSuccess').style.display = 'none';
@@ -1032,12 +1112,32 @@
     }
 
     function getUsers() {
-        const users = JSON.parse(localStorage.getItem('jannik_users') || '{}');
+        let users = JSON.parse(localStorage.getItem('jannik_users') || '{}');
+        let updated = false;
+        for (let [uname, val] of Object.entries(users)) {
+            if (typeof val === 'string') {
+                users[uname] = { pass: val, isAdmin: (uname === 'admin'), approved: true };
+                updated = true;
+            } else {
+                if (val.approved === undefined) {
+                    val.approved = (uname === 'admin' || val.isAdmin === true);
+                    updated = true;
+                }
+            }
+        }
         if(!users['admin']) {
-            users['admin'] = 'admin';
+            users['admin'] = { pass: 'admin', isAdmin: true, approved: true };
+            updated = true;
+        }
+        if(updated) {
             localStorage.setItem('jannik_users', JSON.stringify(users));
         }
         return users;
+    }
+
+    function isAdmin(username) {
+        const users = getUsers();
+        return users[username] && users[username].isAdmin === true;
     }
 
     function handleLogin() {
@@ -1050,11 +1150,29 @@
         }
 
         const users = getUsers();
-        if(users[user] && users[user] === pass) {
+        if(users[user] && users[user].pass === pass) {
+            if(users[user].approved === false && !users[user].isAdmin) {
+                showAuthError("Dein Account wartet noch auf die Freigabe durch den Admin.");
+                return;
+            }
             completeLogin(user);
         } else {
             showAuthError("Ungültiger Benutzername oder falsches Passwort.");
         }
+    }
+
+    function showRegistrationThankYouModal() {
+        document.getElementById('modalTitle').innerText = "🎉 Vielen Dank für deine Registrierung!";
+        document.getElementById('modalBody').innerHTML = `
+            <p style="font-size: 1.05rem; line-height: 1.6; text-align: center; margin: 20px 0;">
+                Vielen Dank für deine Registrierung, der Admin muss jetzt noch bestätigen. Du kannst dich einloggen, sobald dein Account freigegeben wurde.
+            </p>
+            <div style="text-align: center; margin-top: 20px;">
+                <button onclick="closeModal()" style="padding: 10px 24px; font-size: 1rem;">Okay</button>
+            </div>
+        `;
+        document.getElementById('modalFooterNav').style.display = 'none';
+        document.getElementById('detailModal').style.display = 'flex';
     }
 
     function handleRegister() {
@@ -1072,13 +1190,13 @@
             return;
         }
 
-        users[user] = pass;
+        users[user] = { pass: pass, isAdmin: false, approved: false };
         localStorage.setItem('jannik_users', JSON.stringify(users));
-        showAuthSuccess("Account erfolgreich erstellt! Du wirst eingeloggt...");
         
-        setTimeout(() => {
-            completeLogin(user);
-        }, 800);
+        document.getElementById('regUser').value = '';
+        document.getElementById('regPass').value = '';
+        switchAuthTab('login');
+        showRegistrationThankYouModal();
     }
 
     function completeLogin(username) {
@@ -1087,11 +1205,13 @@
         document.getElementById('mainAppContainer').style.display = 'flex';
         
         const badge = document.getElementById('userBadgeLabel');
-        if(username === 'admin') {
-            badge.innerHTML = `${username} (👤 Admin)`;
+        if(isAdmin(username)) {
+            badge.innerHTML = `👑 ${username} (Admin)`;
         } else {
-            badge.innerHTML = `${username} (👤 Benutzer)`;
+            badge.innerHTML = `👤 ${username} (Benutzer)`;
         }
+
+        renderPostsFeed();
 
         setTimeout(() => {
             if(map) map.invalidateSize();
@@ -1116,32 +1236,543 @@
         }
     });
 
-    /* --- BENUTZER- EINSTELLUNGEN & VERWALTUNG --- */
+    /* --- COMMUNITY FEED, GIPHY, REDDIT & EMOJI REACTION LOGIK --- */
+    let uploadedPostImageBase64 = null;
+    let selectedPostGifUrl = null;
+    let attachedPostLocation = null;
+
+    function previewPostImage(input) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                uploadedPostImageBase64 = e.target.result;
+                selectedPostGifUrl = null; // Clear GIF if image uploaded
+                document.getElementById('postImagePreview').src = uploadedPostImageBase64;
+                document.getElementById('postImagePreviewContainer').style.display = 'block';
+                document.getElementById('postImageName').innerText = input.files[0].name;
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function clearPostImage() {
+        uploadedPostImageBase64 = null;
+        document.getElementById('postImage').value = '';
+        document.getElementById('postImagePreviewContainer').style.display = 'none';
+        document.getElementById('postImageName').innerText = 'Keine Datei ausgewählt';
+    }
+
+    function openGiphyModal() {
+        document.getElementById('giphyModal').style.display = 'flex';
+        document.getElementById('giphySearchInput').focus();
+    }
+
+    function closeGiphyModal() {
+        document.getElementById('giphyModal').style.display = 'none';
+    }
+
+    async function searchGiphy() {
+        const query = document.getElementById('giphySearchInput').value.trim();
+        const container = document.getElementById('giphyResultsContainer');
+        if (!query) return;
+
+        container.innerHTML = '<p style="color: var(--text-muted); text-align: center; grid-column: 1 / -1;">Lade GIFs von GIPHY...</p>';
+
+        try {
+            const res = await fetch(`https://api.giphy.com/v1/gifs/search?api_key=dc6zaTOxFJmzC&q=${encodeURIComponent(query)}&limit=24`);
+            const data = await res.json();
+            if (data && data.data && data.data.length > 0) {
+                let html = '';
+                data.data.forEach(gif => {
+                    const gifUrl = gif.images.fixed_height_small.url;
+                    html += `<img src="${gifUrl}" style="width: 100%; height: 110px; object-fit: cover; border-radius: 6px; cursor: pointer; transition: transform 0.1s;" onclick="selectGif('${gifUrl}')" onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='scale(1)'">`;
+                });
+                container.innerHTML = html;
+            } else {
+                container.innerHTML = '<p style="color: var(--text-muted); text-align: center; grid-column: 1 / -1;">Keine GIFs gefunden.</p>';
+            }
+        } catch (e) {
+            container.innerHTML = '<p style="color: #ef4444; text-align: center; grid-column: 1 / -1;">Fehler bei der GIPHY-Verbindung.</p>';
+        }
+    }
+
+    function selectGif(url) {
+        selectedPostGifUrl = url;
+        uploadedPostImageBase64 = null; // Clear image if GIF selected
+        document.getElementById('postImagePreview').src = url;
+        document.getElementById('postImagePreviewContainer').style.display = 'block';
+        document.getElementById('postImageName').innerText = 'GIPHY GIF ausgewählt';
+        closeGiphyModal();
+    }
+
+    function attachCurrentLocationToPost() {
+        attachedPostLocation = {
+            name: currentCityData.name,
+            state: currentCityData.state,
+            lat: currentCityData.lat,
+            lon: currentCityData.lon
+        };
+        document.getElementById('postLocationText').innerText = `📍 Standort angehängt: ${currentCityData.name} (${currentCityData.state})`;
+        document.getElementById('postLocationPreviewContainer').style.display = 'flex';
+    }
+
+    function clearPostLocation() {
+        attachedPostLocation = null;
+        document.getElementById('postLocationPreviewContainer').style.display = 'none';
+    }
+
+    function parseRedditLinks(text) {
+        if (!text) return '';
+        // Regex to detect reddit links
+        const redditRegex = /(https?:\/\/(?:www\.)?(?:reddit\.com\/r\/[\w\/]+|redd\.it\/[\w]+))/g;
+        
+        let parsedText = text.replace(redditRegex, (url) => {
+            return `
+                <div style="background: #1a1f2c; border: 1px solid #ff4500; border-radius: 8px; padding: 10px; margin-top: 8px; margin-bottom: 8px;">
+                    <div style="display: flex; align-items: center; gap: 6px; font-size: 0.8rem; color: #ff4500; font-weight: bold; margin-bottom: 4px;">
+                        🟠 Reddit Beitrag
+                    </div>
+                    <a href="${url}" target="_blank" style="color: #60a5fa; text-decoration: underline; font-size: 0.85rem; word-break: break-all;">${url}</a>
+                </div>
+            `;
+        });
+        return parsedText;
+    }
+
+    function togglePollInputs() {
+        const show = document.getElementById('enablePollToggle').checked;
+        document.getElementById('pollSection').style.display = show ? 'block' : 'none';
+    }
+
+    function addPollOptionInput() {
+        const container = document.getElementById('pollOptionsContainer');
+        if (container.children.length >= 6) {
+            alert("Maximal 6 Antwortmöglichkeiten erlaubt.");
+            return;
+        }
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.className = 'poll-option-input';
+        input.placeholder = `Antwortmöglichkeit ${container.children.length + 1}`;
+        input.style.cssText = 'font-size: 0.85rem; padding: 6px;';
+        container.appendChild(input);
+    }
+
+    function handleCreatePost() {
+        const text = document.getElementById('postText').value.trim();
+        const enablePoll = document.getElementById('enablePollToggle').checked;
+        let pollData = null;
+
+        if (!text && !uploadedPostImageBase64 && !selectedPostGifUrl && !attachedPostLocation && !enablePoll) {
+            alert("Bitte schreibe eine Nachricht, lade ein Bild/GIF hoch, hänge einen Standort an oder erstelle eine Umfrage.");
+            return;
+        }
+
+        if (enablePoll) {
+            const q = document.getElementById('pollQuestion').value.trim();
+            const optionInputs = document.querySelectorAll('.poll-option-input');
+            let options = [];
+            optionInputs.forEach(inp => {
+                if (inp.value.trim()) {
+                    options.push({ text: inp.value.trim(), votes: [] });
+                }
+            });
+
+            if (!q) {
+                alert("Bitte gib eine Umfragefrage ein.");
+                return;
+            }
+            if (options.length < 2) {
+                alert("Eine Umfrage benötigt mindestens 2 Antwortmöglichkeiten.");
+                return;
+            }
+            pollData = {
+                question: q,
+                options: options
+            };
+        }
+
+        const currentUser = localStorage.getItem('jannik_current_user');
+        const posts = JSON.parse(localStorage.getItem('jannik_posts') || '[]');
+
+        const newPost = {
+            id: Date.now(),
+            author: currentUser,
+            isAdmin: isAdmin(currentUser),
+            text: text,
+            image: uploadedPostImageBase64 || selectedPostGifUrl,
+            location: attachedPostLocation,
+            poll: pollData,
+            reactions: {}, // Dictionary storing emoji -> array of usernames
+            reactionCounts: {}, // Tracking frequency for sorting
+            replies: [],
+            timestamp: new Date().toLocaleString('de-DE')
+        };
+
+        posts.unshift(newPost);
+        localStorage.setItem('jannik_posts', JSON.stringify(posts));
+
+        // Reset Form
+        document.getElementById('postText').value = '';
+        clearPostImage();
+        clearPostLocation();
+        selectedPostGifUrl = null;
+        document.getElementById('enablePollToggle').checked = false;
+        document.getElementById('pollSection').style.display = 'none';
+        document.getElementById('pollQuestion').value = '';
+        document.getElementById('pollOptionsContainer').innerHTML = `
+            <input type="text" class="poll-option-input" placeholder="Antwortmöglichkeit 1" style="font-size: 0.85rem; padding: 6px;">
+            <input type="text" class="poll-option-input" placeholder="Antwortmöglichkeit 2" style="font-size: 0.85rem; padding: 6px;">
+        `;
+
+        renderPostsFeed();
+    }
+
+    // Comprehensive Emoji Pool for Reactions (80+ emojis)
+    const MASTER_EMOJI_POOL = [
+        '👍', '❤️', '😂', '🔥', '🚀', '🎉', '👏', '😍', '🙌', '😎',
+        '⭐', '🌍', '✈️', '🧭', '🍕', '🍻', '☕', '💡', '📌', '✨',
+        '🙏', '💪', '🥳', '👇', '💯', '✅', '❌', '❤️‍🔥', '🎯', '🏆',
+        '🤩', '😜', '😇', '🤔', '👀', '💡', '🍀', '🌸', '☀️', '🌈',
+        '🚗', '🚆', '🏨', '🏖️', '⛰️', '🏰', '🗺️', '📸', '🍔', '🍷',
+        '⚡', '🌧️', '💨', '🌊', '🍁', '❄️', '⛄', '🎃', '🎁', '🎈',
+        '🎵', '🎸', '🎮', '🎲', '💻', '📱', '🔋', '🛠️', '🧱', '🏠',
+        '🐶', '🐱', '🦊', '🦁', '🐯', '🦄', '🐲', '🐉', '🦖', '🦕'
+    ];
+
+    let currentActivePostForEmoji = null;
+    let currentEmojiDisplayCount = 30;
+
+    function openEmojiPicker(postId) {
+        currentActivePostForEmoji = postId;
+        currentEmojiDisplayCount = 30;
+        renderEmojiPickerGrid();
+        document.getElementById('emojiPickerModal').style.display = 'flex';
+    }
+
+    function closeEmojiPickerModal() {
+        document.getElementById('emojiPickerModal').style.display = 'none';
+        currentActivePostForEmoji = null;
+    }
+
+    function loadMoreEmojis() {
+        currentEmojiDisplayCount += 50;
+        renderEmojiPickerGrid();
+    }
+
+    function renderEmojiPickerGrid() {
+        const posts = JSON.parse(localStorage.getItem('jannik_posts') || '[]');
+        const post = posts.find(p => p.id === currentActivePostForEmoji);
+        if (!post) return;
+
+        if (!post.reactionCounts) post.reactionCounts = {};
+
+        // Sort emojis by usage frequency on this post (highest first), then by master pool order
+        let sortedEmojis = [...MASTER_EMOJI_POOL].sort((a, b) => {
+            const countA = post.reactionCounts[a] || 0;
+            const countB = post.reactionCounts[b] || 0;
+            if (countB !== countA) return countB - countA;
+            return MASTER_EMOJI_POOL.indexOf(a) - MASTER_EMOJI_POOL.indexOf(b);
+        });
+
+        const gridEl = document.getElementById('emojiPickerGrid');
+        const loadMoreBtn = document.getElementById('emojiLoadMoreBtn');
+
+        const visibleEmojis = sortedEmojis.slice(0, currentEmojiDisplayCount);
+
+        let html = '';
+        visibleEmojis.forEach(emoji => {
+            const count = (post.reactions[emoji] || []).length;
+            html += `
+                <button onclick="selectEmojiReaction('${emoji}')" style="background: #0f172a; border: 1px solid var(--border-color); border-radius: 6px; padding: 10px; font-size: 1.2rem; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;" title="Reagieren mit ${emoji}">
+                    <span>${emoji}</span>
+                    ${count > 0 ? `<span style="font-size: 0.65rem; color: var(--accent-color);">${count}</span>` : ''}
+                </button>
+            `;
+        });
+        gridEl.innerHTML = html;
+
+        if (sortedEmojis.length > currentEmojiDisplayCount) {
+            loadMoreBtn.style.display = 'block';
+            loadMoreBtn.innerText = `Weitere anzeigen (+50) [${currentEmojiDisplayCount}/${sortedEmojis.length}]`;
+        } else {
+            loadMoreBtn.style.display = 'none';
+        }
+    }
+
+    function selectEmojiReaction(emoji) {
+        if (!currentActivePostForEmoji) return;
+        const postId = currentActivePostForEmoji;
+        closeEmojiPickerModal();
+
+        const currentUser = localStorage.getItem('jannik_current_user');
+        const posts = JSON.parse(localStorage.getItem('jannik_posts') || '[]');
+        const post = posts.find(p => p.id === postId);
+        if (!post) return;
+
+        if (!post.reactions) post.reactions = {};
+        if (!post.reactionCounts) post.reactionCounts = {};
+
+        let wasPresent = false;
+        Object.keys(post.reactions).forEach(em => {
+            if (!post.reactions[em]) post.reactions[em] = [];
+            let i = post.reactions[em].indexOf(currentUser);
+            if (i !== -1) {
+                post.reactions[em].splice(i, 1);
+                if (em === emoji) wasPresent = true;
+            }
+        });
+
+        if (!wasPresent) {
+            if (!post.reactions[emoji]) post.reactions[emoji] = [];
+            post.reactions[emoji].push(currentUser);
+            post.reactionCounts[emoji] = (post.reactionCounts[emoji] || 0) + 1;
+        }
+
+        localStorage.setItem('jannik_posts', JSON.stringify(posts));
+        renderPostsFeed();
+    }
+
+    function renderPostsFeed() {
+        const container = document.getElementById('postsFeedContainer');
+        if (!container) return;
+        const posts = JSON.parse(localStorage.getItem('jannik_posts') || '[]');
+        const currentUser = localStorage.getItem('jannik_current_user');
+
+        if (posts.length === 0) {
+            container.innerHTML = '<p style="color: var(--text-muted); font-size: 0.85rem; text-align: center; margin: 10px 0;">Noch keine Beiträge im Nachrichtenverlauf vorhanden. Schreibe die erste Nachricht!</p>';
+            return;
+        }
+
+        let html = '';
+        posts.forEach(post => {
+            if (!post.reactions) post.reactions = {};
+            if (!post.reactionCounts) post.reactionCounts = {};
+            if (!post.replies) post.replies = [];
+
+            const authorEmoji = post.isAdmin ? '👑' : '👤';
+            const canDelete = (currentUser === post.author || isAdmin(currentUser));
+
+            let pollHTML = '';
+            if (post.poll) {
+                let totalVotes = 0;
+                post.poll.options.forEach(opt => totalVotes += opt.votes.length);
+
+                pollHTML += `
+                    <div style="background: #1e293b; border: 1px solid var(--border-color); border-radius: 8px; padding: 10px; margin-top: 10px;">
+                        <div style="font-weight: 600; margin-bottom: 8px; font-size: 0.9rem;">📊 ${post.poll.question}</div>
+                        <div style="display: flex; flex-direction: column; gap: 6px;">
+                `;
+
+                post.poll.options.forEach((opt, optIdx) => {
+                    const hasVotedThisOpt = opt.votes.includes(currentUser);
+                    const optVotesCount = opt.votes.length;
+                    const percentage = totalVotes > 0 ? Math.round((optVotesCount / totalVotes) * 100) : 0;
+
+                    pollHTML += `
+                        <div onclick="voteOnPoll(${post.id}, ${optIdx})" style="background: #0f172a; border: 1px solid ${hasVotedThisOpt ? 'var(--accent-color)' : 'var(--border-color)'}; border-radius: 6px; padding: 8px; cursor: pointer; position: relative; overflow: hidden; transition: border-color 0.2s;">
+                            <div style="position: absolute; top: 0; left: 0; bottom: 0; width: ${percentage}%; background: rgba(59, 130, 246, 0.25); z-index: 1;"></div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; position: relative; z-index: 2; font-size: 0.85rem;">
+                                <span>${hasVotedThisOpt ? '✅ ' : ''}${opt.text}</span>
+                                <span style="color: var(--text-muted); font-size: 0.75rem;">${optVotesCount} Stimmen (${percentage}%)</span>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                pollHTML += `</div><div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 6px; text-align: right;">Gesamtstimmen: ${totalVotes}</div></div>`;
+            }
+
+            let imageHTML = '';
+            if (post.image) {
+                imageHTML = `<div style="margin-top: 10px;"><img src="${post.image}" style="max-width: 100%; max-height: 300px; border-radius: 8px; object-fit: contain; background: #000;"></div>`;
+            }
+
+            let locationHTML = '';
+            if (post.location) {
+                locationHTML = `
+                    <div style="background: #0f172a; border: 1px solid var(--border-color); border-radius: 8px; padding: 10px; margin-top: 10px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span style="font-size: 1.3rem;">📍</span>
+                            <div>
+                                <strong style="font-size: 0.9rem;">${post.location.name}</strong><br>
+                                <span style="font-size: 0.75rem; color: var(--text-muted);">${post.location.state} (${post.location.lat.toFixed(4)}, ${post.location.lon.toFixed(4)})</span>
+                            </div>
+                        </div>
+                        <a href="https://www.google.com/maps/search/?api=1&query=${post.location.lat},${post.location.lon}" target="_blank" class="navigate-btn" style="padding: 4px 10px; font-size: 0.8rem;">Auf Karte zeigen</a>
+                    </div>
+                `;
+            }
+
+            // Reactions Bar (sorted by frequency)
+            let reactionsHTML = `<div style="display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; align-items: center;">`;
+            
+            // Get active reactions on this post sorted by count
+            let activeEmojis = Object.keys(post.reactions).filter(em => (post.reactions[em] || []).length > 0);
+            activeEmojis.sort((a, b) => (post.reactions[b].length) - (post.reactions[a].length));
+
+            activeEmojis.forEach(emoji => {
+                const usersReacted = post.reactions[emoji] || [];
+                const hasReacted = usersReacted.includes(currentUser);
+                const count = usersReacted.length;
+                reactionsHTML += `
+                    <button onclick="selectEmojiReactionForPost(${post.id}, '${emoji}')" style="background: ${hasReacted ? 'var(--accent-color)' : '#1e293b'}; border: 1px solid var(--border-color); padding: 4px 8px; border-radius: 6px; font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; gap: 4px; color: white;">
+                        <span>${emoji}</span> <span style="font-size: 0.75rem;">${count}</span>
+                    </button>
+                `;
+            });
+
+            reactionsHTML += `
+                <button onclick="openEmojiPicker(${post.id})" style="background: #334155; border: 1px solid var(--border-color); padding: 4px 10px; border-radius: 6px; font-size: 0.85rem; cursor: pointer; color: white;" title="Mehr Emojis hinzufügen">
+                    ➕ Emoji
+                </button>
+            </div>`;
+
+            // Replies section
+            let repliesHTML = `<div style="margin-top: 12px; border-top: 1px solid var(--border-color); padding-top: 10px; display: flex; flex-direction: column; gap: 8px;">`;
+            if (post.replies.length > 0) {
+                post.replies.forEach(reply => {
+                    const replyEmoji = reply.isAdmin ? '👑' : '👤';
+                    const parsedReplyText = parseRedditLinks(reply.text);
+                    repliesHTML += `
+                        <div style="background: #1e293b; border: 1px solid var(--border-color); border-radius: 6px; padding: 8px; font-size: 0.85rem;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                                <div><strong>${reply.author}</strong> <span>${replyEmoji}</span> <span style="font-size: 0.7rem; color: var(--text-muted);">• ${reply.timestamp}</span></div>
+                            </div>
+                            <div style="white-space: pre-wrap; word-break: break-word;">${parsedReplyText}</div>
+                        </div>
+                    `;
+                });
+            }
+            repliesHTML += `
+                <div style="display: flex; gap: 6px; margin-top: 6px;">
+                    <input type="text" id="replyInput_${post.id}" placeholder="Antwort schreiben (auch mit Reddit-Link)..." style="font-size: 0.85rem; padding: 6px;" onkeydown="if(event.key==='Enter') handleAddReply(${post.id})">
+                    <button onclick="handleAddReply(${post.id})" style="padding: 6px 12px; font-size: 0.8rem; white-space: nowrap;">Antworten</button>
+                </div>
+            </div>`;
+
+            const parsedPostText = parseRedditLinks(post.text);
+
+            html += `
+                <div style="background: #0f172a; border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; box-sizing: border-box;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                        <div style="display: flex; align-items: center; gap: 6px; font-size: 0.9rem;">
+                            <strong>${post.author}</strong>
+                            <span>${authorEmoji}</span>
+                            <span style="font-size: 0.75rem; color: var(--text-muted);">• ${post.timestamp}</span>
+                        </div>
+                        ${canDelete ? `<button onclick="deletePost(${post.id})" style="background: #ef4444; padding: 2px 6px; font-size: 0.75rem;">Löschen</button>` : ''}
+                    </div>
+                    ${post.text ? `<p style="margin: 4px 0 8px 0; font-size: 0.9rem; white-space: pre-wrap; word-break: break-word;">${parsedPostText}</p>` : ''}
+                    ${imageHTML}
+                    ${locationHTML}
+                    ${pollHTML}
+                    ${reactionsHTML}
+                    ${repliesHTML}
+                </div>
+            `;
+        });
+
+        container.innerHTML = html;
+    }
+
+    function selectEmojiReactionForPost(postId, emoji) {
+        currentActivePostForEmoji = postId;
+        selectEmojiReaction(emoji);
+    }
+
+    function handleAddReply(postId) {
+        const inputEl = document.getElementById(`replyInput_${postId}`);
+        if (!inputEl) return;
+        const text = inputEl.value.trim();
+        if (!text) return;
+
+        const currentUser = localStorage.getItem('jannik_current_user');
+        const posts = JSON.parse(localStorage.getItem('jannik_posts') || '[]');
+        const post = posts.find(p => p.id === postId);
+        if (!post) return;
+
+        if (!post.replies) post.replies = [];
+
+        post.replies.push({
+            id: Date.now(),
+            author: currentUser,
+            isAdmin: isAdmin(currentUser),
+            text: text,
+            timestamp: new Date().toLocaleString('de-DE')
+        });
+
+        localStorage.setItem('jannik_posts', JSON.stringify(posts));
+        renderPostsFeed();
+    }
+
+    function voteOnPoll(postId, optIdx) {
+        const currentUser = localStorage.getItem('jannik_current_user');
+        const posts = JSON.parse(localStorage.getItem('jannik_posts') || '[]');
+        const post = posts.find(p => p.id === postId);
+        if (!post || !post.poll) return;
+
+        post.poll.options.forEach(opt => {
+            const userIdx = opt.votes.indexOf(currentUser);
+            if (userIdx !== -1) {
+                opt.votes.splice(userIdx, 1);
+            }
+        });
+
+        post.poll.options[optIdx].votes.push(currentUser);
+
+        localStorage.setItem('jannik_posts', JSON.stringify(posts));
+        renderPostsFeed();
+    }
+
+    function deletePost(postId) {
+        if (confirm("Möchtest du diesen Beitrag wirklich löschen?")) {
+            let posts = JSON.parse(localStorage.getItem('jannik_posts') || '[]');
+            posts = posts.filter(p => p.id !== postId);
+            localStorage.setItem('jannik_posts', JSON.stringify(posts));
+            renderPostsFeed();
+        }
+    }
+
+    /* --- BENUTZER- EINSTELLUNGEN & VERWALTUNG (ADMIN) --- */
     function openUserSettingsModal() {
         const currentUser = localStorage.getItem('jannik_current_user');
-        const users = JSON.parse(localStorage.getItem('jannik_users') || '{}');
+        const users = getUsers();
         
         document.getElementById('modalTitle').innerText = "⚙️ Account- & Benutzereinstellungen";
         
         let bodyHTML = '';
         
-        if (currentUser === 'admin') {
+        if (isAdmin(currentUser)) {
             bodyHTML += `
                 <div style="margin-bottom: 16px;">
-                    <h4 style="margin: 0 0 8px 0; color: var(--accent-color);">👤 Admin-Bereich: Alle Benutzer verwalten</h4>
-                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px;">Hier siehst du alle registrierten Accounts, kannst Passwörter zurücksetzen oder Benutzer löschen.</p>
+                    <h4 style="margin: 0 0 8px 0; color: var(--accent-color);">👑 Admin-Bereich: Benutzer & Registrierungen verwalten</h4>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px;">Hier siehst du alle registrierten Accounts, kannst neue Registrierungen annehmen oder ablehnen, Admin-Rechte verwalten und Passwörter ändern.</p>
                     <div style="display: flex; flex-direction: column; gap: 8px;">
             `;
             
-            for (let [uname, upass] of Object.entries(users)) {
+            for (let [uname, udata] of Object.entries(users)) {
+                const isUserAdmin = udata.isAdmin;
+                const isApproved = udata.approved === true;
                 bodyHTML += `
-                    <div style="background: #0f172a; border: 1px solid var(--border-color); border-radius: 6px; padding: 10px; display: flex; flex-direction: column; gap: 8px;">
+                    <div style="background: #0f172a; border: 1px solid ${isApproved ? 'var(--border-color)' : '#f59e0b'}; border-radius: 6px; padding: 10px; display: flex; flex-direction: column; gap: 8px;">
                         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px;">
-                            <strong>${uname} ${uname === 'admin' ? '(Admin)' : ''}</strong>
-                            ${uname !== 'admin' ? `<button style="background: #ef4444; padding: 4px 8px; font-size: 0.75rem;" onclick="adminDeleteUser('${uname}')">Löschen</button>` : '<span style="font-size: 0.75rem; color: var(--text-muted);">Haupt-Admin</span>'}
+                            <div>
+                                <strong>${uname}</strong> 
+                                <span>${isUserAdmin ? '👑 Admin' : '👤 Benutzer'}</span>
+                                ${!isApproved ? '<span style="background: #f59e0b; color: #000; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; margin-left: 6px; font-weight: bold;">Ausstehend</span>' : ''}
+                            </div>
+                            <div style="display: flex; gap: 6px; flex-wrap: wrap; align-items: center;">
+                                ${!isApproved ? `
+                                    <button style="background: #10b981; padding: 4px 10px; font-size: 0.8rem; font-weight: bold;" onclick="approveUser('${uname}')" title="Annehmen">✔ Annehmen</button>
+                                    <button style="background: #ef4444; padding: 4px 10px; font-size: 0.8rem; font-weight: bold;" onclick="adminDeleteUser('${uname}')" title="Ablehnen">❌ Ablehnen</button>
+                                ` : ''}
+                                ${uname !== 'admin' ? `<button style="background: ${isUserAdmin ? '#f59e0b' : '#334155'}; padding: 4px 8px; font-size: 0.75rem;" onclick="toggleAdminRole('${uname}')">${isUserAdmin ? 'Admin entziehen' : 'Admin geben'}</button>` : ''}
+                                ${uname !== 'admin' && isApproved ? `<button style="background: #ef4444; padding: 4px 8px; font-size: 0.75rem;" onclick="adminDeleteUser('${uname}')">Löschen</button>` : ''}
+                            </div>
                         </div>
                         <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap;">
-                            <input type="text" id="admin_pwd_${uname}" value="${upass}" placeholder="Neues Passwort" style="font-size: 0.85rem; padding: 6px; flex: 1; min-width: 140px;">
+                            <input type="text" id="admin_pwd_${uname}" value="${udata.pass}" placeholder="Neues Passwort" style="font-size: 0.85rem; padding: 6px; flex: 1; min-width: 140px;">
                             <button style="padding: 6px 10px; font-size: 0.8rem; white-space: nowrap;" onclick="adminSavePassword('${uname}')">Passwort speichern</button>
                         </div>
                     </div>
@@ -1172,21 +1803,39 @@
         document.getElementById('detailModal').style.display = 'flex';
     }
 
+    function approveUser(username) {
+        const users = getUsers();
+        if(users[username]) {
+            users[username].approved = true;
+            localStorage.setItem('jannik_users', JSON.stringify(users));
+            openUserSettingsModal();
+        }
+    }
+
+    function toggleAdminRole(username) {
+        const users = getUsers();
+        if(users[username]) {
+            users[username].isAdmin = !users[username].isAdmin;
+            localStorage.setItem('jannik_users', JSON.stringify(users));
+            openUserSettingsModal();
+        }
+    }
+
     function adminSavePassword(username) {
         const newPass = document.getElementById(`admin_pwd_${username}`).value.trim();
         if(!newPass) {
             alert("Passwort darf nicht leer sein.");
             return;
         }
-        const users = JSON.parse(localStorage.getItem('jannik_users') || '{}');
-        users[username] = newPass;
+        const users = getUsers();
+        users[username].pass = newPass;
         localStorage.setItem('jannik_users', JSON.stringify(users));
         alert(`Passwort für ${username} erfolgreich aktualisiert!`);
     }
 
     function adminDeleteUser(username) {
-        if(confirm(`Möchtest du den Benutzer "${username}" wirklich löschen?`)) {
-            const users = JSON.parse(localStorage.getItem('jannik_users') || '{}');
+        if(confirm(`Möchtest du den Benutzer "${username}" wirklich löschen bzw. ablehnen?`)) {
+            const users = getUsers();
             delete users[username];
             localStorage.setItem('jannik_users', JSON.stringify(users));
             openUserSettingsModal();
@@ -1200,8 +1849,8 @@
             return;
         }
         const currentUser = localStorage.getItem('jannik_current_user');
-        const users = JSON.parse(localStorage.getItem('jannik_users') || '{}');
-        users[currentUser] = newPass;
+        const users = getUsers();
+        users[currentUser].pass = newPass;
         localStorage.setItem('jannik_users', JSON.stringify(users));
         alert("Dein Passwort wurde erfolgreich aktualisiert!");
         document.getElementById('userNewPass').value = '';
@@ -1210,7 +1859,7 @@
     function userDeleteOwnAccount() {
         const currentUser = localStorage.getItem('jannik_current_user');
         if(confirm("Bist du sicher, dass du deinen Account löschen möchtest? Diese Aktion kann nicht rückgängig gemacht werden.")) {
-            const users = JSON.parse(localStorage.getItem('jannik_users') || '{}');
+            const users = getUsers();
             delete users[currentUser];
             localStorage.setItem('jannik_users', JSON.stringify(users));
             alert("Dein Account wurde gelöscht.");
@@ -1219,7 +1868,7 @@
         }
     }
 
-    /* --- HAUPTAPP-LOGIK --- */
+    /* --- HAUPTAPP-LOGIK (KARTE, WETTER, ETC.) --- */
     let map = L.map('map', { fadeAnimation: false, zoomAnimation: false }).setView([48.2544, 7.8181], 13);
     let currentMarker = L.marker([48.2544, 7.8181]).addTo(map);
     let radiusCircle = L.circle([48.2544, 7.8181], { radius: 1000, color: '#3b82f6', fillColor: '#3b82f6', fillOpacity: 0.1 }).addTo(map);
@@ -1339,17 +1988,22 @@
         await loadLocationData(lat, lon, currentCityData.radius, cityName, stateName, countryName, zipCode);
     }
 
-    async function fetchWikipediaInfo(title, linkElementId, imgElementId) {
+    async function fetchWikipediaInfo(title, linkElementId, imgElementId, flagLinkElementId) {
         const linkEl = document.getElementById(linkElementId);
         const imgEl = document.getElementById(imgElementId);
+        const flagLinkEl = document.getElementById(flagLinkElementId);
+        const wikiUrl = `https://de.wikipedia.org/wiki/${encodeURIComponent(title)}`;
         
         if (linkEl) {
             linkEl.innerText = title;
-            linkEl.href = `https://de.wikipedia.org/wiki/${encodeURIComponent(title)}`;
+            linkEl.href = wikiUrl;
+        }
+        if (flagLinkEl) {
+            flagLinkEl.href = wikiUrl;
         }
 
         if (!imgEl) return;
-        const container = imgEl.parentElement;
+        const container = imgEl.parentElement.parentElement;
         let spinner = container.querySelector('.spinner');
         if (!spinner) {
             spinner = document.createElement('div');
@@ -1371,29 +2025,27 @@
                     return;
                 }
             }
-
-            const searchRes = await fetch(`https://de.wikipedia.org/w/api.php?action=query&generator=search&gsrsearch=Flagge+${encodeURIComponent(title)}&gsrlimit=1&prop=imageinfo&iiprop=url&format=json&origin=*`);
-            const searchData = await searchRes.json();
-            if (searchData.query && searchData.query.pages) {
-                const pages = Object.values(searchData.query.pages);
-                if (pages.length > 0 && pages[0].imageinfo && pages[0].imageinfo.length > 0) {
-                    imgEl.src = pages[0].imageinfo[0].url;
-                    imgEl.style.display = 'block';
-                    spinner.style.display = 'none';
-                    return;
-                }
-            }
-
             spinner.style.display = 'none';
             imgEl.style.display = 'none';
         } catch (e) {
-            console.error("Fehler beim Laden des Wikipedia-Bildes für", title, e);
             if (spinner) spinner.style.display = 'none';
             if (imgEl) imgEl.style.display = 'none';
         }
     }
 
     async function fetchCityCoatOfArms(cityName) {
+        const linkEl = document.getElementById('infoCityLink');
+        const flagLinkEl = document.getElementById('infoCityFlagLink');
+        const wikiUrl = `https://de.wikipedia.org/wiki/${encodeURIComponent(cityName)}`;
+        
+        if (linkEl) {
+            linkEl.innerText = cityName;
+            linkEl.href = wikiUrl;
+        }
+        if (flagLinkEl) {
+            flagLinkEl.href = wikiUrl;
+        }
+
         const container = document.getElementById('infoCoatOfArmsContainer');
         if (!container) return;
         
@@ -1401,34 +2053,16 @@
         const imgEl = document.getElementById('infoCoatOfArmsImg');
 
         try {
-            const searchRes = await fetch(`https://de.wikipedia.org/w/api.php?action=query&generator=search&gsrsearch=Wappen+${encodeURIComponent(cityName)}&gsrlimit=1&prop=imageinfo&iiprop=url&format=json&origin=*`);
-            const searchData = await searchRes.json();
-            let imageUrl = null;
-
-            if (searchData.query && searchData.query.pages) {
-                const pages = Object.values(searchData.query.pages);
-                if (pages.length > 0 && pages[0].imageinfo && pages[0].imageinfo.length > 0) {
-                    imageUrl = pages[0].imageinfo[0].url;
+            const summaryRes = await fetch(`https://de.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(cityName)}`);
+            if (summaryRes.ok) {
+                const summaryData = await summaryRes.json();
+                if (summaryData && summaryData.thumbnail && summaryData.thumbnail.source) {
+                    imgEl.src = summaryData.thumbnail.source;
+                    return;
                 }
             }
-
-            if (!imageUrl) {
-                const summaryRes = await fetch(`https://de.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(cityName)}`);
-                if (summaryRes.ok) {
-                    const summaryData = await summaryRes.json();
-                    if (summaryData && summaryData.thumbnail && summaryData.thumbnail.source) {
-                        imageUrl = summaryData.thumbnail.source;
-                    }
-                }
-            }
-
-            if (imageUrl) {
-                imgEl.src = imageUrl;
-            } else {
-                container.innerHTML = '<span style="font-size:0.75rem; color:var(--text-muted);">Kein Bild</span>';
-            }
+            container.innerHTML = '<span style="font-size:0.75rem; color:var(--text-muted);">Kein Bild</span>';
         } catch (err) {
-            console.error("Fehler beim Laden des Stadtwappens:", err);
             container.innerHTML = '<span style="font-size:0.75rem; color:var(--text-muted);">Kein Bild</span>';
         }
     }
@@ -1441,47 +2075,43 @@
         currentCityData.country = countryName;
         currentCityData.zip = zipCode;
         
-        currentCityData.allSights = [];
-        currentCityData.restaurants = [];
-        currentCityData.hotels = [];
-        
-        renderSightsList();
-        renderRestaurantsList();
-        renderHotelsList();
-        updateMapMarkers();
-
         document.getElementById('loadingStatus').innerHTML = '<span class="loading-indicator" title="Lade Daten..."></span>';
-
-        document.getElementById('infoName').innerText = currentCityData.name;
         document.getElementById('infoZip').innerText = currentCityData.zip;
         document.getElementById('weatherCityName').innerText = currentCityData.name;
 
         await Promise.all([
+            fetchAllData(),
             fetchRealWeather(lat, lon, cityName),
             fetchCityCoatOfArms(cityName),
-            fetchWikipediaInfo(countryName, 'infoCountryLink', 'infoCountryFlag'),
-            fetchWikipediaInfo(stateName, 'infoStateLink', 'infoStateFlag')
+            fetchWikipediaInfo(countryName, 'infoCountryLink', 'infoCountryFlag', 'infoCountryFlagLink'),
+            fetchWikipediaInfo(stateName, 'infoStateLink', 'infoStateFlag', 'infoStateFlagLink')
         ]);
 
         document.getElementById('loadingStatus').innerHTML = '';
     }
 
-    async function fetchSightsData() {
+    async function fetchAllData() {
         const lat = currentCityData.lat;
         const lon = currentCityData.lon;
         const radiusKm = currentCityData.radius;
         const cityName = currentCityData.name;
         const radiusMeters = radiusKm * 1000;
 
-        document.getElementById('sightsLoadingStatus').innerHTML = '<span class="loading-indicator" title="Lade Sehenswürdigkeiten..."></span>';
+        document.getElementById('sightsLoadingStatus').innerHTML = '<span class="loading-indicator" title="Lade..."></span>';
+        document.getElementById('restaurantsLoadingStatus').innerHTML = '<span class="loading-indicator" title="Lade..."></span>';
+        document.getElementById('hotelsLoadingStatus').innerHTML = '<span class="loading-indicator" title="Lade..."></span>';
 
         const overpassQuery = `
             [out:json][timeout:15];
             (
               node(around:${radiusMeters},${lat},${lon})[tourism];
               way(around:${radiusMeters},${lat},${lon})[tourism];
+              node(around:${radiusMeters},${lat},${lon})[amenity=restaurant];
+              way(around:${radiusMeters},${lat},${lon})[amenity=restaurant];
+              node(around:${radiusMeters},${lat},${lon})[amenity=cafe];
+              way(around:${radiusMeters},${lat},${lon})[amenity=cafe];
             );
-            out center 50;
+            out center 60;
         `;
 
         try {
@@ -1492,6 +2122,9 @@
             const data = await response.json();
             
             let sights = [];
+            let restaurants = [];
+            let hotels = [];
+
             if (data && data.elements) {
                 data.elements.forEach((el, index) => {
                     const elLat = el.lat || (el.center ? el.center.lat : null);
@@ -1500,225 +2133,94 @@
 
                     const tags = el.tags || {};
                     const tourismVal = tags.tourism;
-                    const isAccommodation = ['hotel', 'guest_house', 'hostel', 'apartment', 'motel', 'chalet'].includes(tourismVal);
-                    if (isAccommodation) return;
-
-                    const name = tags.name || tags.tourism || `Sehenswürdigkeit ${index + 1}`;
+                    const amenityVal = tags.amenity;
                     const distVal = calculateDistance(lat, lon, elLat, elLon);
                     const rating = (4.0 + ((index * 3) % 10) * 0.05).toFixed(1);
                     const street = tags['addr:street'] || 'Beispielstraße';
                     const houseNumber = tags['addr:housenumber'] || (index + 1);
                     const address = `${street} ${houseNumber}, ${cityName}`;
-                    const description = tags.description || `Wichtiger Punkt in ${cityName}.`;
 
-                    sights.push({
-                        id: el.id || index,
-                        name: name,
-                        dist: distVal.toFixed(1) + " km",
-                        rating: rating,
-                        address: address,
-                        description: description,
-                        lat: elLat,
-                        lon: elLon,
-                        images: ["https://images.unsplash.com/photo-1595867818082-083862f3d630?w=500&q=80"]
-                    });
+                    if (amenityVal === 'restaurant' || amenityVal === 'cafe') {
+                        restaurants.push({
+                            id: el.id || index,
+                            name: tags.name || amenityVal,
+                            dist: distVal.toFixed(1) + " km",
+                            rating: rating,
+                            address: address,
+                            description: tags.cuisine ? `Küche: ${tags.cuisine}` : `Gemütliche Gastronomie in ${cityName}.`,
+                            lat: elLat,
+                            lon: elLon,
+                            images: ["https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=500&q=80"]
+                        });
+                    } else if (['hotel', 'guest_house', 'hostel', 'apartment', 'motel', 'chalet'].includes(tourismVal)) {
+                        hotels.push({
+                            id: el.id || index,
+                            name: tags.name || tourismVal,
+                            dist: distVal.toFixed(1) + " km",
+                            rating: rating,
+                            address: address,
+                            description: tags.description || `Komfortable Unterkunft in ${cityName}.`,
+                            lat: elLat,
+                            lon: elLon,
+                            images: ["https://images.unsplash.com/photo-1566073771259-6a8506099945?w=500&q=80"]
+                        });
+                    } else {
+                        sights.push({
+                            id: el.id || index,
+                            name: tags.name || tourismVal || `Sehenswürdigkeit ${index + 1}`,
+                            dist: distVal.toFixed(1) + " km",
+                            rating: rating,
+                            address: address,
+                            description: tags.description || `Wichtiger Punkt in ${cityName}.`,
+                            lat: elLat,
+                            lon: elLon,
+                            images: ["https://images.unsplash.com/photo-1595867818082-083862f3d630?w=500&q=80"]
+                        });
+                    }
                 });
             }
 
             if (sights.length === 0) {
-                for (let i = 1; i <= 5; i++) {
+                for (let i = 1; i <= 3; i++) {
                     sights.push({
-                        id: i,
-                        name: `Sehenswürdigkeit ${i} in ${cityName}`,
-                        dist: (0.4 * i).toFixed(1) + " km",
-                        rating: "4.5",
-                        address: `Hauptstraße ${i}, ${cityName}`,
-                        description: `Lokales Highlight in ${cityName}.`,
-                        lat: lat + (0.002 * i),
-                        lon: lon + (0.002 * i),
-                        images: ["https://images.unsplash.com/photo-1595867818082-083862f3d630?w=500&q=80"]
+                        id: i, name: `Sehenswürdigkeit ${i} in ${cityName}`, dist: (0.4 * i).toFixed(1) + " km", rating: "4.5",
+                        address: `Hauptstraße ${i}, ${cityName}`, description: `Lokales Highlight in ${cityName}.`,
+                        lat: lat + (0.002 * i), lon: lon + (0.002 * i), images: ["https://images.unsplash.com/photo-1595867818082-083862f3d630?w=500&q=80"]
+                    });
+                }
+            }
+            if (restaurants.length === 0) {
+                for (let i = 1; i <= 3; i++) {
+                    restaurants.push({
+                        id: i, name: `Restaurant ${i} in ${cityName}`, dist: (0.3 * i).toFixed(1) + " km", rating: "4.3",
+                        address: `Marktplatz ${i}, ${cityName}`, description: `Gemütliche Gastronomie in ${cityName}.`,
+                        lat: lat - (0.002 * i), lon: lon - (0.002 * i), images: ["https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=500&q=80"]
+                    });
+                }
+            }
+            if (hotels.length === 0) {
+                for (let i = 1; i <= 3; i++) {
+                    hotels.push({
+                        id: i, name: `Hotel & Unterkunft ${i} in ${cityName}`, dist: (0.5 * i).toFixed(1) + " km", rating: "4.4",
+                        address: `Hotelstraße ${i}, ${cityName}`, description: `Komfortable Unterkunft in ${cityName}.`,
+                        lat: lat + (0.0025 * i), lon: lon - (0.0025 * i), images: ["https://images.unsplash.com/photo-1566073771259-6a8506099945?w=500&q=80"]
                     });
                 }
             }
 
             currentCityData.allSights = sights;
+            currentCityData.restaurants = restaurants;
+            currentCityData.hotels = hotels;
         } catch (e) {
-            console.error("Fehler beim Laden der Sehenswürdigkeiten:", e);
+            console.error("Fehler beim Laden der Daten:", e);
         }
 
         document.getElementById('sightsLoadingStatus').innerHTML = '';
-        renderSightsList();
-        updateMapMarkers();
-    }
-
-    async function fetchRestaurantsData() {
-        const lat = currentCityData.lat;
-        const lon = currentCityData.lon;
-        const radiusKm = currentCityData.radius;
-        const cityName = currentCityData.name;
-        const radiusMeters = radiusKm * 1000;
-
-        document.getElementById('restaurantsLoadingStatus').innerHTML = '<span class="loading-indicator" title="Lade Restaurants..."></span>';
-
-        const overpassQuery = `
-            [out:json][timeout:15];
-            (
-              node(around:${radiusMeters},${lat},${lon})[amenity=restaurant];
-              way(around:${radiusMeters},${lat},${lon})[amenity=restaurant];
-              node(around:${radiusMeters},${lat},${lon})[amenity=cafe];
-              way(around:${radiusMeters},${lat},${lon})[amenity=cafe];
-            );
-            out center 50;
-        `;
-
-        try {
-            const response = await fetch(OVERPASS_API_URL, {
-                method: 'POST',
-                body: overpassQuery
-            });
-            const data = await response.json();
-            
-            let restaurants = [];
-            if (data && data.elements) {
-                data.elements.forEach((el, index) => {
-                    const elLat = el.lat || (el.center ? el.center.lat : null);
-                    const elLon = el.lon || (el.center ? el.center.lon : null);
-                    if (!elLat || !elLon) return;
-
-                    const tags = el.tags || {};
-                    const name = tags.name || tags.amenity || `Restaurant ${index + 1}`;
-                    const distVal = calculateDistance(lat, lon, elLat, elLon);
-                    const rating = (4.0 + ((index * 3) % 10) * 0.05).toFixed(1);
-                    const street = tags['addr:street'] || 'Beispielstraße';
-                    const houseNumber = tags['addr:housenumber'] || (index + 1);
-                    const address = `${street} ${houseNumber}, ${cityName}`;
-                    const description = tags.cuisine ? `Küche: ${tags.cuisine}` : `Gemütliche Gastronomie in ${cityName}.`;
-
-                    restaurants.push({
-                        id: el.id || index,
-                        name: name,
-                        dist: distVal.toFixed(1) + " km",
-                        rating: rating,
-                        address: address,
-                        description: description,
-                        lat: elLat,
-                        lon: elLon,
-                        images: ["https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=500&q=80"]
-                    });
-                });
-            }
-
-            if (restaurants.length === 0) {
-                for (let i = 1; i <= 5; i++) {
-                    restaurants.push({
-                        id: i,
-                        name: `Restaurant ${i} in ${cityName}`,
-                        dist: (0.3 * i).toFixed(1) + " km",
-                        rating: "4.3",
-                        address: `Marktplatz ${i}, ${cityName}`,
-                        description: `Gemütliche Gastronomie in ${cityName}.`,
-                        lat: lat - (0.002 * i),
-                        lon: lon - (0.002 * i),
-                        images: ["https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=500&q=80"]
-                    });
-                }
-            }
-
-            currentCityData.restaurants = restaurants;
-        } catch (e) {
-            console.error("Fehler beim Laden der Restaurants:", e);
-        }
-
         document.getElementById('restaurantsLoadingStatus').innerHTML = '';
-        renderRestaurantsList();
-        updateMapMarkers();
-    }
-
-    async function fetchHotelsData() {
-        const lat = currentCityData.lat;
-        const lon = currentCityData.lon;
-        const radiusKm = currentCityData.radius;
-        const cityName = currentCityData.name;
-        const radiusMeters = radiusKm * 1000;
-
-        document.getElementById('hotelsLoadingStatus').innerHTML = '<span class="loading-indicator" title="Lade Unterkünfte..."></span>';
-
-        const overpassQuery = `
-            [out:json][timeout:15];
-            (
-              node(around:${radiusMeters},${lat},${lon})[tourism=hotel];
-              way(around:${radiusMeters},${lat},${lon})[tourism=hotel];
-              node(around:${radiusMeters},${lat},${lon})[tourism=guest_house];
-              way(around:${radiusMeters},${lat},${lon})[tourism=guest_house];
-              node(around:${radiusMeters},${lat},${lon})[tourism=hostel];
-              way(around:${radiusMeters},${lat},${lon})[tourism=hostel];
-              node(around:${radiusMeters},${lat},${lon})[tourism=apartment];
-              way(around:${radiusMeters},${lat},${lon})[tourism=apartment];
-              node(around:${radiusMeters},${lat},${lon})[tourism=motel];
-              way(around:${radiusMeters},${lat},${lon})[tourism=motel];
-            );
-            out center 50;
-        `;
-
-        try {
-            const response = await fetch(OVERPASS_API_URL, {
-                method: 'POST',
-                body: overpassQuery
-            });
-            const data = await response.json();
-            
-            let hotels = [];
-            if (data && data.elements) {
-                data.elements.forEach((el, index) => {
-                    const elLat = el.lat || (el.center ? el.center.lat : null);
-                    const elLon = el.lon || (el.center ? el.center.lon : null);
-                    if (!elLat || !elLon) return;
-
-                    const tags = el.tags || {};
-                    const name = tags.name || tags.tourism || `Unterkunft ${index + 1}`;
-                    const distVal = calculateDistance(lat, lon, elLat, elLon);
-                    const rating = (4.0 + ((index * 3) % 10) * 0.05).toFixed(1);
-                    const street = tags['addr:street'] || 'Beispielstraße';
-                    const houseNumber = tags['addr:housenumber'] || (index + 1);
-                    const address = `${street} ${houseNumber}, ${cityName}`;
-                    const description = tags.description || `Komfortable Unterkunft in ${cityName}.`;
-
-                    hotels.push({
-                        id: el.id || index,
-                        name: name,
-                        dist: distVal.toFixed(1) + " km",
-                        rating: rating,
-                        address: address,
-                        description: description,
-                        lat: elLat,
-                        lon: elLon,
-                        images: ["https://images.unsplash.com/photo-1566073771259-6a8506099945?w=500&q=80"]
-                    });
-                });
-            }
-
-            if (hotels.length === 0) {
-                for (let i = 1; i <= 5; i++) {
-                    hotels.push({
-                        id: i,
-                        name: `Hotel & Unterkunft ${i} in ${cityName}`,
-                        dist: (0.5 * i).toFixed(1) + " km",
-                        rating: "4.4",
-                        address: `Hotelstraße ${i}, ${cityName}`,
-                        description: `Komfortable Unterkunft in ${cityName}.`,
-                        lat: lat + (0.0025 * i),
-                        lon: lon - (0.0025 * i),
-                        images: ["https://images.unsplash.com/photo-1566073771259-6a8506099945?w=500&q=80"]
-                    });
-                }
-            }
-
-            currentCityData.hotels = hotels;
-        } catch (e) {
-            console.error("Fehler beim Laden der Unterkünfte:", e);
-        }
-
         document.getElementById('hotelsLoadingStatus').innerHTML = '';
+
+        renderSightsList();
+        renderRestaurantsList();
         renderHotelsList();
         updateMapMarkers();
     }
@@ -2247,62 +2749,19 @@
         if (event.target === modal) {
             closeModal();
         }
-    };
-
-    function updateMapMarkers() {
-        categoryMarkersLayer.clearLayers();
-        if(document.getElementById('toggleSights').checked) {
-            currentCityData.allSights.forEach(s => {
-                L.circleMarker([s.lat, s.lon], { radius: 6, color: '#ef4444', fillColor: '#ef4444', fillOpacity: 0.8 }).addTo(categoryMarkersLayer).bindPopup(`<b>${s.name}</b>`);
-            });
+        const fsModal = document.getElementById('fullscreenDayModal');
+        if (event.target === fsModal) {
+            closeFullscreenModal();
         }
-        if(document.getElementById('toggleRestaurants').checked) {
-            currentCityData.restaurants.forEach(r => {
-                L.circleMarker([r.lat, r.lon], { radius: 6, color: '#3b82f6', fillColor: '#3b82f6', fillOpacity: 0.8 }).addTo(categoryMarkersLayer).bindPopup(`<b>${r.name}</b>`);
-            });
+        const giphyModal = document.getElementById('giphyModal');
+        if (event.target === giphyModal) {
+            closeGiphyModal();
         }
-        if(document.getElementById('toggleHotels').checked) {
-            currentCityData.hotels.forEach(h => {
-                L.circleMarker([h.lat, h.lon], { radius: 6, color: '#f59e0b', fillColor: '#f59e0b', fillOpacity: 0.8 }).addTo(categoryMarkersLayer).bindPopup(`<b>🏨 ${h.name}</b>`);
-            });
-        }
-        if(document.getElementById('toggleStations').checked) {
-            currentCityData.stations.forEach(st => {
-                L.circleMarker([st.lat, st.lon], { radius: 6, color: '#334155', fillColor: '#1e293b', fillOpacity: 0.9, weight: 2 }).addTo(categoryMarkersLayer).bindPopup(`<b>🚂 ${st.name}</b>`);
-            });
-        }
-        if(document.getElementById('toggleHospitals').checked) {
-            currentCityData.hospitals.forEach(h => {
-                L.circleMarker([h.lat, h.lon], { radius: 6, color: '#10b981', fillColor: '#10b981', fillOpacity: 0.8 }).addTo(categoryMarkersLayer).bindPopup(`<b>🏥 ${h.name}</b>`);
-            });
+        const emojiModal = document.getElementById('emojiPickerModal');
+        if (event.target === emojiModal) {
+            closeEmojiPickerModal();
         }
     }
-
-    function resetToHome() {
-        document.getElementById('citySearch').value = "";
-        document.getElementById('radiusRange').value = 1;
-        document.getElementById('radiusValue').innerText = 1;
-        map.setView([48.2544, 7.8181], 13);
-        radiusCircle.setLatLng([48.2544, 7.8181]);
-        radiusCircle.setRadius(1000);
-        loadLocationData(48.2544, 7.8181, 1, "Ettenheim", "Baden-Württemberg", "Deutschland", "77960");
-    }
-
-    function showCityDetails() {
-        document.getElementById('modalTitle').innerText = "Stadt-Infos: " + currentCityData.name;
-        document.getElementById('modalBody').innerHTML = `<p>${currentCityData.name} ist ein ausgewählter Standort auf deiner Reisekarte.</p>`;
-        document.getElementById('modalFooterNav').style.display = 'none';
-        document.getElementById('detailModal').style.display = 'flex';
-    }
-
-    function showStateDetails() {
-        document.getElementById('modalTitle').innerText = "Region: " + currentCityData.state;
-        document.getElementById('modalBody').innerHTML = `<p>Region rund um ${currentCityData.name}.</p>`;
-        document.getElementById('modalFooterNav').style.display = 'none';
-        document.getElementById('detailModal').style.display = 'flex';
-    }
-
-    loadLocationData(48.2544, 7.8181, 1, "Ettenheim", "Baden-Württemberg", "Deutschland", "77960");
 </script>
 </body>
 </html>
