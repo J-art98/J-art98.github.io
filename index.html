@@ -241,62 +241,50 @@
             padding-bottom: 8px;
         }
 
-        .map-wrapper {
-            position: relative;
-        }
-
         .map-container {
-            height: 320px;
+            height: 340px;
             width: 100%;
             border-radius: 8px;
             margin-top: 10px;
             z-index: 1;
         }
 
-        .map-legend-container {
-            position: absolute;
-            bottom: 15px;
-            right: 15px;
-            z-index: 1000;
+        /* Interactive Legend Below Map */
+        .interactive-legend-card {
+            margin-top: 12px;
+            background: #0f172a;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px;
         }
 
-        .legend-toggle-btn {
-            background: rgba(30, 41, 59, 0.95);
-            color: var(--text-color);
+        .interactive-legend-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .legend-item-box {
+            background: var(--card-bg);
             border: 1px solid var(--border-color);
-            padding: 8px 12px;
             border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.85rem;
-            font-weight: 600;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.3);
+            padding: 8px 10px;
             display: flex;
             align-items: center;
-            gap: 6px;
-        }
-
-        .legend-toggle-btn:hover {
-            background: rgba(51, 65, 85, 0.95);
-        }
-
-        .map-legend {
-            display: none;
-            flex-direction: column;
-            gap: 6px;
-            background: rgba(30, 41, 59, 0.95);
-            border: 1px solid var(--border-color);
-            padding: 10px 12px;
-            border-radius: 6px;
-            font-size: 0.8rem;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.3);
-            margin-bottom: 5px;
-        }
-
-        .map-legend label {
-            display: flex;
-            align-items: center;
-            gap: 6px;
+            justify-content: space-between;
             cursor: pointer;
+            transition: border-color 0.15s, background 0.15s;
+        }
+
+        .legend-item-box:hover {
+            border-color: var(--accent-color);
+            background: #1e293b;
+        }
+
+        .legend-item-box.active-detail {
+            border-color: var(--accent-color);
+            background: rgba(59, 130, 246, 0.15);
         }
 
         .legend-dot {
@@ -304,6 +292,7 @@
             height: 10px;
             border-radius: 50%;
             display: inline-block;
+            margin-right: 6px;
         }
 
         .legend-dot.red { background: #ef4444; }
@@ -311,6 +300,40 @@
         .legend-dot.orange { background: #f59e0b; }
         .legend-dot.gray { background: #64748b; }
         .legend-dot.pink { background: #ec4899; }
+        .legend-dot.green { background: #10b981; }
+        .legend-dot.purple { background: #8b5cf6; }
+        .legend-dot.teal { background: #14b8a6; }
+
+        .category-detail-container {
+            margin-top: 12px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 12px;
+            max-height: 280px;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .poi-detail-row {
+            background: #0f172a;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 10px;
+            margin-bottom: 8px;
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+        }
+
+        .poi-detail-row img {
+            width: 70px;
+            height: 70px;
+            object-fit: cover;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+            flex-shrink: 0;
+        }
 
         .search-box {
             display: flex;
@@ -356,17 +379,6 @@
 
         select {
             cursor: pointer;
-        }
-
-        .section-header-bar {
-            margin-top: 14px;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 6px;
-            gap: 8px;
         }
 
         button {
@@ -423,59 +435,6 @@
             font-size: 0.8rem;
             border: 1px solid var(--border-color);
             flex-shrink: 0;
-        }
-
-        .day-separator-slot {
-            background: var(--card-bg);
-            min-width: 90px;
-            padding: 8px;
-            border-radius: 6px;
-            text-align: center;
-            font-size: 0.75rem;
-            border: 1px dashed var(--accent-color);
-            flex-shrink: 0;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            color: var(--accent-color);
-        }
-
-        .item-list {
-            list-style: none;
-            padding: 0;
-            margin: 8px 0 0 0;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .poi-item-card {
-            background: #0f172a;
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            padding: 10px 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            cursor: pointer;
-            transition: border-color 0.15s;
-        }
-        .poi-item-card:hover {
-            border-color: var(--accent-color);
-        }
-
-        .stars-badge {
-            color: #f59e0b;
-            cursor: pointer;
-            font-size: 0.9rem;
-            padding: 2px 6px;
-            background: rgba(245, 158, 11, 0.1);
-            border-radius: 4px;
-            border: 1px solid rgba(245, 158, 11, 0.3);
-            display: inline-block;
-        }
-        .stars-badge:hover {
-            background: rgba(245, 158, 11, 0.2);
         }
 
         .modal {
@@ -661,7 +620,52 @@
                     <span onclick="togglePasswordVisibility('regPass', this)" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 1.1rem; opacity: 0.7;">👁️</span>
                 </div>
             </div>
+            <div class="auth-form-group">
+                <label for="regCaptcha">Bitte rechnen Sie 1 + 1 =</label>
+                <input type="text" id="regCaptcha" placeholder="Ergebnis eingeben...">
+            </div>
             <button style="width: 100%; margin-top: 6px;" onclick="handleRegister()" data-i18n="registerBtn">Account erstellen</button>
+        </div>
+    </div>
+</div>
+
+<!-- User Settings Modal -->
+<div id="userSettingsModal" class="modal">
+    <div class="modal-content" style="max-width: 650px;">
+        <span class="close-modal" onclick="closeUserSettingsModal()">&times;</span>
+        <h2 style="margin-top:0; color: var(--accent-color);">⚙️ Account-Einstellungen & Verwaltung</h2>
+        
+        <div style="background: #0f172a; padding: 14px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 16px;">
+            <h4 style="margin: 0 0 10px 0;">🔒 Passwort ändern</h4>
+            <div class="auth-form-group" style="margin-bottom: 8px;">
+                <input type="password" id="newPasswordInput" placeholder="Neues Passwort eingeben...">
+            </div>
+            <div class="auth-form-group" style="margin-bottom: 8px;">
+                <input type="password" id="newPasswordConfirmInput" placeholder="Neues Passwort bestätigen (identisch)...">
+            </div>
+            <button onclick="changePassword()" style="padding: 6px 12px; font-size: 0.85rem;">Passwort aktualisieren</button>
+        </div>
+
+        <div style="background: rgba(239, 68, 68, 0.1); padding: 14px; border-radius: 8px; border: 1px solid #ef4444; margin-bottom: 16px;">
+            <h4 style="margin: 0 0 6px 0; color: #fca5a5;">⚠️ Account löschen</h4>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0;">Wenn Sie Ihren Account löschen, werden Ihre Daten unwiderruflich entfernt.</p>
+            <button onclick="deleteMyAccount()" style="background: #ef4444; padding: 6px 12px; font-size: 0.85rem;">Meinen Account löschen</button>
+        </div>
+
+        <div id="adminConsoleSection" style="display: none; background: #0f172a; padding: 14px; border-radius: 8px; border: 1px solid var(--border-color);">
+            <h4 style="margin: 0 0 14px 0; color: #facc15; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">👑 Admin-Konsole</h4>
+            <div style="background: #1e293b; padding: 12px; border-radius: 6px; border: 1px solid #f59e0b; margin-bottom: 14px;">
+                <h5 style="margin: 0 0 8px 0; font-size: 0.95rem; color: #f59e0b;">⏳ Ausstehende Registrierungen & Anfragen</h5>
+                <div id="pendingRegistrationsContainer" style="display: flex; flex-direction: column; gap: 6px;"></div>
+            </div>
+            <div style="background: #1e293b; padding: 12px; border-radius: 6px; border: 1px solid #10b981; margin-bottom: 14px;">
+                <h5 style="margin: 0 0 8px 0; font-size: 0.95rem; color: #10b981;">🟢 Aktuell online User</h5>
+                <div id="activeUsersContainer" style="display: flex; flex-direction: column; gap: 6px;"></div>
+            </div>
+            <div style="background: #1e293b; padding: 12px; border-radius: 6px; border: 1px solid #3b82f6;">
+                <h5 style="margin: 0 0 8px 0; font-size: 0.95rem; color: #3b82f6;">👥 Alle registrierten User</h5>
+                <div id="allUsersListContainer" style="display: flex; flex-direction: column; gap: 6px; max-height: 200px; overflow-y: auto;"></div>
+            </div>
         </div>
     </div>
 </div>
@@ -718,19 +722,76 @@
             <label for="radiusRange"><span data-i18n="radiusLabel">Such-Umkreis:</span> <strong id="radiusValue">3</strong> km</label>
             <input type="range" id="radiusRange" min="1" max="50" value="3" oninput="onRadiusChange(this.value)">
         </div>
-        <div class="map-wrapper">
-            <div id="map" class="map-container"></div>
-            <div class="map-legend-container">
-                <div id="mapLegendBox" class="map-legend">
-                    <label><input type="checkbox" id="toggleSights" checked onchange="updateMapMarkers()"> <span class="legend-dot red"></span> <span data-i18n="sights">Sehenswürdigkeiten</span></label>
-                    <label><input type="checkbox" id="toggleRestaurants" checked onchange="updateMapMarkers()"> <span class="legend-dot blue"></span> <span data-i18n="restaurants">Restaurants</span></label>
-                    <label><input type="checkbox" id="toggleHotels" checked onchange="updateMapMarkers()"> <span class="legend-dot orange"></span> <span data-i18n="hotels">Unterkünfte</span></label>
-                    <label><input type="checkbox" id="toggleParking" checked onchange="togglePoiLayer('parking')"> <span class="legend-dot gray"></span> 🅿️ Parkplätze</label>
-                    <label><input type="checkbox" id="toggleShops" checked onchange="togglePoiLayer('shops')"> <span class="legend-dot pink"></span> 🛍️ Geschäfte</label>
+        
+        <div id="map" class="map-container"></div>
+
+        <!-- Interactive Legend & Category Lists Below Map -->
+        <div class="interactive-legend-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+                <span style="font-weight: 600; font-size: 0.95rem;">🗺️ Interaktive Legende & Point-of-Interest (POI) Kategorien</span>
+                <button onclick="manualRefreshPOIs()" style="padding: 4px 10px; font-size: 0.75rem; background: var(--accent-color);">🔄 POIs Aktualisieren</button>
+            </div>
+            <div class="interactive-legend-grid">
+                <div class="legend-item-box" id="legendBox_parking" onclick="selectCategoryForDetail('parking')">
+                    <label onclick="event.stopPropagation()" style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:0.85rem;">
+                        <input type="checkbox" id="toggleParking" checked onchange="togglePoiLayer('parking')"> 🅿️ Parkplätze
+                    </label>
+                    <span id="count_parking" style="font-size:0.75rem; color:var(--text-muted);">(0)</span>
                 </div>
-                <button class="legend-toggle-btn" onclick="toggleLegend()">🗺️ <span data-i18n="legend">Legende</span></button>
+                <div class="legend-item-box" id="legendBox_shops" onclick="selectCategoryForDetail('shops')">
+                    <label onclick="event.stopPropagation()" style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:0.85rem;">
+                        <input type="checkbox" id="toggleShops" checked onchange="togglePoiLayer('shops')"> <span class="legend-dot pink"></span> 🛍️ Geschäfte
+                    </label>
+                    <span id="count_shops" style="font-size:0.75rem; color:var(--text-muted);">(0)</span>
+                </div>
+                <div class="legend-item-box" id="legendBox_fuel" onclick="selectCategoryForDetail('fuel')">
+                    <label onclick="event.stopPropagation()" style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:0.85rem;">
+                        <input type="checkbox" id="toggleFuel" checked onchange="togglePoiLayer('fuel')"> <span class="legend-dot green"></span> ⛽ Tankstellen & E-Ladepunkte
+                    </label>
+                    <span id="count_fuel" style="font-size:0.75rem; color:var(--text-muted);">(0)</span>
+                </div>
+                <div class="legend-item-box" id="legendBox_pharmacy" onclick="selectCategoryForDetail('pharmacy')">
+                    <label onclick="event.stopPropagation()" style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:0.85rem;">
+                        <input type="checkbox" id="togglePharmacy" checked onchange="togglePoiLayer('pharmacy')"> <span class="legend-dot purple"></span> 💊 Apotheken & Medizin
+                    </label>
+                    <span id="count_pharmacy" style="font-size:0.75rem; color:var(--text-muted);">(0)</span>
+                </div>
+                <div class="legend-item-box" id="legendBox_banks" onclick="selectCategoryForDetail('banks')">
+                    <label onclick="event.stopPropagation()" style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:0.85rem;">
+                        <input type="checkbox" id="toggleBanks" checked onchange="togglePoiLayer('banks')"> <span class="legend-dot teal"></span> 🏦 Banken & Geldautomaten
+                    </label>
+                    <span id="count_banks" style="font-size:0.75rem; color:var(--text-muted);">(0)</span>
+                </div>
+                <div class="legend-item-box" id="legendBox_sights" onclick="selectCategoryForDetail('sights')">
+                    <label onclick="event.stopPropagation()" style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:0.85rem;">
+                        <input type="checkbox" id="toggleSights" checked onchange="togglePoiLayer('sights')"> <span class="legend-dot red"></span> 🏛️ Sehenswürdigkeiten
+                    </label>
+                    <span id="count_sights" style="font-size:0.75rem; color:var(--text-muted);">(0)</span>
+                </div>
+                <div class="legend-item-box" id="legendBox_restaurants" onclick="selectCategoryForDetail('restaurants')">
+                    <label onclick="event.stopPropagation()" style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:0.85rem;">
+                        <input type="checkbox" id="toggleRestaurants" checked onchange="togglePoiLayer('restaurants')"> <span class="legend-dot blue"></span> 🍽️ Restaurants & Cafés
+                    </label>
+                    <span id="count_restaurants" style="font-size:0.75rem; color:var(--text-muted);">(0)</span>
+                </div>
+                <div class="legend-item-box" id="legendBox_hotels" onclick="selectCategoryForDetail('hotels')">
+                    <label onclick="event.stopPropagation()" style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:0.85rem;">
+                        <input type="checkbox" id="toggleHotels" checked onchange="togglePoiLayer('hotels')"> <span class="legend-dot orange"></span> 🏨 Unterkünfte
+                    </label>
+                    <span id="count_hotels" style="font-size:0.75rem; color:var(--text-muted);">(0)</span>
+                </div>
+            </div>
+
+            <!-- Category Detail List Container (Shown when clicking a category box) -->
+            <div id="categoryDetailContainer" class="category-detail-container">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; border-bottom: 1px solid var(--border-color); padding-bottom: 6px;">
+                    <strong id="categoryDetailTitle" style="color: var(--accent-color);">Kategorie-Details</strong>
+                    <span onclick="closeCategoryDetail()" style="cursor: pointer; font-size: 1rem; color: var(--text-muted);">&times; Schließen</span>
+                </div>
+                <div id="categoryDetailList" style="display: flex; flex-direction: column; gap: 8px;"></div>
             </div>
         </div>
+
         <div style="margin-top: 10px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
             <label style="cursor:pointer; display: flex; align-items: center; gap: 6px; font-size: 0.9rem;">
                 <input type="checkbox" id="trafficToggle"> <span data-i18n="liveTraffic">Live-Verkehr aktivieren</span>
@@ -750,7 +811,7 @@
         <h3 id="weatherTitle" data-i18n="weatherTitle">🌤️ Wetter-Vorschau <small style="font-size:0.75rem; color:var(--accent-color);">(Klicken für Graphen & Animationen)</small></h3>
         <div class="weather-grid" id="weatherGrid">
             <div style="text-align:center; padding:20px; grid-column:1/-1; color:var(--text-muted);">
-                Lade Wetter...
+                <span class="swivel-loader"></span> Lade Wetter...
             </div>
         </div>
         <h3 style="margin-top: 15px;" data-i18n="hourlyTitle">⏱️ Stündliche Vorschau ab JETZT</h3>
@@ -760,36 +821,11 @@
 
     <div class="card">
         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
-            <h3 style="margin: 0; border: none; padding: 0;" data-i18n="cityInfoTitle">ℹ️ Infos zur Stadt & API-Entdeckungen <span id="loadingStatus"></span></h3>
-            <button onclick="manualRefreshPOIs()" style="background: var(--accent-color); padding: 6px 12px; font-size: 0.8rem; border-radius: 6px;">🔄 Aktualisieren</button>
+            <h3 style="margin: 0; border: none; padding: 0;" data-i18n="cityInfoTitle">ℹ️ Infos zur Stadt & Wikipedia-Entdeckungen <span id="loadingStatus"></span></h3>
         </div>
         <p style="margin-top: 10px;"><strong data-i18n="country">Land:</strong> <span id="infoCountry">-</span> <span id="countryEmblems" class="emblem-container"></span></p>
         <p><strong data-i18n="region">Region / Bundesland:</strong> <span id="infoState">-</span> <span id="stateEmblems" class="emblem-container"></span></p>
         <p><strong data-i18n="city">Stadt:</strong> <span id="infoCity">-</span> <span id="cityEmblems" class="emblem-container"></span></p>
-        
-        <!-- Sehenswürdigkeiten Sektion -->
-        <div class="section-header-bar">
-            <span style="font-weight: 600; font-size: 0.95rem;">🏛️ Sehenswürdigkeiten <span id="sightsLoading"></span></span>
-            <button onclick="openAllPoiModal('sights')" style="padding: 4px 10px; font-size: 0.75rem; background: #334155;">Alle anzeigen</button>
-        </div>
-        <ul id="sightsListContainer" class="item-list"></ul>
-        <div id="sightsMoreBtnContainer"></div>
-
-        <!-- Restaurants Sektion -->
-        <div class="section-header-bar" style="margin-top: 16px;">
-            <span style="font-weight: 600; font-size: 0.95rem;">🍽️ Restaurants & Cafés <span id="restaurantsLoading"></span></span>
-            <button onclick="openAllPoiModal('restaurants')" style="padding: 4px 10px; font-size: 0.75rem; background: #334155;">Alle anzeigen</button>
-        </div>
-        <ul id="restaurantsListContainer" class="item-list"></ul>
-        <div id="restaurantsMoreBtnContainer"></div>
-
-        <!-- Unterkünfte Sektion -->
-        <div class="section-header-bar" style="margin-top: 16px;">
-            <span style="font-weight: 600; font-size: 0.95rem;">🏨 Unterkünfte <span id="hotelsLoading"></span></span>
-            <button onclick="openAllPoiModal('hotels')" style="padding: 4px 10px; font-size: 0.75rem; background: #334155;">Alle anzeigen</button>
-        </div>
-        <ul id="hotelsListContainer" class="item-list"></ul>
-        <div id="hotelsMoreBtnContainer"></div>
     </div>
 
     <!-- Community Feed -->
@@ -818,54 +854,31 @@
     <!-- Nachrichtenschreibfeld -->
     <div class="card">
         <h3 data-i18n="newPostTitle">✍️ Neue Nachricht schreiben</h3>
-        <textarea id="postText" data-i18n-placeholder="postPlaceholder" placeholder="Was gibt's Neues bei deinen Reisen?..." rows="3" style="margin-bottom: 8px;"></textarea>
-        
-        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 8px;">
-            <label style="background: var(--accent-color); color: white; padding: 6px 10px; border-radius: 6px; cursor: pointer; font-size: 0.8rem;">
-                <span data-i18n="uploadImg">📷 Bild hochladen</span>
-                <input type="file" id="postImage" accept="image/*" style="display:none;" onchange="previewPostMedia(this, 'image')">
-            </label>
-            <label style="background: #10b981; color: white; padding: 6px 10px; border-radius: 6px; cursor: pointer; font-size: 0.8rem;">
-                🎥 Video hochladen
-                <input type="file" id="postVideo" accept="video/*" style="display:none;" onchange="previewPostMedia(this, 'video')">
-            </label>
-            <span id="postMediaName" style="font-size: 0.8rem; color: var(--text-muted);">Keine Datei ausgewählt</span>
-            <button onclick="openGiphyModal()" style="font-size: 0.8rem; padding: 6px 10px; background: #8b5cf6;">🖼️ GIF (Giphy)</button>
-            <button onclick="requestLocationAttachment()" style="font-size: 0.8rem; padding: 6px 10px; background: #059669;">📍 Standort anhängen</button>
-        </div>
-        <div id="postLocationIndicator" style="font-size: 0.8rem; color: #34d399; margin-bottom: 6px;"></div>
+        <div style="background: #162032; padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); margin-top: 8px;">
+            <textarea id="postText" data-i18n-placeholder="postPlaceholder" placeholder="Was gibt's Neues bei deinen Reisen?..." rows="2" style="margin-bottom: 6px; font-size: 0.85rem;"></textarea>
+            
+            <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 6px;">
+                <label style="background: var(--accent-color); color: white; padding: 4px 8px; border-radius: 6px; cursor: pointer; font-size: 0.75rem;">
+                    <span>📷 Bild</span>
+                    <input type="file" id="postImage" accept="image/*" style="display:none;" onchange="previewPostMedia(this, 'image')">
+                </label>
+                <label style="background: #10b981; color: white; padding: 4px 8px; border-radius: 6px; cursor: pointer; font-size: 0.75rem;">
+                    🎥 Video
+                    <input type="file" id="postVideo" accept="video/*" style="display:none;" onchange="previewPostMedia(this, 'video')">
+                </label>
+                <button onclick="openGiphyModal('post')" style="font-size: 0.75rem; padding: 4px 8px; background: #8b5cf6;">🖼️ GIF</button>
+                <button onclick="requestLocationAttachment()" style="font-size: 0.75rem; padding: 4px 8px; background: #059669;">📍 Standort</button>
+                <span id="postMediaName" style="font-size: 0.75rem; color: var(--text-muted);"></span>
+            </div>
+            <div id="postLocationIndicator" style="font-size: 0.75rem; color: #34d399; margin-bottom: 4px;"></div>
 
-        <div id="postMediaPreviewContainer" style="display:none; margin-bottom: 8px; position: relative; max-width: 220px;">
-            <div id="postMediaPreviewContent"></div>
-            <button onclick="clearPostMedia()" style="position: absolute; top: 4px; right: 4px; background: rgba(0,0,0,0.8); padding: 2px 6px; font-size: 0.7rem; color:white; border:none; border-radius:4px; cursor:pointer;">&times;</button>
-        </div>
+            <div id="postMediaPreviewContainer" style="display:none; margin-bottom: 6px; position: relative; max-width: 160px;">
+                <div id="postMediaPreviewContent"></div>
+                <button onclick="clearPostMedia()" style="position: absolute; top: 2px; right: 2px; background: rgba(0,0,0,0.8); padding: 1px 5px; font-size: 0.65rem; color:white; border:none; border-radius:4px; cursor:pointer;">&times;</button>
+            </div>
 
-        <button onclick="handleCreatePost()" style="font-size: 0.9rem; padding: 8px 14px;" data-i18n="publishBtn">Beitrag veröffentlichen</button>
-    </div>
-</div>
-
-<!-- All POIs Scrollable Modal -->
-<div id="allPoiModal" class="modal">
-    <div class="modal-content" style="max-width: 850px;">
-        <span class="close-modal" onclick="closeAllPoiModal()">&times;</span>
-        <h2 id="allPoiModalTitle" style="margin-top:0; color: var(--accent-color);">📍 Alle POIs im Umkreis</h2>
-        <div style="display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap;">
-            <input type="text" id="allPoiSearchInput" placeholder="Name oder Adresse suchen..." oninput="renderAllPoiModalList()" style="flex: 1; min-width: 180px;">
-            <select id="allPoiCategorySelect" onchange="renderAllPoiModalList()" style="width: auto;">
-                <option value="all">Alle Kategorien</option>
-                <option value="sights">Sehenswürdigkeiten</option>
-                <option value="restaurants">Restaurants</option>
-                <option value="hotels">Unterkünfte</option>
-            </select>
-            <select id="allPoiSortSelect" onchange="renderAllPoiModalList()" style="width: auto;">
-                <option value="distance">Entfernung (aufsteigend)</option>
-                <option value="newest">Neueste (ID)</option>
-                <option value="name">Name (A-Z)</option>
-                <option value="stars_desc">Beste Sternebewertung</option>
-                <option value="stars_asc">Schlechteste Sternebewertung</option>
-            </select>
+            <button onclick="handleCreatePost()" style="padding: 6px 12px; font-size: 0.8rem; margin-top: 4px;" data-i18n="publishBtn">Beitrag veröffentlichen</button>
         </div>
-        <div id="allPoiModalListContainer" style="max-height: 60vh; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;"></div>
     </div>
 </div>
 
@@ -954,7 +967,6 @@
             searchPlaceholder: "Ort, Stadt oder PLZ suchen...",
             searchBtn: "Suchen",
             radiusLabel: "Such-Umkreis:",
-            legend: "Legende",
             liveTraffic: "Live-Verkehr aktivieren",
             navMaps: "Navigation Google Maps",
             weatherTitle: "🌤️ Wetter-Vorschau (Tage)",
@@ -964,9 +976,6 @@
             country: "Land",
             region: "Region / Bundesland",
             city: "Stadt",
-            sights: "Sehenswürdigkeiten",
-            restaurants: "Restaurants",
-            hotels: "Unterkünfte",
             feedTitle: "💬 Nachrichtenverlauf & Community Feed",
             filterSort: "Sortierung:",
             sortNewest: "Neueste Nachricht",
@@ -976,7 +985,6 @@
             nextBtn: "Weiter ▶",
             newPostTitle: "✍️ Neue Nachricht schreiben",
             postPlaceholder: "Was gibt's Neues bei deinen Reisen?...",
-            uploadImg: "📷 Bild hochladen",
             publishBtn: "Beitrag veröffentlichen",
             logout: "Abmelden",
             reactBtn: "😀 Reagieren",
@@ -1000,7 +1008,6 @@
             searchPlaceholder: "Search city or zip code...",
             searchBtn: "Search",
             radiusLabel: "Search Radius:",
-            legend: "Legend",
             liveTraffic: "Enable Live Traffic",
             navMaps: "Google Maps Navigation",
             weatherTitle: "🌤️ Weather Forecast",
@@ -1010,9 +1017,6 @@
             country: "Country",
             region: "Region / State",
             city: "City",
-            sights: "Sights",
-            restaurants: "Restaurants",
-            hotels: "Accommodations",
             feedTitle: "💬 Community Feed & Messages",
             filterSort: "Sort:",
             sortNewest: "Newest Message",
@@ -1022,7 +1026,6 @@
             nextBtn: "Next ▶",
             newPostTitle: "✍️ Write New Message",
             postPlaceholder: "What's new on your travels?...",
-            uploadImg: "📷 Upload Image",
             publishBtn: "Publish Post",
             logout: "Logout",
             reactBtn: "😀 React",
@@ -1046,7 +1049,6 @@
             searchPlaceholder: "Rechercher une ville...",
             searchBtn: "Rechercher",
             radiusLabel: "Rayon :",
-            legend: "Légende",
             liveTraffic: "Trafic en direct",
             navMaps: "Navigation Google Maps",
             weatherTitle: "🌤️ Prévisions météo",
@@ -1056,9 +1058,6 @@
             country: "Pays",
             region: "Région",
             city: "Ville",
-            sights: "Lieux",
-            restaurants: "Restaurants",
-            hotels: "Hébergements",
             feedTitle: "💬 Fil d'actualité",
             filterSort: "Tri :",
             sortNewest: "Le plus récent",
@@ -1068,7 +1067,6 @@
             nextBtn: "Suivant ▶",
             newPostTitle: "✍️ Nouveau message",
             postPlaceholder: "Quoi de neuf ?...",
-            uploadImg: "📷 Image",
             publishBtn: "Publier",
             logout: "Déconnexion",
             reactBtn: "😀 Réagir",
@@ -1135,10 +1133,16 @@
         errEl.style.display = 'block';
     }
 
+    function showAuthSuccess(msg) {
+        const succEl = document.getElementById('authSuccess');
+        succEl.innerText = msg;
+        succEl.style.display = 'block';
+    }
+
     function getUsers() {
         let users = JSON.parse(localStorage.getItem('jannik_users') || '{}');
         if (!users['admin']) {
-            users['admin'] = { pass: 'admin', isAdmin: true };
+            users['admin'] = { pass: 'admin', isAdmin: true, approved: true };
             localStorage.setItem('jannik_users', JSON.stringify(users));
         }
         return users;
@@ -1155,7 +1159,12 @@
         const pass = document.getElementById('loginPass').value.trim();
         const users = getUsers();
         const matchedKey = Object.keys(users).find(k => k.toLowerCase() === user.toLowerCase());
-        if(matchedKey && users[matchedKey].pass === pass) {
+        
+        if (matchedKey && users[matchedKey].pass === pass) {
+            if (!users[matchedKey].isAdmin && users[matchedKey].approved === false) {
+                showAuthError("Ihr Account wurde vom Admin noch nicht freigegeben.");
+                return;
+            }
             completeLogin(matchedKey);
         } else {
             showAuthError("Ungültiger Benutzername oder falsches Passwort.");
@@ -1165,23 +1174,44 @@
     function handleRegister() {
         const user = document.getElementById('regUser').value.trim();
         const pass = document.getElementById('regPass').value.trim();
-        if(!user || !pass) { showAuthError("Bitte alle Felder ausfüllen."); return; }
+        const captchaVal = document.getElementById('regCaptcha').value.trim();
+
+        if (!user || !pass || !captchaVal) { 
+            showAuthError("Bitte alle Felder ausfüllen."); 
+            return; 
+        }
+        if (captchaVal !== '2') {
+            showAuthError("Das Captcha ist falsch. Bitte rechnen Sie 1 + 1 korrekt zusammen (Ergebnis: 2).");
+            return;
+        }
+
         let users = getUsers();
-        if(users[user]) { showAuthError("Benutzername vergeben."); return; }
-        users[user] = { pass: pass, isAdmin: false };
+        if (users[user]) { 
+            showAuthError("Benutzername vergeben."); 
+            return; 
+        }
+
+        users[user] = { pass: pass, isAdmin: false, approved: false };
         localStorage.setItem('jannik_users', JSON.stringify(users));
+        
         switchAuthTab('login');
-        alert("Account erstellt! Bitte einloggen.");
+        document.getElementById('regUser').value = '';
+        document.getElementById('regPass').value = '';
+        document.getElementById('regCaptcha').value = '';
+        showAuthSuccess("Vielen Dank für die Registrierung. Der Admin prüft Ihre Registrierung und wird sie bestätigen.");
     }
 
     function completeLogin(username) {
         localStorage.setItem('jannik_current_user', username);
+        const users = getUsers();
+        users[username].online = true;
+        localStorage.setItem('jannik_users', JSON.stringify(users));
+
         document.getElementById('authOverlay').style.display = 'none';
         document.getElementById('mainAppContainer').style.display = 'flex';
         document.getElementById('userBadgeLabel').innerHTML = isAdmin(username) ? `👑 ${username} (Admin)` : `👤 ${username} (User)`;
         renderPostsFeed();
         
-        // Initial address prompt custom modal
         setTimeout(() => {
             if(map) map.invalidateSize();
             document.getElementById('startLocationOverlay').style.display = 'flex';
@@ -1207,9 +1237,146 @@
     }
 
     function handleLogout() {
+        const currentUser = localStorage.getItem('jannik_current_user');
+        if (currentUser) {
+            let users = getUsers();
+            if (users[currentUser]) {
+                users[currentUser].online = false;
+                localStorage.setItem('jannik_users', JSON.stringify(users));
+            }
+        }
         localStorage.removeItem('jannik_current_user');
         document.getElementById('mainAppContainer').style.display = 'none';
         document.getElementById('authOverlay').style.display = 'flex';
+    }
+
+    /* --- User Settings & Admin Management --- */
+    function openUserSettingsModal() {
+        const currentUser = localStorage.getItem('jannik_current_user');
+        document.getElementById('newPasswordInput').value = '';
+        document.getElementById('newPasswordConfirmInput').value = '';
+        
+        const adminConsole = document.getElementById('adminConsoleSection');
+        if (isAdmin(currentUser)) {
+            adminConsole.style.display = 'block';
+            renderAdminConsoleData();
+        } else {
+            adminConsole.style.display = 'none';
+        }
+        document.getElementById('userSettingsModal').style.display = 'flex';
+    }
+
+    function closeUserSettingsModal() {
+        document.getElementById('userSettingsModal').style.display = 'none';
+    }
+
+    function changePassword() {
+        const newPass = document.getElementById('newPasswordInput').value.trim();
+        const confirmPass = document.getElementById('newPasswordConfirmInput').value.trim();
+        if (!newPass || !confirmPass) {
+            alert("Bitte füllen Sie beide Passwortfelder aus.");
+            return;
+        }
+        if (newPass !== confirmPass) {
+            alert("Die Passwörter stimmen nicht überein. Bitte geben Sie zweimal exakt dasselbe Passwort ein.");
+            return;
+        }
+        const currentUser = localStorage.getItem('jannik_current_user');
+        let users = getUsers();
+        if (users[currentUser]) {
+            users[currentUser].pass = newPass;
+            localStorage.setItem('jannik_users', JSON.stringify(users));
+            alert("Passwort erfolgreich geändert!");
+            document.getElementById('newPasswordInput').value = '';
+            document.getElementById('newPasswordConfirmInput').value = '';
+        }
+    }
+
+    function deleteMyAccount() {
+        const currentUser = localStorage.getItem('jannik_current_user');
+        if (currentUser === 'admin') {
+            alert("Der Haupt-Admin-Account kann nicht gelöscht werden.");
+            return;
+        }
+        if (confirm("Möchten Sie Ihren Account wirklich unwiderruflich löschen?")) {
+            let users = getUsers();
+            delete users[currentUser];
+            localStorage.setItem('jannik_users', JSON.stringify(users));
+            handleLogout();
+        }
+    }
+
+    function renderAdminConsoleData() {
+        const users = getUsers();
+        
+        const pendingContainer = document.getElementById('pendingRegistrationsContainer');
+        let pendingHtml = '';
+        Object.entries(users).forEach(([username, data]) => {
+            if (!data.isAdmin && data.approved === false) {
+                pendingHtml += `
+                    <div style="display: flex; justify-content: space-between; align-items: center; background: #0f172a; padding: 6px 10px; border-radius: 6px; font-size: 0.85rem;">
+                        <span>👤 ${username}</span>
+                        <div style="display: flex; gap: 6px;">
+                            <button onclick="approveUser('${username}')" style="background: #10b981; padding: 2px 8px; font-size: 0.8rem;" title="Annehmen">✓</button>
+                            <button onclick="rejectUser('${username}')" style="background: #ef4444; padding: 2px 8px; font-size: 0.8rem;" title="Ablehnen">✕</button>
+                        </div>
+                    </div>
+                `;
+            }
+        });
+        pendingContainer.innerHTML = pendingHtml || '<span style="font-size: 0.8rem; color: var(--text-muted);">Keine ausstehenden Registrierungen.</span>';
+
+        const activeContainer = document.getElementById('activeUsersContainer');
+        let activeHtml = '';
+        Object.entries(users).forEach(([username, data]) => {
+            if (data.online === true) {
+                activeHtml += `
+                    <div style="display: flex; justify-content: space-between; align-items: center; background: #0f172a; padding: 6px 10px; border-radius: 6px; font-size: 0.85rem;">
+                        <span>🟢 ${username} ${data.isAdmin ? '(Admin)' : '(User)'}</span>
+                    </div>
+                `;
+            }
+        });
+        activeContainer.innerHTML = activeHtml || '<span style="font-size: 0.8rem; color: var(--text-muted);">Keine weiteren User aktiv.</span>';
+
+        const allContainer = document.getElementById('allUsersListContainer');
+        let allHtml = '';
+        Object.entries(users).forEach(([username, data]) => {
+            allHtml += `
+                <div style="display: flex; justify-content: space-between; align-items: center; background: #0f172a; padding: 6px 10px; border-radius: 6px; font-size: 0.85rem;">
+                    <span>${data.isAdmin ? '👑' : '👤'} ${username} ${data.approved === false ? '(Wartet auf Freigabe)' : ''}</span>
+                    ${username !== 'admin' ? `<button onclick="adminDeleteUser('${username}')" style="background: #ef4444; padding: 2px 6px; font-size: 0.75rem;">Löschen</button>` : ''}
+                </div>
+            `;
+        });
+        allContainer.innerHTML = allHtml;
+    }
+
+    function approveUser(username) {
+        let users = getUsers();
+        if (users[username]) {
+            users[username].approved = true;
+            localStorage.setItem('jannik_users', JSON.stringify(users));
+            renderAdminConsoleData();
+        }
+    }
+
+    function rejectUser(username) {
+        let users = getUsers();
+        if (users[username]) {
+            delete users[username];
+            localStorage.setItem('jannik_users', JSON.stringify(users));
+            renderAdminConsoleData();
+        }
+    }
+
+    function adminDeleteUser(username) {
+        if (confirm(`Account von "${username}" wirklich löschen?`)) {
+            let users = getUsers();
+            delete users[username];
+            localStorage.setItem('jannik_users', JSON.stringify(users));
+            renderAdminConsoleData();
+        }
     }
 
     let currentPostPage = 1;
@@ -1264,9 +1431,9 @@
                 uploadedMediaType = type;
                 const container = document.getElementById('postMediaPreviewContent');
                 if (type === 'video') {
-                    container.innerHTML = `<video src="${uploadedPostMediaBase64}" style="width: 100%; border-radius: 6px; max-height: 120px;" controls></video>`;
+                    container.innerHTML = `<video src="${uploadedPostMediaBase64}" style="width: 100%; border-radius: 6px; max-height: 100px;" controls></video>`;
                 } else {
-                    container.innerHTML = `<img src="${uploadedPostMediaBase64}" style="width: 100%; border-radius: 6px; max-height: 120px; object-fit: cover;">`;
+                    container.innerHTML = `<img src="${uploadedPostMediaBase64}" style="width: 100%; border-radius: 6px; max-height: 100px; object-fit: cover;">`;
                 }
                 document.getElementById('postMediaPreviewContainer').style.display = 'block';
                 document.getElementById('postMediaName').innerText = input.files[0].name;
@@ -1283,30 +1450,58 @@
         if(imgEl) imgEl.value = '';
         if(vidEl) vidEl.value = '';
         document.getElementById('postMediaPreviewContainer').style.display = 'none';
-        document.getElementById('postMediaName').innerText = 'Keine Datei ausgewählt';
+        document.getElementById('postMediaName').innerText = '';
     }
 
-    function openGiphyModal() { document.getElementById('giphyModal').style.display = 'flex'; }
+    /* --- Giphy Integration for Comments & Posts --- */
+    let activeGiphyTarget = 'post';
+    function openGiphyModal(target = 'post') {
+        activeGiphyTarget = target;
+        document.getElementById('giphyModal').style.display = 'flex';
+        document.getElementById('giphySearchInput').value = '';
+        document.getElementById('giphyResultsContainer').innerHTML = '';
+    }
     function closeGiphyModal() { document.getElementById('giphyModal').style.display = 'none'; }
+    
     async function searchGiphy() {
         const query = document.getElementById('giphySearchInput').value.trim();
         const container = document.getElementById('giphyResultsContainer');
         if (!query) return;
-        const res = await fetch(`https://api.giphy.com/v1/gifs/search?api_key=dc6zaTOxFJmzC&q=${encodeURIComponent(query)}&limit=16`);
-        const data = await res.json();
-        let html = '';
-        data.data.forEach(gif => {
-            const url = gif.images.fixed_height_small.url;
-            html += `<img src="${url}" style="width: 100%; height: 110px; object-fit: cover; border-radius: 6px; cursor: pointer;" onclick="selectGif('${url}')">`;
-        });
-        container.innerHTML = html;
+        
+        container.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 20px; color: var(--text-muted);"><span class="swivel-loader"></span> Suche GIFs...</div>';
+        
+        try {
+            const res = await fetch(`https://api.giphy.com/v1/gifs/search?api_key=dc6zaTOxFJmzC&q=${encodeURIComponent(query)}&limit=16`);
+            const data = await res.json();
+            let html = '';
+            if (data.data && data.data.length > 0) {
+                data.data.forEach(gif => {
+                    const url = gif.images.fixed_height_small.url;
+                    html += `<img src="${url}" style="width: 100%; height: 110px; object-fit: cover; border-radius: 6px; cursor: pointer;" onclick="selectGif('${url}')">`;
+                });
+            } else {
+                html = '<div style="grid-column: 1/-1; text-align: center; color: var(--text-muted);">Keine GIFs gefunden.</div>';
+            }
+            container.innerHTML = html;
+        } catch (e) {
+            container.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: #ef4444;">Fehler beim Laden der GIFs.</div>';
+        }
     }
+
     function selectGif(url) {
-        uploadedPostMediaBase64 = url;
-        uploadedMediaType = 'image';
-        document.getElementById('postMediaPreviewContent').innerHTML = `<img src="${url}" style="width: 100%; border-radius: 6px; max-height: 120px; object-fit: cover;">`;
-        document.getElementById('postMediaPreviewContainer').style.display = 'block';
-        document.getElementById('postMediaName').innerText = 'GIPHY GIF';
+        if (activeGiphyTarget === 'post') {
+            uploadedPostMediaBase64 = url;
+            uploadedMediaType = 'image';
+            document.getElementById('postMediaPreviewContent').innerHTML = `<img src="${url}" style="width: 100%; border-radius: 6px; max-height: 100px; object-fit: cover;">`;
+            document.getElementById('postMediaPreviewContainer').style.display = 'block';
+            document.getElementById('postMediaName').innerText = 'GIPHY GIF';
+        } else {
+            commentMediaData[activeGiphyTarget] = { media: url, type: 'image' };
+            const prevEl = document.getElementById(`commentMediaPreview_${activeGiphyTarget}`);
+            if (prevEl) {
+                prevEl.innerHTML = `<div style="position:relative; max-width:160px; margin-top:6px;"><img src="${url}" style="width:100%; border-radius:6px; max-height:100px; object-fit:cover;"><button onclick="clearCommentMedia(${activeGiphyTarget})" style="position: absolute; top: 2px; right: 2px; background: rgba(0,0,0,0.8); padding: 1px 5px; font-size: 0.65rem; color:white; border:none; border-radius:4px; cursor:pointer;">&times;</button></div>`;
+            }
+        }
         closeGiphyModal();
     }
 
@@ -1353,229 +1548,16 @@
         { emoji: '😍', kw: 'herzen augen verliebt love' },
         { emoji: '🤩', kw: 'sterne augen begeistert starstruck' },
         { emoji: '😘', kw: 'kuss herz zuwinkend' },
-        { emoji: '😗', kw: 'kuss mund' },
-        { emoji: '😙', kw: 'kuss lächeln' },
-        { emoji: '😚', kw: 'kuss augen zu' },
-        { emoji: '😋', kw: 'lecker mjam hungrig' },
-        { emoji: '😛', kw: 'zunge raus albern' },
-        { emoji: '😜', kw: 'zwinkern zunge albern' },
-        { emoji: '🤪', kw: 'verrückt goofy wild' },
-        { emoji: '😝', kw: 'zunge raus augen zu' },
-        { emoji: '🤑', kw: 'geld reif dollar rich' },
-        { emoji: '🤗', kw: 'umarmung hug' },
-        { emoji: '🤭', kw: 'hand mund kichern' },
-        { emoji: '🤫', kw: 'leise pssst geheimnis' },
-        { emoji: '🤔', kw: 'nachdenken grübeln überlegen' },
-        { emoji: '🤐', kw: 'reißverschluss mund stumm' },
-        { emoji: '🤨', kw: 'skeptisch augenbraue' },
-        { emoji: '😐', kw: 'neutral neutraler gesichtsausdruck' },
-        { emoji: '😑', kw: 'ausdruckslos' },
-        { emoji: '😶', kw: 'sprachlos mundlos' },
-        { emoji: '😏', kw: 'süffisant grinsen' },
-        { emoji: '😒', kw: 'genervt unzufrieden' },
-        { emoji: '🙄', kw: 'augen verdrehen' },
-        { emoji: '😬', kw: 'grimasse peinlich' },
-        { emoji: '🤥', kw: 'lügen pinocchio lüge' },
         { emoji: '👍', kw: 'daumen hoch gut like yes' },
         { emoji: '👎', kw: 'daumen runter schlecht dislike' },
         { emoji: '👌', kw: 'okay ok perfekt' },
-        { emoji: '🤌', kw: 'italienisch handgeste' },
-        { emoji: '🤏', kw: 'klein wenig bisschen' },
-        { emoji: '✌️', kw: 'victory sieg peace' },
-        { emoji: '🤞', kw: 'daumen drücken glück' },
-        { emoji: '🫰', kw: 'fingerspitzen herz' },
-        { emoji: '🤟', kw: 'love you zeichen' },
-        { emoji: '🤘', kw: 'rock on hörner' },
-        { emoji: '🤙', kw: 'anrufen schaefchen shaka' },
-        { emoji: '👈', kw: 'zeigefinger links' },
-        { emoji: '👉', kw: 'zeigefinger rechts' },
-        { emoji: '👆', kw: 'zeigefinger oben' },
-        { emoji: '🖕', kw: 'mittelfinger' },
-        { emoji: '👇', kw: 'zeigefinger unten' },
-        { emoji: '☝️', kw: 'zeigefinger hoch' },
-        { emoji: '✋', kw: 'hand stopp' },
-        { emoji: '🤚', kw: 'handrücken' },
-        { emoji: '👋', kw: 'winken hallo tschüss' },
         { emoji: '❤️', kw: 'herz liebe red heart' },
-        { emoji: '🧡', kw: 'oranges herz' },
-        { emoji: '💛', kw: 'gelbes herz' },
-        { emoji: '💚', kw: 'grünes herz' },
-        { emoji: '💙', kw: 'blaues herz' },
-        { emoji: '💜', kw: 'lila herz' },
-        { emoji: '🖤', kw: 'schwarzes herz' },
-        { emoji: '🤍', kw: 'weißes herz' },
-        { emoji: '🤎', kw: 'braunes herz' },
-        { emoji: '💔', kw: 'gebrochenes herz heartbreak' },
-        { emoji: '❤️‍🔥', kw: 'brennendes herz' },
-        { emoji: '❤️‍🩹', kw: 'geheiltes herz' },
-        { emoji: '💕', kw: 'zwei herzen' },
-        { emoji: '💞', kw: 'krebs herzen' },
-        { emoji: '💓', kw: 'schlagendes herz' },
-        { emoji: '💗', kw: 'wachsendes herz' },
-        { emoji: '💖', kw: 'glitzerndes herz sparkly' },
-        { emoji: '💘', kw: 'pfeil herz cupido' },
-        { emoji: '💝', kw: 'geschenk herz ribbon' },
         { emoji: '⭐', kw: 'stern star' },
-        { emoji: '🌟', kw: 'leuchtender stern glowing' },
-        { emoji: '💫', kw: 'schwindel sterne dizzy' },
-        { emoji: '✨', kw: 'funken glanz sparkles' },
-        { emoji: '☄️', kw: 'komet meteor' },
         { emoji: '🔥', kw: 'feuer fire hot' },
-        { emoji: '💥', kw: 'explosion boom collision' },
-        { emoji: '💯', kw: 'hundert punkte 100 perfect' },
-        { emoji: '💢', kw: 'wut symbol ärger' },
-        { emoji: '💬', kw: 'sprechblase chat message' },
-        { emoji: '💭', kw: 'denkblase thought' },
-        { emoji: '💤', kw: 'schlafen schlaf müde zzz' },
         { emoji: '🎉', kw: 'konfetti party celebration' },
-        { emoji: '🎊', kw: 'konfettibombe' },
-        { emoji: '🎈', kw: 'luftballon balloon' },
-        { emoji: '🎁', kw: 'geschenk present gift' },
-        { emoji: '🏆', kw: 'pokal gewinner trophy' },
-        { emoji: '🎖️', kw: 'militär medaille' },
-        { emoji: '🏅', kw: 'sport medaille' },
-        { emoji: '🥇', kw: '1 platz goldmedaille' },
-        { emoji: '🥈', kw: '2 platz silbermedaille' },
         { emoji: '🌍', kw: 'erde europa afrika welt earth' },
-        { emoji: '🌎', kw: 'erde amerika' },
-        { emoji: '🌏', kw: 'erde asien australien' },
         { emoji: '🗺️', kw: 'weltkarte map' },
-        { emoji: '🧭', kw: 'kompass navigation' },
-        { emoji: '✈️', kw: 'flugzeug reise travel flight' },
-        { emoji: '🛫', kw: 'flugzeug abflug departure' },
-        { emoji: '🛬', kw: 'flugzeug ankunft arrival' },
-        { emoji: '🚀', kw: 'rakete rocket space' },
-        { emoji: '🛸', kw: 'ufo' },
-        { emoji: '🛰️', kw: 'satellit' },
-        { emoji: '🚗', kw: 'auto car fahrzeug' },
-        { emoji: '🚕', kw: 'taxi cab' },
-        { emoji: '🚙', kw: 'suv auto' },
-        { emoji: '🚌', kw: 'bus' },
-        { emoji: '🚎', kw: 'oberleitungsbus' },
-        { emoji: '🏎️', kw: 'rennauto racing' },
-        { emoji: '🚓', kw: 'polizeiauto police' },
-        { emoji: '🚑', kw: 'krankenwagen ambulance' },
-        { emoji: '🚒', kw: 'feuerwehrauto fire engine' },
-        { emoji: '🍕', kw: 'pizza essen food' },
-        { emoji: '🍔', kw: 'burger hamburger' },
-        { emoji: '🍟', kw: 'pommes frites fries' },
-        { emoji: '🌭', kw: 'hotdog' },
-        { emoji: '🍿', kw: 'popcorn kino' },
-        { emoji: '🧂', kw: 'salz' },
-        { emoji: '🥓', kw: 'speck bacon' },
-        { emoji: '🥚', kw: 'ei egg' },
-        { emoji: '🍳', kw: 'spiegelei kochen cooking' },
-        { emoji: '🧇', kw: 'waffel' },
-        { emoji: '🥞', kw: 'pfannkuchen pancakes' },
-        { emoji: '🧈', kw: 'butter' },
-        { emoji: '🍞', kw: 'brot bread' },
-        { emoji: '🥐', kw: 'croissant' },
-        { emoji: '🥨', kw: 'brezel pretzel' },
-        { emoji: '🧀', kw: 'käse cheese' },
-        { emoji: '🥗', kw: 'salat salad' },
-        { emoji: '🥪', kw: 'sandwich' },
-        { emoji: '🥙', kw: 'wrap' },
-        { emoji: '🧆', kw: 'falafel' },
-        { emoji: '🍺', kw: 'bier beer getränk drink' },
-        { emoji: '🍻', kw: 'anstoßen bierkrüge cheers' },
-        { emoji: '🍷', kw: 'weinglas wine' },
-        { emoji: '🍸', kw: 'cocktailglas martini' },
-        { emoji: '🍹', kw: 'tropischer cocktail drink' },
-        { emoji: '🍾', kw: 'sektflasche champagne' },
-        { emoji: '🍶', kw: 'sake' },
-        { emoji: '🍵', kw: 'tasse tee tea' },
-        { emoji: '☕', kw: 'kaffee coffee tasse' },
-        { emoji: '🧃', kw: 'safttüte juice' },
-        { emoji: '🧉', kw: 'mate tee' },
-        { emoji: '🍼', kw: 'babyflasche baby bottle' },
-        { emoji: '🥤', kw: 'becher strohhalm drink' },
-        { emoji: '🧋', kw: 'bubble tea' },
-        { emoji: '🍽️', kw: 'gabel messer teller restaurant' },
-        { emoji: '🍴', kw: 'gabel und messer' },
-        { emoji: '🥄', kw: 'löffel spoon' },
-        { emoji: '🔪', kw: 'messer knife' },
-        { emoji: '🏺', kw: 'krug anfrage' },
-        { emoji: '🥘', kw: 'pfanne essen paella' },
-        { emoji: '⚽', kw: 'fussball soccer ball' },
-        { emoji: '🏀', kw: 'basketball' },
-        { emoji: '🏈', kw: 'football' },
-        { emoji: '⚾', kw: 'baseball' },
-        { emoji: '🥎', kw: 'softball' },
-        { emoji: '🎾', kw: 'tennis' },
-        { emoji: '🏐', kw: 'volleyball' },
-        { emoji: '🏉', kw: 'rugby' },
-        { emoji: '🥏', kw: 'frisbee' },
-        { emoji: '🎱', kw: 'billard 8ball' },
-        { emoji: '🪀', kw: 'jojo' },
-        { emoji: '🏓', kw: 'tischtennis ping pong' },
-        { emoji: '🏸', kw: 'badminton' },
-        { emoji: '🏒', kw: 'eishockey' },
-        { emoji: '🏑', kw: 'feldhockey' },
-        { emoji: '🥍', kw: 'lacrosse' },
-        { emoji: '🏏', kw: 'cricket' },
-        { emoji: '🪃', kw: 'bumerang' },
-        { emoji: '🥅', kw: 'tor goal' },
-        { emoji: '⛳', kw: 'golf loch flagge' },
-        { emoji: '🌊', kw: 'welle wave water ocean' },
-        { emoji: '⚡', kw: 'blitz lightning thunderbolt' },
-        { emoji: '❄️', kw: 'schneeflocke snowflake winter' },
-        { emoji: '☃️', kw: 'schneemann snowman' },
-        { emoji: '⛄', kw: 'schneemann ohne schnee' },
-        { emoji: '🌬️', kw: 'windgesicht wind blow' },
-        { emoji: '🌪️', kw: 'tornado' },
-        { emoji: '🌫️', kw: 'nebel fog' },
-        { emoji: '☂️', kw: 'regenschirm umbrella' },
-        { emoji: '☔', kw: 'regenschirm im regen rain' },
-        { emoji: '☀️', kw: 'sonne sun sunny' },
-        { emoji: '🌤️', kw: 'sonne hinter wolke' },
-        { emoji: '⛅', kw: 'wolkig partly cloudy' },
-        { emoji: '🌥️', kw: 'grosse wolke sonne' },
-        { emoji: '☁️', kw: 'wolke cloud' },
-        { emoji: '🌦️', kw: 'regen sonne wetter' },
-        { emoji: '🌧️', kw: 'regen wolke rain' },
-        { emoji: '⛈️', kw: 'gewitter thunderstorm' },
-        { emoji: '🌩️', kw: 'blitz wolke lightning' },
-        { emoji: '🌨️', kw: 'schnee wolke snow' },
-        { emoji: '⛺', kw: 'zelt tent camping' },
-        { emoji: '🏕️', kw: 'camping' },
-        { emoji: '🧱', kw: 'ziegelstein brick' },
-        { emoji: '🪵', kw: 'holz holzscheit wood' },
-        { emoji: '🛖', kw: 'hütte hut' },
-        { emoji: '🏠', kw: 'haus house home' },
-        { emoji: '🏡', kw: 'haus mit garten' },
-        { emoji: '🏘️', kw: 'häuser' },
-        { emoji: '🏚️', kw: 'verlassenes haus' },
-        { emoji: '🏗️', kw: 'kran baustelle construction' },
-        { emoji: '🏭', kw: 'fabrik factory' },
-        { emoji: '🏢', kw: 'bürogebäude office' },
-        { emoji: '🏬', kw: 'kaufhaus store' },
-        { emoji: '🏣', kw: 'japanische post' },
-        { emoji: '🏤', kw: 'postamt post office' },
-        { emoji: '🏥', kw: 'krankenhaus hospital' },
-        { emoji: '🏦', kw: 'bank' },
-        { emoji: '🏨', kw: 'hotel' },
-        { emoji: '🏪', kw: 'supermarkt store' },
-        { emoji: '🏫', kw: 'schule school' },
-        { emoji: '🎨', kw: 'malpalette kunst art' },
-        { emoji: '🎭', kw: 'theater masken drama' },
-        { emoji: '🎪', kw: 'zirkuszelt circus' },
-        { emoji: '🎤', kw: 'mikrofon microphone sing' },
-        { emoji: '🎧', kw: 'kopfhörer headphones music' },
-        { emoji: '🎼', kw: 'notenblatt music' },
-        { emoji: '🎹', kw: 'klavier keyboard' },
-        { emoji: '🥁', kw: 'trommel drum' },
-        { emoji: '🎷', kw: 'saxophon' },
-        { emoji: '🎺', kw: 'trompete trumpet' },
-        { emoji: '🎸', kw: 'gitarre guitar' },
-        { emoji: '🪕', kw: 'banjo' },
-        { emoji: '🎻', kw: 'geige violin' },
-        { emoji: '🎲', kw: 'würfel dice game' },
-        { emoji: '♟️', kw: 'schachfigur' },
-        { emoji: '🎯', kw: 'zielscheibe dart target' },
-        { emoji: '🎳', kw: 'bowling' },
-        { emoji: '🎮', kw: 'videospiel controller gaming' },
-        { emoji: '🎰', kw: 'spielautomat slot machine' },
-        { emoji: '🧩', kw: 'puzzle' }
+        { emoji: '✈️', kw: 'flugzeug reise travel flight' }
     ];
 
     let currentEmojiPage = 0;
@@ -1648,17 +1630,69 @@
         renderPostsFeed();
     }
 
+    let commentMediaData = {};
+    let commentLocationData = {};
+
+    function previewCommentMedia(input, postId, type) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                commentMediaData[postId] = { media: e.target.result, type: type };
+                const prevEl = document.getElementById(`commentMediaPreview_${postId}`);
+                if (prevEl) {
+                    if (type === 'video') {
+                        prevEl.innerHTML = `<div style="position:relative; max-width:160px; margin-top:6px;"><video src="${e.target.result}" style="width:100%; border-radius:6px; max-height:100px;" controls></video><button onclick="clearCommentMedia(${postId})" style="position: absolute; top: 2px; right: 2px; background: rgba(0,0,0,0.8); padding: 1px 5px; font-size: 0.65rem; color:white; border:none; border-radius:4px; cursor:pointer;">&times;</button></div>`;
+                    } else {
+                        prevEl.innerHTML = `<div style="position:relative; max-width:160px; margin-top:6px;"><img src="${e.target.result}" style="width:100%; border-radius:6px; max-height:100px; object-fit:cover;"><button onclick="clearCommentMedia(${postId})" style="position: absolute; top: 2px; right: 2px; background: rgba(0,0,0,0.8); padding: 1px 5px; font-size: 0.65rem; color:white; border:none; border-radius:4px; cursor:pointer;">&times;</button></div>`;
+                    }
+                }
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function clearCommentMedia(postId) {
+        delete commentMediaData[postId];
+        const prevEl = document.getElementById(`commentMediaPreview_${postId}`);
+        if (prevEl) prevEl.innerHTML = '';
+        const imgIn = document.getElementById(`commentImgFile_${postId}`);
+        const vidIn = document.getElementById(`commentVidFile_${postId}`);
+        if(imgIn) imgIn.value = '';
+        if(vidIn) vidIn.value = '';
+    }
+
+    function requestCommentLocation(postId) {
+        const locName = prompt("Standort-Adresse für den Kommentar eingeben:");
+        if (locName && locName.trim()) {
+            commentLocationData[postId] = { name: locName.trim() };
+            const indEl = document.getElementById(`commentLocationIndicator_${postId}`);
+            if (indEl) indEl.innerText = "📍 Standort: " + locName.trim();
+        }
+    }
+
     function addCommentToPost(postId) {
         const input = document.getElementById(`commentInput_${postId}`);
         const text = input.value.trim();
-        if(!text) return;
+        const mediaObj = commentMediaData[postId];
+        const locObj = commentLocationData[postId];
+
+        if(!text && !mediaObj) return;
         const currentUser = localStorage.getItem('jannik_current_user');
         let posts = JSON.parse(localStorage.getItem('jannik_posts') || '[]');
         const post = posts.find(p => p.id === postId);
         if(post) {
             if(!post.comments) post.comments = [];
-            post.comments.push({ author: currentUser, text: text, timestamp: new Date().toLocaleTimeString('de-DE', {hour: '2-digit', minute:'2-digit'}) });
+            post.comments.push({ 
+                author: currentUser, 
+                text: text, 
+                image: mediaObj ? mediaObj.media : null,
+                mediaType: mediaObj ? mediaObj.type : 'image',
+                location: locObj || null,
+                timestamp: new Date().toLocaleTimeString('de-DE', {hour: '2-digit', minute:'2-digit'}) 
+            });
             localStorage.setItem('jannik_posts', JSON.stringify(posts));
+            delete commentMediaData[postId];
+            delete commentLocationData[postId];
             renderPostsFeed();
         }
     }
@@ -1714,7 +1748,21 @@
 
             let commentsHtml = '';
             post.comments.forEach(c => {
-                commentsHtml += `<div style="background: #121824; padding: 6px 10px; border-radius: 6px; margin-top: 4px; font-size: 0.85rem;"><strong>${c.author}:</strong> ${c.text} <span style="font-size: 0.7rem; color:var(--text-muted); float:right;">${c.timestamp}</span></div>`;
+                let cMedia = '';
+                if (c.image) {
+                    if (c.mediaType === 'video') {
+                        cMedia = `<div style="margin-top: 4px;"><video src="${c.image}" style="max-width: 100%; max-height: 160px; border-radius: 6px;" controls></video></div>`;
+                    } else {
+                        cMedia = `<div style="margin-top: 4px;"><img src="${c.image}" style="max-width: 100%; max-height: 140px; border-radius: 6px; object-fit: contain;"></div>`;
+                    }
+                }
+                commentsHtml += `
+                    <div style="background: #121824; padding: 8px 10px; border-radius: 6px; margin-top: 6px; font-size: 0.85rem;">
+                        <strong>${c.author}:</strong> ${c.text} <span style="font-size: 0.7rem; color:var(--text-muted); float:right;">${c.timestamp}</span>
+                        ${c.location ? `<div style="font-size: 0.75rem; color: #34d399; margin-top: 2px;">📍 ${c.location.name}</div>` : ''}
+                        ${cMedia}
+                    </div>
+                `;
             });
 
             let mediaHtml = '';
@@ -1743,9 +1791,26 @@
 
                     <div style="margin-top: 10px; border-top: 1px solid var(--border-color); padding-top: 8px;">
                         ${commentsHtml}
-                        <div style="display: flex; gap: 6px; margin-top: 6px;">
-                            <input type="text" id="commentInput_${post.id}" placeholder="Kommentar schreiben..." onkeydown="if(event.key==='Enter') addCommentToPost(${post.id})" style="padding: 6px; font-size: 0.85rem;">
-                            <button onclick="addCommentToPost(${post.id})" style="padding: 6px 10px; font-size: 0.85rem;">Senden</button>
+                        
+                        <div style="margin-top: 10px; background: #162032; padding: 10px; border-radius: 6px; border: 1px solid var(--border-color);">
+                            <textarea id="commentInput_${post.id}" placeholder="Kommentar oder Antwort schreiben..." rows="2" style="margin-bottom: 6px; font-size: 0.85rem;"></textarea>
+                            
+                            <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 6px;">
+                                <label style="background: var(--accent-color); color: white; padding: 4px 8px; border-radius: 6px; cursor: pointer; font-size: 0.75rem;">
+                                    <span>📷 Bild</span>
+                                    <input type="file" id="commentImgFile_${post.id}" accept="image/*" style="display:none;" onchange="previewCommentMedia(this, ${post.id}, 'image')">
+                                </label>
+                                <label style="background: #10b981; color: white; padding: 4px 8px; border-radius: 6px; cursor: pointer; font-size: 0.75rem;">
+                                    🎥 Video
+                                    <input type="file" id="commentVidFile_${post.id}" accept="video/*" style="display:none;" onchange="previewCommentMedia(this, ${post.id}, 'video')">
+                                </label>
+                                <button onclick="openGiphyModal(${post.id})" style="font-size: 0.75rem; padding: 4px 8px; background: #8b5cf6;">🖼️ GIF</button>
+                                <button onclick="requestCommentLocation(${post.id})" style="font-size: 0.75rem; padding: 4px 8px; background: #059669;">📍 Standort</button>
+                            </div>
+                            <div id="commentLocationIndicator_${post.id}" style="font-size: 0.75rem; color: #34d399; margin-bottom: 4px;"></div>
+                            <div id="commentMediaPreview_${post.id}"></div>
+
+                            <button onclick="addCommentToPost(${post.id})" style="padding: 6px 12px; font-size: 0.8rem; margin-top: 4px;">Kommentar absenden</button>
                         </div>
                     </div>
                 </div>
@@ -1763,7 +1828,7 @@
         }
     }
 
-    /* --- MAP, OVERPASS API POIS & WEATHER --- */
+    /* --- MAP, OVERPASS API POIS & WIKIPEDIA FLAG INTEGRATION --- */
     let map = L.map('map').setView([48.5734, 7.7521], 13);
     let currentMarker = L.marker([48.5734, 7.7521], { draggable: true }).addTo(map);
     let radiusCircle = L.circle([48.5734, 7.7521], { radius: 3000, color: '#3b82f6', fillColor: '#3b82f6', fillOpacity: 0.1 }).addTo(map);
@@ -1788,11 +1853,10 @@
         fetchPOIs(pos.lat, pos.lng);
     });
 
-    // Cursor move auto-refresh handler with throttle
     let lastCursorRefresh = 0;
     document.addEventListener('mousemove', () => {
         const now = Date.now();
-        if (now - lastCursorRefresh > 3000) { // 3 second throttle for performance
+        if (now - lastCursorRefresh > 3000) {
             lastCursorRefresh = now;
             const pos = currentMarker.getLatLng();
             fetchPOIs(pos.lat, pos.lng, true);
@@ -1823,19 +1887,28 @@
     }
 
     let poiLayers = {
+        parking: L.layerGroup().addTo(map),
+        shops: L.layerGroup().addTo(map),
+        fuel: L.layerGroup().addTo(map),
+        pharmacy: L.layerGroup().addTo(map),
+        banks: L.layerGroup().addTo(map),
         sights: L.layerGroup().addTo(map),
         restaurants: L.layerGroup().addTo(map),
-        hotels: L.layerGroup().addTo(map),
-        parking: L.layerGroup().addTo(map),
-        shops: L.layerGroup().addTo(map)
+        hotels: L.layerGroup().addTo(map)
     };
 
-    let fetchedPoiData = [];
+    let categorizedPOIs = {
+        parking: [],
+        shops: [],
+        fuel: [],
+        pharmacy: [],
+        banks: [],
+        sights: [],
+        restaurants: [],
+        hotels: []
+    };
 
-    function toggleLegend() {
-        const box = document.getElementById('mapLegendBox');
-        box.style.display = box.style.display === 'flex' ? 'none' : 'flex';
-    }
+    let activeDetailCategory = null;
 
     function onRadiusChange(val) {
         document.getElementById('radiusValue').innerText = val;
@@ -1846,46 +1919,134 @@
 
     function togglePoiLayer(type) {
         const checkbox = document.getElementById(`toggle${type.charAt(0).toUpperCase() + type.slice(1)}`);
-        if (checkbox.checked) map.addLayer(poiLayers[type]);
-        else map.removeLayer(poiLayers[type]);
+        if (checkbox && checkbox.checked) map.addLayer(poiLayers[type]);
+        else if (checkbox) map.removeLayer(poiLayers[type]);
+    }
+
+    function selectCategoryForDetail(categoryKey) {
+        document.querySelectorAll('.legend-item-box').forEach(el => el.classList.remove('active-detail'));
+        const box = document.getElementById(`legendBox_${categoryKey}`);
+        if(box) box.classList.add('active-detail');
+
+        activeDetailCategory = categoryKey;
+        renderCategoryDetailList(categoryKey);
+    }
+
+    function closeCategoryDetail() {
+        document.querySelectorAll('.legend-item-box').forEach(el => el.classList.remove('active-detail'));
+        document.getElementById('categoryDetailContainer').style.display = 'none';
+        activeDetailCategory = null;
+    }
+
+    function renderCategoryDetailList(categoryKey) {
+        const titles = {
+            parking: "🅿️ Parkplätze",
+            shops: "🛍️ Geschäfte",
+            fuel: "⛽ Tankstellen & E-Ladepunkte",
+            pharmacy: "💊 Apotheken & Medizin",
+            banks: "🏦 Banken & Geldautomaten",
+            sights: "🏛️ Sehenswürdigkeiten",
+            restaurants: "🍽️ Restaurants & Cafés",
+            hotels: "🏨 Unterkünfte"
+        };
+        document.getElementById('categoryDetailTitle').innerText = titles[categoryKey] || "Kategorie-Details";
+        
+        const listContainer = document.getElementById('categoryDetailList');
+        const items = categorizedPOIs[categoryKey] || [];
+        const pos = currentMarker.getLatLng();
+
+        if (items.length === 0) {
+            listContainer.innerHTML = '<p style="color: var(--text-muted); font-size: 0.85rem; margin:0;">Keine Einträge in diesem Umkreis gefunden.</p>';
+            document.getElementById('categoryDetailContainer').style.display = 'block';
+            return;
+        }
+
+        let html = '';
+        items.forEach(item => {
+            const dist = getDistanceFromLatLonInKm(pos.lat, pos.lng, item.lat, item.lon).toFixed(2);
+            let imgHtml = item.image ? `<img src="${item.image}" alt="Bild">` : '';
+            let hoursHtml = item.opening_hours ? `<div style="font-size:0.8rem; color:#facc15; margin-top:2px;">🕒 Öffnungszeiten: ${item.opening_hours}</div>` : '';
+            let feeHtml = (item.fee || item.charge) ? `<div style="font-size:0.8rem; color:#f87171; margin-top:2px;">💰 Gebühr/Kosten: ${item.fee || item.charge}</div>` : '';
+
+            html += `
+                <div class="poi-detail-row" onclick="map.setView([${item.lat}, ${item.lon}], 16)" style="cursor:pointer;" title="Auf Karte zentrieren">
+                    ${imgHtml}
+                    <div style="flex: 1;">
+                        <div style="font-size: 0.9rem; font-weight: 600; color: var(--text-color);">${item.name}</div>
+                        <div style="font-size: 0.8rem; color: var(--text-muted);">Entfernung: <strong>${dist} km</strong></div>
+                        ${hoursHtml}
+                        ${feeHtml}
+                    </div>
+                </div>
+            `;
+        });
+        listContainer.innerHTML = html;
+        document.getElementById('categoryDetailContainer').style.display = 'block';
     }
 
     async function searchLocation() {
         const query = document.getElementById('citySearch').value.trim();
         if(!query) return;
-        const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`);
-        const data = await res.json();
-        if (data && data.length > 0) {
-            const lat = parseFloat(data[0].lat);
-            const lon = parseFloat(data[0].lon);
-            currentMarker.setLatLng([lat, lon]);
-            radiusCircle.setLatLng([lat, lon]);
-            map.setView([lat, lon], 13);
-            fetchRealWeather(lat, lon);
-            reverseGeocode(lat, lon);
-            fetchPOIs(lat, lon);
+        const searchBtn = document.querySelector('.search-box button');
+        const originalText = searchBtn.innerHTML;
+        searchBtn.innerHTML = '<span class="swivel-loader" style="width:14px; height:14px; border-width:2px;"></span>';
+        searchBtn.disabled = true;
+
+        try {
+            const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`);
+            const data = await res.json();
+            if (data && data.length > 0) {
+                const lat = parseFloat(data[0].lat);
+                const lon = parseFloat(data[0].lon);
+                currentMarker.setLatLng([lat, lon]);
+                radiusCircle.setLatLng([lat, lon]);
+                map.setView([lat, lon], 13);
+                fetchRealWeather(lat, lon);
+                reverseGeocode(lat, lon);
+                fetchPOIs(lat, lon);
+            } else {
+                alert("Ort nicht gefunden.");
+            }
+        } catch (e) {
+            console.error(e);
+        } finally {
+            searchBtn.innerHTML = originalText;
+            searchBtn.disabled = false;
         }
     }
 
     async function reverseGeocode(lat, lon) {
-        const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
-        const data = await res.json();
-        if(data && data.address) {
-            const country = data.address.country || "Deutschland";
-            const state = data.address.state || data.address.region || "Baden-Württemberg";
-            const city = data.address.city || data.address.town || data.address.village || "Ort";
+        document.getElementById('infoCountry').innerHTML = '<span class="swivel-loader" style="width:14px; height:14px; border-width:2px;"></span>';
+        document.getElementById('infoState').innerHTML = '<span class="swivel-loader" style="width:14px; height:14px; border-width:2px;"></span>';
+        document.getElementById('infoCity').innerHTML = '<span class="swivel-loader" style="width:14px; height:14px; border-width:2px;"></span>';
+        document.getElementById('countryEmblems').innerHTML = '<span class="swivel-loader" style="width:16px; height:16px; border-width:2px;"></span>';
+        document.getElementById('stateEmblems').innerHTML = '<span class="swivel-loader" style="width:16px; height:16px; border-width:2px;"></span>';
+        document.getElementById('cityEmblems').innerHTML = '<span class="swivel-loader" style="width:16px; height:16px; border-width:2px;"></span>';
 
-            document.getElementById('citySearch').value = city;
-            document.getElementById('infoCountry').innerText = country;
-            document.getElementById('infoState').innerText = state;
-            document.getElementById('infoCity').innerText = city;
-            document.getElementById('weatherCityName').innerText = city;
+        try {
+            const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
+            const data = await res.json();
+            if(data && data.address) {
+                const country = data.address.country || "Deutschland";
+                const state = data.address.state || data.address.region || "Baden-Württemberg";
+                const city = data.address.city || data.address.town || data.address.village || "Ort";
 
-            updateEmblemsForLocation(country, state, city);
+                document.getElementById('citySearch').value = city;
+                document.getElementById('infoCountry').innerText = country;
+                document.getElementById('infoState').innerText = state;
+                document.getElementById('infoCity').innerText = city;
+                document.getElementById('weatherCityName').innerText = city;
+
+                await updateEmblemsForLocation(country, state, city);
+            }
+        } catch (e) {
+            console.error(e);
+            document.getElementById('infoCountry').innerText = '-';
+            document.getElementById('infoState').innerText = '-';
+            document.getElementById('infoCity').innerText = '-';
         }
     }
 
-    // Flag-only Emblem Database
     const emblemDatabase = {
         "Deutschland": {
             flagUrl: "https://upload.wikimedia.org/wikipedia/commons/b/ba/Flag_of_Germany.svg",
@@ -1909,26 +2070,54 @@
         }
     };
 
-    function renderFlagHtml(name) {
-        const entry = emblemDatabase[name];
-        const url = entry ? entry.flagUrl : null;
-        const wikiUrl = entry ? entry.flagWiki : `https://de.wikipedia.org/wiki/Special:Search?search=${encodeURIComponent(name)}`;
-        const label = `Flagge von ${name}`;
+    async function getWikipediaFlag(name) {
+        if (emblemDatabase[name] && emblemDatabase[name].flagUrl) {
+            return {
+                url: emblemDatabase[name].flagUrl,
+                wiki: emblemDatabase[name].flagWiki
+            };
+        }
+        try {
+            const searchRes = await fetch(`https://de.wikipedia.org/w/api.php?action=query&prop=pageimages|info&inprop=url&pithumbsize=100&titles=${encodeURIComponent("Flagge von " + name)}&format=json&origin=*`);
+            const searchData = await searchRes.json();
+            const pages = searchData.query.pages;
+            for (let id in pages) {
+                if (pages[id].thumbnail) {
+                    return {
+                        url: pages[id].thumbnail.source,
+                        wiki: pages[id].fullurl || `https://de.wikipedia.org/wiki/${encodeURIComponent("Flagge von " + name)}`
+                    };
+                }
+            }
+        } catch (e) {
+            console.error("Wikipedia API error:", e);
+        }
+        return {
+            url: null,
+            wiki: `https://de.wikipedia.org/wiki/Special:Search?search=${encodeURIComponent(name)}`
+        };
+    }
 
-        if (url) {
-            return `<a href="${wikiUrl}" target="_blank" class="emblem-item" title="${label} (Wikipedia öffnen)"><img src="${url}" alt="${label}" class="emblem-img"></a>`;
+    async function updateEmblemsForLocation(country, state, city) {
+        const countryInfo = await getWikipediaFlag(country);
+        document.getElementById('countryEmblems').innerHTML = renderFlagHtmlDynamic(country, countryInfo);
+
+        const stateInfo = await getWikipediaFlag(state);
+        document.getElementById('stateEmblems').innerHTML = renderFlagHtmlDynamic(state, stateInfo);
+
+        const cityInfo = await getWikipediaFlag(city);
+        document.getElementById('cityEmblems').innerHTML = renderFlagHtmlDynamic(city, cityInfo);
+    }
+
+    function renderFlagHtmlDynamic(name, info) {
+        const label = `Flagge von ${name}`;
+        if (info && info.url) {
+            return `<a href="${info.wiki}" target="_blank" class="emblem-item" title="${label} (Wikipedia öffnen)"><img src="${info.url}" alt="${label}" class="emblem-img"></a>`;
         } else {
-            return `<a href="${wikiUrl}" target="_blank" class="emblem-item" title="${label} - Wikipedia öffnen"><div class="emblem-fallback" title="Keine Flagge gefunden"></div></a>`;
+            return `<a href="${info.wiki}" target="_blank" class="emblem-item" title="${label} - Wikipedia öffnen"><div class="emblem-fallback" title="Wikipedia öffnen"></div></a>`;
         }
     }
 
-    function updateEmblemsForLocation(country, state, city) {
-        document.getElementById('countryEmblems').innerHTML = renderFlagHtml(country);
-        document.getElementById('stateEmblems').innerHTML = renderFlagHtml(state);
-        document.getElementById('cityEmblems').innerHTML = renderFlagHtml(city);
-    }
-
-    // Distance calculation helper (Haversine formula)
     function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
         const R = 6371;
         const dLat = deg2rad(lat2 - lat1);
@@ -1941,26 +2130,30 @@
     }
     function deg2rad(deg) { return deg * (Math.PI / 180); }
 
-    // Overpass API Query with Swivel Loading Animation for Sights, Restaurants & Hotels
     async function fetchPOIs(lat, lon, isBackground = false) {
         const radiusMeters = document.getElementById('radiusRange').value * 1000;
         if (!isBackground) {
             document.getElementById('loadingStatus').innerHTML = '<span class="swivel-loader" title="Lädt Ergebnisse..."></span>';
-            document.getElementById('sightsLoading').innerHTML = '<span class="swivel-loader"></span>';
-            document.getElementById('restaurantsLoading').innerHTML = '<span class="swivel-loader"></span>';
-            document.getElementById('hotelsLoading').innerHTML = '<span class="swivel-loader"></span>';
         }
 
         const query = `[out:json][timeout:15];
         (
-          node(around:${radiusMeters},${lat},${lon})[tourism~"hotel|guest_house|hostel|motel|apartment"];
-          way(around:${radiusMeters},${lat},${lon})[tourism~"hotel|guest_house|hostel|motel|apartment"];
-          node(around:${radiusMeters},${lat},${lon})[amenity~"restaurant|cafe|bar|pub|fast_food"];
-          way(around:${radiusMeters},${lat},${lon})[amenity~"restaurant|cafe|bar|pub|fast_food"];
+          node(around:${radiusMeters},${lat},${lon})[amenity="parking"];
+          way(around:${radiusMeters},${lat},${lon})[amenity="parking"];
+          node(around:${radiusMeters},${lat},${lon})[shop~"supermarket|convenience|mall|department_store"];
+          way(around:${radiusMeters},${lat},${lon})[shop~"supermarket|convenience|mall|department_store"];
+          node(around:${radiusMeters},${lat},${lon})[amenity~"fuel|charging_station"];
+          way(around:${radiusMeters},${lat},${lon})[amenity~"fuel|charging_station"];
+          node(around:${radiusMeters},${lat},${lon})[amenity~"pharmacy|hospital|doctors"];
+          way(around:${radiusMeters},${lat},${lon})[amenity~"pharmacy|hospital|doctors"];
+          node(around:${radiusMeters},${lat},${lon})[amenity~"bank|atm"];
+          way(around:${radiusMeters},${lat},${lon})[amenity~"bank|atm"];
           node(around:${radiusMeters},${lat},${lon})[~"tourism|historic"~"attraction|castle|museum|monument|viewpoint|artwork"];
           way(around:${radiusMeters},${lat},${lon})[~"tourism|historic"~"attraction|castle|museum|monument|viewpoint|artwork"];
-          node(around:${radiusMeters},${lat},${lon})[amenity="parking"];
-          node(around:${radiusMeters},${lat},${lon})[shop="supermarket"];
+          node(around:${radiusMeters},${lat},${lon})[amenity~"restaurant|cafe|bar|pub|fast_food"];
+          way(around:${radiusMeters},${lat},${lon})[amenity~"restaurant|cafe|bar|pub|fast_food"];
+          node(around:${radiusMeters},${lat},${lon})[tourism~"hotel|guest_house|hostel|motel|apartment|camp_site"];
+          way(around:${radiusMeters},${lat},${lon})[tourism~"hotel|guest_house|hostel|motel|apartment|camp_site"];
         );
         out center;`;
 
@@ -1973,376 +2166,226 @@
             processPOIData(data.elements, lat, lon);
             if (!isBackground) {
                 document.getElementById('loadingStatus').innerText = '';
-                document.getElementById('sightsLoading').innerText = '';
-                document.getElementById('restaurantsLoading').innerText = '';
-                document.getElementById('hotelsLoading').innerText = '';
             }
         } catch (err) {
-            console.error("Overpass API Error:", err);
+            console.error(err);
             if (!isBackground) {
-                document.getElementById('loadingStatus').innerHTML = '<span style="color:#ef4444; font-size:0.8rem;">(Fehler)</span>';
-                document.getElementById('sightsLoading').innerText = '';
-                document.getElementById('restaurantsLoading').innerText = '';
-                document.getElementById('hotelsLoading').innerText = '';
+                document.getElementById('loadingStatus').innerText = ' (Fehler beim Laden)';
             }
         }
     }
 
     function processPOIData(elements, centerLat, centerLon) {
-        poiLayers.sights.clearLayers();
-        poiLayers.restaurants.clearLayers();
-        poiLayers.hotels.clearLayers();
-        poiLayers.parking.clearLayers();
-        poiLayers.shops.clearLayers();
-
-        fetchedPoiData = [];
+        Object.keys(categorizedPOIs).forEach(k => {
+            categorizedPOIs[k] = [];
+            poiLayers[k].clearLayers();
+        });
 
         elements.forEach(el => {
-            const lat = el.lat || (el.center ? el.center.lat : null);
-            const lon = el.lon || (el.center ? el.center.lon : null);
+            const lat = el.lat || (el.center && el.center.lat);
+            const lon = el.lon || (el.center && el.center.lon);
             if (!lat || !lon) return;
 
             const tags = el.tags || {};
-            const name = tags.name || tags['addr:street'] || "Unbekannter Ort";
-            
-            let category = 'other';
-            let markerColor = '#64748b';
-            let iconSymbol = '📍';
-
-            if (tags.tourism && ['hotel', 'guest_house', 'hostel', 'motel', 'apartment'].includes(tags.tourism)) {
-                category = 'hotels';
-                markerColor = '#f59e0b';
-                iconSymbol = '🏨';
-            } else if (tags.amenity && ['restaurant', 'cafe', 'bar', 'pub', 'fast_food'].includes(tags.amenity)) {
-                category = 'restaurants';
-                markerColor = '#3b82f6';
-                iconSymbol = '🍽️';
-            } else if (tags.tourism === 'attraction' || tags.historic || tags.tourism === 'museum' || tags.tourism === 'viewpoint') {
-                category = 'sights';
-                markerColor = '#ef4444';
-                iconSymbol = '🏛️';
-            } else if (tags.amenity === 'parking') {
-                category = 'parking';
-                markerColor = '#64748b';
-                iconSymbol = '🅿️';
-            } else if (tags.shop === 'supermarket') {
-                category = 'shops';
-                markerColor = '#ec4899';
-                iconSymbol = '🛍️';
-            }
-
-            let stars = tags.stars ? parseInt(tags.stars) : (3 + (el.id % 3));
-            if (stars > 5) stars = 5;
-            if (stars < 1) stars = 3;
-
-            const address = `${tags['addr:street'] || ''} ${tags['addr:housenumber'] || ''}, ${tags['addr:postcode'] || ''} ${tags['addr:city'] || ''}`.trim() || "Adresse via OpenStreetMap";
-            const distance = getDistanceFromLatLonInKm(centerLat, centerLon, lat, lon);
+            const name = tags.name || tags.amenity || tags.shop || tags.tourism || "Unbekannter Ort";
+            const opening_hours = tags.opening_hours || null;
+            const fee = tags.fee || tags.charge || null;
+            const image = null;
 
             const poiObj = {
-                id: el.id,
-                name: name,
-                category: category,
                 lat: lat,
                 lon: lon,
-                stars: stars,
-                address: address,
-                iconSymbol: iconSymbol,
-                distance: distance
+                name: name,
+                opening_hours: opening_hours,
+                fee: fee,
+                image: image,
+                tags: tags
             };
 
-            fetchedPoiData.push(poiObj);
+            let category = null;
+            if (tags.amenity === 'parking') category = 'parking';
+            else if (tags.shop) category = 'shops';
+            else if (tags.amenity === 'fuel' || tags.amenity === 'charging_station') category = 'fuel';
+            else if (tags.amenity === 'pharmacy' || tags.amenity === 'hospital' || tags.amenity === 'doctors') category = 'pharmacy';
+            else if (tags.amenity === 'bank' || tags.amenity === 'atm') category = 'banks';
+            else if (tags.tourism === 'attraction' || tags.historic || tags.amenity === 'arts_centre' || tags.tourism === 'museum' || tags.tourism === 'viewpoint') category = 'sights';
+            else if (tags.amenity === 'restaurant' || tags.amenity === 'cafe' || tags.amenity === 'bar' || tags.amenity === 'pub' || tags.amenity === 'fast_food') category = 'restaurants';
+            else if (tags.tourism === 'hotel' || tags.tourism === 'guest_house' || tags.tourism === 'hostel' || tags.tourism === 'motel' || tags.tourism === 'apartment' || tags.tourism === 'camp_site') category = 'hotels';
 
-            if (poiLayers[category]) {
-                const marker = L.circleMarker([lat, lon], {
-                    color: markerColor,
-                    radius: 7,
-                    fillOpacity: 0.8
+            if (category && categorizedPOIs[category]) {
+                categorizedPOIs[category].push(poiObj);
+                
+                let dotColor = '#3b82f6';
+                let emojiIcon = '📍';
+                if (category === 'parking') { emojiIcon = '🅿️'; dotColor = '#64748b'; }
+                else if (category === 'shops') { emojiIcon = '🛍️'; dotColor = '#ec4899'; }
+                else if (category === 'fuel') { emojiIcon = '⛽'; dotColor = '#10b981'; }
+                else if (category === 'pharmacy') { emojiIcon = '💊'; dotColor = '#8b5cf6'; }
+                else if (category === 'banks') { emojiIcon = '🏦'; dotColor = '#14b8a6'; }
+                else if (category === 'sights') { emojiIcon = '🏛️'; dotColor = '#ef4444'; }
+                else if (category === 'restaurants') { emojiIcon = '🍽️'; dotColor = '#3b82f6'; }
+                else if (category === 'hotels') { emojiIcon = '🏨'; dotColor = '#f59e0b'; }
+
+                const markerHtml = `<div style="background:${dotColor}; width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-size:12px; border:2px solid white; box-shadow:0 2px 4px rgba(0,0,0,0.3);">${emojiIcon}</div>`;
+                const customIcon = L.divIcon({
+                    className: 'custom-poi-marker',
+                    html: markerHtml,
+                    iconSize: [24, 24],
+                    iconAnchor: [12, 12]
                 });
 
-                const starStr = '⭐'.repeat(stars);
-                marker.bindPopup(`
-                    <div style="min-width: 160px;">
-                        <strong>${iconSymbol} ${name}</strong><br>
-                        <span class="stars-badge" onclick="openPoiDetails(${el.id})">${starStr}</span><br>
-                        <span style="font-size:0.8rem; color:var(--text-muted);">${address}</span><br>
-                        <button onclick="openPoiDetails(${el.id})" style="margin-top:6px; padding:4px 8px; font-size:0.75rem; width:100%;">Details & Navigation</button>
+                const m = L.marker([lat, lon], { icon: customIcon }).bindPopup(`
+                    <div style="font-size:0.9rem;">
+                        <strong>${name}</strong><br>
+                        <span style="font-size:0.75rem; color:var(--text-muted);">${category.toUpperCase()}</span>
+                        ${opening_hours ? `<br>🕒 ${opening_hours}` : ''}
+                        ${fee ? `<br>💰 ${fee}` : ''}
                     </div>
                 `);
-
-                poiLayers[category].addLayer(marker);
+                poiLayers[category].addLayer(m);
             }
         });
 
-        renderPOIs();
-    }
-
-    function renderPOIs() {
-        renderCategorySection('sights', 'sightsListContainer', 'sightsMoreBtnContainer');
-        renderCategorySection('restaurants', 'restaurantsListContainer', 'restaurantsMoreBtnContainer');
-        renderCategorySection('hotels', 'hotelsListContainer', 'hotelsMoreBtnContainer');
-    }
-
-    function renderCategorySection(cat, listId, btnContainerId) {
-        const listEl = document.getElementById(listId);
-        const btnContainerEl = document.getElementById(btnContainerId);
-        if (!listEl) return;
-
-        const items = fetchedPoiData.filter(item => item.category === cat);
-        const top5 = items.slice(0, 5);
-
-        if (top5.length === 0) {
-            listEl.innerHTML = '<li style="color: var(--text-muted); text-align: center; padding: 6px; font-size: 0.85rem;">Keine Einträge gefunden.</li>';
-            if (btnContainerEl) btnContainerEl.innerHTML = '';
-            return;
-        }
-
-        let html = '';
-        top5.forEach(poi => {
-            const starStr = '⭐'.repeat(poi.stars);
-            const distStr = poi.distance < 1 ? `${Math.round(poi.distance * 1000)} m` : `${poi.distance.toFixed(1)} km`;
-            html += `
-                <li class="poi-item-card" onclick="openPoiDetails(${poi.id})">
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                        <span style="font-size: 1.3rem;">${poi.iconSymbol}</span>
-                        <div>
-                            <strong style="font-size: 0.95rem; color: var(--text-color);">${poi.name}</strong><br>
-                            <span style="font-size: 0.75rem; color: var(--text-muted);">📍 ${distStr} • ${poi.address}</span>
-                        </div>
-                    </div>
-                    <div>
-                        <span class="stars-badge">${starStr}</span>
-                    </div>
-                </li>
-            `;
-        });
-        listEl.innerHTML = html;
-
-        if (items.length > 5) {
-            if (btnContainerEl) {
-                btnContainerEl.innerHTML = `<button onclick="openAllPoiModal('${cat}')" style="width: 100%; margin-top: 6px; padding: 6px; font-size: 0.8rem; background: #334155;">Hier klicken, um alle anzuzeigen (${items.length} gesamt)</button>`;
-            }
-        } else {
-            if (btnContainerEl) btnContainerEl.innerHTML = '';
-        }
-    }
-
-    function openAllPoiModal(category = 'all') {
-        document.getElementById('allPoiCategorySelect').value = category;
-        document.getElementById('allPoiSearchInput').value = '';
-        document.getElementById('allPoiSortSelect').value = 'distance';
-
-        const titles = {
-            'all': '📍 Alle POIs im Umkreis',
-            'sights': '🏛️ Alle Sehenswürdigkeiten',
-            'restaurants': '🍽️ Alle Restaurants & Cafés',
-            'hotels': '🏨 Alle Unterkünfte'
-        };
-        document.getElementById('allPoiModalTitle').innerText = titles[category] || '📍 Alle POIs im Umkreis';
-        document.getElementById('allPoiModal').style.display = 'flex';
-        renderAllPoiModalList();
-    }
-
-    function closeAllPoiModal() {
-        document.getElementById('allPoiModal').style.display = 'none';
-    }
-
-    function renderAllPoiModalList() {
-        const container = document.getElementById('allPoiModalListContainer');
-        const search = document.getElementById('allPoiSearchInput').value.toLowerCase();
-        const cat = document.getElementById('allPoiCategorySelect').value;
-        const sort = document.getElementById('allPoiSortSelect').value;
-
-        let items = fetchedPoiData.filter(item => {
-            if (item.category === 'parking' || item.category === 'shops' || item.category === 'other') return false;
-            if (cat !== 'all' && item.category !== cat) return false;
-            if (search && !item.name.toLowerCase().includes(search) && !item.address.toLowerCase().includes(search)) return false;
-            return true;
+        Object.keys(categorizedPOIs).forEach(k => {
+            const countEl = document.getElementById(`count_${k}`);
+            if (countEl) countEl.innerText = `(${categorizedPOIs[k].length})`;
         });
 
-        if (sort === 'distance') {
-            items.sort((a, b) => a.distance - b.distance);
-        } else if (sort === 'newest') {
-            items.sort((a, b) => b.id - a.id);
-        } else if (sort === 'name') {
-            items.sort((a, b) => a.name.localeCompare(b.name));
-        } else if (sort === 'stars_desc') {
-            items.sort((a, b) => b.stars - a.stars);
-        } else if (sort === 'stars_asc') {
-            items.sort((a, b) => a.stars - b.stars);
+        if (activeDetailCategory) {
+            renderCategoryDetailList(activeDetailCategory);
         }
+    }
 
-        if (items.length === 0) {
-            container.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 20px;">Keine Einträge gefunden.</p>';
-            return;
+    let weatherDataCache = null;
+    let weatherViewMode = 'hourly';
+
+    async function fetchRealWeather(lat, lon) {
+        const weatherGrid = document.getElementById('weatherGrid');
+        const hoursGrid = document.getElementById('weatherHoursGrid');
+        weatherGrid.innerHTML = '<div style="text-align:center; padding:20px; grid-column:1/-1; color:var(--text-muted);"><span class="swivel-loader"></span> Lade Wetter-Daten...</div>';
+        hoursGrid.innerHTML = '<div style="text-align:center; padding:10px; color:var(--text-muted);"><span class="swivel-loader"></span> Lade stündliche Vorschau...</div>';
+
+        try {
+            const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m&hourly=temperature_2m,precipitation,wind_speed_10m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,wind_speed_10m_max&timezone=auto`);
+            const data = await res.json();
+            weatherDataCache = data;
+            renderWeatherUI(data);
+        } catch (e) {
+            console.error(e);
+            weatherGrid.innerHTML = '<div style="text-align:center; padding:20px; grid-column:1/-1; color:#ef4444;">Fehler beim Laden des Wetters.</div>';
+            hoursGrid.innerHTML = '';
         }
+    }
 
-        let html = '';
-        items.forEach(poi => {
-            const starStr = '⭐'.repeat(poi.stars);
-            const distStr = poi.distance < 1 ? `${Math.round(poi.distance * 1000)} m` : `${poi.distance.toFixed(1)} km`;
-            let catName = poi.category === 'sights' ? 'Sehenswürdigkeit' : (poi.category === 'restaurants' ? 'Restaurant' : 'Unterkunft');
+    function renderWeatherUI(data) {
+        const weatherGrid = document.getElementById('weatherGrid');
+        const hoursGrid = document.getElementById('weatherHoursGrid');
+        if (!data || !data.daily) return;
 
-            html += `
-                <div class="poi-item-card" onclick="closeAllPoiModal(); openPoiDetails(${poi.id})">
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                        <span style="font-size: 1.4rem;">${poi.iconSymbol}</span>
-                        <div>
-                            <strong style="font-size: 0.95rem; color: var(--text-color);">${poi.name}</strong><br>
-                            <span style="font-size: 0.75rem; color: var(--text-muted);">${catName} • 📍 ${distStr} • ${poi.address}</span>
-                        </div>
-                    </div>
-                    <div>
-                        <span class="stars-badge">${starStr}</span>
-                    </div>
+        let dailyHtml = '';
+        const days = data.daily.time;
+        days.forEach((dayStr, idx) => {
+            if (idx >= 7) return;
+            const date = new Date(dayStr);
+            const weekday = date.toLocaleDateString('de-DE', { weekday: 'short', day: 'numeric', month: 'numeric' });
+            const maxT = Math.round(data.daily.temperature_2m_max[idx]);
+            const minT = Math.round(data.daily.temperature_2m_min[idx]);
+            const code = data.daily.weather_code[idx];
+            const icon = getWeatherIconAndText(code).icon;
+
+            dailyHtml += `
+                <div class="weather-day" onclick="openWeatherDetailsModal()">
+                    <div style="font-weight:600; margin-bottom:4px;">${weekday}</div>
+                    <div style="font-size:1.6rem; margin:4px 0;">${icon}</div>
+                    <div style="font-weight:600;">${maxT}° / <span style="color:var(--text-muted);">${minT}°</span></div>
                 </div>
             `;
         });
-        container.innerHTML = html;
-    }
+        weatherGrid.innerHTML = dailyHtml;
 
-    function openPoiDetails(poiId) {
-        const poi = fetchedPoiData.find(p => p.id === poiId);
-        if (!poi) return;
+        let hourlyHtml = '';
+        const nowIdx = new Date().getHours();
+        for (let i = nowIdx; i < nowIdx + 24 && i < data.hourly.time.length; i++) {
+            const timeStr = new Date(data.hourly.time[i]).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+            const temp = Math.round(data.hourly.temperature_2m[i]);
+            const code = data.hourly.weather_code[i];
+            const icon = getWeatherIconAndText(code).icon;
 
-        const starStr = '⭐'.repeat(poi.stars);
-        const distStr = poi.distance < 1 ? `${Math.round(poi.distance * 1000)} m` : `${poi.distance.toFixed(2)} km`;
-
-        document.getElementById('modalTitle').innerText = `${poi.iconSymbol} ${poi.name}`;
-        document.getElementById('modalBody').innerHTML = `
-            <p><strong>Kategorie:</strong> ${poi.category.toUpperCase()}</p>
-            <p><strong>Bewertung:</strong> <span class="stars-badge">${starStr} (${poi.stars} von 5 Sternen)</span></p>
-            <p><strong>Entfernung:</strong> 📍 ${distStr}</p>
-            <p><strong>Genaue Adresse:</strong><br>${poi.address}</p>
-            <p><strong>Koordinaten:</strong> Lat: ${poi.lat.toFixed(4)}, Lon: ${poi.lon.toFixed(4)}</p>
-            <div style="display: flex; gap: 10px; margin-top: 15px;">
-                <button onclick="window.open('https://www.google.com/maps/search/?api=1&query=${poi.lat},${poi.lon}', '_blank')" style="background: #10b981; flex: 1;">
-                    🧭 Direkt dorthin navigieren
-                </button>
-                <button onclick="closeModal()" style="background: #334155;">Schließen</button>
-            </div>
-        `;
-        document.getElementById('detailModal').style.display = 'flex';
-    }
-
-    let globalWeatherData = null;
-    let weatherViewMode = 'hourly';
-    let tempChartInstance = null;
-    let rainChartInstance = null;
-    let windChartInstance = null;
-
-    async function fetchRealWeather(lat, lon) {
-        const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_sum,windspeed_10m_max&hourly=temperature_2m,precipitation,windspeed_10m,weathercode&timezone=auto`);
-        const data = await res.json();
-        globalWeatherData = data;
-
-        if (data && data.daily) {
-            let gridHtml = '';
-            for (let i = 0; i < 7; i++) {
-                const date = new Date(data.daily.time[i]).toLocaleDateString('de-DE', { weekday: 'short', day: 'numeric' });
-                const code = data.daily.weathercode[i];
-                const icon = getWeatherIconAndDesc(code).icon;
-                gridHtml += `<div class="weather-day" onclick="openWeatherDetailsModal()"><strong>${date}</strong><br>${icon}<br>${Math.round(data.daily.temperature_2m_max[i])}°C</div>`;
-            }
-            document.getElementById('weatherGrid').innerHTML = gridHtml;
+            hourlyHtml += `
+                <div class="hour-slot">
+                    <div style="color:var(--text-muted);">${timeStr}</div>
+                    <div style="font-size:1.3rem; margin:4px 0;">${icon}</div>
+                    <div style="font-weight:600;">${temp}°C</div>
+                </div>
+            `;
         }
-        if (data && data.hourly) {
-            let hourlyHtml = '';
-            const now = new Date();
-            let startIndex = 0;
-            for (let i = 0; i < data.hourly.time.length; i++) {
-                if (new Date(data.hourly.time[i]) >= now) {
-                    startIndex = i;
-                    break;
-                }
-            }
-            let lastDateStr = '';
-            for (let i = startIndex; i < data.hourly.time.length; i++) {
-                const fullTimeStr = data.hourly.time[i];
-                const dateObj = new Date(fullTimeStr);
-                const currentDateStr = dateObj.toLocaleDateString('de-DE', { weekday: 'short', day: 'numeric', month: 'short' });
-                const timeOnly = fullTimeStr.split('T')[1];
-
-                if (currentDateStr !== lastDateStr) {
-                    lastDateStr = currentDateStr;
-                    hourlyHtml += `
-                        <div class="day-separator-slot">
-                            <strong>📅 Neuer Tag</strong>
-                            <span style="margin-top: 4px; font-weight: 600; color: var(--text-color);">${currentDateStr}</span>
-                        </div>
-                    `;
-                }
-                const code = data.hourly.weathercode[i];
-                const icon = getWeatherIconAndDesc(code).icon;
-                hourlyHtml += `
-                    <div class="hour-slot">
-                        <span>${timeOnly}</span><br>
-                        ${icon}<br>
-                        <strong>${Math.round(data.hourly.temperature_2m[i])}°C</strong>
-                    </div>
-                `;
-            }
-            document.getElementById('weatherHoursGrid').innerHTML = hourlyHtml;
-        }
+        hoursGrid.innerHTML = hourlyHtml;
     }
 
-    function getWeatherIconAndDesc(code) {
-        if (code === 0) return { icon: "☀️", desc: "Sonnig & Klar", animClass: "anim-sun", symbol: "☀️" };
-        if ([1, 2, 3].includes(code)) return { icon: "⛅", desc: "Teilweise bewölkt", animClass: "anim-cloud", symbol: "⛅" };
-        if ([45, 48].includes(code)) return { icon: "🌫️", desc: "Neblig", animClass: "anim-cloud", symbol: "🌫️" };
-        if ([51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 80, 81, 82].includes(code)) return { icon: "🌧️", desc: "Regen", animClass: "anim-rain", symbol: "🌧️" };
-        if ([71, 73, 75, 77].includes(code)) return { icon: "❄️", desc: "Schneefall", animClass: "anim-snow", symbol: "❄️" };
-        if ([95, 96, 99].includes(code)) return { icon: "⚡", desc: "Gewitter", animClass: "anim-storm", symbol: "⚡" };
-        return { icon: "🌤️", desc: "Wechselhaft", animClass: "anim-cloud", symbol: "🌤️" };
+    function getWeatherIconAndText(code) {
+        if (code === 0) return { icon: '☀️', text: 'Sonnig & Klar' };
+        if (code >= 1 && code <= 3) return { icon: '⛅', text: 'Teilweise bewölkt' };
+        if (code >= 45 && code <= 48) return { icon: '🌫️', text: 'Neblig' };
+        if (code >= 51 && code <= 67) return { icon: '🌧️', text: 'Regen' };
+        if (code >= 71 && code <= 77) return { icon: '❄️', text: 'Schnee' };
+        if (code >= 95) return { icon: '⛈️', text: 'Gewitter' };
+        return { icon: '☁️', text: 'Bewölkt' };
     }
 
     function openWeatherDetailsModal() {
-        if (!globalWeatherData) return;
         document.getElementById('weatherDetailsModal').style.display = 'flex';
-        updateWeatherAnimationDisplay();
-        renderWeatherCharts();
+        if (weatherDataCache) {
+            updateWeatherModalCharts();
+        }
     }
 
     function closeWeatherDetailsModal() {
         document.getElementById('weatherDetailsModal').style.display = 'none';
     }
 
+    let tempChartInstance = null;
+    let rainChartInstance = null;
+    let windChartInstance = null;
+
     function setWeatherViewMode(mode) {
         weatherViewMode = mode;
-        document.getElementById('btnViewHourly').style.background = (mode === 'hourly') ? 'var(--accent-color)' : '#334155';
-        document.getElementById('btnViewDaily').style.background = (mode === 'daily') ? 'var(--accent-color)' : '#334155';
-        renderWeatherCharts();
+        if(mode === 'hourly') {
+            document.getElementById('btnViewHourly').style.background = 'var(--accent-color)';
+            document.getElementById('btnViewDaily').style.background = '#334155';
+        } else {
+            document.getElementById('btnViewDaily').style.background = 'var(--accent-color)';
+            document.getElementById('btnViewHourly').style.background = '#334155';
+        }
+        updateWeatherModalCharts();
     }
 
-    function updateWeatherAnimationDisplay() {
-        const code = globalWeatherData && globalWeatherData.current_weather ? globalWeatherData.current_weather.weathercode : (globalWeatherData.hourly.weathercode[0] || 0);
-        const info = getWeatherIconAndDesc(code);
-        const animBox = document.getElementById('weatherAnimElement');
-        animBox.className = info.animClass;
-        animBox.innerText = info.symbol;
-        document.getElementById('weatherConditionText').innerText = info.desc;
-    }
+    function updateWeatherModalCharts() {
+        if (!weatherDataCache) return;
+        const data = weatherDataCache;
 
-    function renderWeatherCharts() {
-        if (!globalWeatherData) return;
-        let labels = [], tempData = [], rainData = [], windData = [];
+        let labels = [];
+        let tempData = [];
+        let rainData = [];
+        let windData = [];
 
         if (weatherViewMode === 'hourly') {
-            for (let i = 0; i < 24; i++) {
-                labels.push(globalWeatherData.hourly.time[i].split('T')[1]);
-                tempData.push(globalWeatherData.hourly.temperature_2m[i]);
-                rainData.push(globalWeatherData.hourly.precipitation[i]);
-                windData.push(globalWeatherData.hourly.windspeed_10m[i]);
+            const nowIdx = new Date().getHours();
+            for (let i = nowIdx; i < nowIdx + 24 && i < data.hourly.time.length; i++) {
+                labels.push(new Date(data.hourly.time[i]).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }));
+                tempData.push(data.hourly.temperature_2m[i]);
+                rainData.push(data.hourly.precipitation[i]);
+                windData.push(data.hourly.wind_speed_10m[i]);
             }
         } else {
-            for (let i = 0; i < globalWeatherData.daily.time.length; i++) {
-                labels.push(new Date(globalWeatherData.daily.time[i]).toLocaleDateString('de-DE', { weekday: 'short', day: 'numeric' }));
-                tempData.push(globalWeatherData.daily.temperature_2m_max[i]);
-                rainData.push(globalWeatherData.daily.precipitation_sum ? globalWeatherData.daily.precipitation_sum[i] : 0);
-                windData.push(globalWeatherData.daily.windspeed_10m_max ? globalWeatherData.daily.windspeed_10m_max[i] : 0);
-            }
+            data.daily.time.forEach((d, idx) => {
+                labels.push(new Date(d).toLocaleDateString('de-DE', { weekday: 'short', day: 'numeric', month: 'numeric' }));
+                tempData.push(data.daily.temperature_2m_max[idx]);
+                rainData.push(data.daily.precipitation_sum[idx]);
+                windData.push(data.daily.wind_speed_10m_max[idx]);
+            });
         }
 
-        const commonOptions = {
+        const chartConfigOptions = {
             responsive: true,
             maintainAspectRatio: false,
             plugins: { legend: { display: false } },
@@ -2356,41 +2399,44 @@
         tempChartInstance = new Chart(document.getElementById('tempChart').getContext('2d'), {
             type: 'line',
             data: { labels: labels, datasets: [{ data: tempData, borderColor: '#3b82f6', backgroundColor: 'rgba(59, 130, 246, 0.1)', fill: true, tension: 0.3 }] },
-            options: commonOptions
+            options: chartConfigOptions
         });
 
         if (rainChartInstance) rainChartInstance.destroy();
         rainChartInstance = new Chart(document.getElementById('rainChart').getContext('2d'), {
             type: 'bar',
-            data: { labels: labels, datasets: [{ data: rainData, backgroundColor: '#06b6d4', borderRadius: 4 }] },
-            options: commonOptions
+            data: { labels: labels, datasets: [{ data: rainData, backgroundColor: '#06b6d4' }] },
+            options: chartConfigOptions
         });
 
         if (windChartInstance) windChartInstance.destroy();
         windChartInstance = new Chart(document.getElementById('windChart').getContext('2d'), {
             type: 'line',
             data: { labels: labels, datasets: [{ data: windData, borderColor: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.1)', fill: true, tension: 0.3 }] },
-            options: commonOptions
+            options: chartConfigOptions
         });
     }
 
     function openGoogleMapsNavigation() {
-        const query = document.getElementById('citySearch').value.trim() || "Freiburg";
-        window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`, '_blank');
+        const pos = currentMarker.getLatLng();
+        window.open(`https://www.google.com/maps/dir/?api=1&destination=${pos.lat},${pos.lng}`, '_blank');
     }
 
     function resetToHome() {
-        document.getElementById('startLocationOverlay').style.display = 'flex';
-        document.getElementById('startAddrInput').value = '';
-        document.getElementById('startAddrInput').focus();
+        map.setView([48.5734, 7.7521], 13);
+        currentMarker.setLatLng([48.5734, 7.7521]);
+        radiusCircle.setLatLng([48.5734, 7.7521]);
+        fetchRealWeather(48.5734, 7.7521);
+        reverseGeocode(48.5734, 7.7521);
+        fetchPOIs(48.5734, 7.7521);
     }
 
-    function closeModal() { document.getElementById('detailModal').style.display = 'none'; }
-    function openUserSettingsModal() {
-        document.getElementById('modalTitle').innerText = "⚙️ Einstellungen";
-        document.getElementById('modalBody').innerHTML = `<p>Angemeldet als: <strong>${localStorage.getItem('jannik_current_user')}</strong></p>`;
-        document.getElementById('detailModal').style.display = 'flex';
-    }
+    // Initial load
+    setTimeout(() => {
+        reverseGeocode(48.5734, 7.7521);
+        fetchRealWeather(48.5734, 7.7521);
+        fetchPOIs(48.5734, 7.7521);
+    }, 300);
 </script>
 </body>
 </html>
