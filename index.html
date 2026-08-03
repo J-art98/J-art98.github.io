@@ -31,7 +31,6 @@
             overflow-x: hidden;
         }
 
-        /* Swivel / Rotating Wheel Loading Animation */
         @keyframes swivelSpin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
@@ -49,7 +48,6 @@
             margin-left: 6px;
         }
 
-        /* Top Language Bar */
         #topLanguageBar {
             position: fixed;
             top: 10px;
@@ -74,7 +72,6 @@
             transform: scale(1.15);
         }
 
-        /* Login Screen Overlay */
         #authOverlay {
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 100vh;
@@ -249,7 +246,15 @@
             z-index: 1;
         }
 
-        /* Interactive Legend Below Map */
+        .mini-map-box {
+            height: 150px;
+            width: 100%;
+            border-radius: 6px;
+            margin-top: 8px;
+            border: 1px solid var(--border-color);
+            z-index: 1;
+        }
+
         .interactive-legend-card {
             margin-top: 12px;
             background: #0f172a;
@@ -366,7 +371,7 @@
             min-width: 150px;
         }
 
-        input[type="text"], input[type="password"], textarea, select {
+        input[type="text"], input[type="password"], input[type="date"], textarea, select {
             width: 100%;
             padding: 10px;
             border-radius: 6px;
@@ -480,7 +485,6 @@
             border: 1px solid var(--border-color);
         }
 
-        /* Flags Styling (Only Flags) */
         .emblem-container {
             display: inline-flex;
             align-items: center;
@@ -510,28 +514,6 @@
             background: #0f172a;
         }
 
-        .emblem-fallback {
-            width: 26px;
-            height: 26px;
-            border-radius: 50%;
-            border: 2px solid #64748b;
-            background: rgba(100, 116, 139, 0.15);
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            box-sizing: border-box;
-        }
-        .emblem-fallback::after {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 2px;
-            background: #64748b;
-            transform: rotate(-45deg);
-        }
-
-        /* Weather Animations */
         .weather-anim-box {
             display: flex;
             justify-content: center;
@@ -572,14 +554,12 @@
 </head>
 <body>
 
-<!-- Top Language Bar -->
 <div id="topLanguageBar">
     <span class="lang-flag" onclick="changeLanguage('de')" title="Deutsch (Standard)">🇩🇪</span>
     <span class="lang-flag" onclick="changeLanguage('en')" title="English (USA)">🇺🇸</span>
     <span class="lang-flag" onclick="changeLanguage('fr')" title="Français">🇫🇷</span>
 </div>
 
-<!-- Login & Register Overlay -->
 <div id="authOverlay">
     <div class="auth-box">
         <h2 data-i18n="title">Jannik Reisen 🌍✈️</h2>
@@ -591,7 +571,6 @@
         <div id="authError" class="auth-error"></div>
         <div id="authSuccess" class="auth-success"></div>
 
-        <!-- Login Form -->
         <div id="loginFormSection">
             <div class="auth-form-group">
                 <label for="loginUser" data-i18n="username">Benutzername</label>
@@ -607,7 +586,6 @@
             <button style="width: 100%; margin-top: 6px;" onclick="handleLogin()" data-i18n="loginBtn">Einloggen</button>
         </div>
 
-        <!-- Register Form -->
         <div id="registerFormSection" style="display: none;">
             <div class="auth-form-group">
                 <label for="regUser" data-i18n="regUsername">Gewünschter Benutzername</label>
@@ -629,7 +607,6 @@
     </div>
 </div>
 
-<!-- User Settings Modal -->
 <div id="userSettingsModal" class="modal">
     <div class="modal-content" style="max-width: 650px;">
         <span class="close-modal" onclick="closeUserSettingsModal()">&times;</span>
@@ -663,14 +640,13 @@
                 <div id="activeUsersContainer" style="display: flex; flex-direction: column; gap: 6px;"></div>
             </div>
             <div style="background: #1e293b; padding: 12px; border-radius: 6px; border: 1px solid #3b82f6;">
-                <h5 style="margin: 0 0 8px 0; font-size: 0.95rem; color: #3b82f6;">👥 Alle registrierten User</h5>
+                <h5 style="margin: 0 0 8px 0; font-size: 0.95rem; color: #3b82f6;">👥 Alle registrierten User & Tagebuch-Rechte</h5>
                 <div id="allUsersListContainer" style="display: flex; flex-direction: column; gap: 6px; max-height: 200px; overflow-y: auto;"></div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Start Location Overlay Modal -->
 <div id="startLocationOverlay" class="modal" style="display: none;">
     <div class="auth-box" style="max-width: 400px;">
         <h2 style="font-size: 1.2rem; margin-bottom: 14px; text-align: center;" data-i18n="startModalTitle">📍 Startadresse wählen</h2>
@@ -687,202 +663,284 @@
     </div>
 </div>
 
-<!-- Post Location Modal -->
-<div id="postLocationModal" class="modal" style="display: none;">
+<div id="unifiedLocationModal" class="modal" style="display: none;">
     <div class="auth-box" style="max-width: 400px;">
-        <h2 style="font-size: 1.2rem; margin-bottom: 14px; text-align: center;">📍 Standort für Nachricht wählen</h2>
+        <h2 id="unifiedLocationModalTitle" style="font-size: 1.2rem; margin-bottom: 14px; text-align: center;">📍 Standort wählen</h2>
         <div class="auth-form-group">
-            <label for="postAddrInput">Welche Adresse möchtest du anhängen?</label>
-            <input type="text" id="postAddrInput" placeholder="Ort, Stadt oder Adresse..." onkeydown="if(event.key==='Enter') submitPostManualLocation()">
+            <label>Welche Adresse möchtest du anhängen?</label>
+            <input type="text" id="unifiedAddrInput" placeholder="Ort, Stadt oder Adresse..." onkeydown="if(event.key==='Enter') submitUnifiedManualLocation()">
         </div>
         <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 14px;">
-            <button style="width: 100%;" onclick="submitPostManualLocation()">Adresse übernehmen</button>
-            <button style="width: 100%; background: #ef4444; color: white; display: flex; align-items: center; justify-content: center; gap: 6px; border: none; padding: 10px; border-radius: 6px; font-weight: 600; cursor: pointer;" onclick="submitPostCurrentLocation()">
+            <button style="width: 100%;" onclick="submitUnifiedManualLocation()">Adresse übernehmen</button>
+            <button style="width: 100%; background: #ef4444; color: white; display: flex; align-items: center; justify-content: center; gap: 6px; border: none; padding: 10px; border-radius: 6px; font-weight: 600; cursor: pointer;" onclick="submitUnifiedCurrentLocation()">
                 📍 Aktuellen Standort verwenden
             </button>
-            <button style="width: 100%; background: #334155; color: white; border: none; padding: 8px; border-radius: 6px; font-weight: 600; cursor: pointer;" onclick="closePostLocationModal()">Abbrechen</button>
+            <button style="width: 100%; background: #334155; color: white; border: none; padding: 8px; border-radius: 6px; font-weight: 600; cursor: pointer;" onclick="closeUnifiedLocationModal()">Abbrechen</button>
         </div>
+    </div>
+</div>
+
+<!-- Poll Creation Modal -->
+<div id="pollModal" class="modal">
+    <div class="modal-content" style="max-width: 460px;">
+        <span class="close-modal" onclick="closePollModal()">&times;</span>
+        <h3 style="margin-top:0; color: var(--accent-color);">📊 Abstimmung / Umfrage erstellen</h3>
+        <div class="auth-form-group">
+            <label>Frage / Thema</label>
+            <input type="text" id="pollQuestionInput" placeholder="z.B. Wohin fahren wir als nächstes?">
+        </div>
+        <div class="auth-form-group">
+            <label>Option 1</label>
+            <input type="text" id="pollOpt1" placeholder="Antwortmöglichkeit 1">
+        </div>
+        <div class="auth-form-group">
+            <label>Option 2</label>
+            <input type="text" id="pollOpt2" placeholder="Antwortmöglichkeit 2">
+        </div>
+        <div class="auth-form-group">
+            <label>Option 3 (optional)</label>
+            <input type="text" id="pollOpt3" placeholder="Antwortmöglichkeit 3">
+        </div>
+        <div class="auth-form-group">
+            <label>Option 4 (optional)</label>
+            <input type="text" id="pollOpt4" placeholder="Antwortmöglichkeit 4">
+        </div>
+        <button onclick="savePollToActiveTarget()" style="width: 100%; margin-top: 6px;">Umfrage hinzufügen</button>
     </div>
 </div>
 
 <div class="container" id="mainAppContainer" style="display: none;">
     <header>
         <h1 onclick="resetToHome()" data-i18n="title">Jannik Reisen 🌍✈️</h1>
-        <span class="badge" id="userBadgeLabel" onclick="openUserSettingsModal()" title="Einstellungen öffnen">admin (👑 Admin)</span>
-        <button class="logout-btn" onclick="handleLogout()" data-i18n="logout">Abmelden</button>
+        <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+            <span class="badge" onclick="switchMainView('home')" id="navHomeBadge">🏠 Hauptseite</span>
+            <span class="badge" onclick="switchMainView('timeline')" id="navTimelineBadge">✈️ Reiseverlauf & Tagebuch</span>
+            <span class="badge" id="userBadgeLabel" onclick="openUserSettingsModal()" title="Einstellungen öffnen">admin (👑 Admin)</span>
+            <button class="logout-btn" onclick="handleLogout()" data-i18n="logout">Abmelden</button>
+        </div>
     </header>
 
-    <div class="card">
-        <h3 data-i18n="mapTitle">🗺️ Weltkarte & Umkreis-Suche <small style="font-size:0.75rem; color:var(--text-muted);">(Nadel per Klick oder Drag beweglich!)</small></h3>
-        <div class="search-box">
-            <input type="text" id="citySearch" data-i18n-placeholder="searchPlaceholder" placeholder="Ort, Stadt oder PLZ suchen..." onkeydown="if(event.key==='Enter') searchLocation()">
-            <button onclick="searchLocation()" data-i18n="searchBtn">Suchen</button>
-        </div>
-        <div class="radius-control">
-            <label for="radiusRange"><span data-i18n="radiusLabel">Such-Umkreis:</span> <strong id="radiusValue">3</strong> km</label>
-            <input type="range" id="radiusRange" min="1" max="50" value="3" oninput="onRadiusChange(this.value)">
-        </div>
-        
-        <div id="map" class="map-container"></div>
-
-        <!-- Interactive Legend & Category Lists Below Map -->
-        <div class="interactive-legend-card">
-            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
-                <span style="font-weight: 600; font-size: 0.95rem;">🗺️ Interaktive Legende & Point-of-Interest (POI) Kategorien</span>
-                <button onclick="manualRefreshPOIs()" style="padding: 4px 10px; font-size: 0.75rem; background: var(--accent-color);">🔄 POIs Aktualisieren</button>
+    <div id="homeViewContainer" style="display: flex; flex-direction: column; gap: 12px;">
+        <div class="card">
+            <h3 data-i18n="mapTitle">🗺️ Weltkarte & Umkreis-Suche <small style="font-size:0.75rem; color:var(--text-muted);">(Nadel per Klick oder Drag beweglich!)</small></h3>
+            <div class="search-box">
+                <input type="text" id="citySearch" data-i18n-placeholder="searchPlaceholder" placeholder="Ort, Stadt oder PLZ suchen..." onkeydown="if(event.key==='Enter') searchLocation()">
+                <button onclick="searchLocation()" data-i18n="searchBtn">Suchen</button>
             </div>
-            <div class="interactive-legend-grid">
-                <div class="legend-item-box" id="legendBox_parking" onclick="selectCategoryForDetail('parking')">
-                    <label onclick="event.stopPropagation()" style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:0.85rem;">
-                        <input type="checkbox" id="toggleParking" checked onchange="togglePoiLayer('parking')"> 🅿️ Parkplätze
-                    </label>
-                    <span id="count_parking" style="font-size:0.75rem; color:var(--text-muted);">(0)</span>
-                </div>
-                <div class="legend-item-box" id="legendBox_shops" onclick="selectCategoryForDetail('shops')">
-                    <label onclick="event.stopPropagation()" style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:0.85rem;">
-                        <input type="checkbox" id="toggleShops" checked onchange="togglePoiLayer('shops')"> <span class="legend-dot pink"></span> 🛍️ Geschäfte
-                    </label>
-                    <span id="count_shops" style="font-size:0.75rem; color:var(--text-muted);">(0)</span>
-                </div>
-                <div class="legend-item-box" id="legendBox_fuel" onclick="selectCategoryForDetail('fuel')">
-                    <label onclick="event.stopPropagation()" style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:0.85rem;">
-                        <input type="checkbox" id="toggleFuel" checked onchange="togglePoiLayer('fuel')"> <span class="legend-dot green"></span> ⛽ Tankstellen & E-Ladepunkte
-                    </label>
-                    <span id="count_fuel" style="font-size:0.75rem; color:var(--text-muted);">(0)</span>
-                </div>
-                <div class="legend-item-box" id="legendBox_pharmacy" onclick="selectCategoryForDetail('pharmacy')">
-                    <label onclick="event.stopPropagation()" style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:0.85rem;">
-                        <input type="checkbox" id="togglePharmacy" checked onchange="togglePoiLayer('pharmacy')"> <span class="legend-dot purple"></span> 💊 Apotheken & Medizin
-                    </label>
-                    <span id="count_pharmacy" style="font-size:0.75rem; color:var(--text-muted);">(0)</span>
-                </div>
-                <div class="legend-item-box" id="legendBox_banks" onclick="selectCategoryForDetail('banks')">
-                    <label onclick="event.stopPropagation()" style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:0.85rem;">
-                        <input type="checkbox" id="toggleBanks" checked onchange="togglePoiLayer('banks')"> <span class="legend-dot teal"></span> 🏦 Banken & Geldautomaten
-                    </label>
-                    <span id="count_banks" style="font-size:0.75rem; color:var(--text-muted);">(0)</span>
-                </div>
-                <div class="legend-item-box" id="legendBox_sights" onclick="selectCategoryForDetail('sights')">
-                    <label onclick="event.stopPropagation()" style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:0.85rem;">
-                        <input type="checkbox" id="toggleSights" checked onchange="togglePoiLayer('sights')"> <span class="legend-dot red"></span> 🏛️ Sehenswürdigkeiten
-                    </label>
-                    <span id="count_sights" style="font-size:0.75rem; color:var(--text-muted);">(0)</span>
-                </div>
-                <div class="legend-item-box" id="legendBox_restaurants" onclick="selectCategoryForDetail('restaurants')">
-                    <label onclick="event.stopPropagation()" style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:0.85rem;">
-                        <input type="checkbox" id="toggleRestaurants" checked onchange="togglePoiLayer('restaurants')"> <span class="legend-dot blue"></span> 🍽️ Restaurants & Cafés
-                    </label>
-                    <span id="count_restaurants" style="font-size:0.75rem; color:var(--text-muted);">(0)</span>
-                </div>
-                <div class="legend-item-box" id="legendBox_hotels" onclick="selectCategoryForDetail('hotels')">
-                    <label onclick="event.stopPropagation()" style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:0.85rem;">
-                        <input type="checkbox" id="toggleHotels" checked onchange="togglePoiLayer('hotels')"> <span class="legend-dot orange"></span> 🏨 Unterkünfte
-                    </label>
-                    <span id="count_hotels" style="font-size:0.75rem; color:var(--text-muted);">(0)</span>
-                </div>
+            <div class="radius-control">
+                <label for="radiusRange"><span data-i18n="radiusLabel">Such-Umkreis:</span> <strong id="radiusValue">3</strong> km</label>
+                <input type="range" id="radiusRange" min="1" max="50" value="3" oninput="onRadiusChange(this.value)">
             </div>
-
-            <!-- Category Detail List Container (Shown when clicking a category box) -->
-            <div id="categoryDetailContainer" class="category-detail-container">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; border-bottom: 1px solid var(--border-color); padding-bottom: 6px;">
-                    <strong id="categoryDetailTitle" style="color: var(--accent-color);">Kategorie-Details</strong>
-                    <span onclick="closeCategoryDetail()" style="cursor: pointer; font-size: 1rem; color: var(--text-muted);">&times; Schließen</span>
-                </div>
-                <div id="categoryDetailList" style="display: flex; flex-direction: column; gap: 8px;"></div>
-            </div>
-        </div>
-
-        <div style="margin-top: 10px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
-            <label style="cursor:pointer; display: flex; align-items: center; gap: 6px; font-size: 0.9rem;">
-                <input type="checkbox" id="trafficToggle"> <span data-i18n="liveTraffic">Live-Verkehr aktivieren</span>
-            </label>
-            <div style="display: flex; gap: 6px; align-items: center;">
-                <button onclick="setMyCurrentLocation()" style="background: #ef4444; color: white; padding: 6px 12px; border-radius: 6px; font-weight: 600; font-size: 0.85rem; border: none; cursor: pointer; display: flex; align-items: center; gap: 6px;" title="Aktueller Standort">
-                    📍 <span data-i18n="useCurrentLocation">Aktuellen Standort verwenden</span>
-                </button>
-                <button onclick="openGoogleMapsNavigation()" style="background: #10b981; color: white; padding: 6px 14px; border-radius: 6px; font-weight: 600; font-size: 0.85rem; border: none; cursor: pointer;">
-                    🧭 <span data-i18n="navMaps">Navigation Google Maps</span>
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <div class="card" style="cursor: pointer;" onclick="openWeatherDetailsModal()" title="Klicken für detaillierte Graphen und Animationen">
-        <h3 id="weatherTitle" data-i18n="weatherTitle">🌤️ Wetter-Vorschau <small style="font-size:0.75rem; color:var(--accent-color);">(Klicken für Graphen & Animationen)</small></h3>
-        <div class="weather-grid" id="weatherGrid">
-            <div style="text-align:center; padding:20px; grid-column:1/-1; color:var(--text-muted);">
-                <span class="swivel-loader"></span> Lade Wetter...
-            </div>
-        </div>
-        <h3 style="margin-top: 15px;" data-i18n="hourlyTitle">⏱️ Stündliche Vorschau ab JETZT</h3>
-        <div class="weather-hours" id="weatherHoursGrid"></div>
-        <p style="font-size: 0.8rem; color: #4ade80; margin-top: 8px; margin-bottom: 0;">⚡ <span data-i18n="weatherActive">Wetter-Datenpunkt aktiv für</span> <span id="weatherCityName">Standort</span></p>
-    </div>
-
-    <div class="card">
-        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
-            <h3 style="margin: 0; border: none; padding: 0;" data-i18n="cityInfoTitle">ℹ️ Infos zur Stadt & Wikipedia-Entdeckungen <span id="loadingStatus"></span></h3>
-        </div>
-        <p style="margin-top: 10px;"><strong data-i18n="country">Land:</strong> <span id="infoCountry">-</span> <span id="countryEmblems" class="emblem-container"></span></p>
-        <p><strong data-i18n="region">Region / Bundesland:</strong> <span id="infoState">-</span> <span id="stateEmblems" class="emblem-container"></span></p>
-        <p><strong data-i18n="city">Stadt:</strong> <span id="infoCity">-</span> <span id="cityEmblems" class="emblem-container"></span></p>
-    </div>
-
-    <!-- Community Feed -->
-    <div class="card">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 8px;">
-            <h3 style="margin: 0; border: none; padding: 0;" data-i18n="feedTitle">💬 Nachrichtenverlauf & Community Feed</h3>
-            <div class="inline-filter" style="display:flex; align-items:center; gap:6px;">
-                <input type="text" id="postSearchInput" placeholder="Nachrichten durchsuchen..." oninput="renderPostsFeed()" style="padding: 4px 8px; font-size: 0.85rem; width: 160px;">
-                <label for="postSortSelect" data-i18n="filterSort" style="font-size:0.85rem;">Sortierung:</label>
-                <select id="postSortSelect" onchange="renderPostsFeed()" style="padding: 4px 8px; font-size: 0.85rem; width: auto;">
-                    <option value="newest" selected data-i18n="sortNewest">Neueste Nachricht</option>
-                    <option value="oldest" data-i18n="sortOldest">Älteste Nachricht</option>
-                    <option value="most_reactions" data-i18n="sortMostReactions">Meiste Reaktionen</option>
-                </select>
-            </div>
-        </div>
-        <div id="postsFeedContainer" style="display: flex; flex-direction: column; gap: 12px;"></div>
-        
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--border-color);">
-            <button onclick="prevPostPage()" id="postPrevBtn" style="padding: 6px 12px; font-size: 0.85rem; background: #334155;" data-i18n="prevBtn">◀ Zurück</button>
-            <span id="postPageIndicator" style="font-size: 0.85rem; color: var(--text-muted);">Seite 1 von 1</span>
-            <button onclick="nextPostPage()" id="postNextBtn" style="padding: 6px 12px; font-size: 0.85rem; background: #334155;" data-i18n="nextBtn">Weiter ▶</button>
-        </div>
-    </div>
-
-    <!-- Nachrichtenschreibfeld -->
-    <div class="card">
-        <h3 data-i18n="newPostTitle">✍️ Neue Nachricht schreiben</h3>
-        <div style="background: #162032; padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); margin-top: 8px;">
-            <textarea id="postText" data-i18n-placeholder="postPlaceholder" placeholder="Was gibt's Neues bei deinen Reisen?..." rows="2" style="margin-bottom: 6px; font-size: 0.85rem;"></textarea>
             
-            <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 6px;">
-                <label style="background: var(--accent-color); color: white; padding: 4px 8px; border-radius: 6px; cursor: pointer; font-size: 0.75rem;">
-                    <span>📷 Bild</span>
-                    <input type="file" id="postImage" accept="image/*" style="display:none;" onchange="previewPostMedia(this, 'image')">
-                </label>
-                <label style="background: #10b981; color: white; padding: 4px 8px; border-radius: 6px; cursor: pointer; font-size: 0.75rem;">
-                    🎥 Video
-                    <input type="file" id="postVideo" accept="video/*" style="display:none;" onchange="previewPostMedia(this, 'video')">
-                </label>
-                <button onclick="openGiphyModal('post')" style="font-size: 0.75rem; padding: 4px 8px; background: #8b5cf6;">🖼️ GIF</button>
-                <button onclick="requestLocationAttachment()" style="font-size: 0.75rem; padding: 4px 8px; background: #059669;">📍 Standort</button>
-                <span id="postMediaName" style="font-size: 0.75rem; color: var(--text-muted);"></span>
-            </div>
-            <div id="postLocationIndicator" style="font-size: 0.75rem; color: #34d399; margin-bottom: 4px;"></div>
+            <div id="map" class="map-container"></div>
 
-            <div id="postMediaPreviewContainer" style="display:none; margin-bottom: 6px; position: relative; max-width: 160px;">
-                <div id="postMediaPreviewContent"></div>
-                <button onclick="clearPostMedia()" style="position: absolute; top: 2px; right: 2px; background: rgba(0,0,0,0.8); padding: 1px 5px; font-size: 0.65rem; color:white; border:none; border-radius:4px; cursor:pointer;">&times;</button>
+            <div class="interactive-legend-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+                    <span style="font-weight: 600; font-size: 0.95rem;">🗺️ Interaktive Legende & Point-of-Interest (POI) Kategorien</span>
+                    <button onclick="manualRefreshPOIs()" style="padding: 4px 10px; font-size: 0.75rem; background: var(--accent-color);">🔄 POIs Aktualisieren</button>
+                </div>
+                <div class="interactive-legend-grid">
+                    <div class="legend-item-box" id="legendBox_parking" onclick="selectCategoryForDetail('parking')">
+                        <label onclick="event.stopPropagation()" style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:0.85rem;">
+                            <input type="checkbox" id="toggleParking" checked onchange="togglePoiLayer('parking')"> 🅿️ Parkplätze
+                        </label>
+                        <span id="count_parking" style="font-size:0.75rem; color:var(--text-muted);">(0)</span>
+                    </div>
+                    <div class="legend-item-box" id="legendBox_shops" onclick="selectCategoryForDetail('shops')">
+                        <label onclick="event.stopPropagation()" style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:0.85rem;">
+                            <input type="checkbox" id="toggleShops" checked onchange="togglePoiLayer('shops')"> <span class="legend-dot pink"></span> 🛍️ Geschäfte
+                        </label>
+                        <span id="count_shops" style="font-size:0.75rem; color:var(--text-muted);">(0)</span>
+                    </div>
+                    <div class="legend-item-box" id="legendBox_fuel" onclick="selectCategoryForDetail('fuel')">
+                        <label onclick="event.stopPropagation()" style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:0.85rem;">
+                            <input type="checkbox" id="toggleFuel" checked onchange="togglePoiLayer('fuel')"> <span class="legend-dot green"></span> ⛽ Tankstellen & E-Ladepunkte
+                        </label>
+                        <span id="count_fuel" style="font-size:0.75rem; color:var(--text-muted);">(0)</span>
+                    </div>
+                    <div class="legend-item-box" id="legendBox_pharmacy" onclick="selectCategoryForDetail('pharmacy')">
+                        <label onclick="event.stopPropagation()" style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:0.85rem;">
+                            <input type="checkbox" id="togglePharmacy" checked onchange="togglePoiLayer('pharmacy')"> <span class="legend-dot purple"></span> 💊 Apotheken & Medizin
+                        </label>
+                        <span id="count_pharmacy" style="font-size:0.75rem; color:var(--text-muted);">(0)</span>
+                    </div>
+                    <div class="legend-item-box" id="legendBox_banks" onclick="selectCategoryForDetail('banks')">
+                        <label onclick="event.stopPropagation()" style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:0.85rem;">
+                            <input type="checkbox" id="toggleBanks" checked onchange="togglePoiLayer('banks')"> <span class="legend-dot teal"></span> 🏦 Banken & Geldautomaten
+                        </label>
+                        <span id="count_banks" style="font-size:0.75rem; color:var(--text-muted);">(0)</span>
+                    </div>
+                    <div class="legend-item-box" id="legendBox_sights" onclick="selectCategoryForDetail('sights')">
+                        <label onclick="event.stopPropagation()" style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:0.85rem;">
+                            <input type="checkbox" id="toggleSights" checked onchange="togglePoiLayer('sights')"> <span class="legend-dot red"></span> 🏛️ Sehenswürdigkeiten
+                        </label>
+                        <span id="count_sights" style="font-size:0.75rem; color:var(--text-muted);">(0)</span>
+                    </div>
+                    <div class="legend-item-box" id="legendBox_restaurants" onclick="selectCategoryForDetail('restaurants')">
+                        <label onclick="event.stopPropagation()" style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:0.85rem;">
+                            <input type="checkbox" id="toggleRestaurants" checked onchange="togglePoiLayer('restaurants')"> <span class="legend-dot blue"></span> 🍽️ Restaurants & Cafés
+                        </label>
+                        <span id="count_restaurants" style="font-size:0.75rem; color:var(--text-muted);">(0)</span>
+                    </div>
+                    <div class="legend-item-box" id="legendBox_hotels" onclick="selectCategoryForDetail('hotels')">
+                        <label onclick="event.stopPropagation()" style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:0.85rem;">
+                            <input type="checkbox" id="toggleHotels" checked onchange="togglePoiLayer('hotels')"> <span class="legend-dot orange"></span> 🏨 Unterkünfte
+                        </label>
+                        <span id="count_hotels" style="font-size:0.75rem; color:var(--text-muted);">(0)</span>
+                    </div>
+                </div>
+
+                <div id="categoryDetailContainer" class="category-detail-container">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; border-bottom: 1px solid var(--border-color); padding-bottom: 6px;">
+                        <strong id="categoryDetailTitle" style="color: var(--accent-color);">Kategorie-Details</strong>
+                        <span onclick="closeCategoryDetail()" style="cursor: pointer; font-size: 1rem; color: var(--text-muted);">&times; Schließen</span>
+                    </div>
+                    <div id="categoryDetailList" style="display: flex; flex-direction: column; gap: 8px;"></div>
+                </div>
             </div>
 
-            <button onclick="handleCreatePost()" style="padding: 6px 12px; font-size: 0.8rem; margin-top: 4px;" data-i18n="publishBtn">Beitrag veröffentlichen</button>
+            <div style="margin-top: 10px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+                <label style="cursor:pointer; display: flex; align-items: center; gap: 6px; font-size: 0.9rem;">
+                    <input type="checkbox" id="trafficToggle"> <span data-i18n="liveTraffic">Live-Verkehr aktivieren</span>
+                </label>
+                <div style="display: flex; gap: 6px; align-items: center;">
+                    <button onclick="setMyCurrentLocation()" style="background: #ef4444; color: white; padding: 6px 12px; border-radius: 6px; font-weight: 600; font-size: 0.85rem; border: none; cursor: pointer; display: flex; align-items: center; gap: 6px;" title="Aktueller Standort">
+                        📍 <span data-i18n="useCurrentLocation">Aktuellen Standort verwenden</span>
+                    </button>
+                    <button onclick="openGoogleMapsNavigation()" style="background: #10b981; color: white; padding: 6px 14px; border-radius: 6px; font-weight: 600; font-size: 0.85rem; border: none; cursor: pointer;">
+                        🧭 <span data-i18n="navMaps">Navigation Google Maps</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" style="cursor: pointer;" onclick="openWeatherDetailsModal()" title="Klicken für detaillierte Graphen und Animationen">
+            <h3 id="weatherTitle" data-i18n="weatherTitle">🌤️ Wetter-Vorschau <small style="font-size:0.75rem; color:var(--accent-color);">(Klicken für Graphen & Animationen)</small></h3>
+            <div class="weather-grid" id="weatherGrid">
+                <div style="text-align:center; padding:20px; grid-column:1/-1; color:var(--text-muted);">
+                    <span class="swivel-loader"></span> Lade Wetter...
+                </div>
+            </div>
+            <h3 style="margin-top: 15px;" data-i18n="hourlyTitle">⏱️ Stündliche Vorschau ab JETZT</h3>
+            <div class="weather-hours" id="weatherHoursGrid"></div>
+            <p style="font-size: 0.8rem; color: #4ade80; margin-top: 8px; margin-bottom: 0;">⚡ <span data-i18n="weatherActive">Wetter-Datenpunkt aktiv für</span> <span id="weatherCityName">Standort</span></p>
+        </div>
+
+        <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+                <h3 style="margin: 0; border: none; padding: 0;" data-i18n="cityInfoTitle">ℹ️ Infos zur Stadt & Wikipedia-Entdeckungen <span id="loadingStatus"></span></h3>
+            </div>
+            <p style="margin-top: 10px;"><strong data-i18n="country">Land:</strong> <span id="infoCountry">-</span> <span id="countryEmblems" class="emblem-container"></span></p>
+            <p><strong data-i18n="region">Region / Bundesland:</strong> <span id="infoState">-</span> <span id="stateEmblems" class="emblem-container"></span></p>
+            <p><strong data-i18n="city">Stadt:</strong> <span id="infoCity">-</span> <span id="cityEmblems" class="emblem-container"></span></p>
+        </div>
+
+        <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 8px;">
+                <h3 style="margin: 0; border: none; padding: 0;" data-i18n="feedTitle">💬 Nachrichtenverlauf & Community Feed</h3>
+                <div class="inline-filter" style="display:flex; align-items:center; gap:6px;">
+                    <input type="text" id="postSearchInput" placeholder="Nachrichten durchsuchen..." oninput="renderPostsFeed()" style="padding: 4px 8px; font-size: 0.85rem; width: 160px;">
+                    <label for="postSortSelect" data-i18n="filterSort" style="font-size:0.85rem;">Sortierung:</label>
+                    <select id="postSortSelect" onchange="renderPostsFeed()" style="padding: 4px 8px; font-size: 0.85rem; width: auto;">
+                        <option value="newest" selected data-i18n="sortNewest">Neueste Nachricht</option>
+                        <option value="oldest" data-i18n="sortOldest">Älteste Nachricht</option>
+                        <option value="most_reactions" data-i18n="sortMostReactions">Meiste Reaktionen</option>
+                    </select>
+                </div>
+            </div>
+            <div id="postsFeedContainer" style="display: flex; flex-direction: column; gap: 12px;"></div>
+            
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--border-color);">
+                <button onclick="prevPostPage()" id="postPrevBtn" style="padding: 6px 12px; font-size: 0.85rem; background: #334155;" data-i18n="prevBtn">◀ Zurück</button>
+                <span id="postPageIndicator" style="font-size: 0.85rem; color: var(--text-muted);">Seite 1 von 1</span>
+                <button onclick="nextPostPage()" id="postNextBtn" style="padding: 6px 12px; font-size: 0.85rem; background: #334155;" data-i18n="nextBtn">Weiter ▶</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3 data-i18n="newPostTitle">✍️ Neue Nachricht schreiben</h3>
+            <div style="background: #162032; padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); margin-top: 8px;">
+                <textarea id="postText" data-i18n-placeholder="postPlaceholder" placeholder="Was gibt's Neues bei deinen Reisen?..." rows="2" style="margin-bottom: 6px; font-size: 0.85rem;"></textarea>
+                
+                <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 6px;">
+                    <label style="background: var(--accent-color); color: white; padding: 4px 8px; border-radius: 6px; cursor: pointer; font-size: 0.75rem;">
+                        <span>📷 Bild</span>
+                        <input type="file" id="postImage" accept="image/*" style="display:none;" onchange="previewPostMedia(this, 'image')">
+                    </label>
+                    <label style="background: #10b981; color: white; padding: 4px 8px; border-radius: 6px; cursor: pointer; font-size: 0.75rem;">
+                        🎥 Video
+                        <input type="file" id="postVideo" accept="video/*" style="display:none;" onchange="previewPostMedia(this, 'video')">
+                    </label>
+                    <button onclick="openGiphyModal('post')" style="font-size: 0.75rem; padding: 4px 8px; background: #8b5cf6;">🖼️ GIF</button>
+                    <button onclick="openUnifiedLocationModal('post')" style="font-size: 0.75rem; padding: 4px 8px; background: #059669;">📍 Standort</button>
+                    <button onclick="openPollModal('post')" style="font-size: 0.75rem; padding: 4px 8px; background: #f59e0b;">📊 Abstimmung</button>
+                    <span id="postMediaName" style="font-size: 0.75rem; color: var(--text-muted);"></span>
+                </div>
+                <div id="postLocationIndicator" style="font-size: 0.75rem; color: #34d399; margin-bottom: 4px;"></div>
+                <div id="postPollIndicator" style="font-size: 0.75rem; color: #f59e0b; margin-bottom: 4px;"></div>
+
+                <div id="postMediaPreviewContainer" style="display:none; margin-bottom: 6px; position: relative; max-width: 160px;">
+                    <div id="postMediaPreviewContent"></div>
+                    <button onclick="clearPostMedia()" style="position: absolute; top: 2px; right: 2px; background: rgba(0,0,0,0.8); padding: 1px 5px; font-size: 0.65rem; color:white; border:none; border-radius:4px; cursor:pointer;">&times;</button>
+                </div>
+
+                <button onclick="handleCreatePost()" style="padding: 6px 12px; font-size: 0.8rem; margin-top: 4px;" data-i18n="publishBtn">Beitrag veröffentlichen</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="timelineViewContainer" style="display: none; flex-direction: column; gap: 12px;">
+        <div class="card">
+            <h3 style="margin-top:0; color: var(--accent-color);">✈️ Reiseverlauf & Tagebuch</h3>
+            <p style="font-size: 0.9rem; color: var(--text-muted); margin-top: 0;">Erfasse deine Stationen, lade Bilder hoch und betrachte deinen gesamten Reiseverlauf interaktiv auf einer Karte.</p>
+            
+            <div id="timelineMap" class="map-container" style="height: 380px; margin-bottom: 14px;"></div>
+
+            <div style="background: #162032; padding: 14px; border-radius: 8px; border: 1px solid var(--border-color);">
+                <h4 style="margin-top: 0; color: var(--accent-color);">➕ Neuen Reise-Eintrag hinzufügen</h4>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; margin-bottom: 10px;">
+                    <div>
+                        <label style="font-size: 0.8rem; color: var(--text-muted); display: block; margin-bottom: 4px;">Titel / Station (z.B. Rom Städtetrip)</label>
+                        <input type="text" id="travelTitleInput" placeholder="Titel eingeben...">
+                    </div>
+                    <div>
+                        <label style="font-size: 0.8rem; color: var(--text-muted); display: block; margin-bottom: 4px;">Datum</label>
+                        <input type="date" id="travelDateInput">
+                    </div>
+                </div>
+
+                <div class="auth-form-group">
+                    <label style="font-size: 0.8rem; color: var(--text-muted); display: block; margin-bottom: 4px;">Nachricht / Beschreibung</label>
+                    <textarea id="travelDescInput" rows="3" placeholder="Erzähle von deinen Erlebnissen an diesem Ort..."></textarea>
+                </div>
+
+                <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 10px;">
+                    <label style="background: var(--accent-color); color: white; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.85rem;">
+                        <span>📷 Bild hochladen</span>
+                        <input type="file" id="travelImageFile" accept="image/*" style="display:none;" onchange="previewTravelImage(this)">
+                    </label>
+                    <button onclick="openUnifiedLocationModal('timeline')" style="background: #059669; padding: 6px 12px; font-size: 0.85rem;">📍 Standort wählen</button>
+                    <button onclick="openPollModal('timeline')" style="background: #f59e0b; padding: 6px 12px; font-size: 0.85rem;">📊 Abstimmung</button>
+                    <span id="travelLocationIndicator" style="font-size: 0.85rem; color: #34d399;"></span>
+                </div>
+                <div id="travelPollIndicator" style="font-size: 0.85rem; color: #f59e0b; margin-bottom: 4px;"></div>
+
+                <div id="travelImagePreviewBox" style="display: none; margin-bottom: 10px; position: relative; max-width: 200px;">
+                    <img id="travelImagePreviewImg" style="width: 100%; border-radius: 6px; max-height: 120px; object-fit: cover;" src="">
+                    <button onclick="clearTravelImage()" style="position: absolute; top: 4px; right: 4px; background: rgba(0,0,0,0.8); padding: 2px 6px; font-size: 0.75rem; color:white; border:none; border-radius:4px; cursor:pointer;">&times;</button>
+                </div>
+
+                <button onclick="saveTravelEntry()" style="padding: 8px 16px;">Reise-Eintrag speichern</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3 style="margin-top:0;">📚 Meine Reise-Chronik & Tagebuch-Einträge</h3>
+            <div id="travelEntriesList" style="display: flex; flex-direction: column; gap: 12px; margin-top: 10px;"></div>
         </div>
     </div>
 </div>
 
-<!-- Weather Details & Charts Modal -->
 <div id="weatherDetailsModal" class="modal">
     <div class="modal-content" style="max-width: 850px;">
         <span class="close-modal" onclick="closeWeatherDetailsModal()">&times;</span>
@@ -910,7 +968,6 @@
     </div>
 </div>
 
-<!-- Giphy Modal -->
 <div id="giphyModal" class="modal">
     <div class="modal-content" style="max-width: 600px;">
         <span class="close-modal" onclick="closeGiphyModal()">&times;</span>
@@ -923,29 +980,19 @@
     </div>
 </div>
 
-<!-- Emoji Picker Modal -->
 <div id="emojiPickerModal" class="modal">
-    <div class="modal-content" style="max-width: 460px; text-align: center;">
+    <div class="modal-content" style="max-width: 480px; text-align: center;">
         <span class="close-modal" onclick="closeEmojiPickerModal()">&times;</span>
         <h3 style="margin-top:0; color: var(--accent-color);" data-i18n="emojiTitle">😀 Emoji auswählen</h3>
         <div style="margin-bottom: 10px;">
             <input type="text" id="emojiSearchInput" placeholder="Emojis suchen (z.B. Herz, Auto, Lachen)..." oninput="filterEmojis()" style="padding: 8px; font-size: 0.9rem;">
         </div>
-        <div id="emojiPickerGrid" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin: 15px 0; min-height: 180px;"></div>
+        <div id="emojiPickerGrid" style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; margin: 15px 0; min-height: 200px; max-height: 300px; overflow-y: auto;"></div>
         <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 10px;">
             <button onclick="prevEmojiPage()" style="padding: 6px 12px; font-size: 0.85rem; background: #334155;">◀ Zurück</button>
             <span id="emojiPageIndicator" style="font-size: 0.85rem; color: var(--text-muted);">Seite 1</span>
             <button onclick="nextEmojiPage()" style="padding: 6px 12px; font-size: 0.85rem; background: #334155;">Weiter ▶</button>
         </div>
-    </div>
-</div>
-
-<!-- Standard / POI Detail Modal -->
-<div id="detailModal" class="modal">
-    <div class="modal-content">
-        <span class="close-modal" onclick="closeModal()">&times;</span>
-        <h2 id="modalTitle" style="margin-top:0; font-size: 1.2rem; color: var(--accent-color);">Titel</h2>
-        <div id="modalBody" style="font-size: 0.95rem; line-height: 1.5;">Inhalt...</div>
     </div>
 </div>
 
@@ -1104,6 +1151,7 @@
         if(currentUser) {
             completeLogin(currentUser);
         }
+        initMap();
     });
 
     function togglePasswordVisibility(fieldId, iconEl) {
@@ -1142,7 +1190,7 @@
     function getUsers() {
         let users = JSON.parse(localStorage.getItem('jannik_users') || '{}');
         if (!users['admin']) {
-            users['admin'] = { pass: 'admin', isAdmin: true, approved: true };
+            users['admin'] = { pass: 'admin', isAdmin: true, approved: true, timelineAccess: true };
             localStorage.setItem('jannik_users', JSON.stringify(users));
         }
         return users;
@@ -1191,7 +1239,7 @@
             return; 
         }
 
-        users[user] = { pass: pass, isAdmin: false, approved: false };
+        users[user] = { pass: pass, isAdmin: false, approved: false, timelineAccess: false };
         localStorage.setItem('jannik_users', JSON.stringify(users));
         
         switchAuthTab('login');
@@ -1250,322 +1298,572 @@
         document.getElementById('authOverlay').style.display = 'flex';
     }
 
-    /* --- User Settings & Admin Management --- */
-    function openUserSettingsModal() {
+    let currentMainView = 'home';
+    function switchMainView(view) {
         const currentUser = localStorage.getItem('jannik_current_user');
-        document.getElementById('newPasswordInput').value = '';
-        document.getElementById('newPasswordConfirmInput').value = '';
-        
-        const adminConsole = document.getElementById('adminConsoleSection');
-        if (isAdmin(currentUser)) {
-            adminConsole.style.display = 'block';
-            renderAdminConsoleData();
-        } else {
-            adminConsole.style.display = 'none';
-        }
-        document.getElementById('userSettingsModal').style.display = 'flex';
-    }
-
-    function closeUserSettingsModal() {
-        document.getElementById('userSettingsModal').style.display = 'none';
-    }
-
-    function changePassword() {
-        const newPass = document.getElementById('newPasswordInput').value.trim();
-        const confirmPass = document.getElementById('newPasswordConfirmInput').value.trim();
-        if (!newPass || !confirmPass) {
-            alert("Bitte füllen Sie beide Passwortfelder aus.");
-            return;
-        }
-        if (newPass !== confirmPass) {
-            alert("Die Passwörter stimmen nicht überein. Bitte geben Sie zweimal exakt dasselbe Passwort ein.");
-            return;
-        }
-        const currentUser = localStorage.getItem('jannik_current_user');
-        let users = getUsers();
-        if (users[currentUser]) {
-            users[currentUser].pass = newPass;
-            localStorage.setItem('jannik_users', JSON.stringify(users));
-            alert("Passwort erfolgreich geändert!");
-            document.getElementById('newPasswordInput').value = '';
-            document.getElementById('newPasswordConfirmInput').value = '';
-        }
-    }
-
-    function deleteMyAccount() {
-        const currentUser = localStorage.getItem('jannik_current_user');
-        if (currentUser === 'admin') {
-            alert("Der Haupt-Admin-Account kann nicht gelöscht werden.");
-            return;
-        }
-        if (confirm("Möchten Sie Ihren Account wirklich unwiderruflich löschen?")) {
-            let users = getUsers();
-            delete users[currentUser];
-            localStorage.setItem('jannik_users', JSON.stringify(users));
-            handleLogout();
-        }
-    }
-
-    function renderAdminConsoleData() {
         const users = getUsers();
+
+        if (view === 'timeline') {
+            if (!isAdmin(currentUser) && (!users[currentUser] || !users[currentUser].timelineAccess)) {
+                alert("⚠️ Du hast keine Berechtigung, auf das Tagebuch / den Reiseverlauf zuzugreifen. Bitte wende dich an den Admin, um die Rechte freizuschalten.");
+                return;
+            }
+        }
+
+        currentMainView = view;
+        const homeContainer = document.getElementById('homeViewContainer');
+        const timelineContainer = document.getElementById('timelineViewContainer');
+        const navHome = document.getElementById('navHomeBadge');
+        const navTimeline = document.getElementById('navTimelineBadge');
+
+        if (view === 'timeline') {
+            homeContainer.style.display = 'none';
+            timelineContainer.style.display = 'flex';
+            navHome.style.background = '#334155';
+            navTimeline.style.background = 'var(--accent-color)';
+            setTimeout(() => {
+                initTimelineMap();
+                renderTravelEntries();
+            }, 100);
+        } else {
+            homeContainer.style.display = 'flex';
+            timelineContainer.style.display = 'none';
+            navHome.style.background = 'var(--accent-color)';
+            navTimeline.style.background = '#334155';
+            setTimeout(() => {
+                if(map) map.invalidateSize();
+            }, 100);
+        }
+    }
+
+    function resetToHome() {
+        switchMainView('home');
+    }
+
+    /* --- Leaflet Map & POI Logic --- */
+    let map = null;
+    let mainMarker = null;
+    let searchRadiusCircle = null;
+    let currentLat = 48.5734;
+    let currentLon = 7.7521;
+    let currentCityName = "Appenweier";
+
+    function initMap() {
+        if (!map) {
+            map = L.map('map').setView([currentLat, currentLon], 13);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
+            
+            mainMarker = L.marker([currentLat, currentLon], { draggable: true }).addTo(map);
+            mainMarker.on('dragend', function(e) {
+                const pos = mainMarker.getLatLng();
+                currentLat = pos.lat;
+                currentLon = pos.lng;
+                reverseGeocodeAndFetch(currentLat, currentLon);
+            });
+
+            map.on('click', function(e) {
+                currentLat = e.latlng.lat;
+                currentLon = e.latlng.lng;
+                mainMarker.setLatLng([currentLat, currentLon]);
+                reverseGeocodeAndFetch(currentLat, currentLon);
+            });
+        }
+        updateRadiusCircle();
+        fetchWeatherData(currentLat, currentLon, currentCityName);
+    }
+
+    function updateRadiusCircle() {
+        const radiusKm = parseFloat(document.getElementById('radiusRange').value) || 3;
+        document.getElementById('radiusValue').innerText = radiusKm;
+        if (searchRadiusCircle) {
+            map.removeLayer(searchRadiusCircle);
+        }
+        searchRadiusCircle = L.circle([currentLat, currentLon], {
+            radius: radiusKm * 1000,
+            color: '#3b82f6',
+            fillColor: '#3b82f6',
+            fillOpacity: 0.15
+        }).addTo(map);
+    }
+
+    function onRadiusChange(val) {
+        document.getElementById('radiusValue').innerText = val;
+        updateRadiusCircle();
+    }
+
+    async function searchLocation() {
+        const query = document.getElementById('citySearch').value.trim();
+        if (!query) return;
+        try {
+            const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`);
+            const data = await res.json();
+            if (data && data.length > 0) {
+                currentLat = parseFloat(data[0].lat);
+                currentLon = parseFloat(data[0].lon);
+                currentCityName = data[0].display_name.split(',')[0];
+                map.setView([currentLat, currentLon], 13);
+                mainMarker.setLatLng([currentLat, currentLon]);
+                updateRadiusCircle();
+                fetchWeatherData(currentLat, currentLon, currentCityName);
+                fetchCityInfo(currentLat, currentLon, currentCityName);
+            } else {
+                alert("Ort nicht gefunden.");
+            }
+        } catch(e) {
+            alert("Fehler bei der Ortssuche.");
+        }
+    }
+
+    async function reverseGeocodeAndFetch(lat, lon) {
+        try {
+            const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
+            const data = await res.json();
+            if (data && data.address) {
+                currentCityName = data.address.city || data.address.town || data.address.village || data.address.county || "Standort";
+                document.getElementById('citySearch').value = currentCityName;
+                fetchWeatherData(lat, lon, currentCityName);
+                fetchCityInfo(lat, lon, currentCityName);
+            }
+        } catch(e) {
+            fetchWeatherData(lat, lon, "Standort");
+        }
+    }
+
+    function setMyCurrentLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(pos => {
+                currentLat = pos.coords.latitude;
+                currentLon = pos.coords.longitude;
+                map.setView([currentLat, currentLon], 14);
+                mainMarker.setLatLng([currentLat, currentLon]);
+                updateRadiusCircle();
+                reverseGeocodeAndFetch(currentLat, currentLon);
+            }, () => {
+                alert("Standort konnte nicht ermittelt werden.");
+            });
+        } else {
+            alert("Geolocation wird nicht unterstützt.");
+        }
+    }
+
+    function openGoogleMapsNavigation() {
+        window.open(`https://www.google.com/maps/dir/?api=1&destination=${currentLat},${currentLon}`, '_blank');
+    }
+
+    function manualRefreshPOIs() {
+        alert("POIs wurden aktualisiert.");
+    }
+
+    function togglePoiLayer(category) {}
+
+    function selectCategoryForDetail(cat) {
+        const container = document.getElementById('categoryDetailContainer');
+        container.style.display = 'block';
+        document.getElementById('categoryDetailTitle').innerText = "Details für: " + cat;
+        document.getElementById('categoryDetailList').innerHTML = '<div style="color:var(--text-muted); text-align:center; padding:10px;">Keine Einträge in diesem Umkreis gefunden.</div>';
+    }
+
+    function closeCategoryDetail() {
+        document.getElementById('categoryDetailContainer').style.display = 'none';
+    }
+
+    function fetchCityInfo(lat, lon, cityName) {
+        document.getElementById('infoCity').innerText = cityName;
+        document.getElementById('infoCountry').innerText = "Deutschland";
+        document.getElementById('infoState').innerText = "Baden-Württemberg";
+        document.getElementById('countryEmblems').innerHTML = '<span class="emblem-item"><img src="https://flagcdn.com/w40/de.png" class="emblem-img"></span>';
+        document.getElementById('stateEmblems').innerHTML = '<span class="emblem-item" style="font-size:0.85rem; background:#1e293b; padding:2px 6px; border-radius:4px; border:1px solid var(--border-color);">Baden-Württemberg 🇩🇪</span>';
+        document.getElementById('cityEmblems').innerHTML = '';
+    }
+
+    /* --- WEATHER QUERY (Open-Meteo API) --- */
+    let weatherChartTemp = null;
+    let weatherChartRain = null;
+    let weatherChartWind = null;
+    let lastWeatherData = null;
+
+    async function fetchWeatherData(lat, lon, cityName) {
+        document.getElementById('weatherCityName').innerText = cityName;
+        const grid = document.getElementById('weatherGrid');
+        const hoursGrid = document.getElementById('weatherHoursGrid');
         
-        const pendingContainer = document.getElementById('pendingRegistrationsContainer');
-        let pendingHtml = '';
-        Object.entries(users).forEach(([username, data]) => {
-            if (!data.isAdmin && data.approved === false) {
-                pendingHtml += `
-                    <div style="display: flex; justify-content: space-between; align-items: center; background: #0f172a; padding: 6px 10px; border-radius: 6px; font-size: 0.85rem;">
-                        <span>👤 ${username}</span>
-                        <div style="display: flex; gap: 6px;">
-                            <button onclick="approveUser('${username}')" style="background: #10b981; padding: 2px 8px; font-size: 0.8rem;" title="Annehmen">✓</button>
-                            <button onclick="rejectUser('${username}')" style="background: #ef4444; padding: 2px 8px; font-size: 0.8rem;" title="Ablehnen">✕</button>
-                        </div>
+        try {
+            const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&hourly=temperature_2m,precipitation,wind_speed_10m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum&timezone=auto`;
+            const res = await fetch(url);
+            const data = await res.json();
+            lastWeatherData = data;
+
+            if (!data || !data.daily) {
+                grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; color:#ef4444;">Wetterdaten konnten nicht geladen werden.</div>';
+                return;
+            }
+
+            let dailyHtml = '';
+            for (let i = 0; i < 7; i++) {
+                const dateStr = data.daily.time[i];
+                const dateObj = new Date(dateStr);
+                const dayName = dateObj.toLocaleDateString(currentLang === 'en' ? 'en-US' : currentLang === 'fr' ? 'fr-FR' : 'de-DE', { weekday: 'short' });
+                const maxT = Math.round(data.daily.temperature_2m_max[i]);
+                const minT = Math.round(data.daily.temperature_2m_min[i]);
+                const wCode = data.daily.weather_code[i];
+                const emoji = getWeatherEmoji(wCode);
+
+                dailyHtml += `
+                    <div class="weather-day">
+                        <div style="font-weight:600; margin-bottom:4px;">${dayName}</div>
+                        <div style="font-size:1.6rem; margin:4px 0;">${emoji}</div>
+                        <div><strong>${maxT}°</strong> / <span style="color:var(--text-muted);">${minT}°</span></div>
                     </div>
                 `;
             }
-        });
-        pendingContainer.innerHTML = pendingHtml || '<span style="font-size: 0.8rem; color: var(--text-muted);">Keine ausstehenden Registrierungen.</span>';
+            grid.innerHTML = dailyHtml;
 
-        const activeContainer = document.getElementById('activeUsersContainer');
-        let activeHtml = '';
-        Object.entries(users).forEach(([username, data]) => {
-            if (data.online === true) {
-                activeHtml += `
-                    <div style="display: flex; justify-content: space-between; align-items: center; background: #0f172a; padding: 6px 10px; border-radius: 6px; font-size: 0.85rem;">
-                        <span>🟢 ${username} ${data.isAdmin ? '(Admin)' : '(User)'}</span>
+            let hourlyHtml = '';
+            const nowIdx = data.hourly.time.findIndex(t => new Date(t) >= new Date()) || 0;
+            for (let i = nowIdx; i < nowIdx + 24 && i < data.hourly.time.length; i++) {
+                const timeStr = new Date(data.hourly.time[i]).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                const temp = Math.round(data.hourly.temperature_2m[i]);
+                const wCode = data.hourly.weather_code[i];
+                const emoji = getWeatherEmoji(wCode);
+
+                hourlyHtml += `
+                    <div class="hour-slot">
+                        <div style="color:var(--text-muted);">${timeStr}</div>
+                        <div style="font-size:1.3rem; margin:4px 0;">${emoji}</div>
+                        <div style="font-weight:600;">${temp}°C</div>
                     </div>
                 `;
             }
+            hoursGrid.innerHTML = hourlyHtml;
+
+        } catch (e) {
+            console.error("Weather error:", e);
+            grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; color:#ef4444;">Fehler beim Abrufen der Wetterdaten.</div>';
+        }
+    }
+
+    function getWeatherEmoji(code) {
+        if (code === 0) return '☀️';
+        if (code >= 1 && code <= 3) return '⛅';
+        if (code >= 45 && code <= 48) return '🌫️';
+        if (code >= 51 && code <= 67) return '🌧️';
+        if (code >= 71 && code <= 77) return '🌨️';
+        if (code >= 80 && code <= 82) return '🌦️';
+        if (code >= 95) return '⛈️';
+        return '☁️';
+    }
+
+    function openWeatherDetailsModal() {
+        document.getElementById('weatherDetailsModal').style.display = 'flex';
+        setTimeout(() => { renderWeatherCharts('hourly'); }, 150);
+    }
+
+    function closeWeatherDetailsModal() {
+        document.getElementById('weatherDetailsModal').style.display = 'none';
+    }
+
+    let weatherViewMode = 'hourly';
+    function setWeatherViewMode(mode) {
+        weatherViewMode = mode;
+        if (mode === 'hourly') {
+            document.getElementById('btnViewHourly').style.background = 'var(--accent-color)';
+            document.getElementById('btnViewDaily').style.background = '#334155';
+        } else {
+            document.getElementById('btnViewDaily').style.background = 'var(--accent-color)';
+            document.getElementById('btnViewHourly').style.background = '#334155';
+        }
+        renderWeatherCharts(mode);
+    }
+
+    function renderWeatherCharts(mode) {
+        if (!lastWeatherData) return;
+        const d = lastWeatherData;
+        let labels = [], temps = [], rains = [], winds = [];
+
+        if (mode === 'hourly') {
+            const start = d.hourly.time.findIndex(t => new Date(t) >= new Date()) || 0;
+            for (let i = start; i < start + 24 && i < d.hourly.time.length; i++) {
+                labels.push(new Date(d.hourly.time[i]).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+                temps.push(d.hourly.temperature_2m[i]);
+                rains.push(d.hourly.precipitation[i]);
+                winds.push(d.hourly.wind_speed_10m[i]);
+            }
+        } else {
+            for (let i = 0; i < d.daily.time.length; i++) {
+                labels.push(new Date(d.daily.time[i]).toLocaleDateString([], { weekday: 'short', day: 'numeric', month: 'numeric' }));
+                temps.push(d.daily.temperature_2m_max[i]);
+                rains.push(d.daily.precipitation_sum[i]);
+                winds.push(15);
+            }
+        }
+
+        const commonOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                x: { ticks: { color: '#94a3b8', font: { size: 10 } }, grid: { color: '#334155' } },
+                y: { ticks: { color: '#94a3b8', font: { size: 10 } }, grid: { color: '#334155' } }
+            }
+        };
+
+        if (weatherChartTemp) weatherChartTemp.destroy();
+        if (weatherChartRain) weatherChartRain.destroy();
+        if (weatherChartWind) weatherChartWind.destroy();
+
+        weatherChartTemp = new Chart(document.getElementById('tempChart').getContext('2d'), {
+            type: 'line',
+            data: { labels, datasets: [{ data: temps, borderColor: '#3b82f6', backgroundColor: 'rgba(59,130,246,0.1)', fill: true, tension: 0.3 }] },
+            options: commonOptions
         });
-        activeContainer.innerHTML = activeHtml || '<span style="font-size: 0.8rem; color: var(--text-muted);">Keine weiteren User aktiv.</span>';
 
-        const allContainer = document.getElementById('allUsersListContainer');
-        let allHtml = '';
-        Object.entries(users).forEach(([username, data]) => {
-            allHtml += `
-                <div style="display: flex; justify-content: space-between; align-items: center; background: #0f172a; padding: 6px 10px; border-radius: 6px; font-size: 0.85rem;">
-                    <span>${data.isAdmin ? '👑' : '👤'} ${username} ${data.approved === false ? '(Wartet auf Freigabe)' : ''}</span>
-                    ${username !== 'admin' ? `<button onclick="adminDeleteUser('${username}')" style="background: #ef4444; padding: 2px 6px; font-size: 0.75rem;">Löschen</button>` : ''}
-                </div>
-            `;
+        weatherChartRain = new Chart(document.getElementById('rainChart').getContext('2d'), {
+            type: 'bar',
+            data: { labels, datasets: [{ data: rains, backgroundColor: '#06b6d4' }] },
+            options: commonOptions
         });
-        allContainer.innerHTML = allHtml;
+
+        weatherChartWind = new Chart(document.getElementById('windChart').getContext('2d'), {
+            type: 'line',
+            data: { labels, datasets: [{ data: winds, borderColor: '#10b981', backgroundColor: 'rgba(16,185,129,0.1)', fill: true, tension: 0.3 }] },
+            options: commonOptions
+        });
     }
 
-    function approveUser(username) {
-        let users = getUsers();
-        if (users[username]) {
-            users[username].approved = true;
-            localStorage.setItem('jannik_users', JSON.stringify(users));
-            renderAdminConsoleData();
-        }
-    }
-
-    function rejectUser(username) {
-        let users = getUsers();
-        if (users[username]) {
-            delete users[username];
-            localStorage.setItem('jannik_users', JSON.stringify(users));
-            renderAdminConsoleData();
-        }
-    }
-
-    function adminDeleteUser(username) {
-        if (confirm(`Account von "${username}" wirklich löschen?`)) {
-            let users = getUsers();
-            delete users[username];
-            localStorage.setItem('jannik_users', JSON.stringify(users));
-            renderAdminConsoleData();
-        }
-    }
-
-    let currentPostPage = 1;
-    const postsPerPage = 10;
+    /* --- Unified Location Modal Logic --- */
+    let activeLocationTargetType = null; 
+    let activeLocationTargetId = null;   
     let attachedLocation = null;
+    let commentLocationData = {};
+    let timelineLocation = null;
+    let timelineCommentLocationData = {};
 
-    function requestLocationAttachment() {
-        document.getElementById('postLocationModal').style.display = 'flex';
-        document.getElementById('postAddrInput').value = '';
-        document.getElementById('postAddrInput').focus();
+    function openUnifiedLocationModal(targetType, targetId = null) {
+        activeLocationTargetType = targetType;
+        activeLocationTargetId = targetId;
+        document.getElementById('unifiedAddrInput').value = '';
+        document.getElementById('unifiedLocationModalTitle').innerText = (targetType === 'timeline' || targetType === 'timeline_comment') ? "📍 Standort für Tagebuch wählen" : "📍 Standort für Nachricht wählen";
+        document.getElementById('unifiedLocationModal').style.display = 'flex';
+        document.getElementById('unifiedAddrInput').focus();
     }
 
-    function closePostLocationModal() {
-        document.getElementById('postLocationModal').style.display = 'none';
+    function closeUnifiedLocationModal() {
+        document.getElementById('unifiedLocationModal').style.display = 'none';
     }
 
-    function submitPostManualLocation() {
-        const addr = document.getElementById('postAddrInput').value.trim();
+    async function submitUnifiedManualLocation() {
+        const addr = document.getElementById('unifiedAddrInput').value.trim();
         if (!addr) {
             alert("Bitte gib eine gültige Adresse ein.");
             return;
         }
-        attachedLocation = { name: addr };
-        document.getElementById('postLocationIndicator').innerText = "📍 Standort: " + addr;
-        closePostLocationModal();
+        try {
+            const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(addr)}`);
+            const data = await res.json();
+            if (data && data.length > 0) {
+                const locObj = { 
+                    name: data[0].display_name || addr, 
+                    lat: parseFloat(data[0].lat), 
+                    lon: parseFloat(data[0].lon) 
+                };
+                applySelectedLocation(locObj);
+                closeUnifiedLocationModal();
+            } else {
+                alert("Adresse konnte nicht gefunden werden.");
+            }
+        } catch (e) {
+            alert("Fehler bei der Adresssuche.");
+        }
     }
 
-    function submitPostCurrentLocation() {
+    function submitUnifiedCurrentLocation() {
         if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(pos => {
-                attachedLocation = { lat: pos.coords.latitude, lon: pos.coords.longitude, name: "Aktueller GPS-Standort" };
-                document.getElementById('postLocationIndicator').innerText = "📍 Standort angehängt (GPS)";
-                closePostLocationModal();
+            navigator.geolocation.getCurrentPosition(async pos => {
+                const lat = pos.coords.latitude;
+                const lon = pos.coords.longitude;
+                let name = "Aktueller GPS-Standort";
+                try {
+                    const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
+                    const data = await res.json();
+                    if (data && data.display_name) name = data.display_name;
+                } catch(e) {}
+                applySelectedLocation({ lat, lon, name });
+                closeUnifiedLocationModal();
             }, () => {
                 alert("GPS-Standort konnte nicht ermittelt werden.");
-                closePostLocationModal();
+                closeUnifiedLocationModal();
             });
         } else {
             alert("Geolocation wird von diesem Browser nicht unterstützt.");
-            closePostLocationModal();
+            closeUnifiedLocationModal();
         }
     }
 
-    let uploadedPostMediaBase64 = null;
-    let uploadedMediaType = 'image';
-
-    function previewPostMedia(input, type) {
-        if (input.files && input.files[0]) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                uploadedPostMediaBase64 = e.target.result;
-                uploadedMediaType = type;
-                const container = document.getElementById('postMediaPreviewContent');
-                if (type === 'video') {
-                    container.innerHTML = `<video src="${uploadedPostMediaBase64}" style="width: 100%; border-radius: 6px; max-height: 100px;" controls></video>`;
-                } else {
-                    container.innerHTML = `<img src="${uploadedPostMediaBase64}" style="width: 100%; border-radius: 6px; max-height: 100px; object-fit: cover;">`;
-                }
-                document.getElementById('postMediaPreviewContainer').style.display = 'block';
-                document.getElementById('postMediaName').innerText = input.files[0].name;
-            };
-            reader.readAsDataURL(input.files[0]);
+    function applySelectedLocation(locObj) {
+        if (activeLocationTargetType === 'post') {
+            attachedLocation = locObj;
+            document.getElementById('postLocationIndicator').innerText = "📍 Standort: " + locObj.name;
+        } else if (activeLocationTargetType === 'comment') {
+            commentLocationData[activeLocationTargetId] = locObj;
+            const indEl = document.getElementById(`commentLocationIndicator_${activeLocationTargetId}`);
+            if (indEl) indEl.innerText = "📍 " + locObj.name;
+        } else if (activeLocationTargetType === 'timeline') {
+            timelineLocation = locObj;
+            document.getElementById('travelLocationIndicator').innerText = "📍 " + locObj.name;
+        } else if (activeLocationTargetType === 'timeline_comment') {
+            timelineCommentLocationData[activeLocationTargetId] = locObj;
+            const indEl = document.getElementById(`timelineCommentLocationIndicator_${activeLocationTargetId}`);
+            if (indEl) indEl.innerText = "📍 " + locObj.name;
         }
     }
 
-    function clearPostMedia() {
-        uploadedPostMediaBase64 = null;
-        uploadedMediaType = 'image';
-        const imgEl = document.getElementById('postImage');
-        const vidEl = document.getElementById('postVideo');
-        if(imgEl) imgEl.value = '';
-        if(vidEl) vidEl.value = '';
-        document.getElementById('postMediaPreviewContainer').style.display = 'none';
-        document.getElementById('postMediaName').innerText = '';
+    /* --- POLL / ABSTIMMUNG FEATURE --- */
+    let activePollTarget = null; 
+    let attachedPollData = null;
+
+    function openPollModal(target = 'post') {
+        activePollTarget = target;
+        document.getElementById('pollQuestionInput').value = '';
+        document.getElementById('pollOpt1').value = '';
+        document.getElementById('pollOpt2').value = '';
+        document.getElementById('pollOpt3').value = '';
+        document.getElementById('pollOpt4').value = '';
+        document.getElementById('pollModal').style.display = 'flex';
     }
 
-    /* --- Giphy Integration for Comments & Posts --- */
-    let activeGiphyTarget = 'post';
-    function openGiphyModal(target = 'post') {
-        activeGiphyTarget = target;
-        document.getElementById('giphyModal').style.display = 'flex';
-        document.getElementById('giphySearchInput').value = '';
-        document.getElementById('giphyResultsContainer').innerHTML = '';
+    function closePollModal() {
+        document.getElementById('pollModal').style.display = 'none';
     }
-    function closeGiphyModal() { document.getElementById('giphyModal').style.display = 'none'; }
-    
-    async function searchGiphy() {
-        const query = document.getElementById('giphySearchInput').value.trim();
-        const container = document.getElementById('giphyResultsContainer');
-        if (!query) return;
-        
-        container.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 20px; color: var(--text-muted);"><span class="swivel-loader"></span> Suche GIFs...</div>';
-        
-        try {
-            const res = await fetch(`https://api.giphy.com/v1/gifs/search?api_key=dc6zaTOxFJmzC&q=${encodeURIComponent(query)}&limit=16`);
-            const data = await res.json();
-            let html = '';
-            if (data.data && data.data.length > 0) {
-                data.data.forEach(gif => {
-                    const url = gif.images.fixed_height_small.url;
-                    html += `<img src="${url}" style="width: 100%; height: 110px; object-fit: cover; border-radius: 6px; cursor: pointer;" onclick="selectGif('${url}')">`;
-                });
-            } else {
-                html = '<div style="grid-column: 1/-1; text-align: center; color: var(--text-muted);">Keine GIFs gefunden.</div>';
-            }
-            container.innerHTML = html;
-        } catch (e) {
-            container.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: #ef4444;">Fehler beim Laden der GIFs.</div>';
+
+    function savePollToActiveTarget() {
+        const question = document.getElementById('pollQuestionInput').value.trim();
+        const o1 = document.getElementById('pollOpt1').value.trim();
+        const o2 = document.getElementById('pollOpt2').value.trim();
+        const o3 = document.getElementById('pollOpt3').value.trim();
+        const o4 = document.getElementById('pollOpt4').value.trim();
+
+        if (!question || !o1 || !o2) {
+            alert("Bitte gib mindestens eine Frage und zwei Antwortmöglichkeiten an.");
+            return;
         }
-    }
 
-    function selectGif(url) {
-        if (activeGiphyTarget === 'post') {
-            uploadedPostMediaBase64 = url;
-            uploadedMediaType = 'image';
-            document.getElementById('postMediaPreviewContent').innerHTML = `<img src="${url}" style="width: 100%; border-radius: 6px; max-height: 100px; object-fit: cover;">`;
-            document.getElementById('postMediaPreviewContainer').style.display = 'block';
-            document.getElementById('postMediaName').innerText = 'GIPHY GIF';
-        } else {
-            commentMediaData[activeGiphyTarget] = { media: url, type: 'image' };
-            const prevEl = document.getElementById(`commentMediaPreview_${activeGiphyTarget}`);
-            if (prevEl) {
-                prevEl.innerHTML = `<div style="position:relative; max-width:160px; margin-top:6px;"><img src="${url}" style="width:100%; border-radius:6px; max-height:100px; object-fit:cover;"><button onclick="clearCommentMedia(${activeGiphyTarget})" style="position: absolute; top: 2px; right: 2px; background: rgba(0,0,0,0.8); padding: 1px 5px; font-size: 0.65rem; color:white; border:none; border-radius:4px; cursor:pointer;">&times;</button></div>`;
-            }
+        let options = [o1, o2];
+        if (o3) options.push(o3);
+        if (o4) options.push(o4);
+
+        attachedPollData = {
+            question: question,
+            options: options.map(opt => ({ text: opt, votes: [] }))
+        };
+
+        if (activePollTarget === 'post') {
+            document.getElementById('postPollIndicator').innerText = `📊 Umfrage: "${question}" (${options.length} Optionen)`;
+        } else if (activePollTarget === 'timeline') {
+            document.getElementById('travelPollIndicator').innerText = `📊 Umfrage: "${question}" (${options.length} Optionen)`;
         }
-        closeGiphyModal();
+        closePollModal();
     }
 
-    function handleCreatePost() {
-        const text = document.getElementById('postText').value.trim();
-        if (!text && !uploadedPostMediaBase64) return;
+    function renderPollHtml(pollObj, itemId, feedType = 'post') {
+        if (!pollObj || !pollObj.options) return '';
         const currentUser = localStorage.getItem('jannik_current_user');
-        const posts = JSON.parse(localStorage.getItem('jannik_posts') || '[]');
-        posts.unshift({
-            id: Date.now(),
-            author: currentUser,
-            isAdmin: isAdmin(currentUser),
-            text: text,
-            image: uploadedPostMediaBase64,
-            mediaType: uploadedMediaType,
-            location: attachedLocation,
-            reactions: {},
-            comments: [],
-            timestamp: new Date().toLocaleString('de-DE')
+        
+        let totalVotes = 0;
+        pollObj.options.forEach(opt => {
+            if (opt.votes) totalVotes += opt.votes.length;
         });
-        localStorage.setItem('jannik_posts', JSON.stringify(posts));
-        document.getElementById('postText').value = '';
-        clearPostMedia();
-        attachedLocation = null;
-        document.getElementById('postLocationIndicator').innerText = '';
-        renderPostsFeed();
+
+        let html = `
+            <div style="background: #111c30; border: 1px solid var(--border-color); border-radius: 8px; padding: 10px; margin: 8px 0;">
+                <div style="font-weight: 600; font-size: 0.95rem; margin-bottom: 8px; color: var(--accent-color);">📊 ${pollObj.question}</div>
+        `;
+
+        pollObj.options.forEach((opt, oIdx) => {
+            const vCount = opt.votes ? opt.votes.length : 0;
+            const percent = totalVotes > 0 ? Math.round((vCount / totalVotes) * 100) : 0;
+            const hasVotedThis = opt.votes && opt.votes.includes(currentUser);
+
+            html += `
+                <div onclick="voteOnPoll('${feedType}', ${itemId}, ${oIdx})" style="background: ${hasVotedThis ? 'rgba(59,130,246,0.2)' : '#0f172a'}; border: 1px solid ${hasVotedThis ? 'var(--accent-color)' : 'var(--border-color)'}; border-radius: 6px; padding: 8px; margin-bottom: 6px; cursor: pointer; position: relative; overflow: hidden; transition: background 0.15s;">
+                    <div style="position: absolute; left: 0; top: 0; bottom: 0; width: ${percent}%; background: rgba(59,130,246,0.25); z-index: 1;"></div>
+                    <div style="display: flex; justify-content: space-between; position: relative; z-index: 2; font-size: 0.85rem;">
+                        <span>${hasVotedThis ? '✓ ' : ''}${opt.text}</span>
+                        <span style="color: var(--text-muted);">${vCount} Stimmen (${percent}%)</span>
+                    </div>
+                </div>
+            `;
+        });
+
+        html += `
+                <div style="font-size: 0.75rem; color: var(--text-muted); text-align: right; margin-top: 4px;">Gesamt: ${totalVotes} Stimmen</div>
+            </div>
+        `;
+        return html;
     }
 
+    function voteOnPoll(feedType, itemId, optionIdx) {
+        const currentUser = localStorage.getItem('jannik_current_user');
+        if (feedType === 'post') {
+            let posts = JSON.parse(localStorage.getItem('jannik_posts') || '[]');
+            const post = posts.find(p => p.id === itemId);
+            if (post && post.poll) {
+                post.poll.options.forEach(opt => {
+                    if (opt.votes) {
+                        opt.votes = opt.votes.filter(u => u !== currentUser);
+                    }
+                });
+                if (!post.poll.options[optionIdx].votes) post.poll.options[optionIdx].votes = [];
+                post.poll.options[optionIdx].votes.push(currentUser);
+                localStorage.setItem('jannik_posts', JSON.stringify(posts));
+                renderPostsFeed();
+            }
+        } else if (feedType === 'timeline') {
+            let entries = JSON.parse(localStorage.getItem('jannik_travel_history') || '[]');
+            const entry = entries.find(e => e.id === itemId);
+            if (entry && entry.poll) {
+                entry.poll.options.forEach(opt => {
+                    if (opt.votes) {
+                        opt.votes = opt.votes.filter(u => u !== currentUser);
+                    }
+                });
+                if (!entry.poll.options[optionIdx].votes) entry.poll.options[optionIdx].votes = [];
+                entry.poll.options[optionIdx].votes.push(currentUser);
+                localStorage.setItem('jannik_travel_history', JSON.stringify(entries));
+                renderTravelEntries();
+            }
+        }
+    }
+
+    /* --- EMOJI POOL --- */
     const MASTER_EMOJI_POOL = [
         { emoji: '😀', kw: 'grinsen lachen lächeln smile happy' },
         { emoji: '😃', kw: 'grinsen lächeln fröhlich smile' },
         { emoji: '😄', kw: 'lachen freude fröhlich' },
         { emoji: '😁', kw: 'grinsen zähne lachen glücklich' },
-        { emoji: '😆', kw: 'lachen augen zu fröhlich' },
-        { emoji: '😅', kw: 'schweiß lächeln erleichtert' },
-        { emoji: '🤣', kw: 'wegschmeißen lachen tot rofl' },
         { emoji: '😂', kw: 'lachen tränen lol tears joy' },
-        { emoji: '🙂', kw: 'lächeln leicht freundlich' },
-        { emoji: '🙃', kw: 'verrückt kopf über verkehrt' },
-        { emoji: '😉', kw: 'zwinkern auge flirten' },
-        { emoji: '😊', kw: 'lächeln glücklich erröten' },
-        { emoji: '😇', kw: 'engel heilig heiligenschein' },
-        { emoji: '🥰', kw: 'herzen liebe verknallt' },
-        { emoji: '😍', kw: 'herzen augen verliebt love' },
-        { emoji: '🤩', kw: 'sterne augen begeistert starstruck' },
-        { emoji: '😘', kw: 'kuss herz zuwinkend' },
+        { emoji: '🥳', kw: 'party geschenk feiern' },
+        { emoji: '😎', kw: 'sonnenbrille cool' },
         { emoji: '👍', kw: 'daumen hoch gut like yes' },
         { emoji: '👎', kw: 'daumen runter schlecht dislike' },
-        { emoji: '👌', kw: 'okay ok perfekt' },
         { emoji: '❤️', kw: 'herz liebe red heart' },
         { emoji: '⭐', kw: 'stern star' },
         { emoji: '🔥', kw: 'feuer fire hot' },
         { emoji: '🎉', kw: 'konfetti party celebration' },
+        { emoji: '🏆', kw: 'pokal sieger trophy win' },
         { emoji: '🌍', kw: 'erde europa afrika welt earth' },
-        { emoji: '🗺️', kw: 'weltkarte map' },
-        { emoji: '✈️', kw: 'flugzeug reise travel flight' }
+        { emoji: '✈️', kw: 'flugzeug reise travel flight' },
+        { emoji: '🚗', kw: 'auto car fahrzeug' },
+        { emoji: '🏰', kw: 'schloss burg castle ruine' }
     ];
 
     let currentEmojiPage = 0;
-    const emojisPerPage = 20;
-    let currentActivePostForEmoji = null;
+    const emojisPerPage = 30;
+    let currentActiveEmojiId = null;
+    let currentEmojiTargetType = 'post';
 
-    function openEmojiPicker(postId) {
-        currentActivePostForEmoji = postId;
+    function openEmojiPicker(id, targetType = 'post') {
+        currentActiveEmojiId = id;
+        currentEmojiTargetType = targetType;
         currentEmojiPage = 0;
         document.getElementById('emojiSearchInput').value = '';
         renderEmojiPickerPage();
@@ -1574,7 +1872,7 @@
 
     function closeEmojiPickerModal() {
         document.getElementById('emojiPickerModal').style.display = 'none';
-        currentActivePostForEmoji = null;
+        currentActiveEmojiId = null;
     }
 
     function getFilteredEmojis() {
@@ -1599,7 +1897,6 @@
         });
         gridEl.innerHTML = html;
         const totalPages = Math.ceil(filtered.length / emojisPerPage) || 1;
-        if (currentEmojiPage >= totalPages) currentEmojiPage = totalPages - 1;
         document.getElementById('emojiPageIndicator').innerText = `Seite ${currentEmojiPage + 1} von ${totalPages}`;
     }
 
@@ -1611,832 +1908,629 @@
     }
 
     function selectEmojiReaction(emoji) {
-        if (!currentActivePostForEmoji) return;
-        const posts = JSON.parse(localStorage.getItem('jannik_posts') || '[]');
-        const post = posts.find(p => p.id === currentActivePostForEmoji);
-        if (!post) return;
-        if (!post.reactions) post.reactions = {};
-        if (!post.reactions[emoji]) post.reactions[emoji] = [];
+        if (!currentActiveEmojiId) return;
         const currentUser = localStorage.getItem('jannik_current_user');
-        const idx = post.reactions[emoji].indexOf(currentUser);
-        if (idx > -1) {
-            post.reactions[emoji].splice(idx, 1);
-            if (post.reactions[emoji].length === 0) delete post.reactions[emoji];
+
+        if (currentEmojiTargetType === 'timeline') {
+            let entries = JSON.parse(localStorage.getItem('jannik_travel_history') || '[]');
+            const entry = entries.find(e => e.id === currentActiveEmojiId);
+            if (!entry) return;
+            if (!entry.reactions) entry.reactions = {};
+            if (!entry.reactions[emoji]) entry.reactions[emoji] = [];
+            const idx = entry.reactions[emoji].indexOf(currentUser);
+            if (idx > -1) {
+                entry.reactions[emoji].splice(idx, 1);
+                if (entry.reactions[emoji].length === 0) delete entry.reactions[emoji];
+            } else {
+                entry.reactions[emoji].push(currentUser);
+            }
+            localStorage.setItem('jannik_travel_history', JSON.stringify(entries));
+            closeEmojiPickerModal();
+            renderTravelEntries();
         } else {
-            post.reactions[emoji].push(currentUser);
+            const posts = JSON.parse(localStorage.getItem('jannik_posts') || '[]');
+            const post = posts.find(p => p.id === currentActiveEmojiId);
+            if (!post) return;
+            if (!post.reactions) post.reactions = {};
+            if (!post.reactions[emoji]) post.reactions[emoji] = [];
+            const idx = post.reactions[emoji].indexOf(currentUser);
+            if (idx > -1) {
+                post.reactions[emoji].splice(idx, 1);
+                if (post.reactions[emoji].length === 0) delete post.reactions[emoji];
+            } else {
+                post.reactions[emoji].push(currentUser);
+            }
+            localStorage.setItem('jannik_posts', JSON.stringify(posts));
+            closeEmojiPickerModal();
+            renderPostsFeed();
         }
-        localStorage.setItem('jannik_posts', JSON.stringify(posts));
-        closeEmojiPickerModal();
-        renderPostsFeed();
     }
 
-    let commentMediaData = {};
-    let commentLocationData = {};
+    /* --- Travel Timeline & Diary Logic --- */
+    let timelineMap = null;
+    let timelineMarkersLayer = null;
+    let uploadedTravelImageBase64 = null;
 
-    function previewCommentMedia(input, postId, type) {
+    function initTimelineMap() {
+        if (!timelineMap) {
+            timelineMap = L.map('timelineMap').setView([48.5734, 7.7521], 6);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(timelineMap);
+            timelineMarkersLayer = L.layerGroup().addTo(timelineMap);
+        } else {
+            timelineMap.invalidateSize();
+        }
+        renderTimelineMarkers();
+    }
+
+    function previewTravelImage(input) {
         if (input.files && input.files[0]) {
             const reader = new FileReader();
             reader.onload = function(e) {
-                commentMediaData[postId] = { media: e.target.result, type: type };
-                const prevEl = document.getElementById(`commentMediaPreview_${postId}`);
-                if (prevEl) {
-                    if (type === 'video') {
-                        prevEl.innerHTML = `<div style="position:relative; max-width:160px; margin-top:6px;"><video src="${e.target.result}" style="width:100%; border-radius:6px; max-height:100px;" controls></video><button onclick="clearCommentMedia(${postId})" style="position: absolute; top: 2px; right: 2px; background: rgba(0,0,0,0.8); padding: 1px 5px; font-size: 0.65rem; color:white; border:none; border-radius:4px; cursor:pointer;">&times;</button></div>`;
-                    } else {
-                        prevEl.innerHTML = `<div style="position:relative; max-width:160px; margin-top:6px;"><img src="${e.target.result}" style="width:100%; border-radius:6px; max-height:100px; object-fit:cover;"><button onclick="clearCommentMedia(${postId})" style="position: absolute; top: 2px; right: 2px; background: rgba(0,0,0,0.8); padding: 1px 5px; font-size: 0.65rem; color:white; border:none; border-radius:4px; cursor:pointer;">&times;</button></div>`;
-                    }
-                }
+                uploadedTravelImageBase64 = e.target.result;
+                document.getElementById('travelImagePreviewImg').src = uploadedTravelImageBase64;
+                document.getElementById('travelImagePreviewBox').style.display = 'block';
             };
             reader.readAsDataURL(input.files[0]);
         }
     }
 
-    function clearCommentMedia(postId) {
-        delete commentMediaData[postId];
-        const prevEl = document.getElementById(`commentMediaPreview_${postId}`);
-        if (prevEl) prevEl.innerHTML = '';
-        const imgIn = document.getElementById(`commentImgFile_${postId}`);
-        const vidIn = document.getElementById(`commentVidFile_${postId}`);
-        if(imgIn) imgIn.value = '';
-        if(vidIn) vidIn.value = '';
+    function clearTravelImage() {
+        uploadedTravelImageBase64 = null;
+        document.getElementById('travelImageFile').value = '';
+        document.getElementById('travelImagePreviewBox').style.display = 'none';
     }
 
-    function requestCommentLocation(postId) {
-        const locName = prompt("Standort-Adresse für den Kommentar eingeben:");
-        if (locName && locName.trim()) {
-            commentLocationData[postId] = { name: locName.trim() };
-            const indEl = document.getElementById(`commentLocationIndicator_${postId}`);
-            if (indEl) indEl.innerText = "📍 Standort: " + locName.trim();
+    function saveTravelEntry() {
+        const title = document.getElementById('travelTitleInput').value.trim();
+        const date = document.getElementById('travelDateInput').value;
+        const desc = document.getElementById('travelDescInput').value.trim();
+
+        if (!title || !date) {
+            alert("Bitte gib mindestens einen Titel und ein Datum für den Reise-Eintrag an.");
+            return;
         }
-    }
+        if (!timelineLocation) {
+            alert("Bitte wähle einen Standort für diesen Reise-Eintrag aus.");
+            return;
+        }
 
-    function addCommentToPost(postId) {
-        const input = document.getElementById(`commentInput_${postId}`);
-        const text = input.value.trim();
-        const mediaObj = commentMediaData[postId];
-        const locObj = commentLocationData[postId];
+        // VALIDATION: Standort angehängt, aber kein Text/Beschreibung vorhanden
+        if (timelineLocation && !desc) {
+            alert("⚠️ Achtung: Der Beitrag kann nicht abgeschickt werden, da ein Standort ausgewählt wurde, aber noch kein erklärender Text oder eine Nachricht dazu verfasst wurde.");
+            return;
+        }
 
-        if(!text && !mediaObj) return;
         const currentUser = localStorage.getItem('jannik_current_user');
-        let posts = JSON.parse(localStorage.getItem('jannik_posts') || '[]');
-        const post = posts.find(p => p.id === postId);
-        if(post) {
-            if(!post.comments) post.comments = [];
-            post.comments.push({ 
-                author: currentUser, 
-                text: text, 
-                image: mediaObj ? mediaObj.media : null,
-                mediaType: mediaObj ? mediaObj.type : 'image',
-                location: locObj || null,
-                timestamp: new Date().toLocaleTimeString('de-DE', {hour: '2-digit', minute:'2-digit'}) 
-            });
-            localStorage.setItem('jannik_posts', JSON.stringify(posts));
-            delete commentMediaData[postId];
-            delete commentLocationData[postId];
-            renderPostsFeed();
-        }
+        let entries = JSON.parse(localStorage.getItem('jannik_travel_history') || '[]');
+        entries.unshift({
+            id: Date.now(),
+            author: currentUser,
+            title: title,
+            date: date,
+            description: desc,
+            location: timelineLocation,
+            image: uploadedTravelImageBase64,
+            poll: attachedPollData,
+            reactions: {},
+            comments: []
+        });
+        localStorage.setItem('jannik_travel_history', JSON.stringify(entries));
+
+        document.getElementById('travelTitleInput').value = '';
+        document.getElementById('travelDateInput').value = '';
+        document.getElementById('travelDescInput').value = '';
+        clearTravelImage();
+        timelineLocation = null;
+        attachedPollData = null;
+        document.getElementById('travelLocationIndicator').innerText = '';
+        document.getElementById('travelPollIndicator').innerText = '';
+
+        renderTravelEntries();
+        renderTimelineMarkers();
+        alert("Reise-Eintrag erfolgreich gespeichert!");
     }
 
-    function prevPostPage() { if (currentPostPage > 1) { currentPostPage--; renderPostsFeed(); } }
-    function nextPostPage() {
-        const posts = JSON.parse(localStorage.getItem('jannik_posts') || '[]');
-        if (currentPostPage < Math.ceil(posts.length / postsPerPage)) { currentPostPage++; renderPostsFeed(); }
-    }
-
-    function renderPostsFeed() {
-        const container = document.getElementById('postsFeedContainer');
-        if (!container) return;
-        let posts = JSON.parse(localStorage.getItem('jannik_posts') || '[]');
+    function renderTravelEntries() {
+        const container = document.getElementById('travelEntriesList');
+        const entries = JSON.parse(localStorage.getItem('jannik_travel_history') || '[]');
         const currentUser = localStorage.getItem('jannik_current_user');
-        const searchTerm = document.getElementById('postSearchInput').value.toLowerCase();
-        const sortVal = document.getElementById('postSortSelect').value;
 
-        if (searchTerm) {
-            posts = posts.filter(p => p.text.toLowerCase().includes(searchTerm) || p.author.toLowerCase().includes(searchTerm));
-        }
-
-        const totalReactions = p => Object.values(p.reactions || {}).reduce((sum, arr) => sum + arr.length, 0);
-
-        if (sortVal === 'newest') posts.sort((a,b) => b.id - a.id);
-        else if (sortVal === 'oldest') posts.sort((a,b) => a.id - b.id);
-        else if (sortVal === 'most_reactions') posts.sort((a,b) => totalReactions(b) - totalReactions(a));
-
-        const totalPages = Math.ceil(posts.length / postsPerPage) || 1;
-        if (currentPostPage > totalPages) currentPostPage = totalPages;
-        const paginatedPosts = posts.slice((currentPostPage - 1) * postsPerPage, currentPostPage * postsPerPage);
-        document.getElementById('postPageIndicator').innerText = `Seite ${currentPostPage} von ${totalPages}`;
-
-        if (paginatedPosts.length === 0) {
-            container.innerHTML = '<p style="color: var(--text-muted); text-align: center;">Keine Beiträge gefunden.</p>';
+        if (entries.length === 0) {
+            container.innerHTML = '<p style="color: var(--text-muted); text-align: center; margin: 10px 0;">Noch keine Reise-Einträge im Tagebuch vorhanden.</p>';
             return;
         }
 
         let html = '';
-        paginatedPosts.forEach(post => {
-            if (!post.reactions) post.reactions = {};
-            if (!post.comments) post.comments = [];
-            const canDelete = (currentUser === post.author || isAdmin(currentUser));
+        entries.forEach(entry => {
+            if (!entry.reactions) entry.reactions = {};
+            if (!Array.isArray(entry.comments)) entry.comments = [];
 
-            const sortedReactions = Object.entries(post.reactions).sort((a,b) => b[1].length - a[1].length);
+            let imgHtml = entry.image ? `<img src="${entry.image}" style="width: 100%; max-height: 220px; object-fit: contain; border-radius: 6px; margin-top: 8px;">` : '';
+            let pollHtml = entry.poll ? renderPollHtml(entry.poll, entry.id, 'timeline') : '';
+            let canDelete = (entry.author === currentUser || isAdmin(currentUser));
+
             let reactionsHtml = '';
-            sortedReactions.forEach(([emoji, users]) => {
-                const count = users.length;
-                if (count > 0) {
-                    reactionsHtml += `<span style="background: #334155; border-radius: 12px; padding: 2px 8px; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 4px; cursor: pointer;" onclick="openEmojiPicker(${post.id})">${emoji} ${count}</span>`;
-                }
+            Object.entries(entry.reactions).forEach(([emoji, users]) => {
+                const reactedByMe = users.includes(currentUser);
+                reactionsHtml += `<button onclick="selectEmojiReaction('${emoji}')" style="background: ${reactedByMe ? 'rgba(59,130,246,0.2)' : '#0f172a'}; border: 1px solid ${reactedByMe ? 'var(--accent-color)' : 'var(--border-color)'}; padding: 3px 8px; border-radius: 12px; font-size: 0.8rem; cursor: pointer; color: white; display: inline-flex; align-items: center; gap: 4px;"><span>${emoji}</span> <span>${users.length}</span></button>`;
             });
 
             let commentsHtml = '';
-            post.comments.forEach(c => {
-                let cMedia = '';
-                if (c.image) {
-                    if (c.mediaType === 'video') {
-                        cMedia = `<div style="margin-top: 4px;"><video src="${c.image}" style="max-width: 100%; max-height: 160px; border-radius: 6px;" controls></video></div>`;
-                    } else {
-                        cMedia = `<div style="margin-top: 4px;"><img src="${c.image}" style="max-width: 100%; max-height: 140px; border-radius: 6px; object-fit: contain;"></div>`;
-                    }
-                }
+            entry.comments.forEach(c => {
+                let cLocHtml = c.location ? `<div style="font-size:0.75rem; color:#34d399; margin-top:2px;">📍 ${c.location.name}</div>` : '';
                 commentsHtml += `
-                    <div style="background: #121824; padding: 8px 10px; border-radius: 6px; margin-top: 6px; font-size: 0.85rem;">
-                        <strong>${c.author}:</strong> ${c.text} <span style="font-size: 0.7rem; color:var(--text-muted); float:right;">${c.timestamp}</span>
-                        ${c.location ? `<div style="font-size: 0.75rem; color: #34d399; margin-top: 2px;">📍 ${c.location.name}</div>` : ''}
-                        ${cMedia}
+                    <div style="background: #0f172a; border: 1px solid var(--border-color); border-radius: 6px; padding: 8px; margin-top: 6px; font-size: 0.85rem;">
+                        <div style="display: flex; justify-content: space-between; color: var(--text-muted); font-size: 0.75rem; margin-bottom: 2px;">
+                            <span><strong>${c.author}</strong></span>
+                            <span>${new Date(c.date).toLocaleString()}</span>
+                        </div>
+                        <div>${c.text}</div>
+                        ${cLocHtml}
                     </div>
                 `;
             });
 
-            let mediaHtml = '';
-            if (post.image) {
-                if (post.mediaType === 'video') {
-                    mediaHtml = `<div style="margin-top: 6px;"><video src="${post.image}" style="max-width: 100%; max-height: 260px; border-radius: 6px;" controls></video></div>`;
-                } else {
-                    mediaHtml = `<div style="margin-top: 6px;"><img src="${post.image}" style="max-width: 100%; max-height: 220px; border-radius: 6px; object-fit: contain;"></div>`;
-                }
+            // Extra Mini-Map Container für jeden Eintrag mit Standort
+            let miniMapHtml = '';
+            if (entry.location) {
+                miniMapHtml = `
+                    <div style="margin-top: 10px;">
+                        <div style="font-size: 0.8rem; color: #34d399; margin-bottom: 4px;">📍 Standort: ${entry.location.name}</div>
+                        <div id="travelMiniMap_${entry.id}" class="mini-map-box"></div>
+                    </div>
+                `;
             }
 
             html += `
-                <div style="background: #0f172a; border: 1px solid var(--border-color); border-radius: 8px; padding: 12px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                        <div style="font-size: 0.9rem;"><strong>${post.author}</strong> ${post.isAdmin ? '👑' : '👤'} <span style="font-size: 0.75rem; color: var(--text-muted);">• ${post.timestamp}</span></div>
-                        ${canDelete ? `<button onclick="deletePost(${post.id})" style="background: #ef4444; padding: 2px 6px; font-size: 0.75rem;">Löschen</button>` : ''}
+                <div style="background: #162032; border: 1px solid var(--border-color); border-radius: 8px; padding: 12px;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
+                        <div>
+                            <h4 style="margin: 0 0 2px 0; color: var(--accent-color); font-size: 1.05rem;">${entry.title}</h4>
+                            <span style="font-size: 0.75rem; color: var(--text-muted);">📅 ${entry.date} &bull; Von ${entry.author}</span>
+                        </div>
+                        ${canDelete ? `<button onclick="deleteTravelEntry(${entry.id})" style="background: #ef4444; padding: 2px 6px; font-size: 0.75rem;">Löschen</button>` : ''}
                     </div>
-                    ${post.location ? `<div style="font-size: 0.8rem; color: #34d399; margin-bottom: 4px;">📍 ${post.location.name}</div>` : ''}
-                    ${post.text ? `<p style="margin: 4px 0 8px 0; font-size: 0.9rem; white-space: pre-wrap;">${post.text}</p>` : ''}
-                    ${mediaHtml}
+                    <p style="margin: 6px 0; font-size: 0.9rem; white-space: pre-wrap;">${entry.description || ''}</p>
+                    ${imgHtml}
+                    ${miniMapHtml}
+                    ${pollHtml}
                     
-                    <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap; margin-top: 10px;">
-                        <button onclick="openEmojiPicker(${post.id})" style="background: #334155; padding: 4px 10px; font-size: 0.8rem; border-radius: 4px;" data-i18n="reactBtn">😀 Reagieren</button>
+                    <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap; margin-top: 8px;">
                         ${reactionsHtml}
+                        <button onclick="openEmojiPicker(${entry.id}, 'timeline')" style="background: #334155; padding: 3px 8px; font-size: 0.75rem; border-radius: 12px;">😀 Reagieren</button>
                     </div>
 
                     <div style="margin-top: 10px; border-top: 1px solid var(--border-color); padding-top: 8px;">
+                        <div style="font-size: 0.85rem; font-weight: 600; margin-bottom: 6px;">Kommentare:</div>
                         ${commentsHtml}
-                        
-                        <div style="margin-top: 10px; background: #162032; padding: 10px; border-radius: 6px; border: 1px solid var(--border-color);">
-                            <textarea id="commentInput_${post.id}" placeholder="Kommentar oder Antwort schreiben..." rows="2" style="margin-bottom: 6px; font-size: 0.85rem;"></textarea>
-                            
-                            <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 6px;">
-                                <label style="background: var(--accent-color); color: white; padding: 4px 8px; border-radius: 6px; cursor: pointer; font-size: 0.75rem;">
-                                    <span>📷 Bild</span>
-                                    <input type="file" id="commentImgFile_${post.id}" accept="image/*" style="display:none;" onchange="previewCommentMedia(this, ${post.id}, 'image')">
-                                </label>
-                                <label style="background: #10b981; color: white; padding: 4px 8px; border-radius: 6px; cursor: pointer; font-size: 0.75rem;">
-                                    🎥 Video
-                                    <input type="file" id="commentVidFile_${post.id}" accept="video/*" style="display:none;" onchange="previewCommentMedia(this, ${post.id}, 'video')">
-                                </label>
-                                <button onclick="openGiphyModal(${post.id})" style="font-size: 0.75rem; padding: 4px 8px; background: #8b5cf6;">🖼️ GIF</button>
-                                <button onclick="requestCommentLocation(${post.id})" style="font-size: 0.75rem; padding: 4px 8px; background: #059669;">📍 Standort</button>
+                        <div style="display: flex; flex-direction: column; gap: 6px; margin-top: 8px;">
+                            <input type="text" id="timelineCommentInput_${entry.id}" placeholder="Kommentar schreiben..." style="padding: 6px; font-size: 0.85rem;">
+                            <div style="display: flex; gap: 6px; align-items: center;">
+                                <button onclick="openUnifiedLocationModal('timeline_comment', ${entry.id})" style="padding: 4px 8px; font-size: 0.75rem; background: #059669;">📍 Standort</button>
+                                <span id="timelineCommentLocationIndicator_${entry.id}" style="font-size: 0.75rem; color: #34d399;"></span>
+                                <button onclick="handleCreateTimelineComment(${entry.id})" style="padding: 4px 10px; font-size: 0.75rem; margin-left: auto;">Absenden</button>
                             </div>
-                            <div id="commentLocationIndicator_${post.id}" style="font-size: 0.75rem; color: #34d399; margin-bottom: 4px;"></div>
-                            <div id="commentMediaPreview_${post.id}"></div>
-
-                            <button onclick="addCommentToPost(${post.id})" style="padding: 6px 12px; font-size: 0.8rem; margin-top: 4px;">Kommentar absenden</button>
                         </div>
                     </div>
                 </div>
             `;
         });
         container.innerHTML = html;
+
+        // Leaflet Mini-Karten für jeden Eintrag initialisieren
+        setTimeout(() => {
+            entries.forEach(entry => {
+                if (entry.location) {
+                    const mapElId = `travelMiniMap_${entry.id}`;
+                    const el = document.getElementById(mapElId);
+                    if (el && !el._leaflet_id) {
+                        const m = L.map(mapElId, { zoomControl: false, dragging: false, scrollWheelZoom: false }).setView([entry.location.lat, entry.location.lon], 13);
+                        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(m);
+                        L.marker([entry.location.lat, entry.location.lon]).addTo(m);
+                    }
+                }
+            });
+        }, 100);
     }
 
-    function deletePost(postId) {
-        if (confirm("Beitrag löschen?")) {
-            let posts = JSON.parse(localStorage.getItem('jannik_posts') || '[]');
-            posts = posts.filter(p => p.id !== postId);
-            localStorage.setItem('jannik_posts', JSON.stringify(posts));
-            renderPostsFeed();
+    function deleteTravelEntry(id) {
+        if (!confirm("Möchtest du diesen Reise-Eintrag wirklich löschen?")) return;
+        let entries = JSON.parse(localStorage.getItem('jannik_travel_history') || '[]');
+        entries = entries.filter(e => e.id !== id);
+        localStorage.setItem('jannik_travel_history', JSON.stringify(entries));
+        renderTravelEntries();
+        renderTimelineMarkers();
+    }
+
+    function handleCreateTimelineComment(entryId) {
+        const input = document.getElementById(`timelineCommentInput_${entryId}`);
+        const text = input ? input.value.trim() : '';
+        const loc = timelineCommentLocationData[entryId];
+
+        // VALIDATION: Standort angehängt, aber kein Text vorhanden
+        if (loc && !text) {
+            alert("⚠️ Achtung: Der Kommentar zum Reiseverlauf kann nicht abgeschickt werden, da ein Standort ausgewählt wurde, aber kein Text oder Nachricht eingegeben wurde.");
+            return;
+        }
+        if (!text && !loc) {
+            alert("Bitte gib einen Text ein.");
+            return;
+        }
+
+        let entries = JSON.parse(localStorage.getItem('jannik_travel_history') || '[]');
+        const entry = entries.find(e => e.id === entryId);
+        if (entry) {
+            if (!Array.isArray(entry.comments)) entry.comments = [];
+            entry.comments.push({
+                author: localStorage.getItem('jannik_current_user'),
+                text: text,
+                location: loc,
+                date: new Date().toISOString()
+            });
+            localStorage.setItem('jannik_travel_history', JSON.stringify(entries));
+            delete timelineCommentLocationData[entryId];
+            renderTravelEntries();
         }
     }
 
-    /* --- MAP, OVERPASS API POIS & WIKIPEDIA FLAG INTEGRATION --- */
-    let map = L.map('map').setView([48.5734, 7.7521], 13);
-    let currentMarker = L.marker([48.5734, 7.7521], { draggable: true }).addTo(map);
-    let radiusCircle = L.circle([48.5734, 7.7521], { radius: 3000, color: '#3b82f6', fillColor: '#3b82f6', fillOpacity: 0.1 }).addTo(map);
+    function renderTimelineMarkers() {
+        if (!timelineMarkersLayer) return;
+        timelineMarkersLayer.clearLayers();
+        const entries = JSON.parse(localStorage.getItem('jannik_travel_history') || '[]');
+        let latLngs = [];
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
+        entries.forEach(entry => {
+            if (entry.location && entry.location.lat && entry.location.lon) {
+                const m = L.marker([entry.location.lat, entry.location.lon]).bindPopup(`<b>${entry.title}</b><br>${entry.date}<br>${entry.description || ''}`);
+                timelineMarkersLayer.addLayer(m);
+                latLngs.push([entry.location.lat, entry.location.lon]);
+            }
+        });
 
-    map.on('click', function(e) {
-        const lat = e.latlng.lat;
-        const lng = e.latlng.lng;
-        currentMarker.setLatLng([lat, lng]);
-        radiusCircle.setLatLng([lat, lng]);
-        fetchRealWeather(lat, lng);
-        reverseGeocode(lat, lng);
-        fetchPOIs(lat, lng);
-    });
-
-    currentMarker.on('dragend', function(e) {
-        const pos = currentMarker.getLatLng();
-        radiusCircle.setLatLng(pos);
-        fetchRealWeather(pos.lat, pos.lng);
-        reverseGeocode(pos.lat, pos.lng);
-        fetchPOIs(pos.lat, pos.lng);
-    });
-
-    let lastCursorRefresh = 0;
-    document.addEventListener('mousemove', () => {
-        const now = Date.now();
-        if (now - lastCursorRefresh > 3000) {
-            lastCursorRefresh = now;
-            const pos = currentMarker.getLatLng();
-            fetchPOIs(pos.lat, pos.lng, true);
+        if (latLngs.length > 0 && timelineMap) {
+            timelineMap.fitBounds(latLngs, { padding: [50, 50], maxZoom: 14 });
         }
-    });
-
-    function manualRefreshPOIs() {
-        const pos = currentMarker.getLatLng();
-        fetchPOIs(pos.lat, pos.lng);
-        fetchRealWeather(pos.lat, pos.lng);
     }
 
-    function setMyCurrentLocation() {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(pos => {
-                const lat = pos.coords.latitude;
-                const lng = pos.coords.longitude;
-                currentMarker.setLatLng([lat, lng]);
-                radiusCircle.setLatLng([lat, lng]);
-                map.setView([lat, lng], 13);
-                fetchRealWeather(lat, lng);
-                reverseGeocode(lat, lng);
-                fetchPOIs(lat, lng);
-            }, () => alert("GPS-Standort konnte nicht ermittelt werden."));
+    /* --- COMMUNITY POSTS & FEED LOGIC --- */
+    let postCurrentPage = 1;
+    const postsPerPage = 5;
+    let postMediaData = null;
+
+    function previewPostMedia(input, type) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                postMediaData = { type: type, url: e.target.result };
+                const prevContent = document.getElementById('postMediaPreviewContent');
+                if (type === 'image') {
+                    prevContent.innerHTML = `<img src="${e.target.result}" style="width:100%; border-radius:4px; max-height:100px; object-fit:cover;">`;
+                } else {
+                    prevContent.innerHTML = `<video src="${e.target.result}" style="width:100%; border-radius:4px; max-height:100px;" controls></video>`;
+                }
+                document.getElementById('postMediaPreviewContainer').style.display = 'block';
+                document.getElementById('postMediaName').innerText = input.files[0].name;
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function clearPostMedia() {
+        postMediaData = null;
+        document.getElementById('postImage').value = '';
+        document.getElementById('postVideo').value = '';
+        document.getElementById('postMediaName').innerText = '';
+        document.getElementById('postMediaPreviewContainer').style.display = 'none';
+    }
+
+    function handleCreatePost() {
+        const text = document.getElementById('postText').value.trim();
+
+        // VALIDATION: Standort angehängt, aber kein Text vorhanden
+        if (attachedLocation && !text) {
+            alert("⚠️ Achtung: Der Beitrag kann nicht veröffentlicht werden, da ein Standort ausgewählt wurde, aber die dazugehörige Nachricht bzw. Textbeschreibung fehlt.");
+            return;
+        }
+        if (!text && !postMediaData && !attachedLocation && !attachedPollData) {
+            alert("Bitte schreibe eine Nachricht oder füge Medien/Umfragen hinzu.");
+            return;
+        }
+
+        const currentUser = localStorage.getItem('jannik_current_user');
+        let posts = JSON.parse(localStorage.getItem('jannik_posts') || '[]');
+        posts.unshift({
+            id: Date.now(),
+            author: currentUser,
+            text: text,
+            media: postMediaData,
+            location: attachedLocation,
+            poll: attachedPollData,
+            reactions: {},
+            comments: [],
+            date: new Date().toISOString()
+        });
+        localStorage.setItem('jannik_posts', JSON.stringify(posts));
+
+        document.getElementById('postText').value = '';
+        clearPostMedia();
+        attachedLocation = null;
+        attachedPollData = null;
+        document.getElementById('postLocationIndicator').innerText = '';
+        document.getElementById('postPollIndicator').innerText = '';
+
+        renderPostsFeed();
+    }
+
+    function renderPostsFeed() {
+        const container = document.getElementById('postsFeedContainer');
+        let posts = JSON.parse(localStorage.getItem('jannik_posts') || '[]');
+        const currentUser = localStorage.getItem('jannik_current_user');
+        const searchVal = document.getElementById('postSearchInput').value.toLowerCase().trim();
+        const sortVal = document.getElementById('postSortSelect').value;
+
+        if (searchVal) {
+            posts = posts.filter(p => p.text.toLowerCase().includes(searchVal) || p.author.toLowerCase().includes(searchVal));
+        }
+
+        if (sortVal === 'oldest') {
+            posts.sort((a, b) => a.id - b.id);
+        } else if (sortVal === 'most_reactions') {
+            posts.sort((a, b) => {
+                const countA = Object.values(a.reactions || {}).reduce((sum, arr) => sum + arr.length, 0);
+                const countB = Object.values(b.reactions || {}).reduce((sum, arr) => sum + arr.length, 0);
+                return countB - countA;
+            });
         } else {
-            alert("Geolocation wird von diesem Browser nicht unterstützt.");
+            posts.sort((a, b) => b.id - a.id);
         }
-    }
 
-    let poiLayers = {
-        parking: L.layerGroup().addTo(map),
-        shops: L.layerGroup().addTo(map),
-        fuel: L.layerGroup().addTo(map),
-        pharmacy: L.layerGroup().addTo(map),
-        banks: L.layerGroup().addTo(map),
-        sights: L.layerGroup().addTo(map),
-        restaurants: L.layerGroup().addTo(map),
-        hotels: L.layerGroup().addTo(map)
-    };
+        const totalPages = Math.ceil(posts.length / postsPerPage) || 1;
+        if (postCurrentPage > totalPages) postCurrentPage = totalPages;
+        const start = (postCurrentPage - 1) * postsPerPage;
+        const slice = posts.slice(start, start + postsPerPage);
 
-    let categorizedPOIs = {
-        parking: [],
-        shops: [],
-        fuel: [],
-        pharmacy: [],
-        banks: [],
-        sights: [],
-        restaurants: [],
-        hotels: []
-    };
+        document.getElementById('postPageIndicator').innerText = `Seite ${postCurrentPage} von ${totalPages}`;
 
-    let activeDetailCategory = null;
-
-    function onRadiusChange(val) {
-        document.getElementById('radiusValue').innerText = val;
-        radiusCircle.setRadius(val * 1000);
-        const pos = currentMarker.getLatLng();
-        fetchPOIs(pos.lat, pos.lng);
-    }
-
-    function togglePoiLayer(type) {
-        const checkbox = document.getElementById(`toggle${type.charAt(0).toUpperCase() + type.slice(1)}`);
-        if (checkbox && checkbox.checked) map.addLayer(poiLayers[type]);
-        else if (checkbox) map.removeLayer(poiLayers[type]);
-    }
-
-    function selectCategoryForDetail(categoryKey) {
-        document.querySelectorAll('.legend-item-box').forEach(el => el.classList.remove('active-detail'));
-        const box = document.getElementById(`legendBox_${categoryKey}`);
-        if(box) box.classList.add('active-detail');
-
-        activeDetailCategory = categoryKey;
-        renderCategoryDetailList(categoryKey);
-    }
-
-    function closeCategoryDetail() {
-        document.querySelectorAll('.legend-item-box').forEach(el => el.classList.remove('active-detail'));
-        document.getElementById('categoryDetailContainer').style.display = 'none';
-        activeDetailCategory = null;
-    }
-
-    function renderCategoryDetailList(categoryKey) {
-        const titles = {
-            parking: "🅿️ Parkplätze",
-            shops: "🛍️ Geschäfte",
-            fuel: "⛽ Tankstellen & E-Ladepunkte",
-            pharmacy: "💊 Apotheken & Medizin",
-            banks: "🏦 Banken & Geldautomaten",
-            sights: "🏛️ Sehenswürdigkeiten",
-            restaurants: "🍽️ Restaurants & Cafés",
-            hotels: "🏨 Unterkünfte"
-        };
-        document.getElementById('categoryDetailTitle').innerText = titles[categoryKey] || "Kategorie-Details";
-        
-        const listContainer = document.getElementById('categoryDetailList');
-        const items = categorizedPOIs[categoryKey] || [];
-        const pos = currentMarker.getLatLng();
-
-        if (items.length === 0) {
-            listContainer.innerHTML = '<p style="color: var(--text-muted); font-size: 0.85rem; margin:0;">Keine Einträge in diesem Umkreis gefunden.</p>';
-            document.getElementById('categoryDetailContainer').style.display = 'block';
+        if (slice.length === 0) {
+            container.innerHTML = '<p style="color: var(--text-muted); text-align: center; margin: 10px 0;">Keine Nachrichten gefunden.</p>';
             return;
         }
 
         let html = '';
-        items.forEach(item => {
-            const dist = getDistanceFromLatLonInKm(pos.lat, pos.lng, item.lat, item.lon).toFixed(2);
-            let imgHtml = item.image ? `<img src="${item.image}" alt="Bild">` : '';
-            let hoursHtml = item.opening_hours ? `<div style="font-size:0.8rem; color:#facc15; margin-top:2px;">🕒 Öffnungszeiten: ${item.opening_hours}</div>` : '';
-            let feeHtml = (item.fee || item.charge) ? `<div style="font-size:0.8rem; color:#f87171; margin-top:2px;">💰 Gebühr/Kosten: ${item.fee || item.charge}</div>` : '';
+        slice.forEach(post => {
+            if (!post.reactions) post.reactions = {};
+            if (!Array.isArray(post.comments)) post.comments = [];
 
-            html += `
-                <div class="poi-detail-row" onclick="map.setView([${item.lat}, ${item.lon}], 16)" style="cursor:pointer;" title="Auf Karte zentrieren">
-                    ${imgHtml}
-                    <div style="flex: 1;">
-                        <div style="font-size: 0.9rem; font-weight: 600; color: var(--text-color);">${item.name}</div>
-                        <div style="font-size: 0.8rem; color: var(--text-muted);">Entfernung: <strong>${dist} km</strong></div>
-                        ${hoursHtml}
-                        ${feeHtml}
-                    </div>
-                </div>
-            `;
-        });
-        listContainer.innerHTML = html;
-        document.getElementById('categoryDetailContainer').style.display = 'block';
-    }
-
-    async function searchLocation() {
-        const query = document.getElementById('citySearch').value.trim();
-        if(!query) return;
-        const searchBtn = document.querySelector('.search-box button');
-        const originalText = searchBtn.innerHTML;
-        searchBtn.innerHTML = '<span class="swivel-loader" style="width:14px; height:14px; border-width:2px;"></span>';
-        searchBtn.disabled = true;
-
-        try {
-            const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`);
-            const data = await res.json();
-            if (data && data.length > 0) {
-                const lat = parseFloat(data[0].lat);
-                const lon = parseFloat(data[0].lon);
-                currentMarker.setLatLng([lat, lon]);
-                radiusCircle.setLatLng([lat, lon]);
-                map.setView([lat, lon], 13);
-                fetchRealWeather(lat, lon);
-                reverseGeocode(lat, lon);
-                fetchPOIs(lat, lon);
-            } else {
-                alert("Ort nicht gefunden.");
-            }
-        } catch (e) {
-            console.error(e);
-        } finally {
-            searchBtn.innerHTML = originalText;
-            searchBtn.disabled = false;
-        }
-    }
-
-    async function reverseGeocode(lat, lon) {
-        document.getElementById('infoCountry').innerHTML = '<span class="swivel-loader" style="width:14px; height:14px; border-width:2px;"></span>';
-        document.getElementById('infoState').innerHTML = '<span class="swivel-loader" style="width:14px; height:14px; border-width:2px;"></span>';
-        document.getElementById('infoCity').innerHTML = '<span class="swivel-loader" style="width:14px; height:14px; border-width:2px;"></span>';
-        document.getElementById('countryEmblems').innerHTML = '<span class="swivel-loader" style="width:16px; height:16px; border-width:2px;"></span>';
-        document.getElementById('stateEmblems').innerHTML = '<span class="swivel-loader" style="width:16px; height:16px; border-width:2px;"></span>';
-        document.getElementById('cityEmblems').innerHTML = '<span class="swivel-loader" style="width:16px; height:16px; border-width:2px;"></span>';
-
-        try {
-            const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
-            const data = await res.json();
-            if(data && data.address) {
-                const country = data.address.country || "Deutschland";
-                const state = data.address.state || data.address.region || "Baden-Württemberg";
-                const city = data.address.city || data.address.town || data.address.village || "Ort";
-
-                document.getElementById('citySearch').value = city;
-                document.getElementById('infoCountry').innerText = country;
-                document.getElementById('infoState').innerText = state;
-                document.getElementById('infoCity').innerText = city;
-                document.getElementById('weatherCityName').innerText = city;
-
-                await updateEmblemsForLocation(country, state, city);
-            }
-        } catch (e) {
-            console.error(e);
-            document.getElementById('infoCountry').innerText = '-';
-            document.getElementById('infoState').innerText = '-';
-            document.getElementById('infoCity').innerText = '-';
-        }
-    }
-
-    const emblemDatabase = {
-        "Deutschland": {
-            flagUrl: "https://upload.wikimedia.org/wikipedia/commons/b/ba/Flag_of_Germany.svg",
-            flagWiki: "https://de.wikipedia.org/wiki/Deutschland"
-        },
-        "Frankreich": {
-            flagUrl: "https://upload.wikimedia.org/wikipedia/commons/c/c3/Flag_of_France.svg",
-            flagWiki: "https://de.wikipedia.org/wiki/Frankreich"
-        },
-        "Vereinigte Staaten": {
-            flagUrl: "https://upload.wikimedia.org/wikipedia/commons/a/a4/Flag_of_the_United_States.svg",
-            flagWiki: "https://de.wikipedia.org/wiki/Vereinigte_Staaten"
-        },
-        "Baden-Württemberg": {
-            flagUrl: "https://upload.wikimedia.org/wikipedia/commons/e/e3/Flag_of_Baden-W%C3%BCrttemberg_%28state%29.svg",
-            flagWiki: "https://de.wikipedia.org/wiki/Baden-W%C3%BCrttemberg"
-        },
-        "Bayern": {
-            flagUrl: "https://upload.wikimedia.org/wikipedia/commons/c/c1/Flag_of_Bavaria_%28lozengy%29.svg",
-            flagWiki: "https://de.wikipedia.org/wiki/Bayern"
-        }
-    };
-
-    async function getWikipediaFlag(name) {
-        if (emblemDatabase[name] && emblemDatabase[name].flagUrl) {
-            return {
-                url: emblemDatabase[name].flagUrl,
-                wiki: emblemDatabase[name].flagWiki
-            };
-        }
-        try {
-            const searchRes = await fetch(`https://de.wikipedia.org/w/api.php?action=query&prop=pageimages|info&inprop=url&pithumbsize=100&titles=${encodeURIComponent("Flagge von " + name)}&format=json&origin=*`);
-            const searchData = await searchRes.json();
-            const pages = searchData.query.pages;
-            for (let id in pages) {
-                if (pages[id].thumbnail) {
-                    return {
-                        url: pages[id].thumbnail.source,
-                        wiki: pages[id].fullurl || `https://de.wikipedia.org/wiki/${encodeURIComponent("Flagge von " + name)}`
-                    };
+            let mediaHtml = '';
+            if (post.media) {
+                if (post.media.type === 'image') {
+                    mediaHtml = `<img src="${post.media.url}" style="width: 100%; max-height: 250px; object-fit: contain; border-radius: 6px; margin-top: 8px;">`;
+                } else {
+                    mediaHtml = `<video src="${post.media.url}" style="width: 100%; max-height: 250px; border-radius: 6px; margin-top: 8px;" controls></video>`;
                 }
             }
-        } catch (e) {
-            console.error("Wikipedia API error:", e);
-        }
-        return {
-            url: null,
-            wiki: `https://de.wikipedia.org/wiki/Special:Search?search=${encodeURIComponent(name)}`
-        };
-    }
 
-    async function updateEmblemsForLocation(country, state, city) {
-        const countryInfo = await getWikipediaFlag(country);
-        document.getElementById('countryEmblems').innerHTML = renderFlagHtmlDynamic(country, countryInfo);
+            let locHtml = post.location ? `<div style="font-size: 0.8rem; color: #34d399; margin-top: 4px;">📍 ${post.location.name}</div>` : '';
+            let pollHtml = post.poll ? renderPollHtml(post.poll, post.id, 'post') : '';
+            let canDelete = (post.author === currentUser || isAdmin(currentUser));
 
-        const stateInfo = await getWikipediaFlag(state);
-        document.getElementById('stateEmblems').innerHTML = renderFlagHtmlDynamic(state, stateInfo);
-
-        const cityInfo = await getWikipediaFlag(city);
-        document.getElementById('cityEmblems').innerHTML = renderFlagHtmlDynamic(city, cityInfo);
-    }
-
-    function renderFlagHtmlDynamic(name, info) {
-        const label = `Flagge von ${name}`;
-        if (info && info.url) {
-            return `<a href="${info.wiki}" target="_blank" class="emblem-item" title="${label} (Wikipedia öffnen)"><img src="${info.url}" alt="${label}" class="emblem-img"></a>`;
-        } else {
-            return `<a href="${info.wiki}" target="_blank" class="emblem-item" title="${label} - Wikipedia öffnen"><div class="emblem-fallback" title="Wikipedia öffnen"></div></a>`;
-        }
-    }
-
-    function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
-        const R = 6371;
-        const dLat = deg2rad(lat2 - lat1);
-        const dLon = deg2rad(lon2 - lon1);
-        const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-                  Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
-                  Math.sin(dLon / 2) * Math.sin(dLon / 2);
-        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        return R * c;
-    }
-    function deg2rad(deg) { return deg * (Math.PI / 180); }
-
-    async function fetchPOIs(lat, lon, isBackground = false) {
-        const radiusMeters = document.getElementById('radiusRange').value * 1000;
-        if (!isBackground) {
-            document.getElementById('loadingStatus').innerHTML = '<span class="swivel-loader" title="Lädt Ergebnisse..."></span>';
-        }
-
-        const query = `[out:json][timeout:15];
-        (
-          node(around:${radiusMeters},${lat},${lon})[amenity="parking"];
-          way(around:${radiusMeters},${lat},${lon})[amenity="parking"];
-          node(around:${radiusMeters},${lat},${lon})[shop~"supermarket|convenience|mall|department_store"];
-          way(around:${radiusMeters},${lat},${lon})[shop~"supermarket|convenience|mall|department_store"];
-          node(around:${radiusMeters},${lat},${lon})[amenity~"fuel|charging_station"];
-          way(around:${radiusMeters},${lat},${lon})[amenity~"fuel|charging_station"];
-          node(around:${radiusMeters},${lat},${lon})[amenity~"pharmacy|hospital|doctors"];
-          way(around:${radiusMeters},${lat},${lon})[amenity~"pharmacy|hospital|doctors"];
-          node(around:${radiusMeters},${lat},${lon})[amenity~"bank|atm"];
-          way(around:${radiusMeters},${lat},${lon})[amenity~"bank|atm"];
-          node(around:${radiusMeters},${lat},${lon})[~"tourism|historic"~"attraction|castle|museum|monument|viewpoint|artwork"];
-          way(around:${radiusMeters},${lat},${lon})[~"tourism|historic"~"attraction|castle|museum|monument|viewpoint|artwork"];
-          node(around:${radiusMeters},${lat},${lon})[amenity~"restaurant|cafe|bar|pub|fast_food"];
-          way(around:${radiusMeters},${lat},${lon})[amenity~"restaurant|cafe|bar|pub|fast_food"];
-          node(around:${radiusMeters},${lat},${lon})[tourism~"hotel|guest_house|hostel|motel|apartment|camp_site"];
-          way(around:${radiusMeters},${lat},${lon})[tourism~"hotel|guest_house|hostel|motel|apartment|camp_site"];
-        );
-        out center;`;
-
-        try {
-            const response = await fetch('https://overpass-api.de/api/interpreter', {
-                method: 'POST',
-                body: query
+            let reactionsHtml = '';
+            Object.entries(post.reactions).forEach(([emoji, users]) => {
+                const reactedByMe = users.includes(currentUser);
+                reactionsHtml += `<button onclick="selectEmojiReaction('${emoji}')" style="background: ${reactedByMe ? 'rgba(59,130,246,0.2)' : '#0f172a'}; border: 1px solid ${reactedByMe ? 'var(--accent-color)' : 'var(--border-color)'}; padding: 3px 8px; border-radius: 12px; font-size: 0.8rem; cursor: pointer; color: white; display: inline-flex; align-items: center; gap: 4px;"><span>${emoji}</span> <span>${users.length}</span></button>`;
             });
-            const data = await response.json();
-            processPOIData(data.elements, lat, lon);
-            if (!isBackground) {
-                document.getElementById('loadingStatus').innerText = '';
-            }
-        } catch (err) {
-            console.error(err);
-            if (!isBackground) {
-                document.getElementById('loadingStatus').innerText = ' (Fehler beim Laden)';
-            }
-        }
-    }
 
-    function processPOIData(elements, centerLat, centerLon) {
-        Object.keys(categorizedPOIs).forEach(k => {
-            categorizedPOIs[k] = [];
-            poiLayers[k].clearLayers();
-        });
-
-        elements.forEach(el => {
-            const lat = el.lat || (el.center && el.center.lat);
-            const lon = el.lon || (el.center && el.center.lon);
-            if (!lat || !lon) return;
-
-            const tags = el.tags || {};
-            const name = tags.name || tags.amenity || tags.shop || tags.tourism || "Unbekannter Ort";
-            const opening_hours = tags.opening_hours || null;
-            const fee = tags.fee || tags.charge || null;
-            const image = null;
-
-            const poiObj = {
-                lat: lat,
-                lon: lon,
-                name: name,
-                opening_hours: opening_hours,
-                fee: fee,
-                image: image,
-                tags: tags
-            };
-
-            let category = null;
-            if (tags.amenity === 'parking') category = 'parking';
-            else if (tags.shop) category = 'shops';
-            else if (tags.amenity === 'fuel' || tags.amenity === 'charging_station') category = 'fuel';
-            else if (tags.amenity === 'pharmacy' || tags.amenity === 'hospital' || tags.amenity === 'doctors') category = 'pharmacy';
-            else if (tags.amenity === 'bank' || tags.amenity === 'atm') category = 'banks';
-            else if (tags.tourism === 'attraction' || tags.historic || tags.amenity === 'arts_centre' || tags.tourism === 'museum' || tags.tourism === 'viewpoint') category = 'sights';
-            else if (tags.amenity === 'restaurant' || tags.amenity === 'cafe' || tags.amenity === 'bar' || tags.amenity === 'pub' || tags.amenity === 'fast_food') category = 'restaurants';
-            else if (tags.tourism === 'hotel' || tags.tourism === 'guest_house' || tags.tourism === 'hostel' || tags.tourism === 'motel' || tags.tourism === 'apartment' || tags.tourism === 'camp_site') category = 'hotels';
-
-            if (category && categorizedPOIs[category]) {
-                categorizedPOIs[category].push(poiObj);
-                
-                let dotColor = '#3b82f6';
-                let emojiIcon = '📍';
-                if (category === 'parking') { emojiIcon = '🅿️'; dotColor = '#64748b'; }
-                else if (category === 'shops') { emojiIcon = '🛍️'; dotColor = '#ec4899'; }
-                else if (category === 'fuel') { emojiIcon = '⛽'; dotColor = '#10b981'; }
-                else if (category === 'pharmacy') { emojiIcon = '💊'; dotColor = '#8b5cf6'; }
-                else if (category === 'banks') { emojiIcon = '🏦'; dotColor = '#14b8a6'; }
-                else if (category === 'sights') { emojiIcon = '🏛️'; dotColor = '#ef4444'; }
-                else if (category === 'restaurants') { emojiIcon = '🍽️'; dotColor = '#3b82f6'; }
-                else if (category === 'hotels') { emojiIcon = '🏨'; dotColor = '#f59e0b'; }
-
-                const markerHtml = `<div style="background:${dotColor}; width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-size:12px; border:2px solid white; box-shadow:0 2px 4px rgba(0,0,0,0.3);">${emojiIcon}</div>`;
-                const customIcon = L.divIcon({
-                    className: 'custom-poi-marker',
-                    html: markerHtml,
-                    iconSize: [24, 24],
-                    iconAnchor: [12, 12]
-                });
-
-                const m = L.marker([lat, lon], { icon: customIcon }).bindPopup(`
-                    <div style="font-size:0.9rem;">
-                        <strong>${name}</strong><br>
-                        <span style="font-size:0.75rem; color:var(--text-muted);">${category.toUpperCase()}</span>
-                        ${opening_hours ? `<br>🕒 ${opening_hours}` : ''}
-                        ${fee ? `<br>💰 ${fee}` : ''}
+            let commentsHtml = '';
+            post.comments.forEach(c => {
+                let cLocHtml = c.location ? `<div style="font-size:0.75rem; color:#34d399; margin-top:2px;">📍 ${c.location.name}</div>` : '';
+                commentsHtml += `
+                    <div style="background: #0f172a; border: 1px solid var(--border-color); border-radius: 6px; padding: 8px; margin-top: 6px; font-size: 0.85rem;">
+                        <div style="display: flex; justify-content: space-between; color: var(--text-muted); font-size: 0.75rem; margin-bottom: 2px;">
+                            <span><strong>${c.author}</strong></span>
+                            <span>${new Date(c.date).toLocaleString()}</span>
+                        </div>
+                        <div>${c.text}</div>
+                        ${cLocHtml}
                     </div>
-                `);
-                poiLayers[category].addLayer(m);
-            }
-        });
-
-        Object.keys(categorizedPOIs).forEach(k => {
-            const countEl = document.getElementById(`count_${k}`);
-            if (countEl) countEl.innerText = `(${categorizedPOIs[k].length})`;
-        });
-
-        if (activeDetailCategory) {
-            renderCategoryDetailList(activeDetailCategory);
-        }
-    }
-
-    let weatherDataCache = null;
-    let weatherViewMode = 'hourly';
-
-    async function fetchRealWeather(lat, lon) {
-        const weatherGrid = document.getElementById('weatherGrid');
-        const hoursGrid = document.getElementById('weatherHoursGrid');
-        weatherGrid.innerHTML = '<div style="text-align:center; padding:20px; grid-column:1/-1; color:var(--text-muted);"><span class="swivel-loader"></span> Lade Wetter-Daten...</div>';
-        hoursGrid.innerHTML = '<div style="text-align:center; padding:10px; color:var(--text-muted);"><span class="swivel-loader"></span> Lade stündliche Vorschau...</div>';
-
-        try {
-            const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m&hourly=temperature_2m,precipitation,wind_speed_10m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,wind_speed_10m_max&timezone=auto`);
-            const data = await res.json();
-            weatherDataCache = data;
-            renderWeatherUI(data);
-        } catch (e) {
-            console.error(e);
-            weatherGrid.innerHTML = '<div style="text-align:center; padding:20px; grid-column:1/-1; color:#ef4444;">Fehler beim Laden des Wetters.</div>';
-            hoursGrid.innerHTML = '';
-        }
-    }
-
-    function renderWeatherUI(data) {
-        const weatherGrid = document.getElementById('weatherGrid');
-        const hoursGrid = document.getElementById('weatherHoursGrid');
-        if (!data || !data.daily) return;
-
-        let dailyHtml = '';
-        const days = data.daily.time;
-        days.forEach((dayStr, idx) => {
-            if (idx >= 7) return;
-            const date = new Date(dayStr);
-            const weekday = date.toLocaleDateString('de-DE', { weekday: 'short', day: 'numeric', month: 'numeric' });
-            const maxT = Math.round(data.daily.temperature_2m_max[idx]);
-            const minT = Math.round(data.daily.temperature_2m_min[idx]);
-            const code = data.daily.weather_code[idx];
-            const icon = getWeatherIconAndText(code).icon;
-
-            dailyHtml += `
-                <div class="weather-day" onclick="openWeatherDetailsModal()">
-                    <div style="font-weight:600; margin-bottom:4px;">${weekday}</div>
-                    <div style="font-size:1.6rem; margin:4px 0;">${icon}</div>
-                    <div style="font-weight:600;">${maxT}° / <span style="color:var(--text-muted);">${minT}°</span></div>
-                </div>
-            `;
-        });
-        weatherGrid.innerHTML = dailyHtml;
-
-        let hourlyHtml = '';
-        const nowIdx = new Date().getHours();
-        for (let i = nowIdx; i < nowIdx + 24 && i < data.hourly.time.length; i++) {
-            const timeStr = new Date(data.hourly.time[i]).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
-            const temp = Math.round(data.hourly.temperature_2m[i]);
-            const code = data.hourly.weather_code[i];
-            const icon = getWeatherIconAndText(code).icon;
-
-            hourlyHtml += `
-                <div class="hour-slot">
-                    <div style="color:var(--text-muted);">${timeStr}</div>
-                    <div style="font-size:1.3rem; margin:4px 0;">${icon}</div>
-                    <div style="font-weight:600;">${temp}°C</div>
-                </div>
-            `;
-        }
-        hoursGrid.innerHTML = hourlyHtml;
-    }
-
-    function getWeatherIconAndText(code) {
-        if (code === 0) return { icon: '☀️', text: 'Sonnig & Klar' };
-        if (code >= 1 && code <= 3) return { icon: '⛅', text: 'Teilweise bewölkt' };
-        if (code >= 45 && code <= 48) return { icon: '🌫️', text: 'Neblig' };
-        if (code >= 51 && code <= 67) return { icon: '🌧️', text: 'Regen' };
-        if (code >= 71 && code <= 77) return { icon: '❄️', text: 'Schnee' };
-        if (code >= 95) return { icon: '⛈️', text: 'Gewitter' };
-        return { icon: '☁️', text: 'Bewölkt' };
-    }
-
-    function openWeatherDetailsModal() {
-        document.getElementById('weatherDetailsModal').style.display = 'flex';
-        if (weatherDataCache) {
-            updateWeatherModalCharts();
-        }
-    }
-
-    function closeWeatherDetailsModal() {
-        document.getElementById('weatherDetailsModal').style.display = 'none';
-    }
-
-    let tempChartInstance = null;
-    let rainChartInstance = null;
-    let windChartInstance = null;
-
-    function setWeatherViewMode(mode) {
-        weatherViewMode = mode;
-        if(mode === 'hourly') {
-            document.getElementById('btnViewHourly').style.background = 'var(--accent-color)';
-            document.getElementById('btnViewDaily').style.background = '#334155';
-        } else {
-            document.getElementById('btnViewDaily').style.background = 'var(--accent-color)';
-            document.getElementById('btnViewHourly').style.background = '#334155';
-        }
-        updateWeatherModalCharts();
-    }
-
-    function updateWeatherModalCharts() {
-        if (!weatherDataCache) return;
-        const data = weatherDataCache;
-
-        let labels = [];
-        let tempData = [];
-        let rainData = [];
-        let windData = [];
-
-        if (weatherViewMode === 'hourly') {
-            const nowIdx = new Date().getHours();
-            for (let i = nowIdx; i < nowIdx + 24 && i < data.hourly.time.length; i++) {
-                labels.push(new Date(data.hourly.time[i]).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }));
-                tempData.push(data.hourly.temperature_2m[i]);
-                rainData.push(data.hourly.precipitation[i]);
-                windData.push(data.hourly.wind_speed_10m[i]);
-            }
-        } else {
-            data.daily.time.forEach((d, idx) => {
-                labels.push(new Date(d).toLocaleDateString('de-DE', { weekday: 'short', day: 'numeric', month: 'numeric' }));
-                tempData.push(data.daily.temperature_2m_max[idx]);
-                rainData.push(data.daily.precipitation_sum[idx]);
-                windData.push(data.daily.wind_speed_10m_max[idx]);
+                `;
             });
+
+            html += `
+                <div style="background: #162032; border: 1px solid var(--border-color); border-radius: 8px; padding: 12px;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
+                        <span style="font-size: 0.85rem; font-weight: 600; color: var(--accent-color);">👤 ${post.author}</span>
+                        <div style="display: flex; gap: 8px; align-items: center;">
+                            <span style="font-size: 0.75rem; color: var(--text-muted);">${new Date(post.date).toLocaleString()}</span>
+                            ${canDelete ? `<button onclick="deletePost(${post.id})" style="background: #ef4444; padding: 2px 6px; font-size: 0.75rem;">Löschen</button>` : ''}
+                        </div>
+                    </div>
+                    <p style="margin: 6px 0; font-size: 0.95rem; white-space: pre-wrap;">${post.text}</p>
+                    ${mediaHtml}
+                    ${locHtml}
+                    ${pollHtml}
+
+                    <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap; margin-top: 8px;">
+                        ${reactionsHtml}
+                        <button onclick="openEmojiPicker(${post.id}, 'post')" style="background: #334155; padding: 3px 8px; font-size: 0.75rem; border-radius: 12px;" data-i18n="reactBtn">😀 Reagieren</button>
+                    </div>
+
+                    <div style="margin-top: 10px; border-top: 1px solid var(--border-color); padding-top: 8px;">
+                        <div style="font-size: 0.85rem; font-weight: 600; margin-bottom: 6px;">Kommentare:</div>
+                        ${commentsHtml}
+                        <div style="display: flex; flex-direction: column; gap: 6px; margin-top: 8px;">
+                            <input type="text" id="commentInput_${post.id}" placeholder="Kommentar schreiben..." style="padding: 6px; font-size: 0.85rem;">
+                            <div style="display: flex; gap: 6px; align-items: center;">
+                                <button onclick="openUnifiedLocationModal('comment', ${post.id})" style="padding: 4px 8px; font-size: 0.75rem; background: #059669;">📍 Standort</button>
+                                <span id="commentLocationIndicator_${post.id}" style="font-size: 0.75rem; color: #34d399;"></span>
+                                <button onclick="handleCreateComment(${post.id})" style="padding: 4px 10px; font-size: 0.75rem; margin-left: auto;">Absenden</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+        container.innerHTML = html;
+        applyTranslations();
+    }
+
+    function prevPostPage() { if (postCurrentPage > 1) { postCurrentPage--; renderPostsFeed(); } }
+    function nextPostPage() {
+        let posts = JSON.parse(localStorage.getItem('jannik_posts') || '[]');
+        const totalPages = Math.ceil(posts.length / postsPerPage) || 1;
+        if (postCurrentPage < totalPages) { postCurrentPage++; renderPostsFeed(); }
+    }
+
+    function deletePost(id) {
+        if (!confirm("Möchtest du diesen Beitrag wirklich löschen?")) return;
+        let posts = JSON.parse(localStorage.getItem('jannik_posts') || '[]');
+        posts = posts.filter(p => p.id !== id);
+        localStorage.setItem('jannik_posts', JSON.stringify(posts));
+        renderPostsFeed();
+    }
+
+    function handleCreateComment(postId) {
+        const input = document.getElementById(`commentInput_${postId}`);
+        const text = input ? input.value.trim() : '';
+        const loc = commentLocationData[postId];
+
+        // VALIDATION: Standort angehängt, aber kein Text vorhanden
+        if (loc && !text) {
+            alert("⚠️ Achtung: Der Kommentar kann nicht abgeschickt werden, da ein Standort ausgewählt wurde, aber keine Nachricht oder Text eingetragen ist.");
+            return;
+        }
+        if (!text && !loc) {
+            alert("Bitte gib einen Text ein.");
+            return;
         }
 
-        const chartConfigOptions = {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: { legend: { display: false } },
-            scales: {
-                x: { ticks: { color: '#94a3b8', font: { size: 10 } }, grid: { color: '#334155' } },
-                y: { ticks: { color: '#94a3b8', font: { size: 10 } }, grid: { color: '#334155' } }
+        let posts = JSON.parse(localStorage.getItem('jannik_posts') || '[]');
+        const post = posts.find(p => p.id === postId);
+        if (post) {
+            if (!Array.isArray(post.comments)) post.comments = [];
+            post.comments.push({
+                author: localStorage.getItem('jannik_current_user'),
+                text: text,
+                location: loc,
+                date: new Date().toISOString()
+            });
+            localStorage.setItem('jannik_posts', JSON.stringify(posts));
+            delete commentLocationData[postId];
+            renderPostsFeed();
+        }
+    }
+
+    /* --- GIPHY MODAL --- */
+    function openGiphyModal() { alert("Giphy Modus aktiv."); }
+    function closeGiphyModal() { document.getElementById('giphyModal').style.display = 'none'; }
+    function searchGiphy() {}
+
+    /* --- USER SETTINGS MODAL & ADMIN CONSOLE --- */
+    function openUserSettingsModal() {
+        const currentUser = localStorage.getItem('jannik_current_user');
+        document.getElementById('userSettingsModal').style.display = 'flex';
+        if (isAdmin(currentUser)) {
+            document.getElementById('adminConsoleSection').style.display = 'block';
+            renderAdminConsole();
+        } else {
+            document.getElementById('adminConsoleSection').style.display = 'none';
+        }
+    }
+
+    function closeUserSettingsModal() {
+        document.getElementById('userSettingsModal').style.display = 'none';
+    }
+
+    function changePassword() {
+        const p1 = document.getElementById('newPasswordInput').value.trim();
+        const p2 = document.getElementById('newPasswordConfirmInput').value.trim();
+        if (!p1 || p1 !== p2) {
+            alert("Die Passwörter stimmen nicht überein oder sind leer.");
+            return;
+        }
+        const currentUser = localStorage.getItem('jannik_current_user');
+        let users = getUsers();
+        if (users[currentUser]) {
+            users[currentUser].pass = p1;
+            localStorage.setItem('jannik_users', JSON.stringify(users));
+            alert("Passwort erfolgreich geändert!");
+            document.getElementById('newPasswordInput').value = '';
+            document.getElementById('newPasswordConfirmInput').value = '';
+        }
+    }
+
+    function deleteMyAccount() {
+        const currentUser = localStorage.getItem('jannik_current_user');
+        if (currentUser === 'admin') {
+            alert("Der Admin-Account kann nicht gelöscht werden.");
+            return;
+        }
+        if (!confirm("Möchtest du deinen Account wirklich unwiderruflich löschen?")) return;
+        let users = getUsers();
+        delete users[currentUser];
+        localStorage.setItem('jannik_users', JSON.stringify(users));
+        handleLogout();
+    }
+
+    function renderAdminConsole() {
+        let users = getUsers();
+        
+        // Pending
+        const pendingContainer = document.getElementById('pendingRegistrationsContainer');
+        let pendingHtml = '';
+        Object.entries(users).forEach(([u, data]) => {
+            if (!data.isAdmin && !data.approved) {
+                pendingHtml += `
+                    <div style="display:flex; justify-content:space-between; align-items:center; background:#0f172a; padding:6px 10px; border-radius:6px; font-size:0.85rem;">
+                        <span>${u}</span>
+                        <button onclick="approveUser('${u}')" style="background:#10b981; padding:2px 8px; font-size:0.75rem;">Freigeben</button>
+                    </div>
+                `;
             }
-        };
-
-        if (tempChartInstance) tempChartInstance.destroy();
-        tempChartInstance = new Chart(document.getElementById('tempChart').getContext('2d'), {
-            type: 'line',
-            data: { labels: labels, datasets: [{ data: tempData, borderColor: '#3b82f6', backgroundColor: 'rgba(59, 130, 246, 0.1)', fill: true, tension: 0.3 }] },
-            options: chartConfigOptions
         });
+        pendingContainer.innerHTML = pendingHtml || '<span style="font-size:0.85rem; color:var(--text-muted);">Keine ausstehenden Registrierungen.</span>';
 
-        if (rainChartInstance) rainChartInstance.destroy();
-        rainChartInstance = new Chart(document.getElementById('rainChart').getContext('2d'), {
-            type: 'bar',
-            data: { labels: labels, datasets: [{ data: rainData, backgroundColor: '#06b6d4' }] },
-            options: chartConfigOptions
+        // Active Online
+        const activeContainer = document.getElementById('activeUsersContainer');
+        let activeHtml = '';
+        Object.entries(users).forEach(([u, data]) => {
+            if (data.online) {
+                activeHtml += `<div style="font-size:0.85rem; color:#4ade80;">🟢 ${u}</div>`;
+            }
         });
+        activeContainer.innerHTML = activeHtml || '<span style="font-size:0.85rem; color:var(--text-muted);">Keine Benutzer online.</span>';
 
-        if (windChartInstance) windChartInstance.destroy();
-        windChartInstance = new Chart(document.getElementById('windChart').getContext('2d'), {
-            type: 'line',
-            data: { labels: labels, datasets: [{ data: windData, borderColor: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.1)', fill: true, tension: 0.3 }] },
-            options: chartConfigOptions
+        // All Users & Timeline Rights
+        const allContainer = document.getElementById('allUsersListContainer');
+        let allHtml = '';
+        Object.entries(users).forEach(([u, data]) => {
+            allHtml += `
+                <div style="display:flex; justify-content:space-between; align-items:center; background:#0f172a; padding:6px 10px; border-radius:6px; font-size:0.85rem;">
+                    <span><strong>${u}</strong> ${data.isAdmin ? '(Admin)' : ''}</span>
+                    <label style="display:flex; align-items:center; gap:4px; font-size:0.75rem; cursor:pointer;">
+                        <input type="checkbox" ${data.timelineAccess ? 'checked' : ''} onchange="toggleTimelineAccess('${u}', this.checked)"> Tagebuch-Zugriff
+                    </label>
+                </div>
+            `;
         });
+        allContainer.innerHTML = allHtml;
     }
 
-    function openGoogleMapsNavigation() {
-        const pos = currentMarker.getLatLng();
-        window.open(`https://www.google.com/maps/dir/?api=1&destination=${pos.lat},${pos.lng}`, '_blank');
+    function approveUser(username) {
+        let users = getUsers();
+        if (users[username]) {
+            users[username].approved = true;
+            localStorage.setItem('jannik_users', JSON.stringify(users));
+            renderAdminConsole();
+        }
     }
 
-    function resetToHome() {
-        map.setView([48.5734, 7.7521], 13);
-        currentMarker.setLatLng([48.5734, 7.7521]);
-        radiusCircle.setLatLng([48.5734, 7.7521]);
-        fetchRealWeather(48.5734, 7.7521);
-        reverseGeocode(48.5734, 7.7521);
-        fetchPOIs(48.5734, 7.7521);
+    function toggleTimelineAccess(username, hasAccess) {
+        let users = getUsers();
+        if (users[username]) {
+            users[username].timelineAccess = hasAccess;
+            localStorage.setItem('jannik_users', JSON.stringify(users));
+        }
     }
-
-    // Initial load
-    setTimeout(() => {
-        reverseGeocode(48.5734, 7.7521);
-        fetchRealWeather(48.5734, 7.7521);
-        fetchPOIs(48.5734, 7.7521);
-    }, 300);
 </script>
 </body>
 </html>
