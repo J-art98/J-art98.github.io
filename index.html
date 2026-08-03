@@ -48,20 +48,6 @@
             margin-left: 6px;
         }
 
-        #topLanguageBar {
-            position: fixed;
-            top: 10px;
-            right: 14px;
-            z-index: 10000;
-            display: flex;
-            gap: 8px;
-            background: rgba(30, 41, 59, 0.9);
-            padding: 6px 10px;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
-        }
-
         .lang-flag {
             cursor: pointer;
             font-size: 1.3rem;
@@ -170,21 +156,37 @@
             box-sizing: border-box;
         }
 
-        header {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            align-items: center;
+        .app-header-card {
             background: var(--card-bg);
-            padding: 12px 18px;
+            padding: 14px 18px;
             border-radius: 8px;
             border: 1px solid var(--border-color);
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            box-sizing: border-box;
+        }
+
+        .app-header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .app-header-nav {
+            display: flex;
             gap: 8px;
+            align-items: center;
+            flex-wrap: wrap;
+            border-top: 1px solid var(--border-color);
+            padding-top: 10px;
         }
 
         h1 {
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             margin: 0;
             cursor: pointer;
             color: var(--text-color);
@@ -203,10 +205,16 @@
             border-radius: 6px;
             font-size: 0.9rem;
             cursor: pointer;
-            transition: background 0.2s;
+            transition: background 0.2s, border 0.2s;
+            border: 1px solid transparent;
         }
         .badge:hover {
             background: #475569;
+        }
+        .badge.active-nav {
+            background: var(--accent-color);
+            border-color: #60a5fa;
+            font-weight: 600;
         }
 
         .logout-btn {
@@ -287,11 +295,6 @@
             background: #1e293b;
         }
 
-        .legend-item-box.active-detail {
-            border-color: var(--accent-color);
-            background: rgba(59, 130, 246, 0.15);
-        }
-
         .legend-dot {
             width: 10px;
             height: 10px;
@@ -318,26 +321,6 @@
             max-height: 280px;
             overflow-y: auto;
             display: none;
-        }
-
-        .poi-detail-row {
-            background: #0f172a;
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            padding: 10px;
-            margin-bottom: 8px;
-            display: flex;
-            gap: 10px;
-            align-items: flex-start;
-        }
-
-        .poi-detail-row img {
-            width: 70px;
-            height: 70px;
-            object-fit: cover;
-            border-radius: 4px;
-            border: 1px solid var(--border-color);
-            flex-shrink: 0;
         }
 
         .search-box {
@@ -554,12 +537,6 @@
 </head>
 <body>
 
-<div id="topLanguageBar">
-    <span class="lang-flag" onclick="changeLanguage('de')" title="Deutsch (Standard)">🇩🇪</span>
-    <span class="lang-flag" onclick="changeLanguage('en')" title="English (USA)">🇺🇸</span>
-    <span class="lang-flag" onclick="changeLanguage('fr')" title="Français">🇫🇷</span>
-</div>
-
 <div id="authOverlay">
     <div class="auth-box">
         <h2 data-i18n="title">Jannik Reisen 🌍✈️</h2>
@@ -603,46 +580,6 @@
                 <input type="text" id="regCaptcha" placeholder="Ergebnis eingeben...">
             </div>
             <button style="width: 100%; margin-top: 6px;" onclick="handleRegister()" data-i18n="registerBtn">Account erstellen</button>
-        </div>
-    </div>
-</div>
-
-<div id="userSettingsModal" class="modal">
-    <div class="modal-content" style="max-width: 650px;">
-        <span class="close-modal" onclick="closeUserSettingsModal()">&times;</span>
-        <h2 style="margin-top:0; color: var(--accent-color);">⚙️ Account-Einstellungen & Verwaltung</h2>
-        
-        <div style="background: #0f172a; padding: 14px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 16px;">
-            <h4 style="margin: 0 0 10px 0;">🔒 Passwort ändern</h4>
-            <div class="auth-form-group" style="margin-bottom: 8px;">
-                <input type="password" id="newPasswordInput" placeholder="Neues Passwort eingeben...">
-            </div>
-            <div class="auth-form-group" style="margin-bottom: 8px;">
-                <input type="password" id="newPasswordConfirmInput" placeholder="Neues Passwort bestätigen (identisch)...">
-            </div>
-            <button onclick="changePassword()" style="padding: 6px 12px; font-size: 0.85rem;">Passwort aktualisieren</button>
-        </div>
-
-        <div style="background: rgba(239, 68, 68, 0.1); padding: 14px; border-radius: 8px; border: 1px solid #ef4444; margin-bottom: 16px;">
-            <h4 style="margin: 0 0 6px 0; color: #fca5a5;">⚠️ Account löschen</h4>
-            <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0;">Wenn Sie Ihren Account löschen, werden Ihre Daten unwiderruflich entfernt.</p>
-            <button onclick="deleteMyAccount()" style="background: #ef4444; padding: 6px 12px; font-size: 0.85rem;">Meinen Account löschen</button>
-        </div>
-
-        <div id="adminConsoleSection" style="display: none; background: #0f172a; padding: 14px; border-radius: 8px; border: 1px solid var(--border-color);">
-            <h4 style="margin: 0 0 14px 0; color: #facc15; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">👑 Admin-Konsole</h4>
-            <div style="background: #1e293b; padding: 12px; border-radius: 6px; border: 1px solid #f59e0b; margin-bottom: 14px;">
-                <h5 style="margin: 0 0 8px 0; font-size: 0.95rem; color: #f59e0b;">⏳ Ausstehende Registrierungen & Anfragen</h5>
-                <div id="pendingRegistrationsContainer" style="display: flex; flex-direction: column; gap: 6px;"></div>
-            </div>
-            <div style="background: #1e293b; padding: 12px; border-radius: 6px; border: 1px solid #10b981; margin-bottom: 14px;">
-                <h5 style="margin: 0 0 8px 0; font-size: 0.95rem; color: #10b981;">🟢 Aktuell online User</h5>
-                <div id="activeUsersContainer" style="display: flex; flex-direction: column; gap: 6px;"></div>
-            </div>
-            <div style="background: #1e293b; padding: 12px; border-radius: 6px; border: 1px solid #3b82f6;">
-                <h5 style="margin: 0 0 8px 0; font-size: 0.95rem; color: #3b82f6;">👥 Alle registrierten User & Tagebuch-Rechte</h5>
-                <div id="allUsersListContainer" style="display: flex; flex-direction: column; gap: 6px; max-height: 200px; overflow-y: auto;"></div>
-            </div>
         </div>
     </div>
 </div>
@@ -710,16 +647,29 @@
 </div>
 
 <div class="container" id="mainAppContainer" style="display: none;">
-    <header>
-        <h1 onclick="resetToHome()" data-i18n="title">Jannik Reisen 🌍✈️</h1>
-        <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
-            <span class="badge" onclick="switchMainView('home')" id="navHomeBadge">🏠 Hauptseite</span>
-            <span class="badge" onclick="switchMainView('timeline')" id="navTimelineBadge">✈️ Reiseverlauf & Tagebuch</span>
-            <span class="badge" id="userBadgeLabel" onclick="openUserSettingsModal()" title="Einstellungen öffnen">admin (👑 Admin)</span>
-            <button class="logout-btn" onclick="handleLogout()" data-i18n="logout">Abmelden</button>
+    <!-- HEADER MIT NAVIGATION UND BENUTZER-BUTTON -->
+    <div class="app-header-card">
+        <div class="app-header-top">
+            <h1 onclick="resetToHome()" data-i18n="title">Jannik Reisen 🌍✈️</h1>
+            <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                <div id="topLanguageBar" style="display: flex; gap: 6px; background: rgba(30, 41, 59, 0.9); padding: 4px 8px; border-radius: 8px; border: 1px solid var(--border-color);">
+                    <span class="lang-flag" onclick="changeLanguage('de')" title="Deutsch (Standard)">🇩🇪</span>
+                    <span class="lang-flag" onclick="changeLanguage('en')" title="English (USA)">🇺🇸</span>
+                    <span class="lang-flag" onclick="changeLanguage('fr')" title="Français">🇫🇷</span>
+                </div>
+                <!-- Unverändertes Layout des Benutzer-Buttons, führt nun zur Admin-/Benutzerkonsole-Seite -->
+                <span class="badge" id="userBadgeLabel" onclick="switchMainView('console')" title="Einstellungen & Admin-Konsole öffnen">admin (👑 Admin)</span>
+                <button class="logout-btn" onclick="handleLogout()" data-i18n="logout">Abmelden</button>
+            </div>
         </div>
-    </header>
+        <div class="app-header-nav">
+            <span class="badge active-nav" onclick="switchMainView('home')" id="navHomeBadge">🏠 Hauptseite</span>
+            <span class="badge" onclick="switchMainView('timeline')" id="navTimelineBadge">✈️ Reiseverlauf & Tagebuch</span>
+            <span class="badge" onclick="switchMainView('console')" id="navConsoleBadge">⚙️ Benutzer- & Admin-Konsole</span>
+        </div>
+    </div>
 
+    <!-- 1. HAUPTSEITE VIEW -->
     <div id="homeViewContainer" style="display: flex; flex-direction: column; gap: 12px;">
         <div class="card">
             <h3 data-i18n="mapTitle">🗺️ Weltkarte & Umkreis-Suche <small style="font-size:0.75rem; color:var(--text-muted);">(Nadel per Klick oder Drag beweglich!)</small></h3>
@@ -857,7 +807,7 @@
             </div>
         </div>
 
-        <div class="card">
+        <div class="card" id="newPostCardSection">
             <h3 data-i18n="newPostTitle">✍️ Neue Nachricht schreiben</h3>
             <div style="background: #162032; padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); margin-top: 8px;">
                 <textarea id="postText" data-i18n-placeholder="postPlaceholder" placeholder="Was gibt's Neues bei deinen Reisen?..." rows="2" style="margin-bottom: 6px; font-size: 0.85rem;"></textarea>
@@ -889,6 +839,7 @@
         </div>
     </div>
 
+    <!-- 2. REISEVERLAUF & TAGEBUCH VIEW -->
     <div id="timelineViewContainer" style="display: none; flex-direction: column; gap: 12px;">
         <div class="card">
             <h3 style="margin-top:0; color: var(--accent-color);">✈️ Reiseverlauf & Tagebuch</h3>
@@ -935,8 +886,71 @@
         </div>
 
         <div class="card">
-            <h3 style="margin-top:0;">📚 Meine Reise-Chronik & Tagebuch-Einträge</h3>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 8px;">
+                <h3 style="margin: 0; border: none; padding: 0;">📚 Meine Reise-Chronik & Tagebuch-Einträge</h3>
+                <div class="inline-filter" style="display:flex; align-items:center; gap:6px;">
+                    <input type="text" id="travelSearchInput" placeholder="Tagebuch durchsuchen..." oninput="renderTravelEntries()" style="padding: 4px 8px; font-size: 0.85rem; width: 160px;">
+                    <label for="travelSortSelect" style="font-size:0.85rem;">Sortierung:</label>
+                    <select id="travelSortSelect" onchange="renderTravelEntries()" style="padding: 4px 8px; font-size: 0.85rem; width: auto;">
+                        <option value="newest" selected>Neuester Eintrag</option>
+                        <option value="oldest">Ältester Eintrag</option>
+                        <option value="most_reactions">Meiste Reaktionen</option>
+                        <option value="least_reactions">Wenigste Reaktionen</option>
+                    </select>
+                </div>
+            </div>
+
             <div id="travelEntriesList" style="display: flex; flex-direction: column; gap: 12px; margin-top: 10px;"></div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--border-color);">
+                <button onclick="prevTravelPage()" id="travelPrevBtn" style="padding: 6px 12px; font-size: 0.85rem; background: #334155;" data-i18n="prevBtn">◀ Zurück</button>
+                <span id="travelPageIndicator" style="font-size: 0.85rem; color: var(--text-muted);">Seite 1 von 1</span>
+                <button onclick="nextTravelPage()" id="travelNextBtn" style="padding: 6px 12px; font-size: 0.85rem; background: #334155;" data-i18n="nextBtn">Weiter ▶</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. NEUE SEITE: BENUTZER- & DETAILLIERTE ADMIN-KONSOLE VIEW -->
+    <div id="consoleViewContainer" style="display: none; flex-direction: column; gap: 12px;">
+        <div class="card">
+            <h2 style="margin-top:0; color: var(--accent-color);">⚙️ Account-Einstellungen & Benutzer- / Admin-Konsole</h2>
+            
+            <div style="background: #0f172a; padding: 14px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 16px;">
+                <h4 style="margin: 0 0 10px 0;">🔒 Passwort ändern</h4>
+                <div class="auth-form-group" style="margin-bottom: 8px;">
+                    <input type="password" id="newPasswordInput" placeholder="Neues Passwort eingeben...">
+                </div>
+                <div class="auth-form-group" style="margin-bottom: 8px;">
+                    <input type="password" id="newPasswordConfirmInput" placeholder="Neues Passwort bestätigen (identisch)...">
+                </div>
+                <button onclick="changePassword()" style="padding: 6px 12px; font-size: 0.85rem;">Passwort aktualisieren</button>
+            </div>
+
+            <div style="background: rgba(239, 68, 68, 0.1); padding: 14px; border-radius: 8px; border: 1px solid #ef4444; margin-bottom: 16px;">
+                <h4 style="margin: 0 0 6px 0; color: #fca5a5;">⚠️ Account löschen</h4>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0;">Wenn Sie Ihren Account löschen, werden Ihre Daten unwiderruflich entfernt.</p>
+                <button onclick="deleteMyAccount()" style="background: #ef4444; padding: 6px 12px; font-size: 0.85rem;">Meinen Account löschen</button>
+            </div>
+
+            <div id="adminConsoleSection" style="display: none; background: #0f172a; padding: 14px; border-radius: 8px; border: 1px solid var(--border-color);">
+                <h4 style="margin: 0 0 14px 0; color: #facc15; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">👑 Detaillierte Admin-Konsole & Rechteverwaltung</h4>
+                
+                <div style="background: #1e293b; padding: 12px; border-radius: 6px; border: 1px solid #f59e0b; margin-bottom: 14px;">
+                    <h5 style="margin: 0 0 8px 0; font-size: 0.95rem; color: #f59e0b;">⏳ Ausstehende Registrierungen & Anfragen</h5>
+                    <div id="pendingRegistrationsContainer" style="display: flex; flex-direction: column; gap: 6px;"></div>
+                </div>
+
+                <div style="background: #1e293b; padding: 12px; border-radius: 6px; border: 1px solid #10b981; margin-bottom: 14px;">
+                    <h5 style="margin: 0 0 8px 0; font-size: 0.95rem; color: #10b981;">🟢 Aktuell online User</h5>
+                    <div id="activeUsersContainer" style="display: flex; flex-direction: column; gap: 6px;"></div>
+                </div>
+
+                <div style="background: #1e293b; padding: 12px; border-radius: 6px; border: 1px solid #3b82f6;">
+                    <h5 style="margin: 0 0 8px 0; font-size: 0.95rem; color: #3b82f6;">👥 Alle registrierten User & granulare Rechteverwaltung</h5>
+                    <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0; margin-bottom: 10px;">Verwalte hier direkt den Admin-Status, Tagebuch-Zugriff und Schreibrechte für jeden User.</p>
+                    <div id="allUsersListContainer" style="display: flex; flex-direction: column; gap: 8px; max-height: 280px; overflow-y: auto;"></div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -1190,7 +1204,7 @@
     function getUsers() {
         let users = JSON.parse(localStorage.getItem('jannik_users') || '{}');
         if (!users['admin']) {
-            users['admin'] = { pass: 'admin', isAdmin: true, approved: true, timelineAccess: true };
+            users['admin'] = { pass: 'admin', isAdmin: true, approved: true, timelineAccess: true, postingAccess: true };
             localStorage.setItem('jannik_users', JSON.stringify(users));
         }
         return users;
@@ -1239,7 +1253,7 @@
             return; 
         }
 
-        users[user] = { pass: pass, isAdmin: false, approved: false, timelineAccess: false };
+        users[user] = { pass: pass, isAdmin: false, approved: false, timelineAccess: false, postingAccess: true };
         localStorage.setItem('jannik_users', JSON.stringify(users));
         
         switchAuthTab('login');
@@ -1258,6 +1272,12 @@
         document.getElementById('authOverlay').style.display = 'none';
         document.getElementById('mainAppContainer').style.display = 'flex';
         document.getElementById('userBadgeLabel').innerHTML = isAdmin(username) ? `👑 ${username} (Admin)` : `👤 ${username} (User)`;
+        
+        // Check posting permissions for current user
+        const canPost = isAdmin(username) || users[username].postingAccess !== false;
+        const postCard = document.getElementById('newPostCardSection');
+        if (postCard) postCard.style.display = canPost ? 'block' : 'none';
+
         renderPostsFeed();
         
         setTimeout(() => {
@@ -1313,23 +1333,35 @@
         currentMainView = view;
         const homeContainer = document.getElementById('homeViewContainer');
         const timelineContainer = document.getElementById('timelineViewContainer');
+        const consoleContainer = document.getElementById('consoleViewContainer');
+
         const navHome = document.getElementById('navHomeBadge');
         const navTimeline = document.getElementById('navTimelineBadge');
+        const navConsole = document.getElementById('navConsoleBadge');
+
+        // Reset all active classes
+        navHome.classList.remove('active-nav');
+        navTimeline.classList.remove('active-nav');
+        navConsole.classList.remove('active-nav');
+
+        homeContainer.style.display = 'none';
+        timelineContainer.style.display = 'none';
+        consoleContainer.style.display = 'none';
 
         if (view === 'timeline') {
-            homeContainer.style.display = 'none';
             timelineContainer.style.display = 'flex';
-            navHome.style.background = '#334155';
-            navTimeline.style.background = 'var(--accent-color)';
+            navTimeline.classList.add('active-nav');
             setTimeout(() => {
                 initTimelineMap();
                 renderTravelEntries();
             }, 100);
+        } else if (view === 'console') {
+            consoleContainer.style.display = 'flex';
+            navConsole.classList.add('active-nav');
+            renderAdminConsoleData();
         } else {
             homeContainer.style.display = 'flex';
-            timelineContainer.style.display = 'none';
-            navHome.style.background = 'var(--accent-color)';
-            navTimeline.style.background = '#334155';
+            navHome.classList.add('active-nav');
             setTimeout(() => {
                 if(map) map.invalidateSize();
             }, 100);
@@ -1338,6 +1370,173 @@
 
     function resetToHome() {
         switchMainView('home');
+    }
+
+    /* --- Admin Console & Account Settings Logic --- */
+    function changePassword() {
+        const p1 = document.getElementById('newPasswordInput').value.trim();
+        const p2 = document.getElementById('newPasswordConfirmInput').value.trim();
+        const currentUser = localStorage.getItem('jannik_current_user');
+
+        if (!p1 || !p2) {
+            alert("Bitte füllen Sie beide Passwort-Felder aus.");
+            return;
+        }
+        if (p1 !== p2) {
+            alert("Die beiden Passwörter stimmen nicht überein.");
+            return;
+        }
+
+        let users = getUsers();
+        if (users[currentUser]) {
+            users[currentUser].pass = p1;
+            localStorage.setItem('jannik_users', JSON.stringify(users));
+            alert("Passwort erfolgreich aktualisiert!");
+            document.getElementById('newPasswordInput').value = '';
+            document.getElementById('newPasswordConfirmInput').value = '';
+        }
+    }
+
+    function deleteMyAccount() {
+        const currentUser = localStorage.getItem('jannik_current_user');
+        if (currentUser === 'admin') {
+            alert("Der Haupt-Admin Account kann nicht gelöscht werden.");
+            return;
+        }
+        if (confirm("Möchten Sie Ihren Account wirklich unwiderruflich löschen?")) {
+            let users = getUsers();
+            delete users[currentUser];
+            localStorage.setItem('jannik_users', JSON.stringify(users));
+            handleLogout();
+        }
+    }
+
+    function renderAdminConsoleData() {
+        const currentUser = localStorage.getItem('jannik_current_user');
+        const adminSection = document.getElementById('adminConsoleSection');
+
+        if (isAdmin(currentUser)) {
+            adminSection.style.display = 'block';
+            renderPendingRegistrations();
+            renderActiveUsersList();
+            renderAllUsersManagementList();
+        } else {
+            adminSection.style.display = 'none';
+        }
+    }
+
+    function renderPendingRegistrations() {
+        const container = document.getElementById('pendingRegistrationsContainer');
+        const users = getUsers();
+        const pending = Object.entries(users).filter(([uname, data]) => !data.approved && !data.isAdmin);
+
+        if (pending.length === 0) {
+            container.innerHTML = '<div style="font-size:0.85rem; color:var(--text-muted);">Keine ausstehenden Registrierungen.</div>';
+            return;
+        }
+
+        let html = '';
+        pending.forEach(([uname]) => {
+            html += `
+                <div style="display: flex; justify-content: space-between; align-items: center; background: #0f172a; padding: 6px 10px; border-radius: 6px; border: 1px solid var(--border-color); font-size: 0.85rem;">
+                    <span>👤 <strong>${uname}</strong></span>
+                    <div style="display: flex; gap: 6px;">
+                        <button onclick="approveUser('${uname}', true)" style="background: #10b981; padding: 3px 8px; font-size: 0.75rem;">Bestätigen</button>
+                        <button onclick="approveUser('${uname}', false)" style="background: #ef4444; padding: 3px 8px; font-size: 0.75rem;">Ablehnen</button>
+                    </div>
+                </div>
+            `;
+        });
+        container.innerHTML = html;
+    }
+
+    function approveUser(username, approve) {
+        let users = getUsers();
+        if (users[username]) {
+            if (approve) {
+                users[username].approved = true;
+                localStorage.setItem('jannik_users', JSON.stringify(users));
+                alert(`Benutzer ${username} wurde freigeschaltet.`);
+            } else {
+                delete users[username];
+                localStorage.setItem('jannik_users', JSON.stringify(users));
+                alert(`Registrierung von ${username} wurde abgelehnt.`);
+            }
+            renderAdminConsoleData();
+        }
+    }
+
+    function renderActiveUsersList() {
+        const container = document.getElementById('activeUsersContainer');
+        const users = getUsers();
+        const active = Object.entries(users).filter(([uname, data]) => data.online === true);
+
+        if (active.length === 0) {
+            container.innerHTML = '<div style="font-size:0.85rem; color:var(--text-muted);">Keine Benutzer aktiv.</div>';
+            return;
+        }
+
+        let html = '';
+        active.forEach(([uname, data]) => {
+            html += `
+                <div style="display: flex; align-items: center; justify-content: space-between; background: #0f172a; padding: 6px 10px; border-radius: 6px; border: 1px solid var(--border-color); font-size: 0.85rem;">
+                    <span>🟢 <strong>${uname}</strong> ${data.isAdmin ? '(Admin)' : '(User)'}</span>
+                    <span style="font-size: 0.75rem; color: #34d399;">Online</span>
+                </div>
+            `;
+        });
+        container.innerHTML = html;
+    }
+
+    function renderAllUsersManagementList() {
+        const container = document.getElementById('allUsersListContainer');
+        const users = getUsers();
+
+        let html = '';
+        Object.entries(users).forEach(([uname, data]) => {
+            const isSelf = (uname === localStorage.getItem('jannik_current_user'));
+            html += `
+                <div style="background: #0f172a; padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); font-size: 0.85rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                        <span>👤 <strong>${uname}</strong> ${data.approved ? '' : '(Wartet auf Freigabe)'}</span>
+                        ${(!isSelf && uname !== 'admin') ? `<button onclick="adminDeleteUser('${uname}')" style="background: #ef4444; padding: 2px 6px; font-size: 0.75rem;">Löschen</button>` : ''}
+                    </div>
+                    <div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: center; font-size: 0.8rem; color: var(--text-muted);">
+                        <label style="cursor: pointer; display: flex; align-items: center; gap: 4px;">
+                            <input type="checkbox" ${data.isAdmin ? 'checked' : ''} onchange="updateUserPermission('${uname}', 'isAdmin', this.checked)"> Admin-Rechte
+                        </label>
+                        <label style="cursor: pointer; display: flex; align-items: center; gap: 4px;">
+                            <input type="checkbox" ${data.timelineAccess ? 'checked' : ''} onchange="updateUserPermission('${uname}', 'timelineAccess', this.checked)"> Tagebuch-Zugriff
+                        </label>
+                        <label style="cursor: pointer; display: flex; align-items: center; gap: 4px;">
+                            <input type="checkbox" ${data.postingAccess !== false ? 'checked' : ''} onchange="updateUserPermission('${uname}', 'postingAccess', this.checked)"> Schreibrechte (Beiträge)
+                        </label>
+                    </div>
+                </div>
+            `;
+        });
+        container.innerHTML = html;
+    }
+
+    function updateUserPermission(username, permKey, value) {
+        let users = getUsers();
+        if (users[username]) {
+            users[username][permKey] = value;
+            if (permKey === 'isAdmin' && value) {
+                users[username].approved = true;
+            }
+            localStorage.setItem('jannik_users', JSON.stringify(users));
+            renderAdminConsoleData();
+        }
+    }
+
+    function adminDeleteUser(username) {
+        if (confirm(`Möchten Sie den Benutzer ${username} wirklich löschen?`)) {
+            let users = getUsers();
+            delete users[username];
+            localStorage.setItem('jannik_users', JSON.stringify(users));
+            renderAdminConsoleData();
+        }
     }
 
     /* --- Leaflet Map & POI Logic --- */
@@ -1950,6 +2149,8 @@
     let timelineMap = null;
     let timelineMarkersLayer = null;
     let uploadedTravelImageBase64 = null;
+    let travelCurrentPage = 1;
+    const travelEntriesPerPage = 10;
 
     function initTimelineMap() {
         if (!timelineMap) {
@@ -1994,7 +2195,6 @@
             return;
         }
 
-        // VALIDATION: Standort angehängt, aber kein Text/Beschreibung vorhanden
         if (timelineLocation && !desc) {
             alert("⚠️ Achtung: Der Beitrag kann nicht abgeschickt werden, da ein Standort ausgewählt wurde, aber noch kein erklärender Text oder eine Nachricht dazu verfasst wurde.");
             return;
@@ -2025,23 +2225,80 @@
         document.getElementById('travelLocationIndicator').innerText = '';
         document.getElementById('travelPollIndicator').innerText = '';
 
+        travelCurrentPage = 1;
         renderTravelEntries();
         renderTimelineMarkers();
         alert("Reise-Eintrag erfolgreich gespeichert!");
     }
 
+    function getFilteredAndSortedTravelEntries() {
+        const query = document.getElementById('travelSearchInput') ? document.getElementById('travelSearchInput').value.toLowerCase().trim() : '';
+        const sortMode = document.getElementById('travelSortSelect') ? document.getElementById('travelSortSelect').value : 'newest';
+        let entries = JSON.parse(localStorage.getItem('jannik_travel_history') || '[]');
+
+        if (query) {
+            entries = entries.filter(e => (e.title && e.title.toLowerCase().includes(query)) || (e.description && e.description.toLowerCase().includes(query)) || (e.author && e.author.toLowerCase().includes(query)));
+        }
+
+        entries.sort((a, b) => {
+            if (sortMode === 'oldest') {
+                return new Date(a.date) - new Date(b.date);
+            } else if (sortMode === 'most_reactions') {
+                const countA = a.reactions ? Object.values(a.reactions).reduce((acc, arr) => acc + arr.length, 0) : 0;
+                const countB = b.reactions ? Object.values(b.reactions).reduce((acc, arr) => acc + arr.length, 0) : 0;
+                return countB - countA;
+            } else if (sortMode === 'least_reactions') {
+                const countA = a.reactions ? Object.values(a.reactions).reduce((acc, arr) => acc + arr.length, 0) : 0;
+                const countB = b.reactions ? Object.values(b.reactions).reduce((acc, arr) => acc + arr.length, 0) : 0;
+                return countA - countB;
+            } else {
+                return new Date(b.date) - new Date(a.date);
+            }
+        });
+        return entries;
+    }
+
+    function prevTravelPage() {
+        if (travelCurrentPage > 1) {
+            travelCurrentPage--;
+            renderTravelEntries();
+        }
+    }
+
+    function nextTravelPage() {
+        const entries = getFilteredAndSortedTravelEntries();
+        const totalPages = Math.ceil(entries.length / travelEntriesPerPage) || 1;
+        if (travelCurrentPage < totalPages) {
+            travelCurrentPage++;
+            renderTravelEntries();
+        }
+    }
+
     function renderTravelEntries() {
         const container = document.getElementById('travelEntriesList');
-        const entries = JSON.parse(localStorage.getItem('jannik_travel_history') || '[]');
+        const allEntries = getFilteredAndSortedTravelEntries();
         const currentUser = localStorage.getItem('jannik_current_user');
 
-        if (entries.length === 0) {
+        const totalPages = Math.ceil(allEntries.length / travelEntriesPerPage) || 1;
+        if (travelCurrentPage > totalPages) travelCurrentPage = totalPages;
+
+        const start = (travelCurrentPage - 1) * travelEntriesPerPage;
+        const pageEntries = allEntries.slice(start, start + travelEntriesPerPage);
+
+        const pageIndEl = document.getElementById('travelPageIndicator');
+        const prevBtnEl = document.getElementById('travelPrevBtn');
+        const nextBtnEl = document.getElementById('travelNextBtn');
+        if (pageIndEl) pageIndEl.innerText = `Seite ${travelCurrentPage} von ${totalPages}`;
+        if (prevBtnEl) prevBtnEl.disabled = (travelCurrentPage <= 1);
+        if (nextBtnEl) nextBtnEl.disabled = (travelCurrentPage >= totalPages);
+
+        if (pageEntries.length === 0) {
             container.innerHTML = '<p style="color: var(--text-muted); text-align: center; margin: 10px 0;">Noch keine Reise-Einträge im Tagebuch vorhanden.</p>';
             return;
         }
 
         let html = '';
-        entries.forEach(entry => {
+        pageEntries.forEach(entry => {
             if (!entry.reactions) entry.reactions = {};
             if (!Array.isArray(entry.comments)) entry.comments = [];
 
@@ -2070,7 +2327,6 @@
                 `;
             });
 
-            // Extra Mini-Map Container für jeden Eintrag mit Standort
             let miniMapHtml = '';
             if (entry.location) {
                 miniMapHtml = `
@@ -2106,10 +2362,10 @@
                         <div style="display: flex; flex-direction: column; gap: 6px; margin-top: 8px;">
                             <input type="text" id="timelineCommentInput_${entry.id}" placeholder="Kommentar schreiben..." style="padding: 6px; font-size: 0.85rem;">
                             <div style="display: flex; gap: 6px; align-items: center;">
-                                <button onclick="openUnifiedLocationModal('timeline_comment', ${entry.id})" style="padding: 4px 8px; font-size: 0.75rem; background: #059669;">📍 Standort</button>
-                                <span id="timelineCommentLocationIndicator_${entry.id}" style="font-size: 0.75rem; color: #34d399;"></span>
-                                <button onclick="handleCreateTimelineComment(${entry.id})" style="padding: 4px 10px; font-size: 0.75rem; margin-left: auto;">Absenden</button>
+                                <button onclick="openUnifiedLocationModal('timeline_comment', ${entry.id})" style="background: #059669; padding: 4px 8px; font-size: 0.75rem;">📍 Standort</button>
+                                <button onclick="addTimelineComment(${entry.id})" style="padding: 4px 10px; font-size: 0.75rem;">Kommentar abschicken</button>
                             </div>
+                            <div id="timelineCommentLocationIndicator_${entry.id}" style="font-size: 0.75rem; color: #34d399;"></div>
                         </div>
                     </div>
                 </div>
@@ -2117,55 +2373,46 @@
         });
         container.innerHTML = html;
 
-        // Leaflet Mini-Karten für jeden Eintrag initialisieren
-        setTimeout(() => {
-            entries.forEach(entry => {
-                if (entry.location) {
-                    const mapElId = `travelMiniMap_${entry.id}`;
-                    const el = document.getElementById(mapElId);
-                    if (el && !el._leaflet_id) {
-                        const m = L.map(mapElId, { zoomControl: false, dragging: false, scrollWheelZoom: false }).setView([entry.location.lat, entry.location.lon], 13);
-                        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(m);
+        pageEntries.forEach(entry => {
+            if (entry.location) {
+                setTimeout(() => {
+                    const miniMapEl = document.getElementById(`travelMiniMap_${entry.id}`);
+                    if (miniMapEl && !miniMapEl._leaflet_id) {
+                        const m = L.map(miniMapEl, { zoomControl: false, attributionControl: false }).setView([entry.location.lat, entry.location.lon], 13);
+                        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(m);
                         L.marker([entry.location.lat, entry.location.lon]).addTo(m);
                     }
-                }
-            });
-        }, 100);
+                }, 100);
+            }
+        });
     }
 
     function deleteTravelEntry(id) {
-        if (!confirm("Möchtest du diesen Reise-Eintrag wirklich löschen?")) return;
-        let entries = JSON.parse(localStorage.getItem('jannik_travel_history') || '[]');
-        entries = entries.filter(e => e.id !== id);
-        localStorage.setItem('jannik_travel_history', JSON.stringify(entries));
-        renderTravelEntries();
-        renderTimelineMarkers();
+        if (confirm("Diesen Reise-Eintrag wirklich löschen?")) {
+            let entries = JSON.parse(localStorage.getItem('jannik_travel_history') || '[]');
+            entries = entries.filter(e => e.id !== id);
+            localStorage.setItem('jannik_travel_history', JSON.stringify(entries));
+            renderTravelEntries();
+            renderTimelineMarkers();
+        }
     }
 
-    function handleCreateTimelineComment(entryId) {
-        const input = document.getElementById(`timelineCommentInput_${entryId}`);
-        const text = input ? input.value.trim() : '';
-        const loc = timelineCommentLocationData[entryId];
+    function addTimelineComment(entryId) {
+        const inputEl = document.getElementById(`timelineCommentInput_${entryId}`);
+        const text = inputEl ? inputEl.value.trim() : '';
+        if (!text) return;
 
-        // VALIDATION: Standort angehängt, aber kein Text vorhanden
-        if (loc && !text) {
-            alert("⚠️ Achtung: Der Kommentar zum Reiseverlauf kann nicht abgeschickt werden, da ein Standort ausgewählt wurde, aber kein Text oder Nachricht eingegeben wurde.");
-            return;
-        }
-        if (!text && !loc) {
-            alert("Bitte gib einen Text ein.");
-            return;
-        }
-
+        const currentUser = localStorage.getItem('jannik_current_user');
         let entries = JSON.parse(localStorage.getItem('jannik_travel_history') || '[]');
         const entry = entries.find(e => e.id === entryId);
         if (entry) {
             if (!Array.isArray(entry.comments)) entry.comments = [];
             entry.comments.push({
-                author: localStorage.getItem('jannik_current_user'),
+                id: Date.now(),
+                author: currentUser,
                 text: text,
-                location: loc,
-                date: new Date().toISOString()
+                date: new Date().toISOString(),
+                location: timelineCommentLocationData[entryId] || null
             });
             localStorage.setItem('jannik_travel_history', JSON.stringify(entries));
             delete timelineCommentLocationData[entryId];
@@ -2181,8 +2428,9 @@
 
         entries.forEach(entry => {
             if (entry.location && entry.location.lat && entry.location.lon) {
-                const m = L.marker([entry.location.lat, entry.location.lon]).bindPopup(`<b>${entry.title}</b><br>${entry.date}<br>${entry.description || ''}`);
-                timelineMarkersLayer.addLayer(m);
+                const marker = L.marker([entry.location.lat, entry.location.lon]);
+                marker.bindPopup(`<b>${entry.title}</b><br>${entry.date}<br>${entry.description || ''}`);
+                timelineMarkersLayer.addLayer(marker);
                 latLngs.push([entry.location.lat, entry.location.lon]);
             }
         });
@@ -2192,62 +2440,70 @@
         }
     }
 
-    /* --- COMMUNITY POSTS & FEED LOGIC --- */
+    /* --- Community Feed & Posts Logic --- */
+    let uploadedPostMediaBase64 = null;
+    let uploadedPostMediaType = null;
     let postCurrentPage = 1;
     const postsPerPage = 5;
-    let postMediaData = null;
 
     function previewPostMedia(input, type) {
         if (input.files && input.files[0]) {
             const reader = new FileReader();
             reader.onload = function(e) {
-                postMediaData = { type: type, url: e.target.result };
-                const prevContent = document.getElementById('postMediaPreviewContent');
+                uploadedPostMediaBase64 = e.target.result;
+                uploadedPostMediaType = type;
+                const container = document.getElementById('postMediaPreviewContent');
                 if (type === 'image') {
-                    prevContent.innerHTML = `<img src="${e.target.result}" style="width:100%; border-radius:4px; max-height:100px; object-fit:cover;">`;
+                    container.innerHTML = `<img src="${uploadedPostMediaBase64}" style="width:100%; border-radius:6px; max-height:100px; object-fit:cover;">`;
                 } else {
-                    prevContent.innerHTML = `<video src="${e.target.result}" style="width:100%; border-radius:4px; max-height:100px;" controls></video>`;
+                    container.innerHTML = `<video src="${uploadedPostMediaBase64}" style="width:100%; border-radius:6px; max-height:100px;" controls></video>`;
                 }
                 document.getElementById('postMediaPreviewContainer').style.display = 'block';
-                document.getElementById('postMediaName').innerText = input.files[0].name;
             };
             reader.readAsDataURL(input.files[0]);
         }
     }
 
     function clearPostMedia() {
-        postMediaData = null;
+        uploadedPostMediaBase64 = null;
+        uploadedPostMediaType = null;
         document.getElementById('postImage').value = '';
         document.getElementById('postVideo').value = '';
-        document.getElementById('postMediaName').innerText = '';
         document.getElementById('postMediaPreviewContainer').style.display = 'none';
     }
 
     function handleCreatePost() {
         const text = document.getElementById('postText').value.trim();
-
-        // VALIDATION: Standort angehängt, aber kein Text vorhanden
-        if (attachedLocation && !text) {
-            alert("⚠️ Achtung: Der Beitrag kann nicht veröffentlicht werden, da ein Standort ausgewählt wurde, aber die dazugehörige Nachricht bzw. Textbeschreibung fehlt.");
-            return;
-        }
-        if (!text && !postMediaData && !attachedLocation && !attachedPollData) {
-            alert("Bitte schreibe eine Nachricht oder füge Medien/Umfragen hinzu.");
-            return;
-        }
-
         const currentUser = localStorage.getItem('jannik_current_user');
+        const users = getUsers();
+
+        if (!isAdmin(currentUser) && users[currentUser] && users[currentUser].postingAccess === false) {
+            alert("⚠️ Sie haben keine Berechtigung, Beiträge zu veröffentlichen.");
+            return;
+        }
+
+        if (!text && !uploadedPostMediaBase64 && !attachedLocation && !attachedPollData) {
+            alert("Bitte schreibe eine Nachricht oder füge Medien, einen Standort oder eine Umfrage hinzu.");
+            return;
+        }
+
+        if (attachedLocation && !text) {
+            alert("⚠️ Achtung: Der Beitrag kann nicht abgeschickt werden, da ein Standort ausgewählt wurde, aber noch kein erklärender Text oder eine Nachricht dazu verfasst wurde.");
+            return;
+        }
+
         let posts = JSON.parse(localStorage.getItem('jannik_posts') || '[]');
         posts.unshift({
             id: Date.now(),
             author: currentUser,
             text: text,
-            media: postMediaData,
+            date: new Date().toISOString(),
+            media: uploadedPostMediaBase64,
+            mediaType: uploadedPostMediaType,
             location: attachedLocation,
             poll: attachedPollData,
             reactions: {},
-            comments: [],
-            date: new Date().toISOString()
+            comments: []
         });
         localStorage.setItem('jannik_posts', JSON.stringify(posts));
 
@@ -2258,59 +2514,87 @@
         document.getElementById('postLocationIndicator').innerText = '';
         document.getElementById('postPollIndicator').innerText = '';
 
+        postCurrentPage = 1;
         renderPostsFeed();
+    }
+
+    function getFilteredAndSortedPosts() {
+        const query = document.getElementById('postSearchInput') ? document.getElementById('postSearchInput').value.toLowerCase().trim() : '';
+        const sortMode = document.getElementById('postSortSelect') ? document.getElementById('postSortSelect').value : 'newest';
+        let posts = JSON.parse(localStorage.getItem('jannik_posts') || '[]');
+
+        if (query) {
+            posts = posts.filter(p => (p.text && p.text.toLowerCase().includes(query)) || (p.author && p.author.toLowerCase().includes(query)));
+        }
+
+        posts.sort((a, b) => {
+            if (sortMode === 'oldest') {
+                return new Date(a.date) - new Date(b.date);
+            } else if (sortMode === 'most_reactions') {
+                const countA = a.reactions ? Object.values(a.reactions).reduce((acc, arr) => acc + arr.length, 0) : 0;
+                const countB = b.reactions ? Object.values(b.reactions).reduce((acc, arr) => acc + arr.length, 0) : 0;
+                return countB - countA;
+            } else {
+                return new Date(b.date) - new Date(a.date);
+            }
+        });
+        return posts;
+    }
+
+    function prevPostPage() {
+        if (postCurrentPage > 1) {
+            postCurrentPage--;
+            renderPostsFeed();
+        }
+    }
+
+    function nextPostPage() {
+        const posts = getFilteredAndSortedPosts();
+        const totalPages = Math.ceil(posts.length / postsPerPage) || 1;
+        if (postCurrentPage < totalPages) {
+            postCurrentPage++;
+            renderPostsFeed();
+        }
     }
 
     function renderPostsFeed() {
         const container = document.getElementById('postsFeedContainer');
-        let posts = JSON.parse(localStorage.getItem('jannik_posts') || '[]');
+        const allPosts = getFilteredAndSortedPosts();
         const currentUser = localStorage.getItem('jannik_current_user');
-        const searchVal = document.getElementById('postSearchInput').value.toLowerCase().trim();
-        const sortVal = document.getElementById('postSortSelect').value;
 
-        if (searchVal) {
-            posts = posts.filter(p => p.text.toLowerCase().includes(searchVal) || p.author.toLowerCase().includes(searchVal));
-        }
-
-        if (sortVal === 'oldest') {
-            posts.sort((a, b) => a.id - b.id);
-        } else if (sortVal === 'most_reactions') {
-            posts.sort((a, b) => {
-                const countA = Object.values(a.reactions || {}).reduce((sum, arr) => sum + arr.length, 0);
-                const countB = Object.values(b.reactions || {}).reduce((sum, arr) => sum + arr.length, 0);
-                return countB - countA;
-            });
-        } else {
-            posts.sort((a, b) => b.id - a.id);
-        }
-
-        const totalPages = Math.ceil(posts.length / postsPerPage) || 1;
+        const totalPages = Math.ceil(allPosts.length / postsPerPage) || 1;
         if (postCurrentPage > totalPages) postCurrentPage = totalPages;
+
         const start = (postCurrentPage - 1) * postsPerPage;
-        const slice = posts.slice(start, start + postsPerPage);
+        const pagePosts = allPosts.slice(start, start + postsPerPage);
 
-        document.getElementById('postPageIndicator').innerText = `Seite ${postCurrentPage} von ${totalPages}`;
+        const pageIndEl = document.getElementById('postPageIndicator');
+        const prevBtnEl = document.getElementById('postPrevBtn');
+        const nextBtnEl = document.getElementById('postNextBtn');
+        if (pageIndEl) pageIndEl.innerText = `Seite ${postCurrentPage} von ${totalPages}`;
+        if (prevBtnEl) prevBtnEl.disabled = (postCurrentPage <= 1);
+        if (nextBtnEl) nextBtnEl.disabled = (postCurrentPage >= totalPages);
 
-        if (slice.length === 0) {
-            container.innerHTML = '<p style="color: var(--text-muted); text-align: center; margin: 10px 0;">Keine Nachrichten gefunden.</p>';
+        if (pagePosts.length === 0) {
+            container.innerHTML = '<p style="color: var(--text-muted); text-align: center; margin: 10px 0;">Noch keine Nachrichten im Feed vorhanden.</p>';
             return;
         }
 
         let html = '';
-        slice.forEach(post => {
+        pagePosts.forEach(post => {
             if (!post.reactions) post.reactions = {};
             if (!Array.isArray(post.comments)) post.comments = [];
 
             let mediaHtml = '';
             if (post.media) {
-                if (post.media.type === 'image') {
-                    mediaHtml = `<img src="${post.media.url}" style="width: 100%; max-height: 250px; object-fit: contain; border-radius: 6px; margin-top: 8px;">`;
+                if (post.mediaType === 'video') {
+                    mediaHtml = `<video src="${post.media}" style="width: 100%; max-height: 240px; border-radius: 6px; margin-top: 8px;" controls></video>`;
                 } else {
-                    mediaHtml = `<video src="${post.media.url}" style="width: 100%; max-height: 250px; border-radius: 6px; margin-top: 8px;" controls></video>`;
+                    mediaHtml = `<img src="${post.media}" style="width: 100%; max-height: 240px; object-fit: contain; border-radius: 6px; margin-top: 8px;">`;
                 }
             }
 
-            let locHtml = post.location ? `<div style="font-size: 0.8rem; color: #34d399; margin-top: 4px;">📍 ${post.location.name}</div>` : '';
+            let locHtml = post.location ? `<div style="font-size: 0.8rem; color: #34d399; margin-top: 4px;">📍 Standort: ${post.location.name}</div>` : '';
             let pollHtml = post.poll ? renderPollHtml(post.poll, post.id, 'post') : '';
             let canDelete = (post.author === currentUser || isAdmin(currentUser));
 
@@ -2335,23 +2619,33 @@
                 `;
             });
 
+            let miniMapHtml = '';
+            if (post.location) {
+                miniMapHtml = `
+                    <div style="margin-top: 10px;">
+                        <div id="postMiniMap_${post.id}" class="mini-map-box"></div>
+                    </div>
+                `;
+            }
+
             html += `
                 <div style="background: #162032; border: 1px solid var(--border-color); border-radius: 8px; padding: 12px;">
                     <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
-                        <span style="font-size: 0.85rem; font-weight: 600; color: var(--accent-color);">👤 ${post.author}</span>
-                        <div style="display: flex; gap: 8px; align-items: center;">
-                            <span style="font-size: 0.75rem; color: var(--text-muted);">${new Date(post.date).toLocaleString()}</span>
-                            ${canDelete ? `<button onclick="deletePost(${post.id})" style="background: #ef4444; padding: 2px 6px; font-size: 0.75rem;">Löschen</button>` : ''}
+                        <div>
+                            <strong style="color: var(--accent-color);">${post.author}</strong>
+                            <span style="font-size: 0.75rem; color: var(--text-muted); margin-left: 8px;">${new Date(post.date).toLocaleString()}</span>
                         </div>
+                        ${canDelete ? `<button onclick="deletePost(${post.id})" style="background: #ef4444; padding: 2px 6px; font-size: 0.75rem;">Löschen</button>` : ''}
                     </div>
-                    <p style="margin: 6px 0; font-size: 0.95rem; white-space: pre-wrap;">${post.text}</p>
+                    <p style="margin: 6px 0; font-size: 0.9rem; white-space: pre-wrap;">${post.text || ''}</p>
                     ${mediaHtml}
                     ${locHtml}
+                    ${miniMapHtml}
                     ${pollHtml}
 
                     <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap; margin-top: 8px;">
                         ${reactionsHtml}
-                        <button onclick="openEmojiPicker(${post.id}, 'post')" style="background: #334155; padding: 3px 8px; font-size: 0.75rem; border-radius: 12px;" data-i18n="reactBtn">😀 Reagieren</button>
+                        <button onclick="openEmojiPicker(${post.id}, 'post')" style="background: #334155; padding: 3px 8px; font-size: 0.75rem; border-radius: 12px;">😀 Reagieren</button>
                     </div>
 
                     <div style="margin-top: 10px; border-top: 1px solid var(--border-color); padding-top: 8px;">
@@ -2360,58 +2654,56 @@
                         <div style="display: flex; flex-direction: column; gap: 6px; margin-top: 8px;">
                             <input type="text" id="commentInput_${post.id}" placeholder="Kommentar schreiben..." style="padding: 6px; font-size: 0.85rem;">
                             <div style="display: flex; gap: 6px; align-items: center;">
-                                <button onclick="openUnifiedLocationModal('comment', ${post.id})" style="padding: 4px 8px; font-size: 0.75rem; background: #059669;">📍 Standort</button>
-                                <span id="commentLocationIndicator_${post.id}" style="font-size: 0.75rem; color: #34d399;"></span>
-                                <button onclick="handleCreateComment(${post.id})" style="padding: 4px 10px; font-size: 0.75rem; margin-left: auto;">Absenden</button>
+                                <button onclick="openUnifiedLocationModal('comment', ${post.id})" style="background: #059669; padding: 4px 8px; font-size: 0.75rem;">📍 Standort</button>
+                                <button onclick="addPostComment(${post.id})" style="padding: 4px 10px; font-size: 0.75rem;">Kommentar abschicken</button>
                             </div>
+                            <div id="commentLocationIndicator_${post.id}" style="font-size: 0.75rem; color: #34d399;"></div>
                         </div>
                     </div>
                 </div>
             `;
         });
         container.innerHTML = html;
-        applyTranslations();
-    }
 
-    function prevPostPage() { if (postCurrentPage > 1) { postCurrentPage--; renderPostsFeed(); } }
-    function nextPostPage() {
-        let posts = JSON.parse(localStorage.getItem('jannik_posts') || '[]');
-        const totalPages = Math.ceil(posts.length / postsPerPage) || 1;
-        if (postCurrentPage < totalPages) { postCurrentPage++; renderPostsFeed(); }
+        pagePosts.forEach(post => {
+            if (post.location) {
+                setTimeout(() => {
+                    const miniMapEl = document.getElementById(`postMiniMap_${post.id}`);
+                    if (miniMapEl && !miniMapEl._leaflet_id) {
+                        const m = L.map(miniMapEl, { zoomControl: false, attributionControl: false }).setView([post.location.lat, post.location.lon], 13);
+                        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(m);
+                        L.marker([post.location.lat, post.location.lon]).addTo(m);
+                    }
+                }, 100);
+            }
+        });
     }
 
     function deletePost(id) {
-        if (!confirm("Möchtest du diesen Beitrag wirklich löschen?")) return;
-        let posts = JSON.parse(localStorage.getItem('jannik_posts') || '[]');
-        posts = posts.filter(p => p.id !== id);
-        localStorage.setItem('jannik_posts', JSON.stringify(posts));
-        renderPostsFeed();
+        if (confirm("Diesen Beitrag wirklich löschen?")) {
+            let posts = JSON.parse(localStorage.getItem('jannik_posts') || '[]');
+            posts = posts.filter(p => p.id !== id);
+            localStorage.setItem('jannik_posts', JSON.stringify(posts));
+            renderPostsFeed();
+        }
     }
 
-    function handleCreateComment(postId) {
-        const input = document.getElementById(`commentInput_${postId}`);
-        const text = input ? input.value.trim() : '';
-        const loc = commentLocationData[postId];
+    function addPostComment(postId) {
+        const inputEl = document.getElementById(`commentInput_${postId}`);
+        const text = inputEl ? inputEl.value.trim() : '';
+        if (!text) return;
 
-        // VALIDATION: Standort angehängt, aber kein Text vorhanden
-        if (loc && !text) {
-            alert("⚠️ Achtung: Der Kommentar kann nicht abgeschickt werden, da ein Standort ausgewählt wurde, aber keine Nachricht oder Text eingetragen ist.");
-            return;
-        }
-        if (!text && !loc) {
-            alert("Bitte gib einen Text ein.");
-            return;
-        }
-
+        const currentUser = localStorage.getItem('jannik_current_user');
         let posts = JSON.parse(localStorage.getItem('jannik_posts') || '[]');
         const post = posts.find(p => p.id === postId);
         if (post) {
             if (!Array.isArray(post.comments)) post.comments = [];
             post.comments.push({
-                author: localStorage.getItem('jannik_current_user'),
+                id: Date.now(),
+                author: currentUser,
                 text: text,
-                location: loc,
-                date: new Date().toISOString()
+                date: new Date().toISOString(),
+                location: commentLocationData[postId] || null
             });
             localStorage.setItem('jannik_posts', JSON.stringify(posts));
             delete commentLocationData[postId];
@@ -2419,117 +2711,49 @@
         }
     }
 
-    /* --- GIPHY MODAL --- */
-    function openGiphyModal() { alert("Giphy Modus aktiv."); }
-    function closeGiphyModal() { document.getElementById('giphyModal').style.display = 'none'; }
-    function searchGiphy() {}
-
-    /* --- USER SETTINGS MODAL & ADMIN CONSOLE --- */
-    function openUserSettingsModal() {
-        const currentUser = localStorage.getItem('jannik_current_user');
-        document.getElementById('userSettingsModal').style.display = 'flex';
-        if (isAdmin(currentUser)) {
-            document.getElementById('adminConsoleSection').style.display = 'block';
-            renderAdminConsole();
-        } else {
-            document.getElementById('adminConsoleSection').style.display = 'none';
-        }
+    /* --- GIPHY API SIMULATION / SEARCH --- */
+    let activeGiphyTarget = null;
+    function openGiphyModal(target) {
+        activeGiphyTarget = target;
+        document.getElementById('giphySearchInput').value = '';
+        document.getElementById('giphyResultsContainer').innerHTML = '';
+        document.getElementById('giphyModal').style.display = 'flex';
     }
 
-    function closeUserSettingsModal() {
-        document.getElementById('userSettingsModal').style.display = 'none';
+    function closeGiphyModal() {
+        document.getElementById('giphyModal').style.display = 'none';
     }
 
-    function changePassword() {
-        const p1 = document.getElementById('newPasswordInput').value.trim();
-        const p2 = document.getElementById('newPasswordConfirmInput').value.trim();
-        if (!p1 || p1 !== p2) {
-            alert("Die Passwörter stimmen nicht überein oder sind leer.");
-            return;
-        }
-        const currentUser = localStorage.getItem('jannik_current_user');
-        let users = getUsers();
-        if (users[currentUser]) {
-            users[currentUser].pass = p1;
-            localStorage.setItem('jannik_users', JSON.stringify(users));
-            alert("Passwort erfolgreich geändert!");
-            document.getElementById('newPasswordInput').value = '';
-            document.getElementById('newPasswordConfirmInput').value = '';
-        }
-    }
-
-    function deleteMyAccount() {
-        const currentUser = localStorage.getItem('jannik_current_user');
-        if (currentUser === 'admin') {
-            alert("Der Admin-Account kann nicht gelöscht werden.");
-            return;
-        }
-        if (!confirm("Möchtest du deinen Account wirklich unwiderruflich löschen?")) return;
-        let users = getUsers();
-        delete users[currentUser];
-        localStorage.setItem('jannik_users', JSON.stringify(users));
-        handleLogout();
-    }
-
-    function renderAdminConsole() {
-        let users = getUsers();
+    async function searchGiphy() {
+        const q = document.getElementById('giphySearchInput').value.trim();
+        const container = document.getElementById('giphyResultsContainer');
+        container.innerHTML = '<div style="color:var(--text-muted); text-align:center; grid-column:1/-1;">Suche GIFs...</div>';
         
-        // Pending
-        const pendingContainer = document.getElementById('pendingRegistrationsContainer');
-        let pendingHtml = '';
-        Object.entries(users).forEach(([u, data]) => {
-            if (!data.isAdmin && !data.approved) {
-                pendingHtml += `
-                    <div style="display:flex; justify-content:space-between; align-items:center; background:#0f172a; padding:6px 10px; border-radius:6px; font-size:0.85rem;">
-                        <span>${u}</span>
-                        <button onclick="approveUser('${u}')" style="background:#10b981; padding:2px 8px; font-size:0.75rem;">Freigeben</button>
-                    </div>
-                `;
+        try {
+            const res = await fetch(`https://api.giphy.com/v1/gifs/search?api_key=dc6zaTOxFJmzC&q=${encodeURIComponent(q || 'travel')}&limit=12`);
+            const data = await res.json();
+            if (data && data.data && data.data.length > 0) {
+                let html = '';
+                data.data.forEach(gif => {
+                    const imgUrl = gif.images.fixed_height_small.url;
+                    html += `<img src="${imgUrl}" style="width:100%; height:90px; object-fit:cover; border-radius:6px; cursor:pointer;" onclick="selectGiphyGif('${imgUrl}')">`;
+                });
+                container.innerHTML = html;
+            } else {
+                container.innerHTML = '<div style="color:var(--text-muted); text-align:center; grid-column:1/-1;">Keine GIFs gefunden.</div>';
             }
-        });
-        pendingContainer.innerHTML = pendingHtml || '<span style="font-size:0.85rem; color:var(--text-muted);">Keine ausstehenden Registrierungen.</span>';
-
-        // Active Online
-        const activeContainer = document.getElementById('activeUsersContainer');
-        let activeHtml = '';
-        Object.entries(users).forEach(([u, data]) => {
-            if (data.online) {
-                activeHtml += `<div style="font-size:0.85rem; color:#4ade80;">🟢 ${u}</div>`;
-            }
-        });
-        activeContainer.innerHTML = activeHtml || '<span style="font-size:0.85rem; color:var(--text-muted);">Keine Benutzer online.</span>';
-
-        // All Users & Timeline Rights
-        const allContainer = document.getElementById('allUsersListContainer');
-        let allHtml = '';
-        Object.entries(users).forEach(([u, data]) => {
-            allHtml += `
-                <div style="display:flex; justify-content:space-between; align-items:center; background:#0f172a; padding:6px 10px; border-radius:6px; font-size:0.85rem;">
-                    <span><strong>${u}</strong> ${data.isAdmin ? '(Admin)' : ''}</span>
-                    <label style="display:flex; align-items:center; gap:4px; font-size:0.75rem; cursor:pointer;">
-                        <input type="checkbox" ${data.timelineAccess ? 'checked' : ''} onchange="toggleTimelineAccess('${u}', this.checked)"> Tagebuch-Zugriff
-                    </label>
-                </div>
-            `;
-        });
-        allContainer.innerHTML = allHtml;
-    }
-
-    function approveUser(username) {
-        let users = getUsers();
-        if (users[username]) {
-            users[username].approved = true;
-            localStorage.setItem('jannik_users', JSON.stringify(users));
-            renderAdminConsole();
+        } catch (e) {
+            container.innerHTML = '<div style="color:#ef4444; text-align:center; grid-column:1/-1;">Fehler beim Laden der GIFs.</div>';
         }
     }
 
-    function toggleTimelineAccess(username, hasAccess) {
-        let users = getUsers();
-        if (users[username]) {
-            users[username].timelineAccess = hasAccess;
-            localStorage.setItem('jannik_users', JSON.stringify(users));
-        }
+    function selectGiphyGif(url) {
+        uploadedPostMediaBase64 = url;
+        uploadedPostMediaType = 'image';
+        const container = document.getElementById('postMediaPreviewContent');
+        container.innerHTML = `<img src="${url}" style="width:100%; border-radius:6px; max-height:100px; object-fit:cover;">`;
+        document.getElementById('postMediaPreviewContainer').style.display = 'block';
+        closeGiphyModal();
     }
 </script>
 </body>
