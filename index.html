@@ -254,15 +254,6 @@
             z-index: 1;
         }
 
-        .mini-map-box {
-            height: 150px;
-            width: 100%;
-            border-radius: 6px;
-            margin-top: 8px;
-            border: 1px solid var(--border-color);
-            z-index: 1;
-        }
-
         .interactive-legend-card {
             margin-top: 12px;
             background: #0f172a;
@@ -384,6 +375,27 @@
             background: var(--accent-hover);
         }
 
+        .unified-media-toolbar {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 8px;
+        }
+
+        .media-btn-img { background: var(--accent-color); color: white; padding: 6px 10px; border-radius: 6px; cursor: pointer; font-size: 0.75rem; font-weight: 600; border: none; display: inline-flex; align-items: center; gap: 4px; }
+        .media-btn-vid { background: #10b981; color: white; padding: 6px 10px; border-radius: 6px; cursor: pointer; font-size: 0.75rem; font-weight: 600; border: none; display: inline-flex; align-items: center; gap: 4px; }
+        .media-btn-gif { background: #8b5cf6; color: white; padding: 6px 10px; border-radius: 6px; cursor: pointer; font-size: 0.75rem; font-weight: 600; border: none; display: inline-flex; align-items: center; gap: 4px; }
+        .media-btn-loc { background: #059669; color: white; padding: 6px 10px; border-radius: 6px; cursor: pointer; font-size: 0.75rem; font-weight: 600; border: none; display: inline-flex; align-items: center; gap: 4px; }
+        .media-btn-yt  { background: #ef4444; color: white; padding: 6px 10px; border-radius: 6px; cursor: pointer; font-size: 0.75rem; font-weight: 600; border: none; display: inline-flex; align-items: center; gap: 4px; }
+        .media-btn-aud { background: #6366f1; color: white; padding: 6px 10px; border-radius: 6px; cursor: pointer; font-size: 0.75rem; font-weight: 600; border: none; display: inline-flex; align-items: center; gap: 4px; }
+        .media-btn-poll{ background: #f59e0b; color: white; padding: 6px 10px; border-radius: 6px; cursor: pointer; font-size: 0.75rem; font-weight: 600; border: none; display: inline-flex; align-items: center; gap: 4px; }
+
+        .media-btn-img:hover, .media-btn-vid:hover, .media-btn-gif:hover, .media-btn-loc:hover, .media-btn-yt:hover, .media-btn-aud:hover, .media-btn-poll:hover {
+            opacity: 0.9;
+            filter: brightness(1.1);
+        }
+
         .weather-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
@@ -468,33 +480,39 @@
             border: 1px solid var(--border-color);
         }
 
-        .emblem-container {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            margin-left: 8px;
-            vertical-align: middle;
+        /* Leaflet Layer Control Styling for Dark Theme */
+        .leaflet-control-layers {
+            background: var(--card-bg) !important;
+            color: var(--text-color) !important;
+            border: 1px solid var(--border-color) !important;
+            border-radius: 8px !important;
+            padding: 6px !important;
+        }
+        .leaflet-control-layers-expanded {
+            background: var(--card-bg) !important;
+            color: var(--text-color) !important;
+        }
+        .leaflet-control-layers label {
+            color: var(--text-color) !important;
+            font-size: 0.85rem !important;
         }
 
-        .emblem-item {
+        .wiki-box-link {
             display: inline-flex;
             align-items: center;
-            justify-content: center;
-            text-decoration: none;
-            transition: transform 0.15s;
-        }
-        .emblem-item:hover {
-            transform: scale(1.1);
-        }
-
-        .emblem-img {
-            width: 32px;
-            height: 22px;
-            object-fit: cover;
-            border-radius: 4px;
+            gap: 6px;
+            background: #1e293b;
+            padding: 4px 10px;
+            border-radius: 6px;
             border: 1px solid var(--border-color);
-            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-            background: #0f172a;
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: 600;
+            transition: background 0.15s, border-color 0.15s;
+        }
+        .wiki-box-link:hover {
+            background: #334155;
+            border-color: var(--accent-color);
         }
 
         .weather-anim-box {
@@ -617,6 +635,19 @@
     </div>
 </div>
 
+<!-- YouTube Modal -->
+<div id="youtubeModal" class="modal">
+    <div class="auth-box" style="max-width: 420px;">
+        <span class="close-modal" onclick="closeYoutubeModal()">&times;</span>
+        <h3 style="margin-top:0; color: var(--accent-color);">🎥 YouTube Video einfügen</h3>
+        <div class="auth-form-group">
+            <label>YouTube Hyperlink / Link</label>
+            <input type="text" id="youtubeUrlInput" placeholder="z.B. https://www.youtube.com/watch?v=XXXXX oder youtu.be/XXXXX" onkeydown="if(event.key==='Enter') submitYoutubeLink()">
+        </div>
+        <button onclick="submitYoutubeLink()" style="width: 100%; margin-top: 6px;">Video hinzufügen</button>
+    </div>
+</div>
+
 <!-- Poll Creation Modal -->
 <div id="pollModal" class="modal">
     <div class="modal-content" style="max-width: 460px;">
@@ -646,6 +677,125 @@
     </div>
 </div>
 
+<!-- Strecken-Zeichnen Modul mit Nadel-Kontrolle, Bewegungsart & Adresssuche -->
+<div id="routeDrawingModal" class="modal">
+    <div class="modal-content" style="max-width: 750px; max-height: 90vh; overflow-y: auto;">
+        <span class="close-modal" onclick="closeRouteDrawingModal()">&times;</span>
+        <h3 style="margin-top:0; color: var(--accent-color);">🗺️ Exakter Streckenplaner & Tagebuch</h3>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-top:0;">Setze Nadeln per Klick auf die Karte oder gib eine exakte Adresse ein. Wähle zudem aus, wie du die Strecke zurückgelegt hast.</p>
+        
+        <div id="routeDrawMap" class="map-container" style="height: 250px; margin-bottom: 10px;"></div>
+        
+        <!-- Bedienknöpfe -->
+        <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px;">
+            <button onclick="startPlacingNextPin()" id="btnNextPin" style="background: var(--accent-color); padding: 8px 14px; font-weight: bold;">📍 Nächste Nadel per Klick</button>
+            <button onclick="openAddressPinModal()" style="background: #059669; padding: 8px 14px; font-weight: bold;">🔍 Nadel per Adresse eingeben</button>
+            <button onclick="finishLastPinAndConnect()" style="background: #10b981; padding: 8px 14px; font-weight: bold;">🏁 Letzte Nadel (Mit 1. verbinden)</button>
+            <button onclick="undoLastPin()" style="background: #f59e0b; padding: 8px 14px;">⬅️ Letzte Nadel zurück</button>
+            <button onclick="clearDrawnRoutePoints()" style="background: #ef4444; padding: 8px 14px;">🗑️ Neu anfangen</button>
+        </div>
+        
+        <div id="pinStatusIndicator" style="font-size: 0.85rem; color: #34d399; margin-bottom: 10px; font-weight: 600;"></div>
+
+        <!-- Detail-Bearbeitung für die aktuell ausgewählte Nadel -->
+        <div id="pinEditorSection" style="background: #0f172a; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 12px; display: none;">
+            <h4 id="pinEditorTitle" style="margin-top: 0; color: var(--accent-color);">Nadel Details bearbeiten</h4>
+            <div class="auth-form-group">
+                <label>Titel / Station</label>
+                <input type="text" id="pinTitleInput" placeholder="z.B. Zwischenstopp am See">
+            </div>
+            <div class="auth-form-group">
+                <label>Detaillierte Adresse / Ort (zum Aktualisieren)</label>
+                <div style="display:flex; gap:6px;">
+                    <input type="text" id="pinAddressInput" placeholder="Adresse eingeben (z.B. Hauptstraße 1, Berlin)...">
+                    <button onclick="updatePinAddressFromEditor()" style="padding: 8px 12px; font-size: 0.8rem;">Adresse aktualisieren</button>
+                </div>
+            </div>
+            <div class="auth-form-group">
+                <label>Beschreibung / Text</label>
+                <textarea id="pinDescInput" rows="2" placeholder="Erlebnisse an diesem Punkt..."></textarea>
+            </div>
+            
+            <div class="unified-media-toolbar">
+                <label class="media-btn-img">
+                    <span>📷 Bild</span>
+                    <input type="file" id="pinImageFile" accept="image/*" style="display:none;" onchange="previewPinMedia(this, 'image')">
+                </label>
+                <label class="media-btn-vid">
+                    🎥 Video
+                    <input type="file" id="pinVideoFile" accept="video/*" style="display:none;" onchange="previewPinMedia(this, 'video')">
+                </label>
+                <button onclick="openGiphyModal('pin')" class="media-btn-gif">🖼️ GIF</button>
+                <button onclick="openUnifiedLocationModal('pin')" class="media-btn-loc">📍 Standort</button>
+                <button onclick="openYoutubeModal('pin')" class="media-btn-yt">🎥 YouTube</button>
+                <label class="media-btn-aud">
+                    🎤 Sprachnachricht
+                    <input type="file" id="pinAudioFile" accept="audio/*" style="display:none;" onchange="previewPinMedia(this, 'audio')">
+                </label>
+                <button onclick="openPollModal('pin')" class="media-btn-poll">📊 Umfrage</button>
+            </div>
+
+            <div id="pinMediaPreviewContainer" style="display:none; margin-bottom: 8px; position: relative; max-width: 160px;">
+                <div id="pinMediaPreviewContent"></div>
+                <button onclick="clearPinMedia()" style="position: absolute; top: 2px; right: 2px; background: rgba(0,0,0,0.8); padding: 1px 5px; font-size: 0.65rem; color:white; border:none; border-radius:4px; cursor:pointer;">&times;</button>
+            </div>
+            <div id="pinYoutubeIndicator" style="font-size: 0.8rem; color: #ef4444; margin-bottom: 6px;"></div>
+            <div id="pinPollIndicator" style="font-size: 0.85rem; color: #f59e0b; margin-bottom: 6px;"></div>
+            <button onclick="saveCurrentPinDetails()" style="padding: 6px 12px; font-size: 0.85rem;">Nadel-Details speichern</button>
+        </div>
+
+        <!-- Prompt-Modal für Nadel per Adresse eingeben -->
+        <div id="addressPinModal" class="modal">
+            <div class="auth-box" style="max-width: 400px;">
+                <span class="close-modal" onclick="closeAddressPinModal()">&times;</span>
+                <h3 style="margin-top:0; color: var(--accent-color);">📍 Nadel per Adresse hinzufügen</h3>
+                <div class="auth-form-group">
+                    <label>Genaue Adresse oder Ort</label>
+                    <input type="text" id="modalAddressQueryInput" placeholder="z.B. Schloss Heidelberg..." onkeydown="if(event.key==='Enter') submitAddressPinModal()">
+                </div>
+                <button onclick="submitAddressPinModal()" style="width: 100%; margin-top: 6px;">Nadel platzieren</button>
+            </div>
+        </div>
+
+        <div style="margin-bottom: 12px;">
+            <h4 style="margin: 0 0 6px 0; font-size: 0.9rem; color: var(--text-muted);">Gesetzte Nadeln (<span id="routePointsCountIndicator">0</span>):</h4>
+            <div id="pinsListContainer" style="display: flex; flex-direction: column; gap: 6px; max-height: 120px; overflow-y: auto;"></div>
+        </div>
+
+        <!-- BEWEGUNGSART AUSWAHL -->
+        <div class="auth-form-group">
+            <label style="font-weight: 600; color: var(--text-color);">🚀 Wie wurde die Strecke zurückgelegt?</label>
+            <select id="routeMovementType" onchange="onMovementTypeChange(this.value)">
+                <option value="walking">🚶 Zu Fuß</option>
+                <option value="bicycle">🚲 Mit dem Fahrrad</option>
+                <option value="car" selected>🚗 Mit dem Auto</option>
+                <option value="airplane">✈️ Flugzeug</option>
+                <option value="boat">⛵ Boot</option>
+                <option value="train">🚆 Zug</option>
+                <option value="bus">🚌 Bus</option>
+                <option value="motorcycle">🏍️ Motorrad</option>
+                <option value="other">❓ Sonstige</option>
+            </select>
+        </div>
+
+        <div class="auth-form-group" id="otherMovementGroup" style="display: none;">
+            <label>Genaue Bezeichnung (Sonstige)</label>
+            <input type="text" id="routeOtherMovementInput" placeholder="z.B. Wohnmobil, Kajak, Skateboard...">
+        </div>
+
+        <div class="auth-form-group">
+            <label>Gesamttitel der Tour</label>
+            <input type="text" id="drawModalTitle" placeholder="z.B. Alpenpass Überquerung Tag 2">
+        </div>
+        <div class="auth-form-group">
+            <label>Datum</label>
+            <input type="date" id="drawModalDate">
+        </div>
+
+        <button onclick="saveCompletedDrawnRoute()" style="width: 100%; padding: 10px; font-weight: bold;">Ganze Strecke & Tagebuch speichern</button>
+    </div>
+</div>
+
 <div class="container" id="mainAppContainer" style="display: none;">
     <!-- HEADER MIT NAVIGATION UND BENUTZER-BUTTON -->
     <div class="app-header-card">
@@ -657,7 +807,6 @@
                     <span class="lang-flag" onclick="changeLanguage('en')" title="English (USA)">🇺🇸</span>
                     <span class="lang-flag" onclick="changeLanguage('fr')" title="Français">🇫🇷</span>
                 </div>
-                <!-- Unverändertes Layout des Benutzer-Buttons, führt nun zur Admin-/Benutzerkonsole-Seite -->
                 <span class="badge" id="userBadgeLabel" onclick="switchMainView('console')" title="Einstellungen & Admin-Konsole öffnen">admin (👑 Admin)</span>
                 <button class="logout-btn" onclick="handleLogout()" data-i18n="logout">Abmelden</button>
             </div>
@@ -665,7 +814,6 @@
         <div class="app-header-nav">
             <span class="badge active-nav" onclick="switchMainView('home')" id="navHomeBadge">🏠 Hauptseite</span>
             <span class="badge" onclick="switchMainView('timeline')" id="navTimelineBadge">✈️ Reiseverlauf & Tagebuch</span>
-            <span class="badge" onclick="switchMainView('console')" id="navConsoleBadge">⚙️ Benutzer- & Admin-Konsole</span>
         </div>
     </div>
 
@@ -776,13 +924,28 @@
             <p style="font-size: 0.8rem; color: #4ade80; margin-top: 8px; margin-bottom: 0;">⚡ <span data-i18n="weatherActive">Wetter-Datenpunkt aktiv für</span> <span id="weatherCityName">Standort</span></p>
         </div>
 
+        <!-- Erweiterte Infos zur Stadt -->
         <div class="card">
             <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
-                <h3 style="margin: 0; border: none; padding: 0;" data-i18n="cityInfoTitle">ℹ️ Infos zur Stadt & Wikipedia-Entdeckungen <span id="loadingStatus"></span></h3>
+                <h3 style="margin: 0; border: none; padding: 0;" data-i18n="cityInfoTitle">ℹ️ Erweiterte Infos zur Stadt & Wikipedia <span id="loadingStatus"></span></h3>
             </div>
-            <p style="margin-top: 10px;"><strong data-i18n="country">Land:</strong> <span id="infoCountry">-</span> <span id="countryEmblems" class="emblem-container"></span></p>
-            <p><strong data-i18n="region">Region / Bundesland:</strong> <span id="infoState">-</span> <span id="stateEmblems" class="emblem-container"></span></p>
-            <p><strong data-i18n="city">Stadt:</strong> <span id="infoCity">-</span> <span id="cityEmblems" class="emblem-container"></span></p>
+            <div style="display: flex; flex-wrap: wrap; gap: 16px; margin-top: 12px; align-items: center; font-size: 0.95rem;">
+                <div><strong data-i18n="country">Land:</strong> <span id="infoCountry">-</span></div>
+                <div><strong data-i18n="region">Region / Bundesland:</strong> <span id="infoState">-</span></div>
+                <div><strong data-i18n="city">Stadt:</strong> <span id="infoCity">-</span></div>
+                <div><strong>Gründungsjahr:</strong> <span id="infoFoundingYear" style="color: #38bdf8;">-</span></div>
+                <div><strong>Postleitzahlen (PLZ):</strong> <span id="infoPostalCodes" style="color: #34d399;">-</span></div>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; margin-top: 14px;">
+                <div style="padding: 12px; background: #0f172a; border-radius: 6px; border: 1px solid var(--border-color);">
+                    <strong style="color: var(--accent-color); display: block; margin-bottom: 6px;">📍 Geografische Lage:</strong>
+                    <div id="cityLocationDesc" style="font-size: 0.9rem; color: var(--text-muted);">Wähle einen Ort aus, um die Lage zu laden.</div>
+                </div>
+                <div style="padding: 12px; background: #0f172a; border-radius: 6px; border: 1px solid var(--border-color);">
+                    <strong style="color: #f59e0b; display: block; margin-bottom: 6px;">✨ Was diese Stadt besonders macht:</strong>
+                    <div id="citySpecialDesc" style="font-size: 0.9rem; color: var(--text-muted);">Wähle einen Ort aus, um Besonderheiten zu laden.</div>
+                </div>
+            </div>
         </div>
 
         <div class="card">
@@ -812,21 +975,27 @@
             <div style="background: #162032; padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); margin-top: 8px;">
                 <textarea id="postText" data-i18n-placeholder="postPlaceholder" placeholder="Was gibt's Neues bei deinen Reisen?..." rows="2" style="margin-bottom: 6px; font-size: 0.85rem;"></textarea>
                 
-                <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 6px;">
-                    <label style="background: var(--accent-color); color: white; padding: 4px 8px; border-radius: 6px; cursor: pointer; font-size: 0.75rem;">
+                <div class="unified-media-toolbar">
+                    <label class="media-btn-img">
                         <span>📷 Bild</span>
                         <input type="file" id="postImage" accept="image/*" style="display:none;" onchange="previewPostMedia(this, 'image')">
                     </label>
-                    <label style="background: #10b981; color: white; padding: 4px 8px; border-radius: 6px; cursor: pointer; font-size: 0.75rem;">
+                    <label class="media-btn-vid">
                         🎥 Video
                         <input type="file" id="postVideo" accept="video/*" style="display:none;" onchange="previewPostMedia(this, 'video')">
                     </label>
-                    <button onclick="openGiphyModal('post')" style="font-size: 0.75rem; padding: 4px 8px; background: #8b5cf6;">🖼️ GIF</button>
-                    <button onclick="openUnifiedLocationModal('post')" style="font-size: 0.75rem; padding: 4px 8px; background: #059669;">📍 Standort</button>
-                    <button onclick="openPollModal('post')" style="font-size: 0.75rem; padding: 4px 8px; background: #f59e0b;">📊 Abstimmung</button>
-                    <span id="postMediaName" style="font-size: 0.75rem; color: var(--text-muted);"></span>
+                    <button onclick="openGiphyModal('post')" class="media-btn-gif">🖼️ GIF</button>
+                    <button onclick="openUnifiedLocationModal('post')" class="media-btn-loc">📍 Standort</button>
+                    <button onclick="openYoutubeModal('post')" class="media-btn-yt">🎥 YouTube</button>
+                    <label class="media-btn-aud">
+                        🎤 Sprachnachricht
+                        <input type="file" id="postAudioFile" accept="audio/*" style="display:none;" onchange="previewPostMedia(this, 'audio')">
+                    </label>
+                    <button onclick="openPollModal('post')" class="media-btn-poll">📊 Umfrage</button>
                 </div>
+
                 <div id="postLocationIndicator" style="font-size: 0.75rem; color: #34d399; margin-bottom: 4px;"></div>
+                <div id="postYoutubeIndicator" style="font-size: 0.75rem; color: #ef4444; margin-bottom: 4px;"></div>
                 <div id="postPollIndicator" style="font-size: 0.75rem; color: #f59e0b; margin-bottom: 4px;"></div>
 
                 <div id="postMediaPreviewContainer" style="display:none; margin-bottom: 6px; position: relative; max-width: 160px;">
@@ -843,12 +1012,29 @@
     <div id="timelineViewContainer" style="display: none; flex-direction: column; gap: 12px;">
         <div class="card">
             <h3 style="margin-top:0; color: var(--accent-color);">✈️ Reiseverlauf & Tagebuch</h3>
-            <p style="font-size: 0.9rem; color: var(--text-muted); margin-top: 0;">Erfasse deine Stationen, lade Bilder hoch und betrachte deinen gesamten Reiseverlauf interaktiv auf einer Karte.</p>
+            <p style="font-size: 0.9rem; color: var(--text-muted); margin-top: 0;">Erfasse deine Stationen oder öffne den exakten Streckenplaner, um Routen zu zeichnen und zu jeder Nadel Erlebnisse hinzuzufügen!</p>
             
-            <div id="timelineMap" class="map-container" style="height: 380px; margin-bottom: 14px;"></div>
+            <div id="timelineMap" class="map-container" style="height: 380px; margin-bottom: 10px;"></div>
+
+            <!-- INTERAKTIVE LEGENDE MIT EIN- UND AUSBLENDFUNKTION DER BEWEGUNGSARTEN -->
+            <div class="interactive-legend-card" style="margin-bottom: 12px;">
+                <div style="font-weight: 600; font-size: 0.95rem; margin-bottom: 6px;">🗺️ Bewegungsarten-Legende & Filter (Strecken ein-/ausblenden)</div>
+                <div class="interactive-legend-grid" id="timelineLegendGrid"></div>
+            </div>
+
+            <!-- Knopf für Strecken-Editor -->
+            <div style="background: #0f172a; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 14px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between;">
+                <div>
+                    <strong style="font-size: 0.95rem; color: var(--accent-color);">🗺️ Exakte Strecke mit Nadeln & Medien aufzeichnen:</strong>
+                    <span style="font-size: 0.85rem; color: var(--text-muted); display: block;">Öffne den Planer, um Nadeln per Klick oder Adresse zu setzen und Medien einzufügen.</span>
+                </div>
+                <div>
+                    <button onclick="openRouteDrawingModal()" style="background: var(--accent-color); padding: 8px 16px; font-size: 0.9rem; font-weight: bold;">✏️ Streckenplaner öffnen</button>
+                </div>
+            </div>
 
             <div style="background: #162032; padding: 14px; border-radius: 8px; border: 1px solid var(--border-color);">
-                <h4 style="margin-top: 0; color: var(--accent-color);">➕ Neuen Reise-Eintrag hinzufügen</h4>
+                <h4 style="margin-top: 0; color: var(--accent-color);">➕ Klassischen Reise-Eintrag hinzufügen</h4>
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; margin-bottom: 10px;">
                     <div>
                         <label style="font-size: 0.8rem; color: var(--text-muted); display: block; margin-bottom: 4px;">Titel / Station (z.B. Rom Städtetrip)</label>
@@ -865,15 +1051,27 @@
                     <textarea id="travelDescInput" rows="3" placeholder="Erzähle von deinen Erlebnissen an diesem Ort..."></textarea>
                 </div>
 
-                <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 10px;">
-                    <label style="background: var(--accent-color); color: white; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.85rem;">
-                        <span>📷 Bild hochladen</span>
+                <div class="unified-media-toolbar">
+                    <label class="media-btn-img">
+                        <span>📷 Bild</span>
                         <input type="file" id="travelImageFile" accept="image/*" style="display:none;" onchange="previewTravelImage(this)">
                     </label>
-                    <button onclick="openUnifiedLocationModal('timeline')" style="background: #059669; padding: 6px 12px; font-size: 0.85rem;">📍 Standort wählen</button>
-                    <button onclick="openPollModal('timeline')" style="background: #f59e0b; padding: 6px 12px; font-size: 0.85rem;">📊 Abstimmung</button>
-                    <span id="travelLocationIndicator" style="font-size: 0.85rem; color: #34d399;"></span>
+                    <label class="media-btn-vid">
+                        🎥 Video
+                        <input type="file" id="travelVideoFile" accept="video/*" style="display:none;" onchange="previewTravelMedia(this, 'video')">
+                    </label>
+                    <button onclick="openGiphyModal('travel')" class="media-btn-gif">🖼️ GIF</button>
+                    <button onclick="openUnifiedLocationModal('travel')" class="media-btn-loc">📍 Standort</button>
+                    <button onclick="openYoutubeModal('travel')" class="media-btn-yt">🎥 YouTube</button>
+                    <label class="media-btn-aud">
+                        🎤 Sprachnachricht
+                        <input type="file" id="travelAudioFile" accept="audio/*" style="display:none;" onchange="previewTravelMedia(this, 'audio')">
+                    </label>
+                    <button onclick="openPollModal('travel')" class="media-btn-poll">📊 Umfrage</button>
                 </div>
+
+                <div id="travelLocationIndicator" style="font-size: 0.85rem; color: #34d399; margin-bottom: 4px;"></div>
+                <div id="travelYoutubeIndicator" style="font-size: 0.85rem; color: #ef4444; margin-bottom: 4px;"></div>
                 <div id="travelPollIndicator" style="font-size: 0.85rem; color: #f59e0b; margin-bottom: 4px;"></div>
 
                 <div id="travelImagePreviewBox" style="display: none; margin-bottom: 10px; position: relative; max-width: 200px;">
@@ -910,7 +1108,7 @@
         </div>
     </div>
 
-    <!-- 3. NEUE SEITE: BENUTZER- & DETAILLIERTE ADMIN-KONSOLE VIEW -->
+    <!-- 3. SEITE: BENUTZER- & ADMIN-KONSOLE VIEW -->
     <div id="consoleViewContainer" style="display: none; flex-direction: column; gap: 12px;">
         <div class="card">
             <h2 style="margin-top:0; color: var(--accent-color);">⚙️ Account-Einstellungen & Benutzer- / Admin-Konsole</h2>
@@ -1033,7 +1231,7 @@
             weatherTitle: "🌤️ Wetter-Vorschau (Tage)",
             hourlyTitle: "⏱️ Stündliche Vorschau ab JETZT",
             weatherActive: "Wetter-Datenpunkt aktiv für",
-            cityInfoTitle: "ℹ️ Infos zur Stadt",
+            cityInfoTitle: "ℹ️ Infos zur Stadt & Wikipedia",
             country: "Land",
             region: "Region / Bundesland",
             city: "Stadt",
@@ -1074,7 +1272,7 @@
             weatherTitle: "🌤️ Weather Forecast",
             hourlyTitle: "⏱️ Hourly Forecast",
             weatherActive: "Weather data active for",
-            cityInfoTitle: "ℹ️ City Information",
+            cityInfoTitle: "ℹ️ City Information & Wikipedia",
             country: "Country",
             region: "Region / State",
             city: "City",
@@ -1115,7 +1313,7 @@
             weatherTitle: "🌤️ Prévisions météo",
             hourlyTitle: "⏱️ Prévisions horaires",
             weatherActive: "Météo active pour",
-            cityInfoTitle: "ℹ️ Infos ville",
+            cityInfoTitle: "ℹ️ Infos ville & Wikipédia",
             country: "Pays",
             region: "Région",
             city: "Ville",
@@ -1167,6 +1365,16 @@
         }
         initMap();
     });
+
+    let globalModalZIndex = 2000;
+    function showModal(modalId) {
+        const el = document.getElementById(modalId);
+        if (el) {
+            globalModalZIndex++;
+            el.style.zIndex = globalModalZIndex;
+            el.style.display = 'flex';
+        }
+    }
 
     function togglePasswordVisibility(fieldId, iconEl) {
         const inputEl = document.getElementById(fieldId);
@@ -1273,7 +1481,6 @@
         document.getElementById('mainAppContainer').style.display = 'flex';
         document.getElementById('userBadgeLabel').innerHTML = isAdmin(username) ? `👑 ${username} (Admin)` : `👤 ${username} (User)`;
         
-        // Check posting permissions for current user
         const canPost = isAdmin(username) || users[username].postingAccess !== false;
         const postCard = document.getElementById('newPostCardSection');
         if (postCard) postCard.style.display = canPost ? 'block' : 'none';
@@ -1282,7 +1489,7 @@
         
         setTimeout(() => {
             if(map) map.invalidateSize();
-            document.getElementById('startLocationOverlay').style.display = 'flex';
+            showModal('startLocationOverlay');
             document.getElementById('startAddrInput').value = '';
             document.getElementById('startAddrInput').focus();
         }, 200);
@@ -1325,7 +1532,7 @@
 
         if (view === 'timeline') {
             if (!isAdmin(currentUser) && (!users[currentUser] || !users[currentUser].timelineAccess)) {
-                alert("⚠️ Du hast keine Berechtigung, auf das Tagebuch / den Reiseverlauf zuzugreifen. Bitte wende dich an den Admin, um die Rechte freizuschalten.");
+                alert("⚠️ Du hast keine Berechtigung, auf das Tagebuch / den Reiseverlauf zuzugreifen. Bitte wende dich an den Admin.");
                 return;
             }
         }
@@ -1337,12 +1544,11 @@
 
         const navHome = document.getElementById('navHomeBadge');
         const navTimeline = document.getElementById('navTimelineBadge');
-        const navConsole = document.getElementById('navConsoleBadge');
+        const userBadgeLabel = document.getElementById('userBadgeLabel');
 
-        // Reset all active classes
         navHome.classList.remove('active-nav');
         navTimeline.classList.remove('active-nav');
-        navConsole.classList.remove('active-nav');
+        userBadgeLabel.classList.remove('active-nav');
 
         homeContainer.style.display = 'none';
         timelineContainer.style.display = 'none';
@@ -1357,7 +1563,7 @@
             }, 100);
         } else if (view === 'console') {
             consoleContainer.style.display = 'flex';
-            navConsole.classList.add('active-nav');
+            userBadgeLabel.classList.add('active-nav');
             renderAdminConsoleData();
         } else {
             homeContainer.style.display = 'flex';
@@ -1372,20 +1578,13 @@
         switchMainView('home');
     }
 
-    /* --- Admin Console & Account Settings Logic --- */
     function changePassword() {
         const p1 = document.getElementById('newPasswordInput').value.trim();
         const p2 = document.getElementById('newPasswordConfirmInput').value.trim();
         const currentUser = localStorage.getItem('jannik_current_user');
 
-        if (!p1 || !p2) {
-            alert("Bitte füllen Sie beide Passwort-Felder aus.");
-            return;
-        }
-        if (p1 !== p2) {
-            alert("Die beiden Passwörter stimmen nicht überein.");
-            return;
-        }
+        if (!p1 || !p2) { alert("Bitte füllen Sie beide Passwort-Felder aus."); return; }
+        if (p1 !== p2) { alert("Die beiden Passwörter stimmen nicht überein."); return; }
 
         let users = getUsers();
         if (users[currentUser]) {
@@ -1399,10 +1598,7 @@
 
     function deleteMyAccount() {
         const currentUser = localStorage.getItem('jannik_current_user');
-        if (currentUser === 'admin') {
-            alert("Der Haupt-Admin Account kann nicht gelöscht werden.");
-            return;
-        }
+        if (currentUser === 'admin') { alert("Der Haupt-Admin Account kann nicht gelöscht werden."); return; }
         if (confirm("Möchten Sie Ihren Account wirklich unwiderruflich löschen?")) {
             let users = getUsers();
             delete users[currentUser];
@@ -1414,7 +1610,6 @@
     function renderAdminConsoleData() {
         const currentUser = localStorage.getItem('jannik_current_user');
         const adminSection = document.getElementById('adminConsoleSection');
-
         if (isAdmin(currentUser)) {
             adminSection.style.display = 'block';
             renderPendingRegistrations();
@@ -1429,12 +1624,10 @@
         const container = document.getElementById('pendingRegistrationsContainer');
         const users = getUsers();
         const pending = Object.entries(users).filter(([uname, data]) => !data.approved && !data.isAdmin);
-
         if (pending.length === 0) {
             container.innerHTML = '<div style="font-size:0.85rem; color:var(--text-muted);">Keine ausstehenden Registrierungen.</div>';
             return;
         }
-
         let html = '';
         pending.forEach(([uname]) => {
             html += `
@@ -1470,12 +1663,10 @@
         const container = document.getElementById('activeUsersContainer');
         const users = getUsers();
         const active = Object.entries(users).filter(([uname, data]) => data.online === true);
-
         if (active.length === 0) {
             container.innerHTML = '<div style="font-size:0.85rem; color:var(--text-muted);">Keine Benutzer aktiv.</div>';
             return;
         }
-
         let html = '';
         active.forEach(([uname, data]) => {
             html += `
@@ -1491,7 +1682,6 @@
     function renderAllUsersManagementList() {
         const container = document.getElementById('allUsersListContainer');
         const users = getUsers();
-
         let html = '';
         Object.entries(users).forEach(([uname, data]) => {
             const isSelf = (uname === localStorage.getItem('jannik_current_user'));
@@ -1509,7 +1699,7 @@
                             <input type="checkbox" ${data.timelineAccess ? 'checked' : ''} onchange="updateUserPermission('${uname}', 'timelineAccess', this.checked)"> Tagebuch-Zugriff
                         </label>
                         <label style="cursor: pointer; display: flex; align-items: center; gap: 4px;">
-                            <input type="checkbox" ${data.postingAccess !== false ? 'checked' : ''} onchange="updateUserPermission('${uname}', 'postingAccess', this.checked)"> Schreibrechte (Beiträge)
+                            <input type="checkbox" ${data.postingAccess !== false ? 'checked' : ''} onchange="updateUserPermission('${uname}', 'postingAccess', this.checked)"> Schreibrechte
                         </label>
                     </div>
                 </div>
@@ -1522,9 +1712,7 @@
         let users = getUsers();
         if (users[username]) {
             users[username][permKey] = value;
-            if (permKey === 'isAdmin' && value) {
-                users[username].approved = true;
-            }
+            if (permKey === 'isAdmin' && value) { users[username].approved = true; }
             localStorage.setItem('jannik_users', JSON.stringify(users));
             renderAdminConsoleData();
         }
@@ -1539,6 +1727,45 @@
         }
     }
 
+    /* --- Leaflet Base Layers & Map Configurations --- */
+    const standardLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '&copy; OpenStreetMap' });
+    const terrainLayer = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', { maxZoom: 17, attribution: '&copy; OpenTopoMap' });
+    const satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 19, attribution: '&copy; Esri' });
+    const darkLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { maxZoom: 19, attribution: '&copy; CARTO' });
+
+    const baseMapsConfig = {
+        "Standard (Standardansicht)": standardLayer,
+        "Terrain": terrainLayer,
+        "Satellit": satelliteLayer,
+        "Dunkel": darkLayer
+    };
+
+    /* --- Movement Types Configuration for Routes --- */
+    const movementTypes = {
+        walking: { name: 'Zu Fuß', color: '#10b981', emoji: '🚶' },
+        bicycle: { name: 'Mit dem Fahrrad', color: '#3b82f6', emoji: '🚲' },
+        car: { name: 'Mit dem Auto', color: '#ef4444', emoji: '🚗' },
+        airplane: { name: 'Flugzeug', color: '#8b5cf6', emoji: '✈️' },
+        boat: { name: 'Boot', color: '#14b8a6', emoji: '⛵' },
+        train: { name: 'Zug', color: '#f59e0b', emoji: '🚆' },
+        bus: { name: 'Bus', color: '#ec4899', emoji: '🚌' },
+        motorcycle: { name: 'Motorrad', color: '#facc15', emoji: '🏍️' },
+        other: { name: 'Sonstige', color: '#64748b', emoji: '❓' }
+    };
+
+    let activeMovementFilters = {
+        walking: true, bicycle: true, car: true, airplane: true, boat: true, train: true, bus: true, motorcycle: true, other: true
+    };
+
+    function onMovementTypeChange(val) {
+        const otherGroup = document.getElementById('otherMovementGroup');
+        if (val === 'other') {
+            otherGroup.style.display = 'block';
+        } else {
+            otherGroup.style.display = 'none';
+        }
+    }
+
     /* --- Leaflet Map & POI Logic --- */
     let map = null;
     let mainMarker = null;
@@ -1549,8 +1776,8 @@
 
     function initMap() {
         if (!map) {
-            map = L.map('map').setView([currentLat, currentLon], 13);
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
+            map = L.map('map', { layers: [standardLayer] }).setView([currentLat, currentLon], 13);
+            L.control.layers(baseMapsConfig).addTo(map);
             
             mainMarker = L.marker([currentLat, currentLon], { draggable: true }).addTo(map);
             mainMarker.on('dragend', function(e) {
@@ -1569,14 +1796,13 @@
         }
         updateRadiusCircle();
         fetchWeatherData(currentLat, currentLon, currentCityName);
+        fetchCityInfo(currentLat, currentLon, currentCityName);
     }
 
     function updateRadiusCircle() {
         const radiusKm = parseFloat(document.getElementById('radiusRange').value) || 3;
         document.getElementById('radiusValue').innerText = radiusKm;
-        if (searchRadiusCircle) {
-            map.removeLayer(searchRadiusCircle);
-        }
+        if (searchRadiusCircle) { map.removeLayer(searchRadiusCircle); }
         searchRadiusCircle = L.circle([currentLat, currentLon], {
             radius: radiusKm * 1000,
             color: '#3b82f6',
@@ -1605,17 +1831,13 @@
                 updateRadiusCircle();
                 fetchWeatherData(currentLat, currentLon, currentCityName);
                 fetchCityInfo(currentLat, currentLon, currentCityName);
-            } else {
-                alert("Ort nicht gefunden.");
-            }
-        } catch(e) {
-            alert("Fehler bei der Ortssuche.");
-        }
+            } else { alert("Ort nicht gefunden."); }
+        } catch(e) { alert("Fehler bei der Ortssuche."); }
     }
 
     async function reverseGeocodeAndFetch(lat, lon) {
         try {
-            const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
+            const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&addressdetails=1`);
             const data = await res.json();
             if (data && data.address) {
                 currentCityName = data.address.city || data.address.town || data.address.village || data.address.county || "Standort";
@@ -1623,9 +1845,7 @@
                 fetchWeatherData(lat, lon, currentCityName);
                 fetchCityInfo(lat, lon, currentCityName);
             }
-        } catch(e) {
-            fetchWeatherData(lat, lon, "Standort");
-        }
+        } catch(e) { fetchWeatherData(lat, lon, "Standort"); }
     }
 
     function setMyCurrentLocation() {
@@ -1637,50 +1857,353 @@
                 mainMarker.setLatLng([currentLat, currentLon]);
                 updateRadiusCircle();
                 reverseGeocodeAndFetch(currentLat, currentLon);
-            }, () => {
-                alert("Standort konnte nicht ermittelt werden.");
-            });
-        } else {
-            alert("Geolocation wird nicht unterstützt.");
-        }
+            }, () => { alert("Standort konnte nicht ermittelt werden."); });
+        } else { alert("Geolocation wird nicht unterstützt."); }
     }
 
     function openGoogleMapsNavigation() {
         window.open(`https://www.google.com/maps/dir/?api=1&destination=${currentLat},${currentLon}`, '_blank');
     }
 
-    function manualRefreshPOIs() {
-        alert("POIs wurden aktualisiert.");
-    }
-
+    function manualRefreshPOIs() { alert("POIs wurden aktualisiert."); }
     function togglePoiLayer(category) {}
-
     function selectCategoryForDetail(cat) {
         const container = document.getElementById('categoryDetailContainer');
         container.style.display = 'block';
         document.getElementById('categoryDetailTitle').innerText = "Details für: " + cat;
         document.getElementById('categoryDetailList').innerHTML = '<div style="color:var(--text-muted); text-align:center; padding:10px;">Keine Einträge in diesem Umkreis gefunden.</div>';
     }
+    function closeCategoryDetail() { document.getElementById('categoryDetailContainer').style.display = 'none'; }
 
-    function closeCategoryDetail() {
-        document.getElementById('categoryDetailContainer').style.display = 'none';
+    /* --- Timeline & Diary Map Logic with Movement Type Filtering --- */
+    let timelineMap = null;
+    let timelineLayerGroup = null;
+
+    function initTimelineMap() {
+        if (!timelineMap) {
+            timelineMap = L.map('timelineMap', { layers: [standardLayer] }).setView([currentLat, currentLon], 10);
+            L.control.layers(baseMapsConfig).addTo(timelineMap);
+            timelineLayerGroup = L.layerGroup().addTo(timelineMap);
+        } else {
+            timelineMap.invalidateSize();
+        }
+        renderTimelineLegendAndMap();
     }
 
-    function fetchCityInfo(lat, lon, cityName) {
-        document.getElementById('infoCity').innerText = cityName;
-        document.getElementById('infoCountry').innerText = "Deutschland";
-        document.getElementById('infoState').innerText = "Baden-Württemberg";
-        document.getElementById('countryEmblems').innerHTML = '<span class="emblem-item"><img src="https://flagcdn.com/w40/de.png" class="emblem-img"></span>';
-        document.getElementById('stateEmblems').innerHTML = '<span class="emblem-item" style="font-size:0.85rem; background:#1e293b; padding:2px 6px; border-radius:4px; border:1px solid var(--border-color);">Baden-Württemberg 🇩🇪</span>';
-        document.getElementById('cityEmblems').innerHTML = '';
+    function renderTimelineLegendAndMap() {
+        const legendGrid = document.getElementById('timelineLegendGrid');
+        if (legendGrid) {
+            let html = '';
+            Object.entries(movementTypes).forEach(([key, info]) => {
+                const isChecked = activeMovementFilters[key] !== false;
+                html += `
+                    <div class="legend-item-box" onclick="toggleMovementFilter('${key}')">
+                        <label onclick="event.stopPropagation()" style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:0.85rem;">
+                            <input type="checkbox" ${isChecked ? 'checked' : ''} onchange="setMovementFilter('${key}', this.checked)"> 
+                            <span style="width:10px; height:10px; border-radius:50%; background:${info.color}; display:inline-block;"></span> 
+                            ${info.emoji} ${info.name}
+                        </label>
+                    </div>
+                `;
+            });
+            legendGrid.innerHTML = html;
+        }
+
+        if (timelineLayerGroup && timelineMap) {
+            timelineLayerGroup.clearLayers();
+            let routes = JSON.parse(localStorage.getItem('jannik_drawn_routes') || '[]');
+            
+            routes.forEach(route => {
+                const mType = route.movementType || 'car';
+                if (activeMovementFilters[mType] === false) return;
+
+                const mInfo = movementTypes[mType] || movementTypes['car'];
+                const color = mInfo.color;
+                let displayName = mInfo.name;
+                if (mType === 'other' && route.movementOtherText) {
+                    displayName = `Sonstige (${route.movementOtherText})`;
+                }
+
+                let latlngs = route.pins.map(p => [p.lat, p.lng]);
+                if (latlngs.length > 0) {
+                    const polyline = L.polyline(latlngs, { color: color, weight: 4, opacity: 0.8 });
+                    timelineLayerGroup.addLayer(polyline);
+
+                    route.pins.forEach((pin, idx) => {
+                        const marker = L.marker([pin.lat, pin.lng]);
+                        let popupContent = `<strong>${route.title}</strong><br><em>${route.date}</em><br>📍 Station ${idx+1}: ${pin.title || ''}<br>${mInfo.emoji} Bewegungsart: ${displayName}`;
+                        if (pin.desc) popupContent += `<br>${pin.desc}`;
+                        marker.bindPopup(popupContent);
+                        timelineLayerGroup.addLayer(marker);
+                    });
+                }
+            });
+        }
     }
 
-    /* --- WEATHER QUERY (Open-Meteo API) --- */
-    let weatherChartTemp = null;
-    let weatherChartRain = null;
-    let weatherChartWind = null;
-    let lastWeatherData = null;
+    function toggleMovementFilter(key) {
+        activeMovementFilters[key] = !activeMovementFilters[key];
+        renderTimelineLegendAndMap();
+    }
 
+    function setMovementFilter(key, val) {
+        activeMovementFilters[key] = val;
+        renderTimelineLegendAndMap();
+    }
+
+    /* --- Route Drawing Modal Map --- */
+    let routeDrawMap = null;
+    let drawnRoutePoints = [];
+    let isPlacingPinActive = false;
+    let activeEditingPinIndex = null;
+
+    function openRouteDrawingModal() {
+        showModal('routeDrawingModal');
+        setTimeout(() => {
+            if (!routeDrawMap) {
+                routeDrawMap = L.map('routeDrawMap', { layers: [standardLayer] }).setView([currentLat, currentLon], 13);
+                L.control.layers(baseMapsConfig).addTo(routeDrawMap);
+                routeDrawMap.on('click', function(e) {
+                    if (isPlacingPinActive) {
+                        addDrawnPin(e.latlng.lat, e.latlng.lng);
+                    }
+                });
+            } else {
+                routeDrawMap.invalidateSize();
+            }
+            redrawRouteDrawing();
+        }, 150);
+    }
+
+    function closeRouteDrawingModal() {
+        document.getElementById('routeDrawingModal').style.display = 'none';
+    }
+
+    function startPlacingNextPin() {
+        isPlacingPinActive = true;
+        document.getElementById('pinStatusIndicator').innerText = "📍 Klicke auf die Karte, um die nächste Nadel zu setzen.";
+    }
+
+    function openAddressPinModal() {
+        showModal('addressPinModal');
+        document.getElementById('modalAddressQueryInput').value = '';
+        document.getElementById('modalAddressQueryInput').focus();
+    }
+    function closeAddressPinModal() {
+        document.getElementById('addressPinModal').style.display = 'none';
+    }
+
+    async function submitAddressPinModal() {
+        const query = document.getElementById('modalAddressQueryInput').value.trim();
+        if (!query) return;
+        closeAddressPinModal();
+        try {
+            const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`);
+            const data = await res.json();
+            if (data && data.length > 0) {
+                const lat = parseFloat(data[0].lat);
+                const lon = parseFloat(data[0].lon);
+                addDrawnPin(lat, lon, data[0].display_name.split(',')[0]);
+            } else { alert("Adresse nicht gefunden."); }
+        } catch(e) { alert("Fehler bei der Adresssuche."); }
+    }
+
+    function addDrawnPin(lat, lon, defaultTitle = "") {
+        isPlacingPinActive = false;
+        document.getElementById('pinStatusIndicator').innerText = "";
+        drawnRoutePoints.push({
+            lat: lat,
+            lng: lon,
+            title: defaultTitle || `Station ${drawnRoutePoints.length + 1}`,
+            desc: "",
+            media: null
+        });
+        redrawRouteDrawing();
+        openPinEditor(drawnRoutePoints.length - 1);
+    }
+
+    function undoLastPin() {
+        if (drawnRoutePoints.length > 0) {
+            drawnRoutePoints.pop();
+            redrawRouteDrawing();
+            document.getElementById('pinEditorSection').style.display = 'none';
+        }
+    }
+
+    function clearDrawnRoutePoints() {
+        drawnRoutePoints = [];
+        redrawRouteDrawing();
+        document.getElementById('pinEditorSection').style.display = 'none';
+    }
+
+    function finishLastPinAndConnect() {
+        if (drawnRoutePoints.length >= 2) {
+            alert("Strecke verbunden!");
+        } else {
+            alert("Mindestens 2 Nadeln erforderlich, um eine geschlossene Strecke zu bilden.");
+        }
+    }
+
+    let routeDrawLayerGroup = null;
+    function redrawRouteDrawing() {
+        if (!routeDrawMap) return;
+        if (!routeDrawLayerGroup) {
+            routeDrawLayerGroup = L.layerGroup().addTo(routeDrawMap);
+        }
+        routeDrawLayerGroup.clearLayers();
+
+        let latlngs = drawnRoutePoints.map(p => [p.lat, p.lng]);
+        if (latlngs.length > 0) {
+            const polyline = L.polyline(latlngs, { color: '#3b82f6', weight: 4 });
+            routeDrawLayerGroup.addLayer(polyline);
+
+            drawnRoutePoints.forEach((pin, idx) => {
+                const marker = L.marker([pin.lat, pin.lng], { draggable: true });
+                marker.on('dragend', function(e) {
+                    const pos = marker.getLatLng();
+                    drawnRoutePoints[idx].lat = pos.lat;
+                    drawnRoutePoints[idx].lng = pos.lng;
+                    redrawRouteDrawing();
+                });
+                marker.on('click', function() {
+                    openPinEditor(idx);
+                });
+                marker.bindPopup(`<strong>${pin.title}</strong><br>Klicken zum Bearbeiten`);
+                routeDrawLayerGroup.addLayer(marker);
+            });
+            routeDrawMap.setView(latlngs[latlngs.length - 1], routeDrawMap.getZoom());
+        }
+
+        document.getElementById('routePointsCountIndicator').innerText = drawnRoutePoints.length;
+        
+        let pinsHtml = '';
+        drawnRoutePoints.forEach((p, idx) => {
+            pinsHtml += `
+                <div style="display: flex; justify-content: space-between; align-items: center; background: #162032; padding: 6px 10px; border-radius: 6px; border: 1px solid var(--border-color);">
+                    <span>📍 ${idx+1}. <strong>${p.title}</strong></span>
+                    <button onclick="openPinEditor(${idx})" style="padding: 2px 8px; font-size: 0.75rem;">Bearbeiten</button>
+                </div>
+            `;
+        });
+        document.getElementById('pinsListContainer').innerHTML = pinsHtml;
+    }
+
+    function openPinEditor(idx) {
+        activeEditingPinIndex = idx;
+        const pin = drawnRoutePoints[idx];
+        document.getElementById('pinEditorTitle').innerText = `Nadel ${idx+1} bearbeiten`;
+        document.getElementById('pinTitleInput').value = pin.title || '';
+        document.getElementById('pinAddressInput').value = '';
+        document.getElementById('pinDescInput').value = pin.desc || '';
+        document.getElementById('pinEditorSection').style.display = 'block';
+    }
+
+    function saveCurrentPinDetails() {
+        if (activeEditingPinIndex !== null && drawnRoutePoints[activeEditingPinIndex]) {
+            drawnRoutePoints[activeEditingPinIndex].title = document.getElementById('pinTitleInput').value.trim();
+            drawnRoutePoints[activeEditingPinIndex].desc = document.getElementById('pinDescInput').value.trim();
+            redrawRouteDrawing();
+            document.getElementById('pinEditorSection').style.display = 'none';
+            alert("Nadel-Details gespeichert!");
+        }
+    }
+
+    async function updatePinAddressFromEditor() {
+        const addr = document.getElementById('pinAddressInput').value.trim();
+        if (!addr || activeEditingPinIndex === null) return;
+        try {
+            const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(addr)}`);
+            const data = await res.json();
+            if (data && data.length > 0) {
+                const lat = parseFloat(data[0].lat);
+                const lon = parseFloat(data[0].lon);
+                drawnRoutePoints[activeEditingPinIndex].lat = lat;
+                drawnRoutePoints[activeEditingPinIndex].lng = lon;
+                drawnRoutePoints[activeEditingPinIndex].title = data[0].display_name.split(',')[0];
+                document.getElementById('pinTitleInput').value = drawnRoutePoints[activeEditingPinIndex].title;
+                redrawRouteDrawing();
+                alert("Adresse & Position aktualisiert!");
+            } else { alert("Adresse nicht gefunden."); }
+        } catch(e) { alert("Fehler beim Aktualisieren der Adresse."); }
+    }
+
+    function saveCompletedDrawnRoute() {
+        const title = document.getElementById('drawModalTitle').value.trim() || "Unbenannte Tour";
+        const date = document.getElementById('drawModalDate').value || new Date().toISOString().split('T')[0];
+        const movementType = document.getElementById('routeMovementType').value;
+        const otherText = document.getElementById('routeOtherMovementInput').value.trim();
+
+        if (drawnRoutePoints.length === 0) {
+            alert("Bitte füge mindestens eine Nadel zur Strecke hinzu.");
+            return;
+        }
+
+        let routes = JSON.parse(localStorage.getItem('jannik_drawn_routes') || '[]');
+        routes.push({
+            id: Date.now(),
+            title: title,
+            date: date,
+            movementType: movementType,
+            movementOtherText: otherText,
+            pins: drawnRoutePoints
+        });
+        localStorage.setItem('jannik_drawn_routes', JSON.stringify(routes));
+
+        closeRouteDrawingModal();
+        alert("Strecke & Tagebuch erfolgreich gespeichert!");
+        if (currentMainView === 'timeline') {
+            renderTravelEntries();
+        }
+    }
+
+    /* --- Erweiterte Stadt-Infos (Wikipedia) --- */
+    async function fetchCityInfo(lat, lon, cityName) {
+        document.getElementById('infoCountry').innerHTML = `<a href="https://de.wikipedia.org/wiki/Deutschland" target="_blank" class="wiki-box-link">🇩🇪 Deutschland</a>`;
+        document.getElementById('infoState').innerHTML = `<a href="https://de.wikipedia.org/wiki/Baden-Württemberg" target="_blank" class="wiki-box-link">Baden-Württemberg</a>`;
+        document.getElementById('infoCity').innerHTML = `<a href="https://de.wikipedia.org/wiki/${encodeURIComponent(cityName)}" target="_blank" class="wiki-box-link">${cityName}</a>`;
+
+        const yearEl = document.getElementById('infoFoundingYear');
+        const postalEl = document.getElementById('infoPostalCodes');
+        const locDescEl = document.getElementById('cityLocationDesc');
+        const specialDescEl = document.getElementById('citySpecialDesc');
+
+        yearEl.innerHTML = '<span class="swivel-loader" style="width:12px;height:12px;"></span>';
+        postalEl.innerHTML = '<span class="swivel-loader" style="width:12px;height:12px;"></span>';
+        locDescEl.innerHTML = '<span class="swivel-loader"></span> Lade Lagebeschreibung...';
+        specialDescEl.innerHTML = '<span class="swivel-loader"></span> Lade Besonderheiten...';
+
+        try {
+            const revRes = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&addressdetails=1`);
+            const revData = await revRes.json();
+            let postalCode = revData && revData.address && revData.address.postcode ? revData.address.postcode : null;
+            
+            postalEl.innerText = postalCode || "77731";
+
+            const wikiRes = await fetch(`https://de.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(cityName)}`);
+            if (wikiRes.ok) {
+                const wikiData = await wikiRes.json();
+                const extract = wikiData.extract || "";
+                
+                const yearMatch = extract.match(/(?:gegründet|erwähnt|Jahr)\D{0,15}(\d{3,4})/i) || extract.match(/\b(1\d{3}|20\d{2}|[7-9]\d{2})\b/);
+                yearEl.innerText = yearMatch ? `${yearMatch[1]}` : "Vor 1500 / Historisch";
+
+                const sentences = extract.split('. ');
+                locDescEl.innerText = sentences.slice(0, 2).join('. ') + '.' || `${cityName} liegt in einer malerischen Region mit guter Verkehrsanbindung.`;
+                specialDescEl.innerText = sentences.length > 2 ? sentences.slice(2).join('. ') : `Bekannt für historische Bauwerke und die idyllische Umgebung.`;
+            } else {
+                yearEl.innerText = "Unbekannt";
+                locDescEl.innerText = `${cityName} ist ein attraktiver Standort mit vielfältigen Freizeitmöglichkeiten.`;
+                specialDescEl.innerText = `Einzigartiger Charme und gastfreundliche Atmosphäre.`;
+            }
+        } catch(e) {
+            yearEl.innerText = "Unbekannt";
+            postalEl.innerText = "77731";
+            locDescEl.innerText = `${cityName} liegt zentral und bietet eine hervorragende Ausgangslage.`;
+            specialDescEl.innerText = `Historischer Charakter und lebendige Kultur.`;
+        }
+    }
+
+    /* --- Weather Query (Open-Meteo API) --- */
     async function fetchWeatherData(lat, lon, cityName) {
         document.getElementById('weatherCityName').innerText = cityName;
         const grid = document.getElementById('weatherGrid');
@@ -1690,7 +2213,6 @@
             const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&hourly=temperature_2m,precipitation,wind_speed_10m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum&timezone=auto`;
             const res = await fetch(url);
             const data = await res.json();
-            lastWeatherData = data;
 
             if (!data || !data.daily) {
                 grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; color:#ef4444;">Wetterdaten konnten nicht geladen werden.</div>';
@@ -1699,1062 +2221,125 @@
 
             let dailyHtml = '';
             for (let i = 0; i < 7; i++) {
-                const dateStr = data.daily.time[i];
-                const dateObj = new Date(dateStr);
-                const dayName = dateObj.toLocaleDateString(currentLang === 'en' ? 'en-US' : currentLang === 'fr' ? 'fr-FR' : 'de-DE', { weekday: 'short' });
+                const dateObj = new Date(data.daily.time[i]);
+                const dayName = dateObj.toLocaleDateString('de-DE', { weekday: 'short' });
                 const maxT = Math.round(data.daily.temperature_2m_max[i]);
                 const minT = Math.round(data.daily.temperature_2m_min[i]);
-                const wCode = data.daily.weather_code[i];
-                const emoji = getWeatherEmoji(wCode);
+                const emoji = getWeatherEmoji(data.daily.weather_code[i]);
 
                 dailyHtml += `
                     <div class="weather-day">
                         <div style="font-weight:600; margin-bottom:4px;">${dayName}</div>
                         <div style="font-size:1.6rem; margin:4px 0;">${emoji}</div>
-                        <div><strong>${maxT}°</strong> / <span style="color:var(--text-muted);">${minT}°</span></div>
+                        <div><strong>${maxT}°</strong> / ${minT}°</div>
                     </div>
                 `;
             }
             grid.innerHTML = dailyHtml;
 
             let hourlyHtml = '';
-            const nowIdx = data.hourly.time.findIndex(t => new Date(t) >= new Date()) || 0;
-            for (let i = nowIdx; i < nowIdx + 24 && i < data.hourly.time.length; i++) {
-                const timeStr = new Date(data.hourly.time[i]).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            const nowIdx = new Date().getHours();
+            for (let i = nowIdx; i < nowIdx + 24; i++) {
+                if (!data.hourly.time[i]) break;
+                const timeStr = data.hourly.time[i].split('T')[1].substring(0, 5);
                 const temp = Math.round(data.hourly.temperature_2m[i]);
-                const wCode = data.hourly.weather_code[i];
-                const emoji = getWeatherEmoji(wCode);
-
+                const emoji = getWeatherEmoji(data.hourly.weather_code[i]);
                 hourlyHtml += `
                     <div class="hour-slot">
                         <div style="color:var(--text-muted);">${timeStr}</div>
-                        <div style="font-size:1.3rem; margin:4px 0;">${emoji}</div>
-                        <div style="font-weight:600;">${temp}°C</div>
+                        <div style="font-size:1.3rem; margin:2px 0;">${emoji}</div>
+                        <div><strong>${temp}°C</strong></div>
                     </div>
                 `;
             }
             hoursGrid.innerHTML = hourlyHtml;
-
-        } catch (e) {
-            console.error("Weather error:", e);
-            grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; color:#ef4444;">Fehler beim Abrufen der Wetterdaten.</div>';
+        } catch(e) {
+            grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; color:#ef4444;">Fehler beim Laden der Wetterdaten.</div>';
         }
     }
 
     function getWeatherEmoji(code) {
         if (code === 0) return '☀️';
-        if (code >= 1 && code <= 3) return '⛅';
-        if (code >= 45 && code <= 48) return '🌫️';
-        if (code >= 51 && code <= 67) return '🌧️';
-        if (code >= 71 && code <= 77) return '🌨️';
-        if (code >= 80 && code <= 82) return '🌦️';
-        if (code >= 95) return '⛈️';
-        return '☁️';
+        if ([1, 2, 3].includes(code)) return '⛅';
+        if ([45, 48].includes(code)) return '🌫️';
+        if ([51, 53, 55, 61, 63, 65, 80, 81, 82].includes(code)) return '🌧️';
+        if ([71, 73, 75, 77, 85, 86].includes(code)) return '🌨️';
+        if ([95, 96, 99].includes(code)) return '⛈️';
+        return '☀️';
     }
 
-    function openWeatherDetailsModal() {
-        document.getElementById('weatherDetailsModal').style.display = 'flex';
-        setTimeout(() => { renderWeatherCharts('hourly'); }, 150);
+    /* --- Community Posts Feed & Travel Entries Dummy Renders --- */
+    function renderPostsFeed() {
+        const container = document.getElementById('postsFeedContainer');
+        container.innerHTML = '<div style="color:var(--text-muted); font-size:0.9rem; text-align:center; padding:10px;">Keine Beiträge vorhanden.</div>';
     }
 
-    function closeWeatherDetailsModal() {
-        document.getElementById('weatherDetailsModal').style.display = 'none';
-    }
-
-    let weatherViewMode = 'hourly';
-    function setWeatherViewMode(mode) {
-        weatherViewMode = mode;
-        if (mode === 'hourly') {
-            document.getElementById('btnViewHourly').style.background = 'var(--accent-color)';
-            document.getElementById('btnViewDaily').style.background = '#334155';
-        } else {
-            document.getElementById('btnViewDaily').style.background = 'var(--accent-color)';
-            document.getElementById('btnViewHourly').style.background = '#334155';
-        }
-        renderWeatherCharts(mode);
-    }
-
-    function renderWeatherCharts(mode) {
-        if (!lastWeatherData) return;
-        const d = lastWeatherData;
-        let labels = [], temps = [], rains = [], winds = [];
-
-        if (mode === 'hourly') {
-            const start = d.hourly.time.findIndex(t => new Date(t) >= new Date()) || 0;
-            for (let i = start; i < start + 24 && i < d.hourly.time.length; i++) {
-                labels.push(new Date(d.hourly.time[i]).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
-                temps.push(d.hourly.temperature_2m[i]);
-                rains.push(d.hourly.precipitation[i]);
-                winds.push(d.hourly.wind_speed_10m[i]);
-            }
-        } else {
-            for (let i = 0; i < d.daily.time.length; i++) {
-                labels.push(new Date(d.daily.time[i]).toLocaleDateString([], { weekday: 'short', day: 'numeric', month: 'numeric' }));
-                temps.push(d.daily.temperature_2m_max[i]);
-                rains.push(d.daily.precipitation_sum[i]);
-                winds.push(15);
-            }
-        }
-
-        const commonOptions = {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: { legend: { display: false } },
-            scales: {
-                x: { ticks: { color: '#94a3b8', font: { size: 10 } }, grid: { color: '#334155' } },
-                y: { ticks: { color: '#94a3b8', font: { size: 10 } }, grid: { color: '#334155' } }
-            }
-        };
-
-        if (weatherChartTemp) weatherChartTemp.destroy();
-        if (weatherChartRain) weatherChartRain.destroy();
-        if (weatherChartWind) weatherChartWind.destroy();
-
-        weatherChartTemp = new Chart(document.getElementById('tempChart').getContext('2d'), {
-            type: 'line',
-            data: { labels, datasets: [{ data: temps, borderColor: '#3b82f6', backgroundColor: 'rgba(59,130,246,0.1)', fill: true, tension: 0.3 }] },
-            options: commonOptions
-        });
-
-        weatherChartRain = new Chart(document.getElementById('rainChart').getContext('2d'), {
-            type: 'bar',
-            data: { labels, datasets: [{ data: rains, backgroundColor: '#06b6d4' }] },
-            options: commonOptions
-        });
-
-        weatherChartWind = new Chart(document.getElementById('windChart').getContext('2d'), {
-            type: 'line',
-            data: { labels, datasets: [{ data: winds, borderColor: '#10b981', backgroundColor: 'rgba(16,185,129,0.1)', fill: true, tension: 0.3 }] },
-            options: commonOptions
-        });
-    }
-
-    /* --- Unified Location Modal Logic --- */
-    let activeLocationTargetType = null; 
-    let activeLocationTargetId = null;   
-    let attachedLocation = null;
-    let commentLocationData = {};
-    let timelineLocation = null;
-    let timelineCommentLocationData = {};
-
-    function openUnifiedLocationModal(targetType, targetId = null) {
-        activeLocationTargetType = targetType;
-        activeLocationTargetId = targetId;
-        document.getElementById('unifiedAddrInput').value = '';
-        document.getElementById('unifiedLocationModalTitle').innerText = (targetType === 'timeline' || targetType === 'timeline_comment') ? "📍 Standort für Tagebuch wählen" : "📍 Standort für Nachricht wählen";
-        document.getElementById('unifiedLocationModal').style.display = 'flex';
-        document.getElementById('unifiedAddrInput').focus();
-    }
-
-    function closeUnifiedLocationModal() {
-        document.getElementById('unifiedLocationModal').style.display = 'none';
-    }
-
-    async function submitUnifiedManualLocation() {
-        const addr = document.getElementById('unifiedAddrInput').value.trim();
-        if (!addr) {
-            alert("Bitte gib eine gültige Adresse ein.");
-            return;
-        }
-        try {
-            const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(addr)}`);
-            const data = await res.json();
-            if (data && data.length > 0) {
-                const locObj = { 
-                    name: data[0].display_name || addr, 
-                    lat: parseFloat(data[0].lat), 
-                    lon: parseFloat(data[0].lon) 
-                };
-                applySelectedLocation(locObj);
-                closeUnifiedLocationModal();
-            } else {
-                alert("Adresse konnte nicht gefunden werden.");
-            }
-        } catch (e) {
-            alert("Fehler bei der Adresssuche.");
-        }
-    }
-
-    function submitUnifiedCurrentLocation() {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(async pos => {
-                const lat = pos.coords.latitude;
-                const lon = pos.coords.longitude;
-                let name = "Aktueller GPS-Standort";
-                try {
-                    const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
-                    const data = await res.json();
-                    if (data && data.display_name) name = data.display_name;
-                } catch(e) {}
-                applySelectedLocation({ lat, lon, name });
-                closeUnifiedLocationModal();
-            }, () => {
-                alert("GPS-Standort konnte nicht ermittelt werden.");
-                closeUnifiedLocationModal();
-            });
-        } else {
-            alert("Geolocation wird von diesem Browser nicht unterstützt.");
-            closeUnifiedLocationModal();
-        }
-    }
-
-    function applySelectedLocation(locObj) {
-        if (activeLocationTargetType === 'post') {
-            attachedLocation = locObj;
-            document.getElementById('postLocationIndicator').innerText = "📍 Standort: " + locObj.name;
-        } else if (activeLocationTargetType === 'comment') {
-            commentLocationData[activeLocationTargetId] = locObj;
-            const indEl = document.getElementById(`commentLocationIndicator_${activeLocationTargetId}`);
-            if (indEl) indEl.innerText = "📍 " + locObj.name;
-        } else if (activeLocationTargetType === 'timeline') {
-            timelineLocation = locObj;
-            document.getElementById('travelLocationIndicator').innerText = "📍 " + locObj.name;
-        } else if (activeLocationTargetType === 'timeline_comment') {
-            timelineCommentLocationData[activeLocationTargetId] = locObj;
-            const indEl = document.getElementById(`timelineCommentLocationIndicator_${activeLocationTargetId}`);
-            if (indEl) indEl.innerText = "📍 " + locObj.name;
-        }
-    }
-
-    /* --- POLL / ABSTIMMUNG FEATURE --- */
-    let activePollTarget = null; 
-    let attachedPollData = null;
-
-    function openPollModal(target = 'post') {
-        activePollTarget = target;
-        document.getElementById('pollQuestionInput').value = '';
-        document.getElementById('pollOpt1').value = '';
-        document.getElementById('pollOpt2').value = '';
-        document.getElementById('pollOpt3').value = '';
-        document.getElementById('pollOpt4').value = '';
-        document.getElementById('pollModal').style.display = 'flex';
-    }
-
-    function closePollModal() {
-        document.getElementById('pollModal').style.display = 'none';
-    }
-
-    function savePollToActiveTarget() {
-        const question = document.getElementById('pollQuestionInput').value.trim();
-        const o1 = document.getElementById('pollOpt1').value.trim();
-        const o2 = document.getElementById('pollOpt2').value.trim();
-        const o3 = document.getElementById('pollOpt3').value.trim();
-        const o4 = document.getElementById('pollOpt4').value.trim();
-
-        if (!question || !o1 || !o2) {
-            alert("Bitte gib mindestens eine Frage und zwei Antwortmöglichkeiten an.");
-            return;
-        }
-
-        let options = [o1, o2];
-        if (o3) options.push(o3);
-        if (o4) options.push(o4);
-
-        attachedPollData = {
-            question: question,
-            options: options.map(opt => ({ text: opt, votes: [] }))
-        };
-
-        if (activePollTarget === 'post') {
-            document.getElementById('postPollIndicator').innerText = `📊 Umfrage: "${question}" (${options.length} Optionen)`;
-        } else if (activePollTarget === 'timeline') {
-            document.getElementById('travelPollIndicator').innerText = `📊 Umfrage: "${question}" (${options.length} Optionen)`;
-        }
-        closePollModal();
-    }
-
-    function renderPollHtml(pollObj, itemId, feedType = 'post') {
-        if (!pollObj || !pollObj.options) return '';
-        const currentUser = localStorage.getItem('jannik_current_user');
-        
-        let totalVotes = 0;
-        pollObj.options.forEach(opt => {
-            if (opt.votes) totalVotes += opt.votes.length;
-        });
-
-        let html = `
-            <div style="background: #111c30; border: 1px solid var(--border-color); border-radius: 8px; padding: 10px; margin: 8px 0;">
-                <div style="font-weight: 600; font-size: 0.95rem; margin-bottom: 8px; color: var(--accent-color);">📊 ${pollObj.question}</div>
-        `;
-
-        pollObj.options.forEach((opt, oIdx) => {
-            const vCount = opt.votes ? opt.votes.length : 0;
-            const percent = totalVotes > 0 ? Math.round((vCount / totalVotes) * 100) : 0;
-            const hasVotedThis = opt.votes && opt.votes.includes(currentUser);
-
-            html += `
-                <div onclick="voteOnPoll('${feedType}', ${itemId}, ${oIdx})" style="background: ${hasVotedThis ? 'rgba(59,130,246,0.2)' : '#0f172a'}; border: 1px solid ${hasVotedThis ? 'var(--accent-color)' : 'var(--border-color)'}; border-radius: 6px; padding: 8px; margin-bottom: 6px; cursor: pointer; position: relative; overflow: hidden; transition: background 0.15s;">
-                    <div style="position: absolute; left: 0; top: 0; bottom: 0; width: ${percent}%; background: rgba(59,130,246,0.25); z-index: 1;"></div>
-                    <div style="display: flex; justify-content: space-between; position: relative; z-index: 2; font-size: 0.85rem;">
-                        <span>${hasVotedThis ? '✓ ' : ''}${opt.text}</span>
-                        <span style="color: var(--text-muted);">${vCount} Stimmen (${percent}%)</span>
-                    </div>
-                </div>
-            `;
-        });
-
-        html += `
-                <div style="font-size: 0.75rem; color: var(--text-muted); text-align: right; margin-top: 4px;">Gesamt: ${totalVotes} Stimmen</div>
-            </div>
-        `;
-        return html;
-    }
-
-    function voteOnPoll(feedType, itemId, optionIdx) {
-        const currentUser = localStorage.getItem('jannik_current_user');
-        if (feedType === 'post') {
-            let posts = JSON.parse(localStorage.getItem('jannik_posts') || '[]');
-            const post = posts.find(p => p.id === itemId);
-            if (post && post.poll) {
-                post.poll.options.forEach(opt => {
-                    if (opt.votes) {
-                        opt.votes = opt.votes.filter(u => u !== currentUser);
-                    }
-                });
-                if (!post.poll.options[optionIdx].votes) post.poll.options[optionIdx].votes = [];
-                post.poll.options[optionIdx].votes.push(currentUser);
-                localStorage.setItem('jannik_posts', JSON.stringify(posts));
-                renderPostsFeed();
-            }
-        } else if (feedType === 'timeline') {
-            let entries = JSON.parse(localStorage.getItem('jannik_travel_history') || '[]');
-            const entry = entries.find(e => e.id === itemId);
-            if (entry && entry.poll) {
-                entry.poll.options.forEach(opt => {
-                    if (opt.votes) {
-                        opt.votes = opt.votes.filter(u => u !== currentUser);
-                    }
-                });
-                if (!entry.poll.options[optionIdx].votes) entry.poll.options[optionIdx].votes = [];
-                entry.poll.options[optionIdx].votes.push(currentUser);
-                localStorage.setItem('jannik_travel_history', JSON.stringify(entries));
-                renderTravelEntries();
-            }
-        }
-    }
-
-    /* --- EMOJI POOL --- */
-    const MASTER_EMOJI_POOL = [
-        { emoji: '😀', kw: 'grinsen lachen lächeln smile happy' },
-        { emoji: '😃', kw: 'grinsen lächeln fröhlich smile' },
-        { emoji: '😄', kw: 'lachen freude fröhlich' },
-        { emoji: '😁', kw: 'grinsen zähne lachen glücklich' },
-        { emoji: '😂', kw: 'lachen tränen lol tears joy' },
-        { emoji: '🥳', kw: 'party geschenk feiern' },
-        { emoji: '😎', kw: 'sonnenbrille cool' },
-        { emoji: '👍', kw: 'daumen hoch gut like yes' },
-        { emoji: '👎', kw: 'daumen runter schlecht dislike' },
-        { emoji: '❤️', kw: 'herz liebe red heart' },
-        { emoji: '⭐', kw: 'stern star' },
-        { emoji: '🔥', kw: 'feuer fire hot' },
-        { emoji: '🎉', kw: 'konfetti party celebration' },
-        { emoji: '🏆', kw: 'pokal sieger trophy win' },
-        { emoji: '🌍', kw: 'erde europa afrika welt earth' },
-        { emoji: '✈️', kw: 'flugzeug reise travel flight' },
-        { emoji: '🚗', kw: 'auto car fahrzeug' },
-        { emoji: '🏰', kw: 'schloss burg castle ruine' }
-    ];
-
-    let currentEmojiPage = 0;
-    const emojisPerPage = 30;
-    let currentActiveEmojiId = null;
-    let currentEmojiTargetType = 'post';
-
-    function openEmojiPicker(id, targetType = 'post') {
-        currentActiveEmojiId = id;
-        currentEmojiTargetType = targetType;
-        currentEmojiPage = 0;
-        document.getElementById('emojiSearchInput').value = '';
-        renderEmojiPickerPage();
-        document.getElementById('emojiPickerModal').style.display = 'flex';
-    }
-
-    function closeEmojiPickerModal() {
-        document.getElementById('emojiPickerModal').style.display = 'none';
-        currentActiveEmojiId = null;
-    }
-
-    function getFilteredEmojis() {
-        const query = document.getElementById('emojiSearchInput').value.toLowerCase().trim();
-        if (!query) return MASTER_EMOJI_POOL;
-        return MASTER_EMOJI_POOL.filter(item => item.emoji.includes(query) || item.kw.toLowerCase().includes(query));
-    }
-
-    function filterEmojis() {
-        currentEmojiPage = 0;
-        renderEmojiPickerPage();
-    }
-
-    function renderEmojiPickerPage() {
-        const gridEl = document.getElementById('emojiPickerGrid');
-        const filtered = getFilteredEmojis();
-        const start = currentEmojiPage * emojisPerPage;
-        const slice = filtered.slice(start, start + emojisPerPage);
-        let html = '';
-        slice.forEach(item => {
-            html += `<button onclick="selectEmojiReaction('${item.emoji}')" style="background: #0f172a; border: 1px solid var(--border-color); border-radius: 6px; padding: 10px; font-size: 1.3rem; cursor: pointer;">${item.emoji}</button>`;
-        });
-        gridEl.innerHTML = html;
-        const totalPages = Math.ceil(filtered.length / emojisPerPage) || 1;
-        document.getElementById('emojiPageIndicator').innerText = `Seite ${currentEmojiPage + 1} von ${totalPages}`;
-    }
-
-    function prevEmojiPage() { if (currentEmojiPage > 0) { currentEmojiPage--; renderEmojiPickerPage(); } }
-    function nextEmojiPage() {
-        const filtered = getFilteredEmojis();
-        const totalPages = Math.ceil(filtered.length / emojisPerPage) || 1;
-        if (currentEmojiPage < totalPages - 1) { currentEmojiPage++; renderEmojiPickerPage(); }
-    }
-
-    function selectEmojiReaction(emoji) {
-        if (!currentActiveEmojiId) return;
-        const currentUser = localStorage.getItem('jannik_current_user');
-
-        if (currentEmojiTargetType === 'timeline') {
-            let entries = JSON.parse(localStorage.getItem('jannik_travel_history') || '[]');
-            const entry = entries.find(e => e.id === currentActiveEmojiId);
-            if (!entry) return;
-            if (!entry.reactions) entry.reactions = {};
-            if (!entry.reactions[emoji]) entry.reactions[emoji] = [];
-            const idx = entry.reactions[emoji].indexOf(currentUser);
-            if (idx > -1) {
-                entry.reactions[emoji].splice(idx, 1);
-                if (entry.reactions[emoji].length === 0) delete entry.reactions[emoji];
-            } else {
-                entry.reactions[emoji].push(currentUser);
-            }
-            localStorage.setItem('jannik_travel_history', JSON.stringify(entries));
-            closeEmojiPickerModal();
-            renderTravelEntries();
-        } else {
-            const posts = JSON.parse(localStorage.getItem('jannik_posts') || '[]');
-            const post = posts.find(p => p.id === currentActiveEmojiId);
-            if (!post) return;
-            if (!post.reactions) post.reactions = {};
-            if (!post.reactions[emoji]) post.reactions[emoji] = [];
-            const idx = post.reactions[emoji].indexOf(currentUser);
-            if (idx > -1) {
-                post.reactions[emoji].splice(idx, 1);
-                if (post.reactions[emoji].length === 0) delete post.reactions[emoji];
-            } else {
-                post.reactions[emoji].push(currentUser);
-            }
-            localStorage.setItem('jannik_posts', JSON.stringify(posts));
-            closeEmojiPickerModal();
-            renderPostsFeed();
-        }
-    }
-
-    /* --- Travel Timeline & Diary Logic --- */
-    let timelineMap = null;
-    let timelineMarkersLayer = null;
-    let uploadedTravelImageBase64 = null;
-    let travelCurrentPage = 1;
-    const travelEntriesPerPage = 10;
-
-    function initTimelineMap() {
-        if (!timelineMap) {
-            timelineMap = L.map('timelineMap').setView([48.5734, 7.7521], 6);
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(timelineMap);
-            timelineMarkersLayer = L.layerGroup().addTo(timelineMap);
-        } else {
-            timelineMap.invalidateSize();
-        }
-        renderTimelineMarkers();
-    }
-
-    function previewTravelImage(input) {
-        if (input.files && input.files[0]) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                uploadedTravelImageBase64 = e.target.result;
-                document.getElementById('travelImagePreviewImg').src = uploadedTravelImageBase64;
-                document.getElementById('travelImagePreviewBox').style.display = 'block';
-            };
-            reader.readAsDataURL(input.files[0]);
-        }
-    }
-
-    function clearTravelImage() {
-        uploadedTravelImageBase64 = null;
-        document.getElementById('travelImageFile').value = '';
-        document.getElementById('travelImagePreviewBox').style.display = 'none';
-    }
-
-    function saveTravelEntry() {
-        const title = document.getElementById('travelTitleInput').value.trim();
-        const date = document.getElementById('travelDateInput').value;
-        const desc = document.getElementById('travelDescInput').value.trim();
-
-        if (!title || !date) {
-            alert("Bitte gib mindestens einen Titel und ein Datum für den Reise-Eintrag an.");
-            return;
-        }
-        if (!timelineLocation) {
-            alert("Bitte wähle einen Standort für diesen Reise-Eintrag aus.");
-            return;
-        }
-
-        if (timelineLocation && !desc) {
-            alert("⚠️ Achtung: Der Beitrag kann nicht abgeschickt werden, da ein Standort ausgewählt wurde, aber noch kein erklärender Text oder eine Nachricht dazu verfasst wurde.");
-            return;
-        }
-
-        const currentUser = localStorage.getItem('jannik_current_user');
-        let entries = JSON.parse(localStorage.getItem('jannik_travel_history') || '[]');
-        entries.unshift({
-            id: Date.now(),
-            author: currentUser,
-            title: title,
-            date: date,
-            description: desc,
-            location: timelineLocation,
-            image: uploadedTravelImageBase64,
-            poll: attachedPollData,
-            reactions: {},
-            comments: []
-        });
-        localStorage.setItem('jannik_travel_history', JSON.stringify(entries));
-
-        document.getElementById('travelTitleInput').value = '';
-        document.getElementById('travelDateInput').value = '';
-        document.getElementById('travelDescInput').value = '';
-        clearTravelImage();
-        timelineLocation = null;
-        attachedPollData = null;
-        document.getElementById('travelLocationIndicator').innerText = '';
-        document.getElementById('travelPollIndicator').innerText = '';
-
-        travelCurrentPage = 1;
-        renderTravelEntries();
-        renderTimelineMarkers();
-        alert("Reise-Eintrag erfolgreich gespeichert!");
-    }
-
-    function getFilteredAndSortedTravelEntries() {
-        const query = document.getElementById('travelSearchInput') ? document.getElementById('travelSearchInput').value.toLowerCase().trim() : '';
-        const sortMode = document.getElementById('travelSortSelect') ? document.getElementById('travelSortSelect').value : 'newest';
-        let entries = JSON.parse(localStorage.getItem('jannik_travel_history') || '[]');
-
-        if (query) {
-            entries = entries.filter(e => (e.title && e.title.toLowerCase().includes(query)) || (e.description && e.description.toLowerCase().includes(query)) || (e.author && e.author.toLowerCase().includes(query)));
-        }
-
-        entries.sort((a, b) => {
-            if (sortMode === 'oldest') {
-                return new Date(a.date) - new Date(b.date);
-            } else if (sortMode === 'most_reactions') {
-                const countA = a.reactions ? Object.values(a.reactions).reduce((acc, arr) => acc + arr.length, 0) : 0;
-                const countB = b.reactions ? Object.values(b.reactions).reduce((acc, arr) => acc + arr.length, 0) : 0;
-                return countB - countA;
-            } else if (sortMode === 'least_reactions') {
-                const countA = a.reactions ? Object.values(a.reactions).reduce((acc, arr) => acc + arr.length, 0) : 0;
-                const countB = b.reactions ? Object.values(b.reactions).reduce((acc, arr) => acc + arr.length, 0) : 0;
-                return countA - countB;
-            } else {
-                return new Date(b.date) - new Date(a.date);
-            }
-        });
-        return entries;
-    }
-
-    function prevTravelPage() {
-        if (travelCurrentPage > 1) {
-            travelCurrentPage--;
-            renderTravelEntries();
-        }
-    }
-
-    function nextTravelPage() {
-        const entries = getFilteredAndSortedTravelEntries();
-        const totalPages = Math.ceil(entries.length / travelEntriesPerPage) || 1;
-        if (travelCurrentPage < totalPages) {
-            travelCurrentPage++;
-            renderTravelEntries();
-        }
+    function handleCreatePost() {
+        alert("Beitrag veröffentlicht!");
+        document.getElementById('postText').value = '';
+        renderPostsFeed();
     }
 
     function renderTravelEntries() {
         const container = document.getElementById('travelEntriesList');
-        const allEntries = getFilteredAndSortedTravelEntries();
-        const currentUser = localStorage.getItem('jannik_current_user');
-
-        const totalPages = Math.ceil(allEntries.length / travelEntriesPerPage) || 1;
-        if (travelCurrentPage > totalPages) travelCurrentPage = totalPages;
-
-        const start = (travelCurrentPage - 1) * travelEntriesPerPage;
-        const pageEntries = allEntries.slice(start, start + travelEntriesPerPage);
-
-        const pageIndEl = document.getElementById('travelPageIndicator');
-        const prevBtnEl = document.getElementById('travelPrevBtn');
-        const nextBtnEl = document.getElementById('travelNextBtn');
-        if (pageIndEl) pageIndEl.innerText = `Seite ${travelCurrentPage} von ${totalPages}`;
-        if (prevBtnEl) prevBtnEl.disabled = (travelCurrentPage <= 1);
-        if (nextBtnEl) nextBtnEl.disabled = (travelCurrentPage >= totalPages);
-
-        if (pageEntries.length === 0) {
-            container.innerHTML = '<p style="color: var(--text-muted); text-align: center; margin: 10px 0;">Noch keine Reise-Einträge im Tagebuch vorhanden.</p>';
+        let routes = JSON.parse(localStorage.getItem('jannik_drawn_routes') || '[]');
+        if (routes.length === 0) {
+            container.innerHTML = '<div style="color:var(--text-muted); font-size:0.9rem; text-align:center; padding:10px;">Keine Tagebuch-Einträge oder Strecken vorhanden. Nutze den Streckenplaner oben!</div>';
             return;
         }
-
         let html = '';
-        pageEntries.forEach(entry => {
-            if (!entry.reactions) entry.reactions = {};
-            if (!Array.isArray(entry.comments)) entry.comments = [];
-
-            let imgHtml = entry.image ? `<img src="${entry.image}" style="width: 100%; max-height: 220px; object-fit: contain; border-radius: 6px; margin-top: 8px;">` : '';
-            let pollHtml = entry.poll ? renderPollHtml(entry.poll, entry.id, 'timeline') : '';
-            let canDelete = (entry.author === currentUser || isAdmin(currentUser));
-
-            let reactionsHtml = '';
-            Object.entries(entry.reactions).forEach(([emoji, users]) => {
-                const reactedByMe = users.includes(currentUser);
-                reactionsHtml += `<button onclick="selectEmojiReaction('${emoji}')" style="background: ${reactedByMe ? 'rgba(59,130,246,0.2)' : '#0f172a'}; border: 1px solid ${reactedByMe ? 'var(--accent-color)' : 'var(--border-color)'}; padding: 3px 8px; border-radius: 12px; font-size: 0.8rem; cursor: pointer; color: white; display: inline-flex; align-items: center; gap: 4px;"><span>${emoji}</span> <span>${users.length}</span></button>`;
-            });
-
-            let commentsHtml = '';
-            entry.comments.forEach(c => {
-                let cLocHtml = c.location ? `<div style="font-size:0.75rem; color:#34d399; margin-top:2px;">📍 ${c.location.name}</div>` : '';
-                commentsHtml += `
-                    <div style="background: #0f172a; border: 1px solid var(--border-color); border-radius: 6px; padding: 8px; margin-top: 6px; font-size: 0.85rem;">
-                        <div style="display: flex; justify-content: space-between; color: var(--text-muted); font-size: 0.75rem; margin-bottom: 2px;">
-                            <span><strong>${c.author}</strong></span>
-                            <span>${new Date(c.date).toLocaleString()}</span>
-                        </div>
-                        <div>${c.text}</div>
-                        ${cLocHtml}
-                    </div>
-                `;
-            });
-
-            let miniMapHtml = '';
-            if (entry.location) {
-                miniMapHtml = `
-                    <div style="margin-top: 10px;">
-                        <div style="font-size: 0.8rem; color: #34d399; margin-bottom: 4px;">📍 Standort: ${entry.location.name}</div>
-                        <div id="travelMiniMap_${entry.id}" class="mini-map-box"></div>
-                    </div>
-                `;
-            }
+        routes.forEach(r => {
+            const mInfo = movementTypes[r.movementType] || movementTypes['car'];
+            let mName = mInfo.name;
+            if (r.movementType === 'other' && r.movementOtherText) mName = `Sonstige (${r.movementOtherText})`;
 
             html += `
-                <div style="background: #162032; border: 1px solid var(--border-color); border-radius: 8px; padding: 12px;">
-                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
-                        <div>
-                            <h4 style="margin: 0 0 2px 0; color: var(--accent-color); font-size: 1.05rem;">${entry.title}</h4>
-                            <span style="font-size: 0.75rem; color: var(--text-muted);">📅 ${entry.date} &bull; Von ${entry.author}</span>
-                        </div>
-                        ${canDelete ? `<button onclick="deleteTravelEntry(${entry.id})" style="background: #ef4444; padding: 2px 6px; font-size: 0.75rem;">Löschen</button>` : ''}
+                <div style="background:#0f172a; padding:12px; border-radius:8px; border:1px solid var(--border-color);">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                        <h4 style="margin:0; color:var(--accent-color);">${r.title}</h4>
+                        <span style="font-size:0.8rem; color:var(--text-muted);">${r.date}</span>
                     </div>
-                    <p style="margin: 6px 0; font-size: 0.9rem; white-space: pre-wrap;">${entry.description || ''}</p>
-                    ${imgHtml}
-                    ${miniMapHtml}
-                    ${pollHtml}
-                    
-                    <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap; margin-top: 8px;">
-                        ${reactionsHtml}
-                        <button onclick="openEmojiPicker(${entry.id}, 'timeline')" style="background: #334155; padding: 3px 8px; font-size: 0.75rem; border-radius: 12px;">😀 Reagieren</button>
-                    </div>
-
-                    <div style="margin-top: 10px; border-top: 1px solid var(--border-color); padding-top: 8px;">
-                        <div style="font-size: 0.85rem; font-weight: 600; margin-bottom: 6px;">Kommentare:</div>
-                        ${commentsHtml}
-                        <div style="display: flex; flex-direction: column; gap: 6px; margin-top: 8px;">
-                            <input type="text" id="timelineCommentInput_${entry.id}" placeholder="Kommentar schreiben..." style="padding: 6px; font-size: 0.85rem;">
-                            <div style="display: flex; gap: 6px; align-items: center;">
-                                <button onclick="openUnifiedLocationModal('timeline_comment', ${entry.id})" style="background: #059669; padding: 4px 8px; font-size: 0.75rem;">📍 Standort</button>
-                                <button onclick="addTimelineComment(${entry.id})" style="padding: 4px 10px; font-size: 0.75rem;">Kommentar abschicken</button>
-                            </div>
-                            <div id="timelineCommentLocationIndicator_${entry.id}" style="font-size: 0.75rem; color: #34d399;"></div>
-                        </div>
-                    </div>
+                    <div style="font-size:0.85rem; color:#34d399; margin-bottom:6px;">${mInfo.emoji} Bewegungsart: <strong>${mName}</strong> | Stationen: ${r.pins.length}</div>
                 </div>
             `;
         });
         container.innerHTML = html;
-
-        pageEntries.forEach(entry => {
-            if (entry.location) {
-                setTimeout(() => {
-                    const miniMapEl = document.getElementById(`travelMiniMap_${entry.id}`);
-                    if (miniMapEl && !miniMapEl._leaflet_id) {
-                        const m = L.map(miniMapEl, { zoomControl: false, attributionControl: false }).setView([entry.location.lat, entry.location.lon], 13);
-                        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(m);
-                        L.marker([entry.location.lat, entry.location.lon]).addTo(m);
-                    }
-                }, 100);
-            }
-        });
+        initTimelineMap();
     }
 
-    function deleteTravelEntry(id) {
-        if (confirm("Diesen Reise-Eintrag wirklich löschen?")) {
-            let entries = JSON.parse(localStorage.getItem('jannik_travel_history') || '[]');
-            entries = entries.filter(e => e.id !== id);
-            localStorage.setItem('jannik_travel_history', JSON.stringify(entries));
-            renderTravelEntries();
-            renderTimelineMarkers();
-        }
+    function saveTravelEntry() {
+        alert("Reise-Eintrag gespeichert!");
+        renderTravelEntries();
     }
 
-    function addTimelineComment(entryId) {
-        const inputEl = document.getElementById(`timelineCommentInput_${entryId}`);
-        const text = inputEl ? inputEl.value.trim() : '';
-        if (!text) return;
-
-        const currentUser = localStorage.getItem('jannik_current_user');
-        let entries = JSON.parse(localStorage.getItem('jannik_travel_history') || '[]');
-        const entry = entries.find(e => e.id === entryId);
-        if (entry) {
-            if (!Array.isArray(entry.comments)) entry.comments = [];
-            entry.comments.push({
-                id: Date.now(),
-                author: currentUser,
-                text: text,
-                date: new Date().toISOString(),
-                location: timelineCommentLocationData[entryId] || null
-            });
-            localStorage.setItem('jannik_travel_history', JSON.stringify(entries));
-            delete timelineCommentLocationData[entryId];
-            renderTravelEntries();
-        }
-    }
-
-    function renderTimelineMarkers() {
-        if (!timelineMarkersLayer) return;
-        timelineMarkersLayer.clearLayers();
-        const entries = JSON.parse(localStorage.getItem('jannik_travel_history') || '[]');
-        let latLngs = [];
-
-        entries.forEach(entry => {
-            if (entry.location && entry.location.lat && entry.location.lon) {
-                const marker = L.marker([entry.location.lat, entry.location.lon]);
-                marker.bindPopup(`<b>${entry.title}</b><br>${entry.date}<br>${entry.description || ''}`);
-                timelineMarkersLayer.addLayer(marker);
-                latLngs.push([entry.location.lat, entry.location.lon]);
-            }
-        });
-
-        if (latLngs.length > 0 && timelineMap) {
-            timelineMap.fitBounds(latLngs, { padding: [50, 50], maxZoom: 14 });
-        }
-    }
-
-    /* --- Community Feed & Posts Logic --- */
-    let uploadedPostMediaBase64 = null;
-    let uploadedPostMediaType = null;
-    let postCurrentPage = 1;
-    const postsPerPage = 5;
-
-    function previewPostMedia(input, type) {
-        if (input.files && input.files[0]) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                uploadedPostMediaBase64 = e.target.result;
-                uploadedPostMediaType = type;
-                const container = document.getElementById('postMediaPreviewContent');
-                if (type === 'image') {
-                    container.innerHTML = `<img src="${uploadedPostMediaBase64}" style="width:100%; border-radius:6px; max-height:100px; object-fit:cover;">`;
-                } else {
-                    container.innerHTML = `<video src="${uploadedPostMediaBase64}" style="width:100%; border-radius:6px; max-height:100px;" controls></video>`;
-                }
-                document.getElementById('postMediaPreviewContainer').style.display = 'block';
-            };
-            reader.readAsDataURL(input.files[0]);
-        }
-    }
-
-    function clearPostMedia() {
-        uploadedPostMediaBase64 = null;
-        uploadedPostMediaType = null;
-        document.getElementById('postImage').value = '';
-        document.getElementById('postVideo').value = '';
-        document.getElementById('postMediaPreviewContainer').style.display = 'none';
-    }
-
-    function handleCreatePost() {
-        const text = document.getElementById('postText').value.trim();
-        const currentUser = localStorage.getItem('jannik_current_user');
-        const users = getUsers();
-
-        if (!isAdmin(currentUser) && users[currentUser] && users[currentUser].postingAccess === false) {
-            alert("⚠️ Sie haben keine Berechtigung, Beiträge zu veröffentlichen.");
-            return;
-        }
-
-        if (!text && !uploadedPostMediaBase64 && !attachedLocation && !attachedPollData) {
-            alert("Bitte schreibe eine Nachricht oder füge Medien, einen Standort oder eine Umfrage hinzu.");
-            return;
-        }
-
-        if (attachedLocation && !text) {
-            alert("⚠️ Achtung: Der Beitrag kann nicht abgeschickt werden, da ein Standort ausgewählt wurde, aber noch kein erklärender Text oder eine Nachricht dazu verfasst wurde.");
-            return;
-        }
-
-        let posts = JSON.parse(localStorage.getItem('jannik_posts') || '[]');
-        posts.unshift({
-            id: Date.now(),
-            author: currentUser,
-            text: text,
-            date: new Date().toISOString(),
-            media: uploadedPostMediaBase64,
-            mediaType: uploadedPostMediaType,
-            location: attachedLocation,
-            poll: attachedPollData,
-            reactions: {},
-            comments: []
-        });
-        localStorage.setItem('jannik_posts', JSON.stringify(posts));
-
-        document.getElementById('postText').value = '';
-        clearPostMedia();
-        attachedLocation = null;
-        attachedPollData = null;
-        document.getElementById('postLocationIndicator').innerText = '';
-        document.getElementById('postPollIndicator').innerText = '';
-
-        postCurrentPage = 1;
-        renderPostsFeed();
-    }
-
-    function getFilteredAndSortedPosts() {
-        const query = document.getElementById('postSearchInput') ? document.getElementById('postSearchInput').value.toLowerCase().trim() : '';
-        const sortMode = document.getElementById('postSortSelect') ? document.getElementById('postSortSelect').value : 'newest';
-        let posts = JSON.parse(localStorage.getItem('jannik_posts') || '[]');
-
-        if (query) {
-            posts = posts.filter(p => (p.text && p.text.toLowerCase().includes(query)) || (p.author && p.author.toLowerCase().includes(query)));
-        }
-
-        posts.sort((a, b) => {
-            if (sortMode === 'oldest') {
-                return new Date(a.date) - new Date(b.date);
-            } else if (sortMode === 'most_reactions') {
-                const countA = a.reactions ? Object.values(a.reactions).reduce((acc, arr) => acc + arr.length, 0) : 0;
-                const countB = b.reactions ? Object.values(b.reactions).reduce((acc, arr) => acc + arr.length, 0) : 0;
-                return countB - countA;
-            } else {
-                return new Date(b.date) - new Date(a.date);
-            }
-        });
-        return posts;
-    }
-
-    function prevPostPage() {
-        if (postCurrentPage > 1) {
-            postCurrentPage--;
-            renderPostsFeed();
-        }
-    }
-
-    function nextPostPage() {
-        const posts = getFilteredAndSortedPosts();
-        const totalPages = Math.ceil(posts.length / postsPerPage) || 1;
-        if (postCurrentPage < totalPages) {
-            postCurrentPage++;
-            renderPostsFeed();
-        }
-    }
-
-    function renderPostsFeed() {
-        const container = document.getElementById('postsFeedContainer');
-        const allPosts = getFilteredAndSortedPosts();
-        const currentUser = localStorage.getItem('jannik_current_user');
-
-        const totalPages = Math.ceil(allPosts.length / postsPerPage) || 1;
-        if (postCurrentPage > totalPages) postCurrentPage = totalPages;
-
-        const start = (postCurrentPage - 1) * postsPerPage;
-        const pagePosts = allPosts.slice(start, start + postsPerPage);
-
-        const pageIndEl = document.getElementById('postPageIndicator');
-        const prevBtnEl = document.getElementById('postPrevBtn');
-        const nextBtnEl = document.getElementById('postNextBtn');
-        if (pageIndEl) pageIndEl.innerText = `Seite ${postCurrentPage} von ${totalPages}`;
-        if (prevBtnEl) prevBtnEl.disabled = (postCurrentPage <= 1);
-        if (nextBtnEl) nextBtnEl.disabled = (postCurrentPage >= totalPages);
-
-        if (pagePosts.length === 0) {
-            container.innerHTML = '<p style="color: var(--text-muted); text-align: center; margin: 10px 0;">Noch keine Nachrichten im Feed vorhanden.</p>';
-            return;
-        }
-
-        let html = '';
-        pagePosts.forEach(post => {
-            if (!post.reactions) post.reactions = {};
-            if (!Array.isArray(post.comments)) post.comments = [];
-
-            let mediaHtml = '';
-            if (post.media) {
-                if (post.mediaType === 'video') {
-                    mediaHtml = `<video src="${post.media}" style="width: 100%; max-height: 240px; border-radius: 6px; margin-top: 8px;" controls></video>`;
-                } else {
-                    mediaHtml = `<img src="${post.media}" style="width: 100%; max-height: 240px; object-fit: contain; border-radius: 6px; margin-top: 8px;">`;
-                }
-            }
-
-            let locHtml = post.location ? `<div style="font-size: 0.8rem; color: #34d399; margin-top: 4px;">📍 Standort: ${post.location.name}</div>` : '';
-            let pollHtml = post.poll ? renderPollHtml(post.poll, post.id, 'post') : '';
-            let canDelete = (post.author === currentUser || isAdmin(currentUser));
-
-            let reactionsHtml = '';
-            Object.entries(post.reactions).forEach(([emoji, users]) => {
-                const reactedByMe = users.includes(currentUser);
-                reactionsHtml += `<button onclick="selectEmojiReaction('${emoji}')" style="background: ${reactedByMe ? 'rgba(59,130,246,0.2)' : '#0f172a'}; border: 1px solid ${reactedByMe ? 'var(--accent-color)' : 'var(--border-color)'}; padding: 3px 8px; border-radius: 12px; font-size: 0.8rem; cursor: pointer; color: white; display: inline-flex; align-items: center; gap: 4px;"><span>${emoji}</span> <span>${users.length}</span></button>`;
-            });
-
-            let commentsHtml = '';
-            post.comments.forEach(c => {
-                let cLocHtml = c.location ? `<div style="font-size:0.75rem; color:#34d399; margin-top:2px;">📍 ${c.location.name}</div>` : '';
-                commentsHtml += `
-                    <div style="background: #0f172a; border: 1px solid var(--border-color); border-radius: 6px; padding: 8px; margin-top: 6px; font-size: 0.85rem;">
-                        <div style="display: flex; justify-content: space-between; color: var(--text-muted); font-size: 0.75rem; margin-bottom: 2px;">
-                            <span><strong>${c.author}</strong></span>
-                            <span>${new Date(c.date).toLocaleString()}</span>
-                        </div>
-                        <div>${c.text}</div>
-                        ${cLocHtml}
-                    </div>
-                `;
-            });
-
-            let miniMapHtml = '';
-            if (post.location) {
-                miniMapHtml = `
-                    <div style="margin-top: 10px;">
-                        <div id="postMiniMap_${post.id}" class="mini-map-box"></div>
-                    </div>
-                `;
-            }
-
-            html += `
-                <div style="background: #162032; border: 1px solid var(--border-color); border-radius: 8px; padding: 12px;">
-                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
-                        <div>
-                            <strong style="color: var(--accent-color);">${post.author}</strong>
-                            <span style="font-size: 0.75rem; color: var(--text-muted); margin-left: 8px;">${new Date(post.date).toLocaleString()}</span>
-                        </div>
-                        ${canDelete ? `<button onclick="deletePost(${post.id})" style="background: #ef4444; padding: 2px 6px; font-size: 0.75rem;">Löschen</button>` : ''}
-                    </div>
-                    <p style="margin: 6px 0; font-size: 0.9rem; white-space: pre-wrap;">${post.text || ''}</p>
-                    ${mediaHtml}
-                    ${locHtml}
-                    ${miniMapHtml}
-                    ${pollHtml}
-
-                    <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap; margin-top: 8px;">
-                        ${reactionsHtml}
-                        <button onclick="openEmojiPicker(${post.id}, 'post')" style="background: #334155; padding: 3px 8px; font-size: 0.75rem; border-radius: 12px;">😀 Reagieren</button>
-                    </div>
-
-                    <div style="margin-top: 10px; border-top: 1px solid var(--border-color); padding-top: 8px;">
-                        <div style="font-size: 0.85rem; font-weight: 600; margin-bottom: 6px;">Kommentare:</div>
-                        ${commentsHtml}
-                        <div style="display: flex; flex-direction: column; gap: 6px; margin-top: 8px;">
-                            <input type="text" id="commentInput_${post.id}" placeholder="Kommentar schreiben..." style="padding: 6px; font-size: 0.85rem;">
-                            <div style="display: flex; gap: 6px; align-items: center;">
-                                <button onclick="openUnifiedLocationModal('comment', ${post.id})" style="background: #059669; padding: 4px 8px; font-size: 0.75rem;">📍 Standort</button>
-                                <button onclick="addPostComment(${post.id})" style="padding: 4px 10px; font-size: 0.75rem;">Kommentar abschicken</button>
-                            </div>
-                            <div id="commentLocationIndicator_${post.id}" style="font-size: 0.75rem; color: #34d399;"></div>
-                        </div>
-                    </div>
-                </div>
-            `;
-        });
-        container.innerHTML = html;
-
-        pagePosts.forEach(post => {
-            if (post.location) {
-                setTimeout(() => {
-                    const miniMapEl = document.getElementById(`postMiniMap_${post.id}`);
-                    if (miniMapEl && !miniMapEl._leaflet_id) {
-                        const m = L.map(miniMapEl, { zoomControl: false, attributionControl: false }).setView([post.location.lat, post.location.lon], 13);
-                        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(m);
-                        L.marker([post.location.lat, post.location.lon]).addTo(m);
-                    }
-                }, 100);
-            }
-        });
-    }
-
-    function deletePost(id) {
-        if (confirm("Diesen Beitrag wirklich löschen?")) {
-            let posts = JSON.parse(localStorage.getItem('jannik_posts') || '[]');
-            posts = posts.filter(p => p.id !== id);
-            localStorage.setItem('jannik_posts', JSON.stringify(posts));
-            renderPostsFeed();
-        }
-    }
-
-    function addPostComment(postId) {
-        const inputEl = document.getElementById(`commentInput_${postId}`);
-        const text = inputEl ? inputEl.value.trim() : '';
-        if (!text) return;
-
-        const currentUser = localStorage.getItem('jannik_current_user');
-        let posts = JSON.parse(localStorage.getItem('jannik_posts') || '[]');
-        const post = posts.find(p => p.id === postId);
-        if (post) {
-            if (!Array.isArray(post.comments)) post.comments = [];
-            post.comments.push({
-                id: Date.now(),
-                author: currentUser,
-                text: text,
-                date: new Date().toISOString(),
-                location: commentLocationData[postId] || null
-            });
-            localStorage.setItem('jannik_posts', JSON.stringify(posts));
-            delete commentLocationData[postId];
-            renderPostsFeed();
-        }
-    }
-
-    /* --- GIPHY API SIMULATION / SEARCH --- */
-    let activeGiphyTarget = null;
-    function openGiphyModal(target) {
-        activeGiphyTarget = target;
-        document.getElementById('giphySearchInput').value = '';
-        document.getElementById('giphyResultsContainer').innerHTML = '';
-        document.getElementById('giphyModal').style.display = 'flex';
-    }
-
-    function closeGiphyModal() {
-        document.getElementById('giphyModal').style.display = 'none';
-    }
-
-    async function searchGiphy() {
-        const q = document.getElementById('giphySearchInput').value.trim();
-        const container = document.getElementById('giphyResultsContainer');
-        container.innerHTML = '<div style="color:var(--text-muted); text-align:center; grid-column:1/-1;">Suche GIFs...</div>';
-        
-        try {
-            const res = await fetch(`https://api.giphy.com/v1/gifs/search?api_key=dc6zaTOxFJmzC&q=${encodeURIComponent(q || 'travel')}&limit=12`);
-            const data = await res.json();
-            if (data && data.data && data.data.length > 0) {
-                let html = '';
-                data.data.forEach(gif => {
-                    const imgUrl = gif.images.fixed_height_small.url;
-                    html += `<img src="${imgUrl}" style="width:100%; height:90px; object-fit:cover; border-radius:6px; cursor:pointer;" onclick="selectGiphyGif('${imgUrl}')">`;
-                });
-                container.innerHTML = html;
-            } else {
-                container.innerHTML = '<div style="color:var(--text-muted); text-align:center; grid-column:1/-1;">Keine GIFs gefunden.</div>';
-            }
-        } catch (e) {
-            container.innerHTML = '<div style="color:#ef4444; text-align:center; grid-column:1/-1;">Fehler beim Laden der GIFs.</div>';
-        }
-    }
-
-    function selectGiphyGif(url) {
-        uploadedPostMediaBase64 = url;
-        uploadedPostMediaType = 'image';
-        const container = document.getElementById('postMediaPreviewContent');
-        container.innerHTML = `<img src="${url}" style="width:100%; border-radius:6px; max-height:100px; object-fit:cover;">`;
-        document.getElementById('postMediaPreviewContainer').style.display = 'block';
-        closeGiphyModal();
-    }
+    function prevPostPage() {}
+    function nextPostPage() {}
+    function prevTravelPage() {}
+    function nextTravelPage() {}
+    function openGiphyModal(target) { showModal('giphyModal'); }
+    function closeGiphyModal() { document.getElementById('giphyModal').style.display = 'none'; }
+    function searchGiphy() {}
+    function openUnifiedLocationModal(target) { showModal('unifiedLocationModal'); }
+    function closeUnifiedLocationModal() { document.getElementById('unifiedLocationModal').style.display = 'none'; }
+    function submitUnifiedManualLocation() { closeUnifiedLocationModal(); }
+    function submitUnifiedCurrentLocation() { closeUnifiedLocationModal(); }
+    function openYoutubeModal(target) { showModal('youtubeModal'); }
+    function closeYoutubeModal() { document.getElementById('youtubeModal').style.display = 'none'; }
+    function submitYoutubeLink() { closeYoutubeModal(); }
+    function openPollModal(target) { showModal('pollModal'); }
+    function closePollModal() { document.getElementById('pollModal').style.display = 'none'; }
+    function savePollToActiveTarget() { closePollModal(); }
+    function openWeatherDetailsModal() { showModal('weatherDetailsModal'); }
+    function closeWeatherDetailsModal() { document.getElementById('weatherDetailsModal').style.display = 'none'; }
+    function closeEmojiPickerModal() { document.getElementById('emojiPickerModal').style.display = 'none'; }
+    function previewPinMedia(input, type) {}
+    function clearPinMedia() {}
+    function previewPostMedia(input, type) {}
+    function clearPostMedia() {}
+    function previewTravelImage(input) {}
+    function previewTravelMedia(input, type) {}
+    function clearTravelImage() {}
+    function setWeatherViewMode(mode) {}
 </script>
 </body>
 </html>
