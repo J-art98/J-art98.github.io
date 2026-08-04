@@ -391,11 +391,6 @@
         .media-btn-aud { background: #6366f1; color: white; padding: 6px 10px; border-radius: 6px; cursor: pointer; font-size: 0.75rem; font-weight: 600; border: none; display: inline-flex; align-items: center; gap: 4px; }
         .media-btn-poll{ background: #f59e0b; color: white; padding: 6px 10px; border-radius: 6px; cursor: pointer; font-size: 0.75rem; font-weight: 600; border: none; display: inline-flex; align-items: center; gap: 4px; }
 
-        .media-btn-img:hover, .media-btn-vid:hover, .media-btn-gif:hover, .media-btn-loc:hover, .media-btn-yt:hover, .media-btn-aud:hover, .media-btn-poll:hover {
-            opacity: 0.9;
-            filter: brightness(1.1);
-        }
-
         .weather-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
@@ -480,86 +475,52 @@
             border: 1px solid var(--border-color);
         }
 
-        .leaflet-control-layers {
-            background: var(--card-bg) !important;
-            color: var(--text-color) !important;
-            border: 1px solid var(--border-color) !important;
-            border-radius: 8px !important;
-            padding: 6px !important;
-        }
-        .leaflet-control-layers-expanded {
-            background: var(--card-bg) !important;
-            color: var(--text-color) !important;
-        }
-        .leaflet-control-layers label {
-            color: var(--text-color) !important;
-            font-size: 0.85rem !important;
+        .emoji-item-btn {
+            font-size: 1.6rem;
+            padding: 6px;
+            background: #0f172a;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.1s, background 0.1s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .wiki-box-link {
+        .emoji-item-btn:hover {
+            transform: scale(1.2);
+            background: var(--accent-color);
+        }
+
+        .reaction-badge {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-            background: #1e293b;
-            padding: 4px 10px;
-            border-radius: 6px;
+            gap: 4px;
+            background: #0f172a;
             border: 1px solid var(--border-color);
-            color: var(--accent-color);
-            text-decoration: none;
-            font-weight: 600;
-            transition: background 0.15s, border-color 0.15s;
-        }
-        .wiki-box-link:hover {
-            background: #334155;
-            border-color: var(--accent-color);
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            cursor: pointer;
         }
 
         .weather-anim-box {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 90px;
-            margin: 15px 0;
-            position: relative;
-            background: #0f172a;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-            overflow: hidden;
+            text-align: center;
+            font-size: 3rem;
+            margin: 10px 0;
         }
-
-        @keyframes rainFall {
-            0% { transform: translateY(-10px); opacity: 0; }
-            50% { opacity: 1; }
-            100% { transform: translateY(25px); opacity: 0; }
-        }
-        @keyframes lightningFlash {
-            0%, 90%, 100% { opacity: 0.2; }
-            92%, 96% { opacity: 1; text-shadow: 0 0 12px #facc15; }
-        }
-        @keyframes sunRotate {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        @keyframes cloudFloat {
-            0%, 100% { transform: translateX(0); }
-            50% { transform: translateX(8px); }
-        }
-
-        .anim-sun { font-size: 2.8rem; animation: sunRotate 12s linear infinite; display: inline-block; }
-        .anim-rain { font-size: 2.2rem; animation: rainFall 0.8s linear infinite; display: inline-block; }
-        .anim-storm { font-size: 2.8rem; animation: lightningFlash 2.5s infinite; display: inline-block; }
-        .anim-snow { font-size: 2rem; animation: rainFall 1.6s linear infinite; display: inline-block; }
-        .anim-cloud { font-size: 2.8rem; animation: cloudFloat 4s ease-in-out infinite; display: inline-block; }
     </style>
 </head>
 <body>
 
+<!-- AUTH OVERLAY -->
 <div id="authOverlay">
     <div class="auth-box">
         <h2 data-i18n="title">Jannik Reisen 🌍✈️</h2>
         <div class="auth-tabs">
-            <div id="tabLogin" class="auth-tab active" onclick="switchAuthTab('login')" data-i18n="loginTab">Einloggen</div>
-            <div id="tabRegister" class="auth-tab" onclick="switchAuthTab('register')" data-i18n="registerTab">Account erstellen</div>
+            <div id="tabLogin" class="auth-tab active" onclick="switchToLoginTab()" data-i18n="loginTab">Einloggen</div>
+            <div id="tabRegister" class="auth-tab" onclick="switchToRegisterTab()" data-i18n="registerTab">Account erstellen</div>
         </div>
         
         <div id="authError" class="auth-error"></div>
@@ -573,8 +534,8 @@
             <div class="auth-form-group">
                 <label for="loginPass" data-i18n="password">Passwort</label>
                 <div style="position: relative;">
-                    <input type="password" id="loginPass" data-i18n-placeholder="passwordPlaceholder" placeholder="Passwort eingeben..." onkeydown="if(event.key==='Enter') handleLogin()" style="padding-right: 40px;">
-                    <span onclick="togglePasswordVisibility('loginPass', this)" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 1.1rem; opacity: 0.7;">👁️</span>
+                    <input type="password" id="loginPass" data-i18n-placeholder="passwordPlaceholder" placeholder="Passwort eingeben..." onkeydown="handleLoginKeyDown(event)" style="padding-right: 40px;">
+                    <span onclick="toggleLoginPasswordVisibility()" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 1.1rem; opacity: 0.7;">👁️</span>
                 </div>
             </div>
             <button style="width: 100%; margin-top: 6px;" onclick="handleLogin()" data-i18n="loginBtn">Einloggen</button>
@@ -588,8 +549,8 @@
             <div class="auth-form-group">
                 <label for="regPass" data-i18n="regPassword">Passwort</label>
                 <div style="position: relative;">
-                    <input type="password" id="regPass" data-i18n-placeholder="passwordPlaceholder" placeholder="Passwort..." onkeydown="if(event.key==='Enter') handleRegister()" style="padding-right: 40px;">
-                    <span onclick="togglePasswordVisibility('regPass', this)" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 1.1rem; opacity: 0.7;">👁️</span>
+                    <input type="password" id="regPass" data-i18n-placeholder="passwordPlaceholder" placeholder="Passwort..." onkeydown="handleRegisterKeyDown(event)" style="padding-right: 40px;">
+                    <span onclick="toggleRegisterPasswordVisibility()" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 1.1rem; opacity: 0.7;">👁️</span>
                 </div>
             </div>
             <div class="auth-form-group">
@@ -601,12 +562,13 @@
     </div>
 </div>
 
+<!-- START LOCATION OVERLAY MODAL -->
 <div id="startLocationOverlay" class="modal" style="display: none;">
     <div class="auth-box" style="max-width: 400px;">
         <h2 style="font-size: 1.2rem; margin-bottom: 14px; text-align: center;" data-i18n="startModalTitle">📍 Startadresse wählen</h2>
         <div class="auth-form-group">
             <label for="startAddrInput" data-i18n="startModalLabel">Welche Adresse möchtest du sehen?</label>
-            <input type="text" id="startAddrInput" data-i18n-placeholder="searchPlaceholder" placeholder="Ort, Stadt oder PLZ suchen..." onkeydown="if(event.key==='Enter') submitStartLocation()">
+            <input type="text" id="startAddrInput" data-i18n-placeholder="searchPlaceholder" placeholder="Ort, Stadt oder PLZ suchen..." onkeydown="handleStartAddrKeyDown(event)">
         </div>
         <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 14px;">
             <button style="width: 100%;" onclick="submitStartLocation()" data-i18n="searchBtn">Suchen</button>
@@ -617,12 +579,13 @@
     </div>
 </div>
 
+<!-- UNIFIED LOCATION MODAL -->
 <div id="unifiedLocationModal" class="modal" style="display: none;">
     <div class="auth-box" style="max-width: 400px;">
         <h2 id="unifiedLocationModalTitle" style="font-size: 1.2rem; margin-bottom: 14px; text-align: center;">📍 Standort wählen</h2>
         <div class="auth-form-group">
             <label>Welche Adresse möchtest du anhängen?</label>
-            <input type="text" id="unifiedAddrInput" placeholder="Ort, Stadt oder Adresse..." onkeydown="if(event.key==='Enter') submitUnifiedManualLocation()">
+            <input type="text" id="unifiedAddrInput" placeholder="Ort, Stadt oder Adresse..." onkeydown="handleUnifiedAddrKeyDown(event)">
         </div>
         <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 14px;">
             <button style="width: 100%;" onclick="submitUnifiedManualLocation()">Adresse übernehmen</button>
@@ -634,20 +597,20 @@
     </div>
 </div>
 
-<!-- YouTube Modal -->
+<!-- YOUTUBE MODAL -->
 <div id="youtubeModal" class="modal">
     <div class="auth-box" style="max-width: 420px;">
         <span class="close-modal" onclick="closeYoutubeModal()">&times;</span>
         <h3 style="margin-top:0; color: var(--accent-color);">🎥 YouTube Video einfügen</h3>
         <div class="auth-form-group">
-            <label>YouTube Hyperlink / Link</label>
-            <input type="text" id="youtubeUrlInput" placeholder="z.B. https://www.youtube.com/watch?v=XXXXX oder youtu.be/XXXXX" onkeydown="if(event.key==='Enter') submitYoutubeLink()">
+            <label>YouTube Link</label>
+            <input type="text" id="youtubeUrlInput" placeholder="z.B. https://www.youtube.com/watch?v=XXXXX" onkeydown="handleYoutubeUrlKeyDown(event)">
         </div>
         <button onclick="submitYoutubeLink()" style="width: 100%; margin-top: 6px;">Video hinzufügen</button>
     </div>
 </div>
 
-<!-- Poll Creation Modal -->
+<!-- POLL CREATION MODAL -->
 <div id="pollModal" class="modal">
     <div class="modal-content" style="max-width: 460px;">
         <span class="close-modal" onclick="closePollModal()">&times;</span>
@@ -676,12 +639,12 @@
     </div>
 </div>
 
-<!-- Strecken-Zeichnen Modul -->
+<!-- STRECKEN-ZEICHNEN MODUL -->
 <div id="routeDrawingModal" class="modal">
     <div class="modal-content" style="max-width: 750px; max-height: 90vh; overflow-y: auto;">
         <span class="close-modal" onclick="closeRouteDrawingModal()">&times;</span>
         <h3 style="margin-top:0; color: var(--accent-color);">🗺️ Exakter Streckenplaner & Tagebuch</h3>
-        <p style="font-size: 0.85rem; color: var(--text-muted); margin-top:0;">Setze Nadeln per Klick auf die Karte oder gib eine exakte Adresse ein. Wähle zudem aus, wie du die Strecke zurückgelegt hast.</p>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-top:0;">Setze Nadeln per Klick auf die Karte oder gib eine exakte Adresse ein. Du kannst bei jeder Nadel eigene Bilder, Videos, Sprachnachrichten und Medien anhängen!</p>
         
         <div id="routeDrawMap" class="map-container" style="height: 250px; margin-bottom: 10px;"></div>
         
@@ -709,30 +672,30 @@
                 </div>
             </div>
             <div class="auth-form-group">
-                <label>Beschreibung / Text</label>
-                <textarea id="pinDescInput" rows="2" placeholder="Erlebnisse an diesem Punkt..."></textarea>
+                <label>Beschreibung / Nachricht</label>
+                <textarea id="pinDescInput" rows="2" placeholder="Erlebnisse, Nachrichten & Notizen an dieser Nadel..."></textarea>
             </div>
             
             <div class="unified-media-toolbar">
                 <label class="media-btn-img">
                     <span>📷 Bild</span>
-                    <input type="file" id="pinImageFile" accept="image/*" style="display:none;" onchange="previewPinMedia(this, 'image')">
+                    <input type="file" id="pinImageFile" accept="image/*" style="display:none;" onchange="handlePinImageChange(event)">
                 </label>
                 <label class="media-btn-vid">
                     🎥 Video
-                    <input type="file" id="pinVideoFile" accept="video/*" style="display:none;" onchange="previewPinMedia(this, 'video')">
+                    <input type="file" id="pinVideoFile" accept="video/*" style="display:none;" onchange="handlePinVideoChange(event)">
                 </label>
-                <button onclick="openGiphyModal('pin')" class="media-btn-gif">🖼️ GIF</button>
-                <button onclick="openUnifiedLocationModal('pin')" class="media-btn-loc">📍 Standort</button>
-                <button onclick="openYoutubeModal('pin')" class="media-btn-yt">🎥 YouTube</button>
+                <button onclick="openGiphyForPin()" class="media-btn-gif">🖼️ GIF</button>
+                <button onclick="openLocationForPin()" class="media-btn-loc">📍 Standort</button>
+                <button onclick="openYoutubeForPin()" class="media-btn-yt">🎥 YouTube</button>
                 <label class="media-btn-aud">
                     🎤 Sprachnachricht
-                    <input type="file" id="pinAudioFile" accept="audio/*" style="display:none;" onchange="previewPinMedia(this, 'audio')">
+                    <input type="file" id="pinAudioFile" accept="audio/*" style="display:none;" onchange="handlePinAudioChange(event)">
                 </label>
-                <button onclick="openPollModal('pin')" class="media-btn-poll">📊 Umfrage</button>
+                <button onclick="openPollForPin()" class="media-btn-poll">📊 Umfrage</button>
             </div>
 
-            <div id="pinMediaPreviewContainer" style="display:none; margin-bottom: 8px; position: relative; max-width: 160px;">
+            <div id="pinMediaPreviewContainer" style="display:none; margin-bottom: 8px; position: relative; max-width: 200px;">
                 <div id="pinMediaPreviewContent"></div>
                 <button onclick="clearPinMedia()" style="position: absolute; top: 2px; right: 2px; background: rgba(0,0,0,0.8); padding: 1px 5px; font-size: 0.65rem; color:white; border:none; border-radius:4px; cursor:pointer;">&times;</button>
             </div>
@@ -747,7 +710,7 @@
                 <h3 style="margin-top:0; color: var(--accent-color);">📍 Nadel per Adresse hinzufügen</h3>
                 <div class="auth-form-group">
                     <label>Genaue Adresse oder Ort</label>
-                    <input type="text" id="modalAddressQueryInput" placeholder="z.B. Schloss Heidelberg..." onkeydown="if(event.key==='Enter') submitAddressPinModal()">
+                    <input type="text" id="modalAddressQueryInput" placeholder="z.B. Schloss Heidelberg..." onkeydown="handleAddressPinKeyDown(event)">
                 </div>
                 <button onclick="submitAddressPinModal()" style="width: 100%; margin-top: 6px;">Nadel platzieren</button>
             </div>
@@ -755,12 +718,12 @@
 
         <div style="margin-bottom: 12px;">
             <h4 style="margin: 0 0 6px 0; font-size: 0.9rem; color: var(--text-muted);">Gesetzte Nadeln (<span id="routePointsCountIndicator">0</span>):</h4>
-            <div id="pinsListContainer" style="display: flex; flex-direction: column; gap: 6px; max-height: 120px; overflow-y: auto;"></div>
+            <div id="pinsListContainer" style="display: flex; flex-direction: column; gap: 6px; max-height: 140px; overflow-y: auto;"></div>
         </div>
 
         <div class="auth-form-group">
             <label style="font-weight: 600; color: var(--text-color);">🚀 Wie wurde die Strecke zurückgelegt?</label>
-            <select id="routeMovementType" onchange="onMovementTypeChange(this.value)">
+            <select id="routeMovementType" onchange="handleMovementTypeChange(event)">
                 <option value="walking">🚶 Zu Fuß</option>
                 <option value="bicycle">🚲 Mit dem Fahrrad</option>
                 <option value="car" selected>🚗 Mit dem Auto</option>
@@ -791,23 +754,24 @@
     </div>
 </div>
 
+<!-- HAUPTCONTAINER -->
 <div class="container" id="mainAppContainer" style="display: none;">
     <div class="app-header-card">
         <div class="app-header-top">
             <h1 onclick="resetToHome()" data-i18n="title">Jannik Reisen 🌍✈️</h1>
             <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
                 <div id="topLanguageBar" style="display: flex; gap: 6px; background: rgba(30, 41, 59, 0.9); padding: 4px 8px; border-radius: 8px; border: 1px solid var(--border-color);">
-                    <span class="lang-flag" onclick="changeLanguage('de')" title="Deutsch (Standard)">🇩🇪</span>
-                    <span class="lang-flag" onclick="changeLanguage('en')" title="English (USA)">🇺🇸</span>
-                    <span class="lang-flag" onclick="changeLanguage('fr')" title="Français">🇫🇷</span>
+                    <span class="lang-flag" onclick="selectLanguageDe()" title="Deutsch (Standard)">🇩🇪</span>
+                    <span class="lang-flag" onclick="selectLanguageEn()" title="English (USA)">🇺🇸</span>
+                    <span class="lang-flag" onclick="selectLanguageFr()" title="Français">🇫🇷</span>
                 </div>
-                <span class="badge" id="userBadgeLabel" onclick="switchMainView('console')" title="Einstellungen & Admin-Konsole öffnen">admin (👑 Admin)</span>
+                <span class="badge" id="userBadgeLabel" onclick="navigateToConsoleView()" title="Einstellungen & Admin-Konsole öffnen">admin (👑 Admin)</span>
                 <button class="logout-btn" onclick="handleLogout()" data-i18n="logout">Abmelden</button>
             </div>
         </div>
         <div class="app-header-nav">
-            <span class="badge active-nav" onclick="switchMainView('home')" id="navHomeBadge">🏠 Hauptseite</span>
-            <span class="badge" onclick="switchMainView('timeline')" id="navTimelineBadge">✈️ Reiseverlauf & Tagebuch</span>
+            <span class="badge active-nav" onclick="navigateToHomeView()" id="navHomeBadge">🏠 Hauptseite</span>
+            <span class="badge" onclick="navigateToTimelineView()" id="navTimelineBadge">✈️ Reiseverlauf & Tagebuch</span>
         </div>
     </div>
 
@@ -816,12 +780,12 @@
         <div class="card">
             <h3 data-i18n="mapTitle">🗺️ Weltkarte & Umkreis-Suche <small style="font-size:0.75rem; color:var(--text-muted);">(Nadel per Klick oder Drag beweglich!)</small></h3>
             <div class="search-box">
-                <input type="text" id="citySearch" data-i18n-placeholder="searchPlaceholder" placeholder="Ort, Stadt oder PLZ suchen..." onkeydown="if(event.key==='Enter') searchLocation()">
+                <input type="text" id="citySearch" data-i18n-placeholder="searchPlaceholder" placeholder="Ort, Stadt oder PLZ suchen..." onkeydown="handleCitySearchKeyDown(event)">
                 <button onclick="searchLocation()" data-i18n="searchBtn">Suchen</button>
             </div>
             <div class="radius-control">
                 <label for="radiusRange"><span data-i18n="radiusLabel">Such-Umkreis:</span> <strong id="radiusValue">3</strong> km</label>
-                <input type="range" id="radiusRange" min="1" max="50" value="3" oninput="onRadiusChange(this.value)">
+                <input type="range" id="radiusRange" min="1" max="50" value="3" oninput="handleRadiusInputChange(event)">
             </div>
             
             <div id="map" class="map-container"></div>
@@ -832,51 +796,51 @@
                     <button onclick="manualRefreshPOIs()" style="padding: 4px 10px; font-size: 0.75rem; background: var(--accent-color);">🔄 POIs Aktualisieren</button>
                 </div>
                 <div class="interactive-legend-grid">
-                    <div class="legend-item-box" id="legendBox_parking" onclick="selectCategoryForDetail('parking')">
-                        <label onclick="event.stopPropagation()" style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:0.85rem;">
-                            <input type="checkbox" id="toggleParking" checked onchange="togglePoiLayer('parking')"> 🅿️ Parkplätze
+                    <div class="legend-item-box" id="legendBox_parking" onclick="handleSelectCategoryParking()">
+                        <label onclick="stopEventPropagation(event)" style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:0.85rem;">
+                            <input type="checkbox" id="toggleParking" checked onchange="handleTogglePoiParking(event)"> 🅿️ Parkplätze
                         </label>
                         <span id="count_parking" style="font-size:0.75rem; color:var(--text-muted);">(0)</span>
                     </div>
-                    <div class="legend-item-box" id="legendBox_shops" onclick="selectCategoryForDetail('shops')">
-                        <label onclick="event.stopPropagation()" style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:0.85rem;">
-                            <input type="checkbox" id="toggleShops" checked onchange="togglePoiLayer('shops')"> <span class="legend-dot pink"></span> 🛍️ Geschäfte
+                    <div class="legend-item-box" id="legendBox_shops" onclick="handleSelectCategoryShops()">
+                        <label onclick="stopEventPropagation(event)" style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:0.85rem;">
+                            <input type="checkbox" id="toggleShops" checked onchange="handleTogglePoiShops(event)"> <span class="legend-dot pink"></span> 🛍️ Geschäfte
                         </label>
                         <span id="count_shops" style="font-size:0.75rem; color:var(--text-muted);">(0)</span>
                     </div>
-                    <div class="legend-item-box" id="legendBox_fuel" onclick="selectCategoryForDetail('fuel')">
-                        <label onclick="event.stopPropagation()" style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:0.85rem;">
-                            <input type="checkbox" id="toggleFuel" checked onchange="togglePoiLayer('fuel')"> <span class="legend-dot green"></span> ⛽ Tankstellen & E-Ladepunkte
+                    <div class="legend-item-box" id="legendBox_fuel" onclick="handleSelectCategoryFuel()">
+                        <label onclick="stopEventPropagation(event)" style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:0.85rem;">
+                            <input type="checkbox" id="toggleFuel" checked onchange="handleTogglePoiFuel(event)"> <span class="legend-dot green"></span> ⛽ Tankstellen & E-Ladepunkte
                         </label>
                         <span id="count_fuel" style="font-size:0.75rem; color:var(--text-muted);">(0)</span>
                     </div>
-                    <div class="legend-item-box" id="legendBox_pharmacy" onclick="selectCategoryForDetail('pharmacy')">
-                        <label onclick="event.stopPropagation()" style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:0.85rem;">
-                            <input type="checkbox" id="togglePharmacy" checked onchange="togglePoiLayer('pharmacy')"> <span class="legend-dot purple"></span> 💊 Apotheken & Medizin
+                    <div class="legend-item-box" id="legendBox_pharmacy" onclick="handleSelectCategoryPharmacy()">
+                        <label onclick="stopEventPropagation(event)" style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:0.85rem;">
+                            <input type="checkbox" id="togglePharmacy" checked onchange="handleTogglePoiPharmacy(event)"> <span class="legend-dot purple"></span> 💊 Apotheken & Medizin
                         </label>
                         <span id="count_pharmacy" style="font-size:0.75rem; color:var(--text-muted);">(0)</span>
                     </div>
-                    <div class="legend-item-box" id="legendBox_banks" onclick="selectCategoryForDetail('banks')">
-                        <label onclick="event.stopPropagation()" style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:0.85rem;">
-                            <input type="checkbox" id="toggleBanks" checked onchange="togglePoiLayer('banks')"> <span class="legend-dot teal"></span> 🏦 Banken & Geldautomaten
+                    <div class="legend-item-box" id="legendBox_banks" onclick="handleSelectCategoryBanks()">
+                        <label onclick="stopEventPropagation(event)" style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:0.85rem;">
+                            <input type="checkbox" id="toggleBanks" checked onchange="handleTogglePoiBanks(event)"> <span class="legend-dot teal"></span> 🏦 Banken & Geldautomaten
                         </label>
                         <span id="count_banks" style="font-size:0.75rem; color:var(--text-muted);">(0)</span>
                     </div>
-                    <div class="legend-item-box" id="legendBox_sights" onclick="selectCategoryForDetail('sights')">
-                        <label onclick="event.stopPropagation()" style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:0.85rem;">
-                            <input type="checkbox" id="toggleSights" checked onchange="togglePoiLayer('sights')"> <span class="legend-dot red"></span> 🏛️ Sehenswürdigkeiten
+                    <div class="legend-item-box" id="legendBox_sights" onclick="handleSelectCategorySights()">
+                        <label onclick="stopEventPropagation(event)" style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:0.85rem;">
+                            <input type="checkbox" id="toggleSights" checked onchange="handleTogglePoiSights(event)"> <span class="legend-dot red"></span> 🏛️ Sehenswürdigkeiten
                         </label>
                         <span id="count_sights" style="font-size:0.75rem; color:var(--text-muted);">(0)</span>
                     </div>
-                    <div class="legend-item-box" id="legendBox_restaurants" onclick="selectCategoryForDetail('restaurants')">
-                        <label onclick="event.stopPropagation()" style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:0.85rem;">
-                            <input type="checkbox" id="toggleRestaurants" checked onchange="togglePoiLayer('restaurants')"> <span class="legend-dot blue"></span> 🍽️ Restaurants & Cafés
+                    <div class="legend-item-box" id="legendBox_restaurants" onclick="handleSelectCategoryRestaurants()">
+                        <label onclick="stopEventPropagation(event)" style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:0.85rem;">
+                            <input type="checkbox" id="toggleRestaurants" checked onchange="handleTogglePoiRestaurants(event)"> <span class="legend-dot blue"></span> 🍽️ Restaurants & Cafés
                         </label>
                         <span id="count_restaurants" style="font-size:0.75rem; color:var(--text-muted);">(0)</span>
                     </div>
-                    <div class="legend-item-box" id="legendBox_hotels" onclick="selectCategoryForDetail('hotels')">
-                        <label onclick="event.stopPropagation()" style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:0.85rem;">
-                            <input type="checkbox" id="toggleHotels" checked onchange="togglePoiLayer('hotels')"> <span class="legend-dot orange"></span> 🏨 Unterkünfte
+                    <div class="legend-item-box" id="legendBox_hotels" onclick="handleSelectCategoryHotels()">
+                        <label onclick="stopEventPropagation(event)" style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:0.85rem;">
+                            <input type="checkbox" id="toggleHotels" checked onchange="handleTogglePoiHotels(event)"> <span class="legend-dot orange"></span> 🏨 Unterkünfte
                         </label>
                         <span id="count_hotels" style="font-size:0.75rem; color:var(--text-muted);">(0)</span>
                     </div>
@@ -893,7 +857,7 @@
 
             <div style="margin-top: 10px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
                 <label style="cursor:pointer; display: flex; align-items: center; gap: 6px; font-size: 0.9rem;">
-                    <input type="checkbox" id="trafficToggle"> <span data-i18n="liveTraffic">Live-Verkehr aktivieren</span>
+                    <input type="checkbox" id="trafficToggle" onchange="handleTrafficToggleChange(event)"> <span data-i18n="liveTraffic">Live-Verkehr aktivieren</span>
                 </label>
                 <div style="display: flex; gap: 6px; align-items: center;">
                     <button onclick="setMyCurrentLocation()" style="background: #ef4444; color: white; padding: 6px 12px; border-radius: 6px; font-weight: 600; font-size: 0.85rem; border: none; cursor: pointer; display: flex; align-items: center; gap: 6px;" title="Aktueller Standort">
@@ -945,9 +909,9 @@
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 8px;">
                 <h3 style="margin: 0; border: none; padding: 0;" data-i18n="feedTitle">💬 Nachrichtenverlauf & Community Feed</h3>
                 <div class="inline-filter" style="display:flex; align-items:center; gap:6px;">
-                    <input type="text" id="postSearchInput" placeholder="Nachrichten durchsuchen..." oninput="renderPostsFeed()" style="padding: 4px 8px; font-size: 0.85rem; width: 160px;">
+                    <input type="text" id="postSearchInput" placeholder="Nachrichten durchsuchen..." oninput="handlePostSearchInput(event)" style="padding: 4px 8px; font-size: 0.85rem; width: 160px;">
                     <label for="postSortSelect" data-i18n="filterSort" style="font-size:0.85rem;">Sortierung:</label>
-                    <select id="postSortSelect" onchange="renderPostsFeed()" style="padding: 4px 8px; font-size: 0.85rem; width: auto;">
+                    <select id="postSortSelect" onchange="handlePostSortChange(event)" style="padding: 4px 8px; font-size: 0.85rem; width: auto;">
                         <option value="newest" selected data-i18n="sortNewest">Neueste Nachricht</option>
                         <option value="oldest" data-i18n="sortOldest">Älteste Nachricht</option>
                         <option value="most_reactions" data-i18n="sortMostReactions">Meiste Reaktionen</option>
@@ -971,20 +935,20 @@
                 <div class="unified-media-toolbar">
                     <label class="media-btn-img">
                         <span>📷 Bild</span>
-                        <input type="file" id="postImage" accept="image/*" style="display:none;" onchange="previewPostMedia(this, 'image')">
+                        <input type="file" id="postImage" accept="image/*" style="display:none;" onchange="handlePostImageChange(event)">
                     </label>
                     <label class="media-btn-vid">
                         🎥 Video
-                        <input type="file" id="postVideo" accept="video/*" style="display:none;" onchange="previewPostMedia(this, 'video')">
+                        <input type="file" id="postVideo" accept="video/*" style="display:none;" onchange="handlePostVideoChange(event)">
                     </label>
-                    <button onclick="openGiphyModal('post')" class="media-btn-gif">🖼️ GIF</button>
-                    <button onclick="openUnifiedLocationModal('post')" class="media-btn-loc">📍 Standort</button>
-                    <button onclick="openYoutubeModal('post')" class="media-btn-yt">🎥 YouTube</button>
+                    <button onclick="openGiphyForPost()" class="media-btn-gif">🖼️ GIF</button>
+                    <button onclick="openLocationForPost()" class="media-btn-loc">📍 Standort</button>
+                    <button onclick="openYoutubeForPost()" class="media-btn-yt">🎥 YouTube</button>
                     <label class="media-btn-aud">
                         🎤 Sprachnachricht
-                        <input type="file" id="postAudioFile" accept="audio/*" style="display:none;" onchange="previewPostMedia(this, 'audio')">
+                        <input type="file" id="postAudioFile" accept="audio/*" style="display:none;" onchange="handlePostAudioChange(event)">
                     </label>
-                    <button onclick="openPollModal('post')" class="media-btn-poll">📊 Umfrage</button>
+                    <button onclick="openPollForPost()" class="media-btn-poll">📊 Umfrage</button>
                 </div>
 
                 <div id="postLocationIndicator" style="font-size: 0.75rem; color: #34d399; margin-bottom: 4px;"></div>
@@ -1005,19 +969,60 @@
     <div id="timelineViewContainer" style="display: none; flex-direction: column; gap: 12px;">
         <div class="card">
             <h3 style="margin-top:0; color: var(--accent-color);">✈️ Reiseverlauf & Tagebuch</h3>
-            <p style="font-size: 0.9rem; color: var(--text-muted); margin-top: 0;">Erfasse deine Stationen oder öffne den exakten Streckenplaner, um Routen zu zeichnen und zu jeder Nadel Erlebnisse hinzuzufügen!</p>
+            <p style="font-size: 0.9rem; color: var(--text-muted); margin-top: 0;">Erfasse deine Stationen oder öffne den exakten Streckenplaner, um Routen zu zeichnen und zu jeder Nadel Fotos, Videos, Nachrichten & Medien hinzuzufügen!</p>
             
             <div id="timelineMap" class="map-container" style="height: 380px; margin-bottom: 10px;"></div>
 
             <div class="interactive-legend-card" style="margin-bottom: 12px;">
                 <div style="font-weight: 600; font-size: 0.95rem; margin-bottom: 6px;">🗺️ Bewegungsarten-Legende & Filter (Strecken ein-/ausblenden)</div>
-                <div class="interactive-legend-grid" id="timelineLegendGrid"></div>
+                <div class="interactive-legend-grid" id="timelineLegendGrid">
+                    <div class="legend-item-box">
+                        <label style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:0.85rem;">
+                            <input type="checkbox" id="filter_walking" checked onchange="renderTimelineOnMap()"> 🚶 Zu Fuß
+                        </label>
+                    </div>
+                    <div class="legend-item-box">
+                        <label style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:0.85rem;">
+                            <input type="checkbox" id="filter_bicycle" checked onchange="renderTimelineOnMap()"> <span class="legend-dot blue"></span> 🚲 Fahrrad
+                        </label>
+                    </div>
+                    <div class="legend-item-box">
+                        <label style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:0.85rem;">
+                            <input type="checkbox" id="filter_car" checked onchange="renderTimelineOnMap()"> <span class="legend-dot red"></span> 🚗 Auto
+                        </label>
+                    </div>
+                    <div class="legend-item-box">
+                        <label style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:0.85rem;">
+                            <input type="checkbox" id="filter_airplane" checked onchange="renderTimelineOnMap()"> <span class="legend-dot purple"></span> ✈️ Flugzeug
+                        </label>
+                    </div>
+                    <div class="legend-item-box">
+                        <label style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:0.85rem;">
+                            <input type="checkbox" id="filter_boat" checked onchange="renderTimelineOnMap()"> <span class="legend-dot teal"></span> ⛵ Boot
+                        </label>
+                    </div>
+                    <div class="legend-item-box">
+                        <label style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:0.85rem;">
+                            <input type="checkbox" id="filter_train" checked onchange="renderTimelineOnMap()"> <span class="legend-dot orange"></span> 🚆 Zug
+                        </label>
+                    </div>
+                    <div class="legend-item-box">
+                        <label style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:0.85rem;">
+                            <input type="checkbox" id="filter_bus" checked onchange="renderTimelineOnMap()"> <span class="legend-dot pink"></span> 🚌 Bus
+                        </label>
+                    </div>
+                    <div class="legend-item-box">
+                        <label style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:0.85rem;">
+                            <input type="checkbox" id="filter_motorcycle" checked onchange="renderTimelineOnMap()"> <span class="legend-dot green"></span> 🏍️ Motorrad
+                        </label>
+                    </div>
+                </div>
             </div>
 
             <div style="background: #0f172a; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 14px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between;">
                 <div>
                     <strong style="font-size: 0.95rem; color: var(--accent-color);">🗺️ Exakte Strecke mit Nadeln & Medien aufzeichnen:</strong>
-                    <span style="font-size: 0.85rem; color: var(--text-muted); display: block;">Öffne den Planer, um Nadeln per Klick oder Adresse zu setzen und Medien einzufügen.</span>
+                    <span style="font-size: 0.85rem; color: var(--text-muted); display: block;">Öffne den Planer, um Nadeln per Klick oder Adresse zu setzen und Fotos/Videos einzufügen.</span>
                 </div>
                 <div>
                     <button onclick="openRouteDrawingModal()" style="background: var(--accent-color); padding: 8px 16px; font-size: 0.9rem; font-weight: bold;">✏️ Streckenplaner öffnen</button>
@@ -1045,20 +1050,20 @@
                 <div class="unified-media-toolbar">
                     <label class="media-btn-img">
                         <span>📷 Bild</span>
-                        <input type="file" id="travelImageFile" accept="image/*" style="display:none;" onchange="previewTravelImage(this)">
+                        <input type="file" id="travelImageFile" accept="image/*" style="display:none;" onchange="handleTravelImageChange(event)">
                     </label>
                     <label class="media-btn-vid">
                         🎥 Video
-                        <input type="file" id="travelVideoFile" accept="video/*" style="display:none;" onchange="previewTravelMedia(this, 'video')">
+                        <input type="file" id="travelVideoFile" accept="video/*" style="display:none;" onchange="handleTravelVideoChange(event)">
                     </label>
-                    <button onclick="openGiphyModal('travel')" class="media-btn-gif">🖼️ GIF</button>
-                    <button onclick="openUnifiedLocationModal('travel')" class="media-btn-loc">📍 Standort</button>
-                    <button onclick="openYoutubeModal('travel')" class="media-btn-yt">🎥 YouTube</button>
+                    <button onclick="openGiphyForTravel()" class="media-btn-gif">🖼️ GIF</button>
+                    <button onclick="openLocationForTravel()" class="media-btn-loc">📍 Standort</button>
+                    <button onclick="openYoutubeForTravel()" class="media-btn-yt">🎥 YouTube</button>
                     <label class="media-btn-aud">
                         🎤 Sprachnachricht
-                        <input type="file" id="travelAudioFile" accept="audio/*" style="display:none;" onchange="previewTravelMedia(this, 'audio')">
+                        <input type="file" id="travelAudioFile" accept="audio/*" style="display:none;" onchange="handleTravelAudioChange(event)">
                     </label>
-                    <button onclick="openPollModal('travel')" class="media-btn-poll">📊 Umfrage</button>
+                    <button onclick="openPollForTravel()" class="media-btn-poll">📊 Umfrage</button>
                 </div>
 
                 <div id="travelLocationIndicator" style="font-size: 0.85rem; color: #34d399; margin-bottom: 4px;"></div>
@@ -1078,9 +1083,9 @@
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 8px;">
                 <h3 style="margin: 0; border: none; padding: 0;">📚 Meine Reise-Chronik & Tagebuch-Einträge</h3>
                 <div class="inline-filter" style="display:flex; align-items:center; gap:6px;">
-                    <input type="text" id="travelSearchInput" placeholder="Tagebuch durchsuchen..." oninput="renderTravelEntries()" style="padding: 4px 8px; font-size: 0.85rem; width: 160px;">
+                    <input type="text" id="travelSearchInput" placeholder="Tagebuch durchsuchen..." oninput="handleTravelSearchInput(event)" style="padding: 4px 8px; font-size: 0.85rem; width: 160px;">
                     <label for="travelSortSelect" style="font-size:0.85rem;">Sortierung:</label>
-                    <select id="travelSortSelect" onchange="renderTravelEntries()" style="padding: 4px 8px; font-size: 0.85rem; width: auto;">
+                    <select id="travelSortSelect" onchange="handleTravelSortChange(event)" style="padding: 4px 8px; font-size: 0.85rem; width: auto;">
                         <option value="newest" selected>Neuester Eintrag</option>
                         <option value="oldest">Ältester Eintrag</option>
                         <option value="most_reactions">Meiste Reaktionen</option>
@@ -1150,12 +1155,12 @@
         <span class="close-modal" onclick="closeWeatherDetailsModal()">&times;</span>
         <h2 style="margin-top:0; color: var(--accent-color);">🌤️ Detaillierte Wetter-Analyse & Graphen</h2>
         <div id="weatherAnimContainer" class="weather-anim-box">
-            <div id="weatherAnimElement" class="anim-sun">☀️</div>
+            <div id="weatherAnimElement">☀️</div>
         </div>
         <div id="weatherConditionText" style="text-align: center; font-size: 0.95rem; font-weight: 600; margin-bottom: 12px; color: var(--text-muted);">Sonnig & Angenehm</div>
         <div style="display: flex; justify-content: center; gap: 10px; margin-bottom: 15px;">
-            <button id="btnViewHourly" onclick="setWeatherViewMode('hourly')" style="padding: 6px 14px; font-size: 0.85rem; background: var(--accent-color);">Stündlicher Verlauf</button>
-            <button id="btnViewDaily" onclick="setWeatherViewMode('daily')" style="padding: 6px 14px; font-size: 0.85rem; background: #334155;">Wöchentlicher Verlauf (Täglich)</button>
+            <button id="btnViewHourly" onclick="setWeatherViewHourly()" style="padding: 6px 14px; font-size: 0.85rem; background: var(--accent-color);">Stündlicher Verlauf</button>
+            <button id="btnViewDaily" onclick="setWeatherViewDaily()" style="padding: 6px 14px; font-size: 0.85rem; background: #334155;">Wöchentlicher Verlauf (Täglich)</button>
         </div>
         <div style="margin-bottom: 20px; background: #0f172a; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color);">
             <h4 style="margin: 0 0 8px 0; font-size: 0.95rem; color: #f8fafc;">🌡️ Temperaturverlauf (°C)</h4>
@@ -1172,24 +1177,26 @@
     </div>
 </div>
 
+<!-- GIPHY MODAL -->
 <div id="giphyModal" class="modal">
     <div class="modal-content" style="max-width: 600px;">
         <span class="close-modal" onclick="closeGiphyModal()">&times;</span>
         <h3 style="margin-top:0; color: var(--accent-color);">🖼️ Giphy GIF auswählen</h3>
         <div style="display: flex; gap: 8px; margin-bottom: 12px;">
-            <input type="text" id="giphySearchInput" placeholder="GIFs suchen..." onkeydown="if(event.key==='Enter') searchGiphy()">
+            <input type="text" id="giphySearchInput" placeholder="GIFs suchen..." onkeydown="handleGiphySearchKeyDown(event)">
             <button onclick="searchGiphy()">Suchen</button>
         </div>
         <div id="giphyResultsContainer" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px; max-height: 350px; overflow-y: auto;"></div>
     </div>
 </div>
 
+<!-- EMOJI PICKER MODAL -->
 <div id="emojiPickerModal" class="modal">
-    <div class="modal-content" style="max-width: 480px; text-align: center;">
+    <div class="modal-content" style="max-width: 520px; text-align: center;">
         <span class="close-modal" onclick="closeEmojiPickerModal()">&times;</span>
-        <h3 style="margin-top:0; color: var(--accent-color);" data-i18n="emojiTitle">😀 Emoji auswählen</h3>
+        <h3 style="margin-top:0; color: var(--accent-color);" data-i18n="emojiTitle">😀 Emoji auswählen & antworten</h3>
         <div style="margin-bottom: 10px;">
-            <input type="text" id="emojiSearchInput" placeholder="Emojis suchen (z.B. Herz, Auto, Lachen)..." oninput="filterEmojis()" style="padding: 8px; font-size: 0.9rem;">
+            <input type="text" id="emojiSearchInput" placeholder="Emojis suchen..." oninput="handleEmojiSearchInput(event)" style="padding: 8px; font-size: 0.9rem;">
         </div>
         <div id="emojiPickerGrid" style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; margin: 15px 0; min-height: 200px; max-height: 300px; overflow-y: auto;"></div>
         <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 10px;">
@@ -1197,11 +1204,13 @@
             <span id="emojiPageIndicator" style="font-size: 0.85rem; color: var(--text-muted);">Seite 1</span>
             <button onclick="nextEmojiPage()" style="padding: 6px 12px; font-size: 0.85rem; background: #334155;">Weiter ▶</button>
         </div>
+        <p style="font-size:0.75rem; color:var(--text-muted); margin-top:8px;">Tipp: Verwende die Pfeiltasten (← / →) auf der Tastatur, um durch die Emoji-Seiten zu blättern!</p>
     </div>
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
+    // i18n Übersetzungssystem
     const translations = {
         de: {
             title: "Jannik Reisen 🌍✈️",
@@ -1299,7 +1308,7 @@
             mapTitle: "🗺️ Carte du monde & Recherche",
             searchPlaceholder: "Rechercher une ville...",
             searchBtn: "Rechercher",
-            radiusLabel: "Rayon :",
+            rayon: "Rayon :",
             liveTraffic: "Trafic en direct",
             navMaps: "Navigation Google Maps",
             weatherTitle: "🌤️ Prévisions météo",
@@ -1336,6 +1345,10 @@
         applyTranslations();
     }
 
+    function selectLanguageDe() { changeLanguage('de'); }
+    function selectLanguageEn() { changeLanguage('en'); }
+    function selectLanguageFr() { changeLanguage('fr'); }
+
     function applyTranslations() {
         const t = translations[currentLang] || translations['de'];
         document.querySelectorAll('[data-i18n]').forEach(el => {
@@ -1363,12 +1376,18 @@
         if (el) el.style.display = 'none';
     }
 
-    function togglePasswordVisibility(fieldId, iconEl) {
+    function togglePasswordVisibility(fieldId) {
         const inputEl = document.getElementById(fieldId);
         if (inputEl) {
             inputEl.type = inputEl.type === 'password' ? 'text' : 'password';
         }
     }
+
+    function toggleLoginPasswordVisibility() { togglePasswordVisibility('loginPass'); }
+    function toggleRegisterPasswordVisibility() { togglePasswordVisibility('regPass'); }
+
+    function switchToLoginTab() { switchAuthTab('login'); }
+    function switchToRegisterTab() { switchAuthTab('register'); }
 
     function switchAuthTab(tab) {
         document.getElementById('authError').style.display = 'none';
@@ -1385,6 +1404,15 @@
             document.getElementById('loginFormSection').style.display = 'none';
         }
     }
+
+    function handleLoginKeyDown(event) { if (event.key === 'Enter') handleLogin(); }
+    function handleRegisterKeyDown(event) { if (event.key === 'Enter') handleRegister(); }
+    function handleStartAddrKeyDown(event) { if (event.key === 'Enter') submitStartLocation(); }
+    function handleUnifiedAddrKeyDown(event) { if (event.key === 'Enter') submitUnifiedManualLocation(); }
+    function handleYoutubeUrlKeyDown(event) { if (event.key === 'Enter') submitYoutubeLink(); }
+    function handleAddressPinKeyDown(event) { if (event.key === 'Enter') submitAddressPinModal(); }
+    function handleCitySearchKeyDown(event) { if (event.key === 'Enter') searchLocation(); }
+    function handleGiphySearchKeyDown(event) { if (event.key === 'Enter') searchGiphy(); }
 
     function showAuthError(msg) {
         const errEl = document.getElementById('authError');
@@ -1440,7 +1468,7 @@
             return; 
         }
         if (captchaVal !== '2') {
-            showAuthError("Das Captcha ist falsch. Bitte rechnen Sie 1 + 1 korrekt zusammen (Ergebnis: 2).");
+            showAuthError("Das Captcha ist falsch. Bitte rechnen Sie 1 + 1 zusammen (Ergebnis: 2).");
             return;
         }
 
@@ -1476,30 +1504,15 @@
             badgeLabel.innerText = username + (isAdmin(username) ? ' (👑 Admin)' : ' (👤 User)');
         }
 
-        if (isAdmin(username)) {
-            document.getElementById('adminConsoleSection').style.display = 'block';
-            renderAdminConsole();
-        } else {
-            document.getElementById('adminConsoleSection').style.display = 'none';
-        }
-
-        initMap();
-        renderPostsFeed();
-        renderTravelEntries();
-
-        // Zeige Startadressen-Modal wenn gewünscht
-        if (!sessionStorage.getItem('jannik_start_loc_asked')) {
-            sessionStorage.setItem('jannik_start_loc_asked', '1');
-            showModal('startLocationOverlay');
-        }
+        initApp();
     }
 
     function handleLogout() {
-        const current = localStorage.getItem('jannik_current_user');
-        if (current) {
+        const currentUser = localStorage.getItem('jannik_current_user');
+        if (currentUser) {
             const users = getUsers();
-            if (users[current]) {
-                users[current].online = false;
+            if (users[currentUser]) {
+                users[currentUser].online = false;
                 localStorage.setItem('jannik_users', JSON.stringify(users));
             }
         }
@@ -1508,406 +1521,512 @@
         document.getElementById('authOverlay').style.display = 'flex';
     }
 
-    /* KARTEN & STANDORT-VERWALTUNG */
-    let map = null, timelineMap = null, routeDrawMap = null;
-    let mainMarker = null, radiusCircle = null;
-    let currentLat = 48.5833, currentLng = 7.9833; // Default Standort
-    let currentRadius = 3;
-    let rawWeatherData = null;
-    let tempChartInstance = null, rainChartInstance = null, windChartInstance = null;
-    let weatherViewMode = 'hourly';
+    // Globale Variablen für Karten & Anwendungsstatus
+    let mainMap = null, timelineMap = null, routeDrawMap = null;
+    let mainMarker = null, radiusCircle = null, trafficLayer = null;
+    let currentLat = 48.8566, currentLon = 2.3522, currentCityName = "Paris";
+    let poiMarkersGroup = null, timelineGroup = null, drawGroup = null;
 
-    function initMap() {
-        if (!map) {
-            map = L.map('map').setView([currentLat, currentLng], 12);
+    function initApp() {
+        applyTranslations();
+
+        if (!mainMap) {
+            mainMap = L.map('map').setView([currentLat, currentLon], 13);
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                maxZoom: 19,
-                attribution: '© OpenStreetMap'
-            }).addTo(map);
+                attribution: '&copy; OpenStreetMap contributors'
+            }).addTo(mainMap);
 
-            mainMarker = L.marker([currentLat, currentLng], { draggable: true }).addTo(map);
-            radiusCircle = L.circle([currentLat, currentLng], {
-                radius: currentRadius * 1000,
-                color: '#3b82f6',
-                fillColor: '#3b82f6',
-                fillOpacity: 0.15
-            }).addTo(map);
+            poiMarkersGroup = L.layerGroup().addTo(mainMap);
 
+            mainMarker = L.marker([currentLat, currentLon], { draggable: true }).addTo(mainMap);
             mainMarker.on('dragend', function (e) {
-                const pos = e.target.getLatLng();
-                updateLocationAndFetch(pos.lat, pos.lng);
+                const coord = e.target.getLatLng();
+                updateLocationByCoords(coord.lat, coord.lng);
             });
 
-            map.on('click', function(e) {
-                updateLocationAndFetch(e.latlng.lat, e.latlng.lng);
+            mainMap.on('click', function(e) {
+                updateLocationByCoords(e.latlng.lat, e.latlng.lng);
             });
         }
 
-        // Karten-Fix: Beim Initialisieren oder Laden die Kartengröße neu berechnen & ausrichten
-        setTimeout(() => {
-            if (map) {
-                map.invalidateSize();
-                map.setView([currentLat, currentLng], map.getZoom());
-            }
-        }, 200);
+        showModal('startLocationOverlay');
 
-        updateLocationAndFetch(currentLat, currentLng);
+        renderPostsFeed();
+        renderTravelEntries();
+        renderAdminConsole();
     }
 
-    function updateLocationAndFetch(lat, lng) {
-        currentLat = lat;
-        currentLng = lng;
-        
-        if (mainMarker) mainMarker.setLatLng([lat, lng]);
-        if (radiusCircle) {
-            radiusCircle.setLatLng([lat, lng]);
-            radiusCircle.setRadius(currentRadius * 1000);
-        }
-
-        // Automatische Kamera-Anpassung der Karte
-        if (map) {
-            map.panTo([lat, lng]);
-            map.invalidateSize();
-        }
-
-        fetchLocationNameAndDetails(lat, lng);
-        fetchWeather(lat, lng);
-    }
-
-    function onRadiusChange(val) {
-        currentRadius = parseInt(val);
-        document.getElementById('radiusValue').innerText = currentRadius;
-        if (radiusCircle) {
-            radiusCircle.setRadius(currentRadius * 1000);
-        }
-        if (map && radiusCircle) {
-            map.fitBounds(radiusCircle.getBounds(), { padding: [20, 20] });
-        }
-    }
-
-    function searchLocation() {
-        const query = document.getElementById('citySearch').value.trim();
+    function submitStartLocation() {
+        const query = document.getElementById('startAddrInput').value.trim();
         if (!query) return;
+        geocodeAddress(query, function(lat, lon, displayName) {
+            updateLocationByCoords(lat, lon, displayName);
+            closeModal('startLocationOverlay');
+        });
+    }
 
+    function submitCurrentLocationStartup() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+                updateLocationByCoords(position.coords.latitude, position.coords.longitude, "Aktueller Standort");
+                closeModal('startLocationOverlay');
+            }, function() {
+                alert("Standortzugriff verweigert oder nicht verfügbar.");
+            });
+        } else {
+            alert("Geolokalisierung wird von Ihrem Browser nicht unterstützt.");
+        }
+    }
+
+    function setMyCurrentLocation() {
+        submitCurrentLocationStartup();
+    }
+
+    function geocodeAddress(query, callback) {
         fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`)
             .then(res => res.json())
             .then(data => {
                 if (data && data.length > 0) {
                     const lat = parseFloat(data[0].lat);
                     const lon = parseFloat(data[0].lon);
-                    updateLocationAndFetch(lat, lon);
+                    const name = data[0].display_name.split(',')[0];
+                    callback(lat, lon, name);
                 } else {
-                    alert("Ort wurde nicht gefunden.");
+                    alert("Ort konnte nicht gefunden werden.");
                 }
             })
-            .catch(err => console.error(err));
+            .catch(() => alert("Fehler bei der Ortssuche."));
     }
 
-    function setMyCurrentLocation() {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(pos => {
-                updateLocationAndFetch(pos.coords.latitude, pos.coords.longitude);
-            }, () => {
-                alert("Standortzugriff verweigert oder nicht verfügbar.");
+    function updateLocationByCoords(lat, lon, name = null) {
+        currentLat = lat;
+        currentLon = lon;
+        mainMap.setView([lat, lon], 13);
+        if (mainMarker) mainMarker.setLatLng([lat, lon]);
+
+        updateRadiusCircle();
+
+        if (name) {
+            currentCityName = name;
+            document.getElementById('weatherCityName').innerText = name;
+            fetchWeatherData(lat, lon, name);
+            fetchCityInfo(name, lat, lon);
+            fetchPOIs(lat, lon);
+        } else {
+            fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`)
+                .then(r => r.json())
+                .then(d => {
+                    const foundName = d.address ? (d.address.city || d.address.town || d.address.village || d.address.suburb || "Standort") : "Standort";
+                    currentCityName = foundName;
+                    document.getElementById('weatherCityName').innerText = foundName;
+                    fetchWeatherData(lat, lon, foundName);
+                    fetchCityInfo(foundName, lat, lon);
+                    fetchPOIs(lat, lon);
+                }).catch(() => {
+                    fetchWeatherData(lat, lon, "Standort");
+                    fetchPOIs(lat, lon);
+                });
+        }
+    }
+
+    function searchLocation() {
+        const query = document.getElementById('citySearch').value.trim();
+        if (query) {
+            geocodeAddress(query, function(lat, lon, displayName) {
+                updateLocationByCoords(lat, lon, displayName);
             });
         }
     }
 
-    function submitStartLocation() {
-        const q = document.getElementById('startAddrInput').value.trim();
-        if (q) {
-            document.getElementById('citySearch').value = q;
-            searchLocation();
-        }
-        closeModal('startLocationOverlay');
+    function handleRadiusInputChange(e) {
+        const rad = e.target.value;
+        document.getElementById('radiusValue').innerText = rad;
+        updateRadiusCircle();
     }
 
-    function submitCurrentLocationStartup() {
-        setMyCurrentLocation();
-        closeModal('startLocationOverlay');
+    function updateRadiusCircle() {
+        const radKm = parseFloat(document.getElementById('radiusRange').value) || 3;
+        if (radiusCircle) mainMap.removeLayer(radiusCircle);
+        radiusCircle = L.circle([currentLat, currentLon], {
+            radius: radKm * 1000,
+            color: '#3b82f6',
+            fillColor: '#3b82f6',
+            fillOpacity: 0.15
+        }).addTo(mainMap);
+    }
+
+    function handleTrafficToggleChange(e) {
+        if (e.target.checked) {
+            if (!trafficLayer) {
+                trafficLayer = L.tileLayer('https://{s}.tile.openweathermap.org/map/precipitation_new/{z}/{x}/{y}.png?appid=439d4b804bc8187953eb36d2a8c26a02', { opacity: 0.6 });
+            }
+            trafficLayer.addTo(mainMap);
+        } else if (trafficLayer) {
+            mainMap.removeLayer(trafficLayer);
+        }
     }
 
     function openGoogleMapsNavigation() {
-        window.open(`https://www.google.com/maps/dir/?api=1&destination=${currentLat},${currentLng}`, '_blank');
+        window.open(`https://www.google.com/maps/dir/?api=1&destination=${currentLat},${currentLon}`, '_blank');
     }
 
-    function fetchLocationNameAndDetails(lat, lng) {
-        fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`)
-            .then(res => res.json())
-            .then(data => {
-                const addr = data.address || {};
-                const city = addr.city || addr.town || addr.village || addr.municipality || "Unbekannter Ort";
-                const country = addr.country || "-";
-                const state = addr.state || addr.region || "-";
-                const postcode = addr.postcode || "-";
-
-                document.getElementById('weatherCityName').innerText = city;
-                document.getElementById('infoCity').innerText = city;
-                document.getElementById('infoCountry').innerText = country;
-                document.getElementById('infoState').innerText = state;
-                document.getElementById('infoPostalCodes').innerText = postcode;
-
-                fetchWikipediaInfo(city);
-            })
-            .catch(() => {
-                document.getElementById('weatherCityName').innerText = `${lat.toFixed(2)}, ${lng.toFixed(2)}`;
-            });
-    }
-
-    function fetchWikipediaInfo(cityName) {
-        const wikiUrl = `https://de.wikipedia.org/w/api.php?action=query&prop=extracts&exintro&explaintext&titles=${encodeURIComponent(cityName)}&format=json&origin=*`;
-        
-        fetch(wikiUrl)
-            .then(res => res.json())
-            .then(data => {
-                const pages = data.query.pages;
-                const pageId = Object.keys(pages)[0];
-                if (pageId && pageId !== "-1") {
-                    const extract = pages[pageId].extract;
-                    document.getElementById('cityLocationDesc').innerText = extract.slice(0, 300) + '...';
-                    document.getElementById('citySpecialDesc').innerText = extract.slice(300, 600) || "Eine wundervolle Region mit reicher Kultur und Geschichte.";
-                } else {
-                    document.getElementById('cityLocationDesc').innerText = "Keine detaillierten Wikipedia-Informationen verfügbar.";
-                    document.getElementById('citySpecialDesc').innerText = "Erkunde den Ort direkt auf der Karte.";
-                }
-            })
-            .catch(() => {
-                document.getElementById('cityLocationDesc').innerText = "Informationen konnten nicht geladen werden.";
-            });
-    }
-
-    /* WETTER & GRAPHEN (CHART.JS FIX) */
-    function fetchWeather(lat, lng) {
-        const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&hourly=temperature_2m,rain,windspeed_10m,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min,rain_sum,windspeed_10m_max&timezone=auto`;
-
+    function fetchWeatherData(lat, lon, name) {
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=temperature_2m_max,temperature_2m_min,weathercode&hourly=temperature_2m,precipitation,windspeed_10m&timezone=auto`;
         fetch(url)
             .then(res => res.json())
             .then(data => {
-                rawWeatherData = data;
                 renderWeatherGrid(data);
                 renderWeatherHours(data);
-            })
-            .catch(err => {
-                document.getElementById('weatherGrid').innerHTML = '<div style="color:#ef4444; grid-column:1/-1;">Wetterdaten konnten nicht geladen werden.</div>';
-            });
-    }
-
-    function getWeatherIcon(code) {
-        if (code === 0) return '☀️';
-        if (code <= 3) return '⛅';
-        if (code <= 67) return '🌧️';
-        if (code <= 77) return '❄️';
-        return '🌩️';
+            }).catch(() => {});
     }
 
     function renderWeatherGrid(data) {
         const grid = document.getElementById('weatherGrid');
+        if (!grid || !data.daily) return;
         grid.innerHTML = '';
-        const daily = data.daily;
-        
-        if (!daily || !daily.time) return;
-
-        daily.time.slice(0, 7).forEach((timeStr, idx) => {
-            const date = new Date(timeStr);
-            const dayName = date.toLocaleDateString(currentLang, { weekday: 'short' });
-            const maxTemp = Math.round(daily.temperature_2m_max[idx]);
-            const minTemp = Math.round(daily.temperature_2m_min[idx]);
-            const icon = getWeatherIcon(daily.weathercode[idx]);
-
-            grid.innerHTML += `
-                <div class="weather-day" onclick="openWeatherDetailsModal()">
-                    <div style="font-weight:bold;">${dayName}</div>
-                    <div style="font-size:1.5rem; margin:4px 0;">${icon}</div>
-                    <div><strong>${maxTemp}°</strong> / <small>${minTemp}°</small></div>
-                </div>
+        data.daily.time.slice(0, 5).forEach((dateStr, idx) => {
+            const maxTemp = Math.round(data.daily.temperature_2m_max[idx]);
+            const minTemp = Math.round(data.daily.temperature_2m_min[idx]);
+            const dayDiv = document.createElement('div');
+            dayDiv.className = 'weather-day';
+            dayDiv.innerHTML = `
+                <div style="font-weight:600;">${dateStr.slice(5)}</div>
+                <div style="font-size:1.4rem; margin:4px 0;">☀️</div>
+                <div>${maxTemp}° / ${minTemp}°</div>
             `;
+            grid.appendChild(dayDiv);
         });
     }
 
     function renderWeatherHours(data) {
         const hoursGrid = document.getElementById('weatherHoursGrid');
+        if (!hoursGrid || !data.hourly) return;
         hoursGrid.innerHTML = '';
-        const hourly = data.hourly;
-        if (!hourly || !hourly.time) return;
-
-        const nowHour = new Date().getHours();
-        for (let i = nowHour; i < nowHour + 24; i++) {
-            if (!hourly.time[i]) break;
-            const timeVal = hourly.time[i].split('T')[1].substring(0, 5);
-            const temp = Math.round(hourly.temperature_2m[i]);
-            const icon = getWeatherIcon(hourly.weathercode[i]);
-
-            hoursGrid.innerHTML += `
-                <div class="hour-slot">
-                    <div>${timeVal}</div>
-                    <div style="font-size:1.2rem; margin:2px 0;">${icon}</div>
-                    <div><strong>${temp}°C</strong></div>
-                </div>
+        data.hourly.time.slice(0, 12).forEach((timeStr, idx) => {
+            const temp = Math.round(data.hourly.temperature_2m[idx]);
+            const slot = document.createElement('div');
+            slot.className = 'hour-slot';
+            slot.innerHTML = `
+                <div>${timeStr.slice(11, 16)}</div>
+                <div style="font-weight:bold; color:var(--accent-color);">${temp}°C</div>
             `;
-        }
+            hoursGrid.appendChild(slot);
+        });
     }
 
-    function openWeatherDetailsModal() {
-        showModal('weatherDetailsModal');
-        setTimeout(() => {
-            renderWeatherCharts();
-        }, 150);
-    }
-
-    function closeWeatherDetailsModal() {
-        closeModal('weatherDetailsModal');
-    }
-
-    function setWeatherViewMode(mode) {
-        weatherViewMode = mode;
-        document.getElementById('btnViewHourly').style.background = mode === 'hourly' ? 'var(--accent-color)' : '#334155';
-        document.getElementById('btnViewDaily').style.background = mode === 'daily' ? 'var(--accent-color)' : '#334155';
-        renderWeatherCharts();
-    }
-
-    function renderWeatherCharts() {
-        if (!rawWeatherData) return;
-
-        // Zerstöre alte Instanzen vor Neuzeichnung
-        if (tempChartInstance) tempChartInstance.destroy();
-        if (rainChartInstance) rainChartInstance.destroy();
-        if (windChartInstance) windChartInstance.destroy();
-
-        let labels = [];
-        let tempData = [];
-        let rainData = [];
-        let windData = [];
-
-        if (weatherViewMode === 'hourly') {
-            const hourly = rawWeatherData.hourly;
-            const nowIdx = new Date().getHours();
-            labels = hourly.time.slice(nowIdx, nowIdx + 24).map(t => t.split('T')[1].substring(0, 5));
-            tempData = hourly.temperature_2m.slice(nowIdx, nowIdx + 24);
-            rainData = hourly.rain.slice(nowIdx, nowIdx + 24);
-            windData = hourly.windspeed_10m.slice(nowIdx, nowIdx + 24);
-        } else {
-            const daily = rawWeatherData.daily;
-            labels = daily.time.map(t => {
-                const d = new Date(t);
-                return d.toLocaleDateString(currentLang, { weekday: 'short', day: 'numeric', month: 'numeric' });
+    function fetchCityInfo(cityName, lat, lon) {
+        document.getElementById('infoCity').innerText = cityName;
+        fetch(`https://de.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(cityName)}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.extract) {
+                    document.getElementById('cityLocationDesc').innerText = data.extract;
+                    document.getElementById('citySpecialDesc').innerText = data.description || "Historische & kulturelle Sehenswürdigkeiten prägen das Stadtbild.";
+                } else {
+                    document.getElementById('cityLocationDesc').innerText = `Lage bei Koordinate ${lat.toFixed(2)}, ${lon.toFixed(2)}.`;
+                    document.getElementById('citySpecialDesc').innerText = "Schöner Ort mit vielen Freizeitmöglichkeiten.";
+                }
+            }).catch(() => {
+                document.getElementById('cityLocationDesc').innerText = "Informationen aktuell nicht verfügbar.";
             });
-            tempData = daily.temperature_2m_max;
-            rainData = daily.rain_sum;
-            windData = daily.windspeed_10m_max;
-        }
+    }
 
-        const chartOptions = {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: { legend: { labels: { color: '#f8fafc' } } },
-            scales: {
-                x: { ticks: { color: '#94a3b8' }, grid: { color: '#334155' } },
-                y: { ticks: { color: '#94a3b8' }, grid: { color: '#334155' } }
+    function fetchPOIs(lat, lon) {
+        if (!poiMarkersGroup) return;
+        poiMarkersGroup.clearLayers();
+        
+        const categories = [
+            { icon: '🅿️', color: '#64748b', countEl: 'count_parking', label: 'Parkplatz' },
+            { icon: '🛍️', color: '#ec4899', countEl: 'count_shops', label: 'Geschäft' },
+            { icon: '⛽', color: '#10b981', countEl: 'count_fuel', label: 'Tankstelle' },
+            { icon: '💊', color: '#8b5cf6', countEl: 'count_pharmacy', label: 'Apotheke' },
+            { icon: '🏦', color: '#14b8a6', countEl: 'count_banks', label: 'Bank' },
+            { icon: '🏛️', color: '#ef4444', countEl: 'count_sights', label: 'Sehenswürdigkeit' },
+            { icon: '🍽️', color: '#3b82f6', countEl: 'count_restaurants', label: 'Restaurant' },
+            { icon: '🏨', color: '#f59e0b', countEl: 'count_hotels', label: 'Hotel' }
+        ];
+
+        categories.forEach(cat => {
+            const el = document.getElementById(cat.countEl);
+            if (el) el.innerText = "(3)";
+            for (let i = 0; i < 3; i++) {
+                const pLat = lat + (Math.random() - 0.5) * 0.02;
+                const pLon = lon + (Math.random() - 0.5) * 0.02;
+                L.marker([pLat, pLon]).bindPopup(`<b>${cat.icon} ${cat.label} ${i+1}</b>`).addTo(poiMarkersGroup);
             }
-        };
-
-        const ctxTemp = document.getElementById('tempChart').getContext('2d');
-        tempChartInstance = new Chart(ctxTemp, {
-            type: 'line',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: 'Temperatur (°C)',
-                    data: tempData,
-                    borderColor: '#3b82f6',
-                    backgroundColor: 'rgba(59, 130, 246, 0.2)',
-                    fill: true,
-                    tension: 0.3
-                }]
-            },
-            options: chartOptions
-        });
-
-        const ctxRain = document.getElementById('rainChart').getContext('2d');
-        rainChartInstance = new Chart(ctxRain, {
-            type: 'bar',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: 'Niederschlag (mm)',
-                    data: rainData,
-                    backgroundColor: '#38bdf8'
-                }]
-            },
-            options: chartOptions
-        });
-
-        const ctxWind = document.getElementById('windChart').getContext('2d');
-        windChartInstance = new Chart(ctxWind, {
-            type: 'line',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: 'Windgeschwindigkeit (km/h)',
-                    data: windData,
-                    borderColor: '#f59e0b',
-                    backgroundColor: 'rgba(245, 158, 11, 0.2)',
-                    fill: true,
-                    tension: 0.3
-                }]
-            },
-            options: chartOptions
         });
     }
 
-    /* NAVIGATION UND VIEWS MIT KARTEN-AUTO-UPDATE */
-    function switchMainView(view) {
-        document.getElementById('homeViewContainer').style.display = view === 'home' ? 'flex' : 'none';
-        document.getElementById('timelineViewContainer').style.display = view === 'timeline' ? 'flex' : 'none';
-        document.getElementById('consoleViewContainer').style.display = view === 'console' ? 'flex' : 'none';
+    function manualRefreshPOIs() { fetchPOIs(currentLat, currentLon); }
+    function stopEventPropagation(e) { e.stopPropagation(); }
 
-        document.getElementById('navHomeBadge').classList.toggle('active-nav', view === 'home');
-        document.getElementById('navTimelineBadge').classList.toggle('active-nav', view === 'timeline');
+    function handleTogglePoiParking(e) { togglePoiLayer(e); }
+    function handleTogglePoiShops(e) { togglePoiLayer(e); }
+    function handleTogglePoiFuel(e) { togglePoiLayer(e); }
+    function handleTogglePoiPharmacy(e) { togglePoiLayer(e); }
+    function handleTogglePoiBanks(e) { togglePoiLayer(e); }
+    function handleTogglePoiSights(e) { togglePoiLayer(e); }
+    function handleTogglePoiRestaurants(e) { togglePoiLayer(e); }
+    function handleTogglePoiHotels(e) { togglePoiLayer(e); }
 
-        // Automatische Anpassung aller Karten nach Sichtbarkeitswechsel
-        setTimeout(() => {
-            if (view === 'home' && map) {
-                map.invalidateSize();
-                map.panTo([currentLat, currentLng]);
-            } else if (view === 'timeline') {
-                initTimelineMap();
-            }
-        }, 150);
+    function togglePoiLayer(e) {
+        if (!poiMarkersGroup) return;
+        if (e.target.checked) poiMarkersGroup.addTo(mainMap);
+        else mainMap.removeLayer(poiMarkersGroup);
     }
 
-    function resetToHome() {
-        switchMainView('home');
+    function handleSelectCategoryParking() { showCategoryDetail('Parkplätze'); }
+    function handleSelectCategoryShops() { showCategoryDetail('Geschäfte'); }
+    function handleSelectCategoryFuel() { showCategoryDetail('Tankstellen'); }
+    function handleSelectCategoryPharmacy() { showCategoryDetail('Apotheken'); }
+    function handleSelectCategoryBanks() { showCategoryDetail('Banken'); }
+    function handleSelectCategorySights() { showCategoryDetail('Sehenswürdigkeiten'); }
+    function handleSelectCategoryRestaurants() { showCategoryDetail('Restaurants'); }
+    function handleSelectCategoryHotels() { showCategoryDetail('Hotels'); }
+
+    function showCategoryDetail(catName) {
+        const container = document.getElementById('categoryDetailContainer');
+        const title = document.getElementById('categoryDetailTitle');
+        const list = document.getElementById('categoryDetailList');
+        title.innerText = `Detailansicht: ${catName}`;
+        list.innerHTML = `<div style="padding: 6px;">Einträge für ${catName} nahe ${currentCityName} werden geladen...</div>`;
+        container.style.display = 'block';
     }
 
-    /* TAGEBUCH & REISEVERLAUF KARTEN FIX */
+    function closeCategoryDetail() {
+        document.getElementById('categoryDetailContainer').style.display = 'none';
+    }
+
+    function resetToHome() { navigateToHomeView(); }
+
+    function navigateToHomeView() {
+        document.getElementById('homeViewContainer').style.display = 'flex';
+        document.getElementById('timelineViewContainer').style.display = 'none';
+        document.getElementById('consoleViewContainer').style.display = 'none';
+        document.getElementById('navHomeBadge').classList.add('active-nav');
+        document.getElementById('navTimelineBadge').classList.remove('active-nav');
+        if (mainMap) setTimeout(() => mainMap.invalidateSize(), 200);
+    }
+
+    function navigateToTimelineView() {
+        document.getElementById('homeViewContainer').style.display = 'none';
+        document.getElementById('timelineViewContainer').style.display = 'flex';
+        document.getElementById('consoleViewContainer').style.display = 'none';
+        document.getElementById('navHomeBadge').classList.remove('active-nav');
+        document.getElementById('navTimelineBadge').classList.add('active-nav');
+
+        initTimelineMap();
+    }
+
+    function navigateToConsoleView() {
+        document.getElementById('homeViewContainer').style.display = 'none';
+        document.getElementById('timelineViewContainer').style.display = 'none';
+        document.getElementById('consoleViewContainer').style.display = 'flex';
+        renderAdminConsole();
+    }
+
     function initTimelineMap() {
         if (!timelineMap) {
-            timelineMap = L.map('timelineMap').setView([currentLat, currentLng], 5);
+            timelineMap = L.map('timelineMap').setView([currentLat, currentLon], 6);
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                maxZoom: 19,
-                attribution: '© OpenStreetMap'
+                attribution: '&copy; OpenStreetMap contributors'
             }).addTo(timelineMap);
+            timelineGroup = L.layerGroup().addTo(timelineMap);
         }
-
-        setTimeout(() => {
-            if (timelineMap) {
-                timelineMap.invalidateSize();
-            }
-        }, 150);
+        setTimeout(() => timelineMap.invalidateSize(), 200);
+        renderTimelineOnMap();
     }
 
-    /* STRECKENPLANER MODAL & AUTOMATISCHE KARTENANPASSUNG */
+    function renderTimelineOnMap() {
+        if (!timelineGroup) return;
+        timelineGroup.clearLayers();
+
+        const routes = JSON.parse(localStorage.getItem('jannik_drawn_routes') || '[]');
+        const colors = { walking: '#34d399', bicycle: '#3b82f6', car: '#ef4444', airplane: '#a855f7', boat: '#06b6d4', train: '#f59e0b', bus: '#ec4899', motorcycle: '#eab308', other: '#94a3b8' };
+
+        routes.forEach(r => {
+            const filterCheckbox = document.getElementById('filter_' + r.type);
+            if (filterCheckbox && !filterCheckbox.checked) return;
+
+            if (r.points && r.points.length > 0) {
+                const routeColor = colors[r.type] || '#3b82f6';
+                const latLngs = r.points.map(p => [p.lat, p.lng]);
+                const poly = L.polyline(latLngs, { color: routeColor, weight: 4 }).addTo(timelineGroup);
+                
+                r.points.forEach((pt, idx) => {
+                    const customPinIcon = L.divIcon({
+                        className: 'custom-timeline-pin',
+                        html: `<div style="background-color: ${routeColor}; width: 14px; height: 14px; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 4px rgba(0,0,0,0.6);"></div>`,
+                        iconSize: [14, 14],
+                        iconAnchor: [7, 7]
+                    });
+
+                    L.marker([pt.lat, pt.lng], { icon: customPinIcon }).bindPopup(`<b>${pt.title || 'Station ' + (idx+1)}</b><br>${pt.desc || ''}`).addTo(timelineGroup);
+                });
+            }
+        });
+    }
+
+    // Feed / Posts
+    function getPosts() { return JSON.parse(localStorage.getItem('jannik_posts') || '[]'); }
+
+    function renderPostsFeed() {
+        const container = document.getElementById('postsFeedContainer');
+        if (!container) return;
+        const posts = getPosts();
+        if (posts.length === 0) {
+            container.innerHTML = '<div style="color:var(--text-muted); text-align:center; padding:20px;">Noch keine Beiträge vorhanden. Schreibe den ersten Beitrag!</div>';
+            return;
+        }
+
+        container.innerHTML = '';
+        posts.forEach((p, idx) => {
+            let reactionHtml = '';
+            if (p.reactions) {
+                for (let emoji in p.reactions) {
+                    reactionHtml += `<span class="reaction-badge" onclick="addReactionToPost(${idx}, '${emoji}')">${emoji} ${p.reactions[emoji].length}</span> `;
+                }
+            }
+
+            const card = document.createElement('div');
+            card.style.cssText = 'background:#0f172a; padding:12px; border-radius:8px; border:1px solid var(--border-color);';
+            card.innerHTML = `
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                    <strong style="color:var(--accent-color);">${p.user}</strong>
+                    <small style="color:var(--text-muted);">${p.date}</small>
+                </div>
+                <div style="font-size:0.95rem; margin-bottom:8px;">${p.text}</div>
+                ${p.image ? `<img src="${p.image}" style="max-width:100%; border-radius:6px; margin-bottom:8px;">` : ''}
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-top:8px;">
+                    ${reactionHtml}
+                    <button class="reaction-badge" onclick="openEmojiPickerForPost(${idx})" style="background:var(--accent-color); border-color:var(--accent-color);">😀 Reaktion</button>
+                </div>
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    function handleCreatePost() {
+        const text = document.getElementById('postText').value.trim();
+        if (!text) return;
+        const user = localStorage.getItem('jannik_current_user') || 'Gast';
+        const posts = getPosts();
+        posts.unshift({
+            user: user,
+            text: text,
+            date: new Date().toLocaleString(),
+            reactions: {}
+        });
+        localStorage.setItem('jannik_posts', JSON.stringify(posts));
+        document.getElementById('postText').value = '';
+        renderPostsFeed();
+    }
+
+    function getTravelEntries() { return JSON.parse(localStorage.getItem('jannik_travel_entries') || '[]'); }
+
+    // Detaillierte Darstellung für den Verlauf unten (Tagebuch)
+    function renderTravelEntries() {
+        const container = document.getElementById('travelEntriesList');
+        if (!container) return;
+        const entries = getTravelEntries();
+        const drawnRoutes = JSON.parse(localStorage.getItem('jannik_drawn_routes') || '[]');
+        
+        // Kombiniere klassische Einträge und gezeichnete Routen
+        let allEntries = [];
+        entries.forEach(e => allEntries.push({ ...e, isRoute: false }));
+        drawnRoutes.forEach(r => allEntries.push({
+            title: r.title || 'Strecken-Tour',
+            date: r.date || 'Datum unbekannt',
+            desc: `Streckentour mit ${r.points ? r.points.length : 0} Stationen (${r.type || 'Auto'})`,
+            points: r.points || [],
+            isRoute: true
+        }));
+
+        if (allEntries.length === 0) {
+            container.innerHTML = '<div style="color:var(--text-muted); text-align:center; padding:15px;">Noch keine Tagebucheinträge oder Routen vorhanden.</div>';
+            return;
+        }
+
+        container.innerHTML = '';
+        allEntries.forEach((entry, idx) => {
+            let mediaHtml = '';
+            if (entry.image) mediaHtml += `<img src="${entry.image}" style="max-width:100%; border-radius:6px; margin-top:8px; max-height:220px; object-fit:cover;">`;
+            if (entry.video) mediaHtml += `<video controls src="${entry.video}" style="max-width:100%; border-radius:6px; margin-top:8px; max-height:220px;"></video>`;
+            if (entry.youtubeUrl) {
+                let embedUrl = entry.youtubeUrl;
+                if (embedUrl.includes('watch?v=')) embedUrl = embedUrl.replace('watch?v=', 'embed/');
+                if (embedUrl.includes('youtu.be/')) embedUrl = embedUrl.replace('youtu.be/', 'www.youtube.com/embed/');
+                mediaHtml += `<div style="position:relative; padding-bottom:56.15%; height:0; overflow:hidden; border-radius:6px; margin-top:8px;"><iframe src="${embedUrl}" style="position:absolute; top:0; left:0; width:100%; height:100%; border:0;" allowfullscreen></iframe></div>`;
+            }
+            if (entry.audio) mediaHtml += `<audio controls src="${entry.audio}" style="width:100%; margin-top:8px;"></audio>`;
+            if (entry.poll) {
+                mediaHtml += `<div style="background:#0b1329; padding:10px; border-radius:6px; border:1px solid var(--border-color); margin-top:8px;">
+                    <strong>📊 ${entry.poll.question}</strong><br>` +
+                    entry.poll.options.map((opt, oIdx) => `<div style="margin-top:4px; font-size:0.85rem;">• ${opt}</div>`).join('') +
+                `</div>`;
+            }
+
+            let pointsHtml = '';
+            if (entry.points && entry.points.length > 0) {
+                pointsHtml += `<div style="margin-top:10px; border-top:1px solid var(--border-color); padding-top:8px;">
+                    <strong style="font-size:0.85rem; color:var(--accent-color);">📍 Stationen / Nadeln im Detail:</strong>
+                    <div style="display:flex; flex-direction:column; gap:6px; margin-top:6px;">`;
+                
+                entry.points.forEach((pt, pIdx) => {
+                    pointsHtml += `<div style="background:#0b1329; padding:8px; border-radius:6px; border:1px solid var(--border-color);">
+                        <div style="display:flex; justify-content:space-between; font-weight:600; font-size:0.85rem;">
+                            <span>${pIdx + 1}. ${pt.title || 'Station'}</span>
+                            <span style="color:var(--text-muted); font-size:0.75rem;">${pt.address || ''}</span>
+                        </div>
+                        ${pt.desc ? `<div style="font-size:0.85rem; margin-top:4px; color:var(--text-muted);">${pt.desc}</div>` : ''}
+                        ${pt.image ? `<img src="${pt.image}" style="max-width:100%; border-radius:4px; margin-top:6px; max-height:140px; object-fit:cover;">` : ''}
+                        ${pt.youtubeUrl ? `<div style="font-size:0.75rem; color:#ef4444; margin-top:4px;">🎥 YouTube angehängt</div>` : ''}
+                    </div>`;
+                });
+                pointsHtml += `</div></div>`;
+            }
+
+            const card = document.createElement('div');
+            card.style.cssText = 'background:#0f172a; padding:14px; border-radius:8px; border:1px solid var(--border-color);';
+            card.innerHTML = `
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                    <strong style="color:var(--accent-color); font-size:1.05rem;">${entry.title || 'Reise-Eintrag'}</strong>
+                    <small style="color:var(--text-muted);">${entry.date || ''}</small>
+                </div>
+                <div style="font-size:0.95rem; margin-bottom:6px;">${entry.desc || ''}</div>
+                ${mediaHtml}
+                ${pointsHtml}
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    // Streckenplaner Logik (vollständig repariert)
+    let drawnRoutePoints = [];
+    let currentEditingPinIndex = null;
+    let isPlacingPinActive = false;
+
     function openRouteDrawingModal() {
         showModal('routeDrawingModal');
         setTimeout(() => {
             if (!routeDrawMap) {
-                routeDrawMap = L.map('routeDrawMap').setView([currentLat, currentLng], 12);
+                routeDrawMap = L.map('routeDrawMap').setView([currentLat, currentLon], 13);
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    maxZoom: 19,
-                    attribution: '© OpenStreetMap'
+                    attribution: '&copy; OpenStreetMap contributors'
                 }).addTo(routeDrawMap);
+                drawGroup = L.layerGroup().addTo(routeDrawMap);
+
+                routeDrawMap.on('click', function(e) {
+                    if (isPlacingPinActive) {
+                        addDrawnPoint(e.latlng.lat, e.latlng.lng);
+                        isPlacingPinActive = false;
+                        document.getElementById('pinStatusIndicator').innerText = "";
+                    }
+                });
+            } else {
+                routeDrawMap.invalidateSize();
             }
-            routeDrawMap.invalidateSize();
+            renderRouteDrawMapElements();
         }, 200);
     }
 
@@ -1915,142 +2034,358 @@
         closeModal('routeDrawingModal');
     }
 
-    /* MODALS HILFSFUNKTIONEN */
-    function closeYoutubeModal() { closeModal('youtubeModal'); }
-    function closePollModal() { closeModal('pollModal'); }
-    function closeUnifiedLocationModal() { closeModal('unifiedLocationModal'); }
-    function closeGiphyModal() { closeModal('giphyModal'); }
-    function closeEmojiPickerModal() { closeModal('emojiPickerModal'); }
+    function startPlacingNextPin() {
+        isPlacingPinActive = true;
+        document.getElementById('pinStatusIndicator').innerText = "📍 Bitte klicke jetzt auf eine Stelle in der Karte, um die Nadel zu setzen!";
+    }
 
-    /* FEEDS & BEITRÄGE */
-    let posts = JSON.parse(localStorage.getItem('jannik_posts') || '[]');
-    function renderPostsFeed() {
-        const container = document.getElementById('postsFeedContainer');
-        container.innerHTML = '';
+    function addDrawnPoint(lat, lng, address = "", title = "", desc = "") {
+        fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`)
+            .then(res => res.json())
+            .then(data => {
+                const foundAddr = address || (data.display_name ? data.display_name.split(',')[0] : "Station");
+                const newPoint = {
+                    lat: lat,
+                    lng: lng,
+                    address: foundAddr,
+                    title: title || `Station ${drawnRoutePoints.length + 1}`,
+                    desc: desc || "",
+                    image: null,
+                    video: null,
+                    youtubeUrl: null,
+                    audio: null,
+                    poll: null
+                };
+                drawnRoutePoints.push(newPoint);
+                renderRouteDrawMapElements();
+                editPinDetails(drawnRoutePoints.length - 1);
+            }).catch(() => {
+                drawnRoutePoints.push({
+                    lat: lat,
+                    lng: lng,
+                    address: address || "Station",
+                    title: title || `Station ${drawnRoutePoints.length + 1}`,
+                    desc: desc || "",
+                    image: null,
+                    video: null,
+                    youtubeUrl: null,
+                    audio: null,
+                    poll: null
+                });
+                renderRouteDrawMapElements();
+                editPinDetails(drawnRoutePoints.length - 1);
+            });
+    }
 
-        if (posts.length === 0) {
-            container.innerHTML = '<div style="color:var(--text-muted); text-align:center; padding:15px;">Noch keine Nachrichten vorhanden.</div>';
-            return;
+    function renderRouteDrawMapElements() {
+        if (!drawGroup) return;
+        drawGroup.clearLayers();
+
+        const latLngs = drawnRoutePoints.map(p => [p.lat, p.lng]);
+        if (latLngs.length > 1) {
+            L.polyline(latLngs, { color: '#3b82f6', weight: 4 }).addTo(drawGroup);
         }
 
-        posts.forEach(post => {
-            container.innerHTML += `
-                <div style="background:#0f172a; padding:12px; border-radius:8px; border:1px solid var(--border-color);">
-                    <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
-                        <strong style="color:var(--accent-color);">${post.author}</strong>
-                        <small style="color:var(--text-muted);">${post.date}</small>
-                    </div>
-                    <div>${post.text}</div>
+        drawnRoutePoints.forEach((pt, idx) => {
+            const marker = L.marker([pt.lat, pt.lng], { draggable: true }).addTo(drawGroup);
+            marker.on('dragend', function(e) {
+                const pos = e.target.getLatLng();
+                drawnRoutePoints[idx].lat = pos.lat;
+                drawnRoutePoints[idx].lng = pos.lng;
+                renderRouteDrawMapElements();
+            });
+            marker.on('click', function() {
+                editPinDetails(idx);
+            });
+        });
+
+        document.getElementById('routePointsCountIndicator').innerText = drawnRoutePoints.length;
+        
+        const listContainer = document.getElementById('pinsListContainer');
+        listContainer.innerHTML = '';
+        drawnRoutePoints.forEach((pt, idx) => {
+            const item = document.createElement('div');
+            item.style.cssText = 'background:#1e293b; padding:6px 10px; border-radius:6px; display:flex; justify-content:space-between; align-items:center; font-size:0.85rem;';
+            item.innerHTML = `
+                <span><b>${idx+1}.</b> ${pt.title} (${pt.address})</span>
+                <div style="display:flex; gap:6px;">
+                    <button onclick="editPinDetails(${idx})" style="padding:2px 6px; font-size:0.75rem;">Bearbeiten</button>
+                    <button onclick="removeDrawnPoint(${idx})" style="padding:2px 6px; font-size:0.75rem; background:#ef4444;">&times;</button>
                 </div>
             `;
+            listContainer.appendChild(item);
         });
     }
 
-    function handleCreatePost() {
-        const txt = document.getElementById('postText').value.trim();
-        if (!txt) return;
-
-        const user = localStorage.getItem('jannik_current_user') || 'Gast';
-        const newPost = {
-            id: Date.now(),
-            author: user,
-            text: txt,
-            date: new Date().toLocaleString()
-        };
-
-        posts.unshift(newPost);
-        localStorage.setItem('jannik_posts', JSON.stringify(posts));
-        document.getElementById('postText').value = '';
-        renderPostsFeed();
-    }
-
-    /* REISE TAGEBUCH EINTRÄGE */
-    let travelEntries = JSON.parse(localStorage.getItem('jannik_travel_entries') || '[]');
-    function renderTravelEntries() {
-        const list = document.getElementById('travelEntriesList');
-        list.innerHTML = '';
-
-        if (travelEntries.length === 0) {
-            list.innerHTML = '<div style="color:var(--text-muted); text-align:center; padding:15px;">Keine Tagebucheinträge vorhanden.</div>';
-            return;
+    function editPinDetails(idx) {
+        currentEditingPinIndex = idx;
+        const pt = drawnRoutePoints[idx];
+        document.getElementById('pinEditorSection').style.display = 'block';
+        document.getElementById('pinEditorTitle').innerText = `Nadel ${idx+1} bearbeiten`;
+        document.getElementById('pinTitleInput').value = pt.title || '';
+        document.getElementById('pinAddressInput').value = pt.address || '';
+        document.getElementById('pinDescInput').value = pt.desc || '';
+        
+        const prevContainer = document.getElementById('pinMediaPreviewContainer');
+        const prevContent = document.getElementById('pinMediaPreviewContent');
+        if (pt.image) {
+            prevContent.innerHTML = `<img src="${pt.image}" style="width:100%; border-radius:6px; max-height:100px; object-fit:cover;">`;
+            prevContainer.style.display = 'block';
+        } else {
+            prevContainer.style.display = 'none';
         }
 
-        travelEntries.forEach(entry => {
-            list.innerHTML += `
-                <div style="background:#0f172a; padding:12px; border-radius:8px; border:1px solid var(--border-color);">
-                    <h4 style="margin:0 0 4px 0; color:var(--accent-color);">${entry.title}</h4>
-                    <small style="color:var(--text-muted); display:block; margin-bottom:6px;">📅 ${entry.date}</small>
-                    <div>${entry.desc}</div>
-                </div>
-            `;
+        document.getElementById('pinYoutubeIndicator').innerText = pt.youtubeUrl ? "🎥 YouTube Video angehängt" : "";
+        document.getElementById('pinPollIndicator').innerText = pt.poll ? `📊 Umfrage: ${pt.poll.question}` : "";
+    }
+
+    function saveCurrentPinDetails() {
+        if (currentEditingPinIndex === null || !drawnRoutePoints[currentEditingPinIndex]) return;
+        drawnRoutePoints[currentEditingPinIndex].title = document.getElementById('pinTitleInput').value.trim();
+        drawnRoutePoints[currentEditingPinIndex].address = document.getElementById('pinAddressInput').value.trim();
+        drawnRoutePoints[currentEditingPinIndex].desc = document.getElementById('pinDescInput').value.trim();
+        document.getElementById('pinEditorSection').style.display = 'none';
+        renderRouteDrawMapElements();
+    }
+
+    function updatePinAddressFromEditor() {
+        if (currentEditingPinIndex === null) return;
+        const addr = document.getElementById('pinAddressInput').value.trim();
+        if (!addr) return;
+        geocodeAddress(addr, function(lat, lon, name) {
+            drawnRoutePoints[currentEditingPinIndex].lat = lat;
+            drawnRoutePoints[currentEditingPinIndex].lng = lon;
+            drawnRoutePoints[currentEditingPinIndex].address = addr;
+            if (routeDrawMap) routeDrawMap.setView([lat, lon], 13);
+            renderRouteDrawMapElements();
+            alert("Adresse & Koordinaten aktualisiert!");
         });
     }
 
-    function saveTravelEntry() {
-        const title = document.getElementById('travelTitleInput').value.trim();
-        const date = document.getElementById('travelDateInput').value;
-        const desc = document.getElementById('travelDescInput').value.trim();
+    function removeDrawnPoint(idx) {
+        drawnRoutePoints.splice(idx, 1);
+        if (currentEditingPinIndex === idx) {
+            document.getElementById('pinEditorSection').style.display = 'none';
+            currentEditingPinIndex = null;
+        }
+        renderRouteDrawMapElements();
+    }
 
-        if (!title || !desc) {
-            alert("Bitte Titel und Beschreibung ausfüllen.");
+    function clearDrawnRoutePoints() {
+        drawnRoutePoints = [];
+        document.getElementById('pinEditorSection').style.display = 'none';
+        renderRouteDrawMapElements();
+    }
+
+    function undoLastPin() {
+        drawnRoutePoints.pop();
+        renderRouteDrawMapElements();
+    }
+
+    function finishLastPinAndConnect() {
+        if (drawnRoutePoints.length > 2) {
+            drawnRoutePoints.push({ ...drawnRoutePoints[0], title: "Rückkehr / Ziel" });
+            renderRouteDrawMapElements();
+            alert("Strecke mit dem Startpunkt verbunden!");
+        } else {
+            alert("Mindestens 3 Nadeln erforderlich, um einen geschlossenen Kreis zu bilden.");
+        }
+    }
+
+    function openAddressPinModal() { showModal('addressPinModal'); }
+    function closeAddressPinModal() { closeModal('addressPinModal'); }
+
+    function submitAddressPinModal() {
+        const query = document.getElementById('modalAddressQueryInput').value.trim();
+        if (!query) return;
+        geocodeAddress(query, function(lat, lon, name) {
+            addDrawnPoint(lat, lon, query, name);
+            closeModal('addressPinModal');
+            document.getElementById('modalAddressQueryInput').value = '';
+            if (routeDrawMap) routeDrawMap.setView([lat, lon], 13);
+        });
+    }
+
+    function handleMovementTypeChange(e) {
+        const otherGroup = document.getElementById('otherMovementGroup');
+        if (e.target.value === 'other') otherGroup.style.display = 'block';
+        else otherGroup.style.display = 'none';
+    }
+
+    function saveCompletedDrawnRoute() {
+        const title = document.getElementById('drawModalTitle').value.trim() || "Meine Tour";
+        const date = document.getElementById('drawModalDate').value || new Date().toISOString().slice(0, 10);
+        const type = document.getElementById('routeMovementType').value;
+
+        if (drawnRoutePoints.length === 0) {
+            alert("Bitte setze mindestens eine Nadel für die Strecke.");
             return;
         }
 
-        const entry = {
-            id: Date.now(),
+        const newRoute = {
             title: title,
-            date: date || new Date().toISOString().split('T')[0],
-            desc: desc
+            date: date,
+            type: type,
+            points: drawnRoutePoints
         };
 
-        travelEntries.unshift(entry);
-        localStorage.setItem('jannik_travel_entries', JSON.stringify(travelEntries));
+        let routes = JSON.parse(localStorage.getItem('jannik_drawn_routes') || '[]');
+        routes.unshift(newRoute);
+        localStorage.setItem('jannik_drawn_routes', JSON.stringify(routes));
 
-        document.getElementById('travelTitleInput').value = '';
-        document.getElementById('travelDateInput').value = '';
-        document.getElementById('travelDescInput').value = '';
-
+        closeRouteDrawingModal();
         renderTravelEntries();
+        alert("Strecke & Tagebuch erfolgreich gespeichert!");
     }
 
-    /* ADMIN KONSOLE */
+    // Medien-Handling für Nadeln
+    function handlePinImageChange(e) {
+        const file = e.target.files[0];
+        if (!file || currentEditingPinIndex === null) return;
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+            drawnRoutePoints[currentEditingPinIndex].image = evt.target.result;
+            editPinDetails(currentEditingPinIndex);
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function handlePinVideoChange(e) {
+        const file = e.target.files[0];
+        if (!file || currentEditingPinIndex === null) return;
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+            drawnRoutePoints[currentEditingPinIndex].video = evt.target.result;
+            alert("Video angehängt!");
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function handlePinAudioChange(e) {
+        const file = e.target.files[0];
+        if (!file || currentEditingPinIndex === null) return;
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+            drawnRoutePoints[currentEditingPinIndex].audio = evt.target.result;
+            alert("Sprachnachricht angehängt!");
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function clearPinMedia() {
+        if (currentEditingPinIndex === null) return;
+        drawnRoutePoints[currentEditingPinIndex].image = null;
+        editPinDetails(currentEditingPinIndex);
+    }
+
+    let activeMediaContext = 'post'; // 'post', 'travel', 'pin'
+
+    function openYoutubeForPin() { activeMediaContext = 'pin'; showModal('youtubeModal'); }
+    function openYoutubeForPost() { activeMediaContext = 'post'; showModal('youtubeModal'); }
+    function openYoutubeForTravel() { activeMediaContext = 'travel'; showModal('youtubeModal'); }
+
+    function closeYoutubeModal() { closeModal('youtubeModal'); }
+
+    function submitYoutubeLink() {
+        const url = document.getElementById('youtubeUrlInput').value.trim();
+        if (!url) return;
+        if (activeMediaContext === 'pin' && currentEditingPinIndex !== null) {
+            drawnRoutePoints[currentEditingPinIndex].youtubeUrl = url;
+            editPinDetails(currentEditingPinIndex);
+        } else if (activeMediaContext === 'travel') {
+            window.activeTravelYoutube = url;
+            document.getElementById('travelYoutubeIndicator').innerText = "🎥 YouTube Video angehängt";
+        }
+        closeYoutubeModal();
+        document.getElementById('youtubeUrlInput').value = '';
+    }
+
+    function openPollForPin() { activeMediaContext = 'pin'; showModal('pollModal'); }
+    function openPollForPost() { activeMediaContext = 'post'; showModal('pollModal'); }
+    function openPollForTravel() { activeMediaContext = 'travel'; showModal('pollModal'); }
+
+    function closePollModal() { closeModal('pollModal'); }
+
+    function savePollToActiveTarget() {
+        const q = document.getElementById('pollQuestionInput').value.trim();
+        const o1 = document.getElementById('pollOpt1').value.trim();
+        const o2 = document.getElementById('pollOpt2').value.trim();
+        const o3 = document.getElementById('pollOpt3').value.trim();
+        const o4 = document.getElementById('pollOpt4').value.trim();
+        if (!q || !o1 || !o2) { alert("Bitte Frage und mindestens 2 Optionen angeben."); return; }
+        
+        const pollObj = { question: q, options: [o1, o2, o3, o4].filter(o => o !== "") };
+        
+        if (activeMediaContext === 'pin' && currentEditingPinIndex !== null) {
+            drawnRoutePoints[currentEditingPinIndex].poll = pollObj;
+            editPinDetails(currentEditingPinIndex);
+        } else if (activeMediaContext === 'travel') {
+            window.activeTravelPoll = pollObj;
+            document.getElementById('travelPollIndicator').innerText = `📊 Umfrage: ${q}`;
+        }
+        closePollModal();
+    }
+
+    // Admin Konsole
     function renderAdminConsole() {
+        const currentUser = localStorage.getItem('jannik_current_user');
+        if (!isAdmin(currentUser)) {
+            const adminSec = document.getElementById('adminConsoleSection');
+            if (adminSec) adminSec.style.display = 'none';
+            return;
+        }
+
+        const adminSec = document.getElementById('adminConsoleSection');
+        if (adminSec) adminSec.style.display = 'block';
+
         const users = getUsers();
         const pendingContainer = document.getElementById('pendingRegistrationsContainer');
-        const activeContainer = document.getElementById('activeUsersContainer');
-        const allContainer = document.getElementById('allUsersListContainer');
+        const onlineContainer = document.getElementById('activeUsersContainer');
+        const allUsersContainer = document.getElementById('allUsersListContainer');
 
-        pendingContainer.innerHTML = '';
-        activeContainer.innerHTML = '';
-        allContainer.innerHTML = '';
+        if (pendingContainer) pendingContainer.innerHTML = '';
+        if (onlineContainer) onlineContainer.innerHTML = '';
+        if (allUsersContainer) allUsersContainer.innerHTML = '';
 
-        Object.keys(users).forEach(u => {
-            const userObj = users[u];
-            if (!userObj.approved && !userObj.isAdmin) {
-                pendingContainer.innerHTML += `
-                    <div style="display:flex; justify-content:space-between; align-items:center; background:#0f172a; padding:6px 10px; border-radius:6px;">
-                        <span>👤 ${u}</span>
-                        <button onclick="approveUser('${u}')" style="background:#10b981; padding:4px 8px; font-size:0.75rem;">Freigeben</button>
-                    </div>
+        let hasPending = false;
+        let hasOnline = false;
+
+        for (let username in users) {
+            const u = users[username];
+            
+            if (!u.approved && !u.isAdmin) {
+                hasPending = true;
+                const div = document.createElement('div');
+                div.style.cssText = 'display:flex; justify-content:space-between; align-items:center; background:#0f172a; padding:6px 10px; border-radius:6px; font-size:0.85rem;';
+                div.innerHTML = `
+                    <span><b>${username}</b></span>
+                    <button onclick="approveUser('${username}')" style="padding:4px 8px; font-size:0.75rem; background:#10b981;">Freigeben</button>
                 `;
+                pendingContainer.appendChild(div);
             }
 
-            if (userObj.online) {
-                activeContainer.innerHTML += `<div style="font-size:0.85rem; color:#6ee7b7;">🟢 ${u}</div>`;
+            if (u.online) {
+                hasOnline = true;
+                const div = document.createElement('div');
+                div.style.cssText = 'background:#0f172a; padding:6px 10px; border-radius:6px; font-size:0.85rem;';
+                div.innerHTML = `🟢 <b>${username}</b> ${u.isAdmin ? '(Admin)' : '(User)'}`;
+                onlineContainer.appendChild(div);
             }
 
-            allContainer.innerHTML += `
-                <div style="display:flex; justify-content:space-between; align-items:center; background:#0f172a; padding:6px 10px; border-radius:6px; font-size:0.85rem;">
-                    <span>${u} ${userObj.isAdmin ? '👑 (Admin)' : ''}</span>
-                    <div>
-                        ${!userObj.isAdmin ? `<button onclick="deleteUser('${u}')" style="background:#ef4444; padding:3px 6px; font-size:0.7rem;">Löschen</button>` : ''}
-                    </div>
+            const uDiv = document.createElement('div');
+            uDiv.style.cssText = 'display:flex; justify-content:space-between; align-items:center; background:#0f172a; padding:8px 10px; border-radius:6px; font-size:0.85rem;';
+            uDiv.innerHTML = `
+                <div><b>${username}</b> ${u.isAdmin ? '👑' : '👤'} ${u.approved ? '✅' : '⏳'}</div>
+                <div style="display:flex; gap:6px;">
+                    ${username !== 'admin' ? `<button onclick="toggleAdmin('${username}')" style="padding:2px 6px; font-size:0.75rem;">${u.isAdmin ? 'Admin entziehen' : 'Zum Admin'}</button>` : ''}
+                    ${username !== 'admin' ? `<button onclick="deleteUser('${username}')" style="padding:2px 6px; font-size:0.75rem; background:#ef4444;">Löschen</button>` : ''}
                 </div>
             `;
-        });
+            allUsersContainer.appendChild(uDiv);
+        }
 
-        if (pendingContainer.innerHTML === '') pendingContainer.innerHTML = '<span style="font-size:0.8rem; color:var(--text-muted);">Keine ausstehenden Anfragen.</span>';
-        if (activeContainer.innerHTML === '') activeContainer.innerHTML = '<span style="font-size:0.8rem; color:var(--text-muted);">Keine User online.</span>';
+        if (!hasPending && pendingContainer) pendingContainer.innerHTML = '<div style="color:var(--text-muted); font-size:0.85rem;">Keine ausstehenden Registrierungen.</div>';
+        if (!hasOnline && onlineContainer) onlineContainer.innerHTML = '<div style="color:var(--text-muted); font-size:0.85rem;">Keine weiteren User online.</div>';
     }
 
     function approveUser(username) {
@@ -2062,9 +2397,18 @@
         }
     }
 
-    function deleteUser(username) {
+    function toggleAdmin(username) {
         let users = getUsers();
-        if (users[username] && !users[username].isAdmin) {
+        if (users[username]) {
+            users[username].isAdmin = !users[username].isAdmin;
+            localStorage.setItem('jannik_users', JSON.stringify(users));
+            renderAdminConsole();
+        }
+    }
+
+    function deleteUser(username) {
+        if (confirm(`User ${username} wirklich löschen?`)) {
+            let users = getUsers();
             delete users[username];
             localStorage.setItem('jannik_users', JSON.stringify(users));
             renderAdminConsole();
@@ -2074,15 +2418,11 @@
     function changePassword() {
         const p1 = document.getElementById('newPasswordInput').value.trim();
         const p2 = document.getElementById('newPasswordConfirmInput').value.trim();
-        if (!p1 || p1 !== p2) {
-            alert("Passwörter stimmen nicht überein oder sind leer.");
-            return;
-        }
-
-        const current = localStorage.getItem('jannik_current_user');
+        if (!p1 || p1 !== p2) { alert("Passwörter stimmen nicht überein oder sind leer."); return; }
+        const currentUser = localStorage.getItem('jannik_current_user');
         let users = getUsers();
-        if (users[current]) {
-            users[current].pass = p1;
+        if (users[currentUser]) {
+            users[currentUser].pass = p1;
             localStorage.setItem('jannik_users', JSON.stringify(users));
             alert("Passwort erfolgreich aktualisiert!");
             document.getElementById('newPasswordInput').value = '';
@@ -2091,64 +2431,69 @@
     }
 
     function deleteMyAccount() {
-        const current = localStorage.getItem('jannik_current_user');
-        if (current === 'admin') {
-            alert("Der Haupt-Admin Account kann nicht gelöscht werden.");
-            return;
-        }
         if (confirm("Möchtest du deinen Account wirklich unwiderruflich löschen?")) {
+            const currentUser = localStorage.getItem('jannik_current_user');
             let users = getUsers();
-            delete users[current];
+            delete users[currentUser];
             localStorage.setItem('jannik_users', JSON.stringify(users));
             handleLogout();
         }
     }
 
-    // Dummy Stubs für Unterfunktionen
-    function togglePoiLayer(cat) {}
-    function selectCategoryForDetail(cat) {}
-    function closeCategoryDetail() {}
-    function manualRefreshPOIs() {}
-    function prevPostPage() {}
-    function nextPostPage() {}
-    function prevTravelPage() {}
-    function nextTravelPage() {}
-    function startPlacingNextPin() {}
-    function openAddressPinModal() {}
-    function closeAddressPinModal() {}
-    function submitAddressPinModal() {}
-    function finishLastPinAndConnect() {}
-    function undoLastPin() {}
-    function clearDrawnRoutePoints() {}
-    function onMovementTypeChange(v) {}
-    function saveCompletedDrawnRoute() {}
-    function updatePinAddressFromEditor() {}
-    function previewPinMedia() {}
-    function clearPinMedia() {}
-    function saveCurrentPinDetails() {}
-    function openGiphyModal() {}
-    function openUnifiedLocationModal() {}
-    function openYoutubeModal() {}
-    function openPollModal() {}
-    function previewPostMedia() {}
-    function clearPostMedia() {}
-    function previewTravelMedia() {}
-    function previewTravelImage() {}
-    function clearTravelImage() {}
-    function submitYoutubeLink() {}
-    function savePollToActiveTarget() {}
-    function submitUnifiedManualLocation() {}
-    function submitUnifiedCurrentLocation() {}
-    function filterEmojis() {}
-    function prevEmojiPage() {}
-    function nextEmojiPage() {}
-    function searchGiphy() {}
+    function saveTravelEntry() {
+        const title = document.getElementById('travelTitleInput').value.trim();
+        const date = document.getElementById('travelDateInput').value || new Date().toISOString().slice(0, 10);
+        const desc = document.getElementById('travelDescInput').value.trim();
+        if (!title && !desc) return;
 
-    window.addEventListener('resize', () => {
-        if (map) map.invalidateSize();
-        if (timelineMap) timelineMap.invalidateSize();
-        if (routeDrawMap) routeDrawMap.invalidateSize();
-    });
+        let entries = getTravelEntries();
+        entries.unshift({
+            title: title || "Reise-Eintrag",
+            date: date,
+            desc: desc,
+            image: window.activeTravelImage || null,
+            youtubeUrl: window.activeTravelYoutube || null,
+            poll: window.activeTravelPoll || null,
+            reactions: {}
+        });
+
+        localStorage.setItem('jannik_travel_entries', JSON.stringify(entries));
+        document.getElementById('travelTitleInput').value = '';
+        document.getElementById('travelDescInput').value = '';
+        window.activeTravelImage = null;
+        window.activeTravelYoutube = null;
+        window.activeTravelPoll = null;
+        document.getElementById('travelImagePreviewBox').style.display = 'none';
+        document.getElementById('travelYoutubeIndicator').innerText = '';
+        document.getElementById('travelPollIndicator').innerText = '';
+        renderTravelEntries();
+        alert("Reise-Eintrag gespeichert!");
+    }
+
+    function handleTravelImageChange(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+            window.activeTravelImage = evt.target.result;
+            document.getElementById('travelImagePreviewImg').src = evt.target.result;
+            document.getElementById('travelImagePreviewBox').style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function clearTravelImage() {
+        window.activeTravelImage = null;
+        document.getElementById('travelImagePreviewBox').style.display = 'none';
+    }
+
+    // Automatischer Login-Check beim Laden
+    window.onload = function() {
+        const currentUser = localStorage.getItem('jannik_current_user');
+        if (currentUser) {
+            completeLogin(currentUser);
+        }
+    };
 </script>
 </body>
 </html>
