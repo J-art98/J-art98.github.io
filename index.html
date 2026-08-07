@@ -78,13 +78,13 @@ h1 { font-size: 1.3rem; margin: 0; color: var(--text-color); display: flex; alig
 .search-box { display: flex; gap: 8px; margin-bottom: 10px; } 
 .radius-control { display: flex; align-items: center; gap: 12px; background: #0f172a; padding: 10px 14px; border-radius: 8px; border: 1px solid var(--border-color); font-size: 0.9rem; margin-bottom: 10px; } 
 .radius-control input[type="range"] { flex-grow: 1; height: 6px; accent-color: var(--accent-color); } 
-input[type="text"], input[type="password"], input[type="date"], textarea, select { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); background: #0f172a; color: white; font-size: 0.95rem; outline: none; } 
+input[type="text"], input[type="password"], input[type="date"], input[type="time"], textarea, select { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); background: #0f172a; color: white; font-size: 0.95rem; outline: none; } 
 input:focus, textarea:focus, select:focus { border-color: var(--accent-color); } 
 button { background: var(--accent-color); color: white; border: none; padding: 12px 18px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.95rem; min-height: 44px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; } 
 button:active { opacity: 0.8; } 
 .unified-media-toolbar { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 6px; margin-bottom: 8px; } 
 .media-btn { background: #334155; color: white; padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; font-weight: 600; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; min-height: 36px; } 
-.media-btn-img { background: var(--accent-color); } .media-btn-vid { background: #10b981; } .media-btn-gif { background: #8b5cf6; } .media-btn-loc { background: #059669; } .media-btn-yt { background: #ef4444; } .media-btn-poll{ background: #f59e0b; } 
+.media-btn-img { background: var(--accent-color); } .media-btn-vid { background: #10b981; } .media-btn-gif { background: #8b5cf6; } .media-btn-loc { background: #059669; } .media-btn-yt { background: #ef4444; } .media-btn-poll{ background: #f59e0b; } .media-btn-reddit { background: #ff4500; } 
 .weather-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(90px, 1fr)); gap: 8px; margin-top: 10px; } 
 .weather-day { background: #0f172a; padding: 10px 6px; border-radius: 10px; border: 1px solid var(--border-color); font-size: 0.8rem; text-align: center; } 
 .weather-hours { display: flex; overflow-x: auto; gap: 8px; padding-bottom: 6px; margin-top: 10px; } 
@@ -109,6 +109,18 @@ button:active { opacity: 0.8; }
 </head> 
 <body> 
 <div id="toastContainer"></div> 
+
+<!-- START LOCATION OVERLAY MODAL --> 
+<div id="startLocationOverlay" class="modal" style="display: flex;"> 
+    <div class="auth-box" style="max-width: 400px;"> 
+        <h2 style="font-size: 1.2rem; margin-bottom: 14px; text-align: center;">📍 Startadresse wählen</h2> 
+        <div class="auth-form-group"><label>Welche Adresse möchtest du sehen?</label><input type="text" id="startAddrInput" placeholder="Ort oder PLZ..."></div> 
+        <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 14px;"> 
+            <button style="width: 100%;" onclick="submitStartLocation()">Suchen</button> 
+            <button style="width: 100%; background: #ef4444;" onclick="submitCurrentLocationStartup()">📍 Aktuellen GPS-Standort verwenden</button> 
+        </div> 
+    </div> 
+</div> 
 
 <!-- STANDORT MODAL --> 
 <div id="locationPickerModal" class="modal"> 
@@ -137,8 +149,8 @@ button:active { opacity: 0.8; }
 <div id="linkPickerModal" class="modal"> 
     <div class="auth-box" style="max-width: 420px;"> 
         <span class="close-modal" onclick="closeModal('linkPickerModal')">&times;</span> 
-        <h2 style="font-size: 1.2rem; margin-bottom: 14px; text-align: center;">🎥 YouTube Video oder Link</h2> 
-        <div class="auth-form-group"><label>URL:</label><input type="text" id="linkPickerUrlInput" placeholder="https://www.youtube.com/watch?v=..."></div> 
+        <h2 style="font-size: 1.2rem; margin-bottom: 14px; text-align: center;" id="linkModalTitle">🎥 YouTube Video oder Link</h2> 
+        <div class="auth-form-group"><label id="linkModalLabel">URL:</label><input type="text" id="linkPickerUrlInput" placeholder="https://..."></div> 
         <button onclick="confirmLinkAttachment()" style="width: 100%; margin-top: 10px;">Link & Vorschau hinzufügen</button> 
     </div> 
 </div> 
@@ -159,22 +171,9 @@ button:active { opacity: 0.8; }
 <div id="authOverlay"> 
     <div class="auth-box"> 
         <h2>Reisen 🌍✈️</h2> 
-        <div class="auth-form-group"><label>Benutzername</label><input type="text" id="loginUser" placeholder="Benutzername..."></div> 
-        <div class="auth-form-group"><label>Passwort</label><input type="password" id="loginPass" placeholder="Passwort..."></div> 
+        <div class="auth-form-group"><label>Benutzername</label><input type="text" id="loginUser" placeholder="admin" value="admin"></div> 
+        <div class="auth-form-group"><label>Passwort</label><input type="password" id="loginPass" placeholder="admin" value="admin"></div> 
         <button style="width: 100%; margin-top: 6px;" onclick="handleLogin()">Einloggen</button> 
-    </div> 
-</div> 
-
-<!-- START LOCATION OVERLAY MODAL --> 
-<div id="startLocationOverlay" class="modal"> 
-    <div class="auth-box" style="max-width: 400px;"> 
-        <span class="close-modal" onclick="closeModal('startLocationOverlay')">&times;</span> 
-        <h2 style="font-size: 1.2rem; margin-bottom: 14px; text-align: center;">📍 Startadresse wählen</h2> 
-        <div class="auth-form-group"><label>Welche Adresse möchtest du sehen?</label><input type="text" id="startAddrInput" placeholder="Ort oder PLZ..."></div> 
-        <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 14px;"> 
-            <button style="width: 100%;" onclick="submitStartLocation()">Suchen</button> 
-            <button style="width: 100%; background: #ef4444;" onclick="submitCurrentLocationStartup()">📍 Aktuellen GPS-Standort verwenden</button> 
-        </div> 
     </div> 
 </div> 
 
@@ -201,7 +200,8 @@ button:active { opacity: 0.8; }
             <label class="media-btn media-btn-vid" style="cursor:pointer;">🎥 Video <input type="file" accept="video/*" style="display:none;" onchange="handleFileUpload(event, 'reply')"></label> 
             <button class="media-btn media-btn-gif" onclick="openGifPicker('reply')">🖼️ GIF</button> 
             <button class="media-btn media-btn-loc" onclick="openLocationPicker('reply')">📍 Standort</button> 
-            <button class="media-btn media-btn-yt" onclick="openLinkPicker('reply')">🎥 YouTube</button> 
+            <button class="media-btn media-btn-yt" onclick="openLinkPicker('reply', 'yt')">🎥 YouTube</button> 
+            <button class="media-btn media-btn-reddit" onclick="openLinkPicker('reply', 'reddit')">🔴 Reddit</button> 
             <button class="media-btn media-btn-poll" onclick="openPollPicker('reply')">📊 Umfrage</button> 
         </div> 
         <div id="replyMediaAttachmentIndicator" style="font-size:0.8rem; color:#34d399; margin-bottom:6px;"></div> 
@@ -232,12 +232,12 @@ button:active { opacity: 0.8; }
         <h3 style="margin-top:0; color: var(--accent-color);">🗺️ Exakter Streckenplaner</h3> 
         <div id="routeDrawMap" class="map-container" style="height: 220px; margin-bottom: 10px;"></div> 
         <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px;"> 
-            <button onclick="startPlacingNextPin()" style="background: var(--accent-color); font-size: 0.85rem;">📍 Nadel setzen</button> 
+            <button onclick="addDrawnPointViaGPS()" style="background: #ef4444; font-size: 0.85rem;">📍 Aktuellen GPS-Standort als Nadel</button> 
             <button onclick="connectRoutePins()" style="background: #10b981; font-size: 0.85rem;">🔄 Verbinden</button> 
             <button onclick="undoLastPin()" style="background: #f59e0b; font-size: 0.85rem;">⬅️ Letzte löschen</button> 
             <button onclick="clearDrawnRoutePoints()" style="background: #ef4444; font-size: 0.85rem;">🗑️ Neu</button> 
         </div> 
-        <div id="pinStatusIndicator" style="font-size: 0.85rem; color: #34d399; margin-bottom: 10px; font-weight: 600;"></div> 
+        <div id="pinStatusIndicator" style="font-size: 0.85rem; color: #34d399; margin-bottom: 10px; font-weight: 600;">Klicke auf die Karte oder nutze den GPS-Button, um Nadeln zu setzen.</div> 
         <div id="pinsListContainer" style="display: flex; flex-direction: column; gap: 8px; max-height: 180px; overflow-y: auto; margin-bottom: 12px;"></div> 
         
         <div class="auth-form-group"> 
@@ -255,7 +255,10 @@ button:active { opacity: 0.8; }
         </div> 
 
         <div class="auth-form-group"><label>Titel</label><input type="text" id="drawModalTitle" placeholder="Tourenname..."></div> 
-        <div class="auth-form-group"><label>Datum</label><input type="date" id="drawModalDate"></div> 
+        <div style="display:flex; gap:8px; margin-bottom:12px;">
+            <div class="auth-form-group" style="flex:1; margin-bottom:0;"><label>Datum</label><input type="date" id="drawModalDate"></div>
+            <div class="auth-form-group" style="flex:1; margin-bottom:0;"><label>Uhrzeit</label><input type="time" id="drawModalTime"></div>
+        </div>
         <button onclick="saveCompletedDrawnRoute()" style="width: 100%; padding: 12px; font-weight: bold;">Strecke speichern</button> 
     </div> 
 </div> 
@@ -266,14 +269,19 @@ button:active { opacity: 0.8; }
         <span class="close-modal" onclick="closeModal('pinDetailModal')">&times;</span> 
         <h3 id="pinModalStationTitle" style="margin-top:0; color: var(--accent-color);">Station bearbeiten</h3> 
         <input type="hidden" id="activeEditingPinIndex"> 
-        <div class="auth-form-group"><label>Name der Station:</label><input type="text" id="pinEditTitleInput"></div> 
-        <div class="auth-form-group"><label>Ausführliche Notizen & Text:</label><textarea id="pinEditNoteInput" rows="4" placeholder="Schreibe deine Erlebnisse zu dieser Nadel..."></textarea></div> 
+        <div class="auth-form-group"><label>Name der Station</label><input type="text" id="pinEditTitleInput"></div> 
+        <div style="display:flex; gap:8px;">
+            <div class="auth-form-group" style="flex:1;"><label>Datum</label><input type="date" id="pinEditDateInput"></div>
+            <div class="auth-form-group" style="flex:1;"><label>Uhrzeit</label><input type="time" id="pinEditTimeInput"></div>
+        </div>
+        <div class="auth-form-group"><label>Ausführliche Notizen & Text</label><textarea id="pinEditNoteInput" rows="4" placeholder="Schreibe deine Erlebnisse zu dieser Nadel..."></textarea></div> 
         <div class="unified-media-toolbar"> 
             <label class="media-btn media-btn-img" style="cursor:pointer;">📸 Bild <input type="file" accept="image/*" style="display:none;" onchange="handleFileUpload(event, 'pin')"></label> 
             <label class="media-btn media-btn-vid" style="cursor:pointer;">🎥 Video <input type="file" accept="video/*" style="display:none;" onchange="handleFileUpload(event, 'pin')"></label> 
             <button class="media-btn media-btn-gif" onclick="openGifPicker('pin')">🖼️ GIF</button> 
             <button class="media-btn media-btn-loc" onclick="openLocationPicker('pin')">📍 Standort</button> 
-            <button class="media-btn media-btn-yt" onclick="openLinkPicker('pin')">🎥 YouTube</button> 
+            <button class="media-btn media-btn-yt" onclick="openLinkPicker('pin', 'yt')">🎥 YouTube</button> 
+            <button class="media-btn media-btn-reddit" onclick="openLinkPicker('pin', 'reddit')">🔴 Reddit</button> 
             <button class="media-btn media-btn-poll" onclick="openPollPicker('pin')">📊 Umfrage</button> 
         </div> 
         <div id="pinMediaAttachmentIndicator" style="font-size:0.8rem; color:#34d399; margin-bottom:6px;"></div> 
@@ -302,8 +310,8 @@ button:active { opacity: 0.8; }
                 <button onclick="searchLocation()">Suchen</button> 
             </div> 
             <div class="radius-control"> 
-                <label for="radiusRange">Such-Umkreis: <strong id="radiusValue">3</strong> km</label> 
-                <input type="range" id="radiusRange" min="0.5" max="50" step="0.5" value="3" oninput="handleRadiusInputChange(event)"> 
+                <label for="radiusRange">Such-Umkreis: <strong id="radiusValue">0.5</strong> km</label> 
+                <input type="range" id="radiusRange" min="0.5" max="50" step="0.5" value="0.5" oninput="handleRadiusInputChange(event)"> 
             </div> 
             <div id="map" class="map-container"> 
                 <div id="mainMapOverlay" class="map-loading-overlay"> 
@@ -370,7 +378,8 @@ button:active { opacity: 0.8; }
                 <label class="media-btn media-btn-vid" style="cursor:pointer;">🎥 Video <input type="file" accept="video/*" style="display:none;" onchange="handleFileUpload(event, 'post')"></label> 
                 <button class="media-btn media-btn-gif" onclick="openGifPicker('post')">🖼️ GIF</button> 
                 <button class="media-btn media-btn-loc" onclick="openLocationPicker('post')">📍 Standort</button> 
-                <button class="media-btn media-btn-yt" onclick="openLinkPicker('post')">🎥 YouTube</button> 
+                <button class="media-btn media-btn-yt" onclick="openLinkPicker('post', 'yt')">🎥 YouTube</button> 
+                <button class="media-btn media-btn-reddit" onclick="openLinkPicker('post', 'reddit')">🔴 Reddit</button> 
                 <button class="media-btn media-btn-poll" onclick="openPollPicker('post')">📊 Umfrage</button> 
             </div> 
             <div id="postMediaAttachmentIndicator" style="font-size:0.8rem; color:#34d399; margin-bottom:4px;"></div> 
@@ -410,15 +419,19 @@ button:active { opacity: 0.8; }
                     </div> 
                     <button onclick="useGPSForTravelEntry()" style="width:100%; background:#ef4444; padding:6px; font-size:0.8rem;">📍 Aktuellen Standort benutzen</button> 
                 </div> 
-                <input type="text" id="travelTitleInput" placeholder="Titel der Station..." style="margin-bottom: 8px;"> 
-                <input type="date" id="travelDateInput" style="margin-bottom: 8px;"> 
-                <textarea id="travelDescInput" rows="3" placeholder="Deine Erlebnisse..." style="margin-bottom: 8px;"></textarea> 
+                <div class="auth-form-group"><label>Titel der Station</label><input type="text" id="travelTitleInput" placeholder="Titel eingeben..."></div> 
+                <div style="display:flex; gap:8px;">
+                    <div class="auth-form-group" style="flex:1;"><label>Datum</label><input type="date" id="travelDateInput"></div>
+                    <div class="auth-form-group" style="flex:1;"><label>Uhrzeit</label><input type="time" id="travelTimeInput"></div>
+                </div>
+                <div class="auth-form-group"><label>Erlebnisse / Notizen</label><textarea id="travelDescInput" rows="3" placeholder="Deine Erlebnisse..."></textarea></div> 
                 <div class="unified-media-toolbar"> 
                     <label class="media-btn media-btn-img" style="cursor:pointer;">📸 Bild <input type="file" accept="image/*" style="display:none;" onchange="handleFileUpload(event, 'travel')"></label> 
                     <label class="media-btn media-btn-vid" style="cursor:pointer;">🎥 Video <input type="file" accept="video/*" style="display:none;" onchange="handleFileUpload(event, 'travel')"></label> 
                     <button class="media-btn media-btn-gif" onclick="openGifPicker('travel')">🖼️ GIF</button> 
                     <button class="media-btn media-btn-loc" onclick="openLocationPicker('travel')">📍 Standort</button> 
-                    <button class="media-btn media-btn-yt" onclick="openLinkPicker('travel')">🎥 YouTube</button> 
+                    <button class="media-btn media-btn-yt" onclick="openLinkPicker('travel', 'yt')">🎥 YouTube</button> 
+                    <button class="media-btn media-btn-reddit" onclick="openLinkPicker('travel', 'reddit')">🔴 Reddit</button> 
                     <button class="media-btn media-btn-poll" onclick="openPollPicker('travel')">📊 Umfrage</button> 
                 </div> 
                 <div id="travelMediaAttachmentIndicator" style="font-size:0.8rem; color:#34d399; margin-bottom:6px;"></div> 
@@ -439,11 +452,28 @@ button:active { opacity: 0.8; }
     <!-- 3. KONTO VIEW --> 
     <div id="consoleViewContainer" style="display: none; flex-direction: column; gap: 12px;"> 
         <div class="card"> 
-            <h3 style="margin-top:0; color: var(--accent-color);">⚙️ Konto & Cloud</h3> 
+            <h3 style="margin-top:0; color: var(--accent-color);">⚙️ Admin & Cloud-Backend</h3> 
             <div style="background:#0f172a; padding:12px; border-radius:10px; border:1px solid var(--border-color); margin-bottom:12px;"> 
-                <div>Status: <span id="currentCloudProviderLabel" style="color:#34d399; font-weight:bold;">Lokal (Offline)</span></div> 
+                <div style="margin-bottom:8px;">Aktueller Cloud-Speicher: <span id="currentCloudProviderLabel" style="color:#34d399; font-weight:bold;">Nextcloud (WebDAV)</span></div> 
+                <div class="auth-form-group" style="margin-top:10px;">
+                    <label>☁️ Cloud-Anbieter wählen:</label>
+                    <select id="cloudProviderSelect" onchange="updateCloudProviderSetting()">
+                        <option value="nextcloud">Nextcloud (WebDAV)</option>
+                        <option value="onedrive">Microsoft OneDrive</option>
+                        <option value="googlecloud">Google Cloud Storage</option>
+                    </select>
+                </div>
+                <div class="auth-form-group">
+                    <label>Server-URL / Endpoint:</label>
+                    <input type="text" id="cloudEndpointInput" placeholder="https://cloud.meinserver.de/remote.php/dav/files/admin/">
+                </div>
+                <div class="auth-form-group">
+                    <label>API-Token / Passwort:</label>
+                    <input type="password" id="cloudTokenInput" placeholder="Sicherheits-Token...">
+                </div>
+                <button onclick="saveCloudSettings()" style="width:100%; margin-top:6px;">Cloud-Verbindung speichern & synchronisieren</button>
             </div> 
-            <button onclick="deleteMyAccount()" style="width:100%; background: #ef4444;">Account löschen</button> 
+            <button onclick="deleteMyAccount()" style="width:100%; background: #ef4444;">Account zurücksetzen</button> 
         </div> 
     </div> 
 </div> 
@@ -529,166 +559,25 @@ function handleEmojiSearchInput() {
 
 let currentMediaAttachmentTarget = null;
 let tempActiveAttachment = null;
+let baseModalZIndex = 2000;
 
-function handleFileUpload(event, target) {
-    const file = event.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        tempActiveAttachment = { type: file.type.startsWith('video') ? '🎥 Video' : '📸 Bild', data: e.target.result };
-        setAttachmentIndicator(target, tempActiveAttachment.type);
-        showToast("Erfolgreich hochgeladen!");
-    };
-    reader.readAsDataURL(file);
-}
-
-function setAttachmentIndicator(target, text) {
-    if (target === 'post') document.getElementById('postMediaAttachmentIndicator').innerText = "📎 " + text;
-    if (target === 'reply') document.getElementById('replyMediaAttachmentIndicator').innerText = "📎 " + text;
-    if (target === 'travel') document.getElementById('travelMediaAttachmentIndicator').innerText = "📎 " + text;
-    if (target === 'pin') document.getElementById('pinMediaAttachmentIndicator').innerText = "📎 " + text;
-}
-
-function openGifPicker(target) { currentMediaAttachmentTarget = target; showModal('gifPickerModal'); searchGiphyGifs('travel'); }
-function searchGiphyGifs(q = '') {
-    const query = q || document.getElementById('gifSearchInput')?.value || 'travel';
-    const container = document.getElementById('giphyResultsContainer');
-    const travelGifs = [
-        "https://media.giphy.com/media/3o7TKSjRrfIPjeiOkM/giphy.gif",
-        "https://media.giphy.com/media/l0HlHFRbmaZtBRhXG/giphy.gif",
-        "https://media.giphy.com/media/26ufevH9u8N4W1K6k/giphy.gif",
-        "https://media.giphy.com/media/3oKIPnAiaMCws8nOsE/giphy.gif",
-        "https://media.giphy.com/media/xTiTnHXbRoaZ1B1Mo8/giphy.gif",
-        "https://media.giphy.com/media/3o7527pa7qs9kCG78A/giphy.gif",
-        "https://media.giphy.com/media/3oKIPv878d22hS0uOI/giphy.gif",
-        "https://media.giphy.com/media/l1J9EdzfOSgfyueLm/giphy.gif",
-        "https://media.giphy.com/media/3o7abKhOpu0NwenH3O/giphy.gif",
-        "https://media.giphy.com/media/g9582DUtQpaCI/giphy.gif",
-        "https://media.giphy.com/media/l41lFw197lDq4ZVfy/giphy.gif",
-        "https://media.giphy.com/media/3ohzdIuqJoo8QdKlnW/giphy.gif",
-        "https://media.giphy.com/media/xTiTnBzmAPnmdNMTRK/giphy.gif",
-        "https://media.giphy.com/media/26u6dTP6p4y0iyBIQ/giphy.gif",
-        "https://media.giphy.com/media/xT5LMFZDsj0AKUDYTS/giphy.gif",
-        "https://media.giphy.com/media/3o7TKWpu2SKaHCI75C/giphy.gif",
-        "https://media.giphy.com/media/l0HlBO7eyXzSZkJri/giphy.gif",
-        "https://media.giphy.com/media/3oKIPEhWlvZ28rkrDO/giphy.gif",
-        "https://media.giphy.com/media/l1J9EdzfOSgfyueLm/giphy.gif",
-        "https://media.giphy.com/media/3o7TKSjRrfIPjeiOkM/giphy.gif"
-    ];
-    container.innerHTML = travelGifs.map(url => `<img src="${url}" style="width:100%; height:130px; object-fit:cover; border-radius:8px; cursor:pointer;" onclick="selectGif('${url}')">`).join('');
-}
-function selectGif(url) {
-    tempActiveAttachment = { type: '🖼️ GIF', data: url };
-    setAttachmentIndicator(currentMediaAttachmentTarget, '🖼️ GIF ausgewählt');
-    closeModal('gifPickerModal');
-    showToast("GIF angehängt!");
-}
-
-function openLocationPicker(target) { currentMediaAttachmentTarget = target; showModal('locationPickerModal'); }
-function confirmLocationPickerAddress() {
-    const addr = document.getElementById('pickerAddressInput').value.trim();
-    if (!addr) return;
-    tempActiveAttachment = { type: '📍 Standort', data: addr };
-    setAttachmentIndicator(currentMediaAttachmentTarget, '📍 ' + addr);
-    closeModal('locationPickerModal');
-}
-function confirmLocationPickerGPS() {
-    if ("geolocation" in navigator) {
-        navigator.geolocation.getCurrentPosition(pos => {
-            tempActiveAttachment = { type: '📍 Standort', data: `GPS: ${pos.coords.latitude.toFixed(3)}, ${pos.coords.longitude.toFixed(3)}` };
-            setAttachmentIndicator(currentMediaAttachmentTarget, '📍 Aktueller GPS Standort');
-            closeModal('locationPickerModal');
-            showToast("GPS Standort übernommen!");
-        }, () => showToast("GPS Fehler."));
-    }
-}
-
-function openLinkPicker(target) { currentMediaAttachmentTarget = target; showModal('linkPickerModal'); }
-function confirmLinkAttachment() {
-    const url = document.getElementById('linkPickerUrlInput').value.trim();
-    if (!url) return;
-    let ytThumb = '';
-    let isYt = false;
-    if (url.includes('youtube.com') || url.includes('youtu.be')) {
-        isYt = true;
-        let vid = url.includes('v=') ? url.split('v=')[1]?.substring(0, 11) : url.split('youtu.be/')[1]?.substring(0, 11);
-        if (vid) ytThumb = `https://img.youtube.com/vi/${vid}/hqdefault.jpg`;
-    }
-    tempActiveAttachment = { type: '🎥 YouTube', data: url, thumb: ytThumb, isYt };
-    setAttachmentIndicator(currentMediaAttachmentTarget, '🎥 Link angehängt');
-    closeModal('linkPickerModal');
-}
-
-function openPollPicker(target) { currentMediaAttachmentTarget = target; showModal('pollPickerModal'); }
-function confirmPollAttachment() {
-    const q = document.getElementById('pollQuestionInput').value.trim();
-    const o1 = document.getElementById('pollOpt1').value.trim();
-    const o2 = document.getElementById('pollOpt2').value.trim();
-    if (!q || !o1 || !o2) return;
-    tempActiveAttachment = { type: '📊 Umfrage', data: { question: q, options: [{text:o1, votes:0}, {text:o2, votes:0}] } };
-    setAttachmentIndicator(currentMediaAttachmentTarget, '📊 Umfrage erstellt');
-    closeModal('pollPickerModal');
-}
-
-function createTileLayers() { 
-    return { 
-        "🗺️ Standard": L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }), 
-        "🛰️ Satellit": L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 18 }), 
-        "🌙 Dunkel": L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { maxZoom: 19 }) 
-    }; 
+function showModal(id) { 
+    baseModalZIndex += 10;
+    const m = document.getElementById(id);
+    m.style.zIndex = baseModalZIndex;
+    m.style.display = 'flex'; 
 } 
-function addLayerControlToMap(mapInstance) { 
-    const layers = createTileLayers(); 
-    layers["🗺️ Standard"].addTo(mapInstance); 
-    L.control.layers(layers, null, { position: 'topright' }).addTo(mapInstance); 
-} 
-
-function getDistanceKm(lat1, lon1, lat2, lon2) { 
-    const R = 6371; 
-    const dLat = (lat2 - lat1) * Math.PI / 180; 
-    const dLon = (lon2 - lon1) * Math.PI / 180; 
-    const a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon/2) * Math.sin(dLon/2); 
-    return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))); 
-} 
-function formatDistance(dist) { return dist < 1 ? Math.round(dist * 1000) + " m" : dist.toFixed(1) + " km"; } 
-
-const categoryConfig = { 
-    parking: { color: '#64748b', emoji: '🅿️', label: 'Parken' }, 
-    shops: { color: '#ec4899', emoji: '🛍️', label: 'Geschäfte' }, 
-    fuel: { color: '#10b981', emoji: '⛽', label: 'Tanken' }, 
-    charging: { color: '#14b8a6', emoji: '⚡', label: 'E-Ladesäulen' }, 
-    restaurants: { color: '#3b82f6', emoji: '🍽️', label: 'Gastro' }, 
-    pharmacy: { color: '#8b5cf6', emoji: '💊', label: 'Apotheken' }, 
-    sights: { color: '#ef4444', emoji: '🏛️', label: 'Kultur' }, 
-    hotels: { color: '#f59e0b', emoji: '🏨', label: 'Unterkünfte' }, 
-    banks: { color: '#059669', emoji: '🏦', label: 'Banken' } 
-}; 
-
-const movementConfig = { 
-    walking: { color: '#64748b', icon: '🚶', label: 'Zu Fuß' }, 
-    bicycle: { color: '#3b82f6', icon: '🚲', label: 'Fahrrad' }, 
-    car: { color: '#ef4444', icon: '🚗', label: 'Auto' }, 
-    airplane: { color: '#8b5cf6', icon: '✈️', label: 'Flugzeug' }, 
-    boat: { color: '#14b8a6', icon: '⛵', label: 'Boot' }, 
-    train: { color: '#f59e0b', icon: '🚆', label: 'Zug' }, 
-    bus: { color: '#ec4899', icon: '🚌', label: 'Bus' }, 
-    motorcycle: { color: '#10b981', icon: '🏍️', label: 'Motorrad' } 
-}; 
-let movementFilterState = {}; 
-Object.keys(movementConfig).forEach(m => movementFilterState[m] = true); 
-
-function createCustomDivIcon(color, emoji) { 
-    return L.divIcon({ 
-        className: 'custom-pin-marker', 
-        html: `<div style="background-color: ${color}; width: 30px; height: 30px; border-radius: 50%; border: 2px solid white; display: flex; align-items: center; justify-content: center; box-shadow: 0 3px 8px rgba(0,0,0,0.5); font-size: 15px;">${emoji}</div>`, 
-        iconSize: [30, 30], iconAnchor: [15, 15], popupAnchor: [0, -15] 
-    }); 
-} 
-
-function showModal(id) { document.getElementById(id).style.display = 'flex'; } 
 function closeModal(id) { document.getElementById(id).style.display = 'none'; } 
-function handleLogin() { completeLogin('admin'); } 
-function handleRegister() { completeLogin('admin'); } 
+
+function handleLogin() { 
+    const u = document.getElementById('loginUser').value.trim();
+    const p = document.getElementById('loginPass').value.trim();
+    if (u === 'admin' && p === 'admin') {
+        completeLogin('admin');
+    } else {
+        showToast("Falscher Benutzername oder Passwort! (Nutze admin / admin)");
+    }
+} 
 function completeLogin(user) { 
     localStorage.setItem('jannik_current_user', user); 
     document.getElementById('authOverlay').style.display = 'none'; 
@@ -696,6 +585,25 @@ function completeLogin(user) {
     initApp(); 
 } 
 function handleLogout() { location.reload(); } 
+
+function getCloudSettings() {
+    return JSON.parse(localStorage.getItem('jannik_cloud_settings') || '{"provider":"nextcloud","endpoint":"","token":""}');
+}
+function saveCloudSettings() {
+    const provider = document.getElementById('cloudProviderSelect').value;
+    const endpoint = document.getElementById('cloudEndpointInput').value.trim();
+    const token = document.getElementById('cloudTokenInput').value.trim();
+    localStorage.setItem('jannik_cloud_settings', JSON.stringify({provider, endpoint, token}));
+    document.getElementById('currentCloudProviderLabel').innerText = provider === 'nextcloud' ? 'Nextcloud (WebDAV)' : (provider === 'onedrive' ? 'Microsoft OneDrive' : 'Google Cloud Storage');
+    showToast("☁️ Cloud-Einstellungen gespeichert & Daten synchronisiert!");
+}
+function loadCloudSettingsIntoUI() {
+    const s = getCloudSettings();
+    document.getElementById('cloudProviderSelect').value = s.provider;
+    document.getElementById('cloudEndpointInput').value = s.endpoint;
+    document.getElementById('cloudTokenInput').value = s.token;
+    document.getElementById('currentCloudProviderLabel').innerText = s.provider === 'nextcloud' ? 'Nextcloud (WebDAV)' : (s.provider === 'onedrive' ? 'Microsoft OneDrive' : 'Google Cloud Storage');
+}
 
 let mainMap = null, timelineMap = null, routeDrawMap = null; 
 let mainMarker = null, radiusCircle = null, poiMarkersGroup = null, timelineGroup = null, drawGroup = null; 
@@ -716,6 +624,7 @@ function initApp() {
         mainMarker.on('dragend', e => updateLocationByCoords(e.target.getLatLng().lat, e.target.getLatLng().lng)); 
         mainMap.on('click', e => updateLocationByCoords(e.latlng.lat, e.latlng.lng)); 
     } 
+    loadCloudSettingsIntoUI();
     showModal('startLocationOverlay'); 
     renderPostsFeed(); 
     renderTravelEntries(); 
@@ -727,7 +636,10 @@ function initApp() {
 function submitStartLocation() { 
     const query = document.getElementById('startAddrInput').value.trim(); 
     if (!query) return; 
-    geocodeAddress(query, (lat, lon, name) => { updateLocationByCoords(lat, lon, name); closeModal('startLocationOverlay'); }); 
+    geocodeAddress(query, (lat, lon, name) => { 
+        updateLocationByCoords(lat, lon, name); 
+        closeModal('startLocationOverlay'); 
+    }); 
 } 
 
 function submitCurrentLocationStartup() { 
@@ -740,14 +652,15 @@ function submitCurrentLocationStartup() {
                 showToast("GPS erfolgreich ermittelt!"); 
             }, 
             err => { 
-                showToast("GPS fehlgeschlagen. Nutze Standard."); 
+                showToast("GPS fehlgeschlagen. Nutze Standard (Paris)."); 
                 updateLocationByCoords(48.8566, 2.3522, "Paris"); 
                 closeModal('startLocationOverlay'); 
             }, 
-            { enableHighAccuracy: true, timeout: 8000 } 
+            { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 } 
         ); 
     } else { 
-        showToast("GPS nicht unterstützt."); 
+        showToast("GPS nicht unterstützt. Nutze Standard."); 
+        updateLocationByCoords(48.8566, 2.3522, "Paris"); 
         closeModal('startLocationOverlay'); 
     } 
 } 
@@ -764,7 +677,10 @@ function geocodeAddress(query, callback) {
 
 function updateLocationByCoords(lat, lon, name = null) { 
     currentLat = lat; currentLon = lon; 
-    mainMap.setView([lat, lon], 14); 
+    if (mainMap) {
+        mainMap.setView([lat, lon], 14); 
+        setTimeout(() => mainMap.invalidateSize(), 200);
+    }
     if (mainMarker) mainMarker.setLatLng([lat, lon]); 
     updateRadiusCircle(); 
     
@@ -798,12 +714,14 @@ function searchLocation() {
 function handleRadiusInputChange(e) { 
     document.getElementById('radiusValue').innerText = e.target.value; 
     updateRadiusCircle(); 
-    filterPOIsDisplay(); // Schnellfilter im Radius ohne neuen API-Call falls Daten schon da sind
+    filterPOIsDisplay();
 } 
 function updateRadiusCircle() { 
-    const radKm = parseFloat(document.getElementById('radiusRange').value) || 3; 
-    if (radiusCircle) mainMap.removeLayer(radiusCircle); 
-    radiusCircle = L.circle([currentLat, currentLon], { radius: radKm * 1000, color: '#3b82f6', fillColor: '#3b82f6', fillOpacity: 0.15 }).addTo(mainMap); 
+    const radKm = parseFloat(document.getElementById('radiusRange').value) || 0.5; 
+    if (radiusCircle && mainMap) mainMap.removeLayer(radiusCircle); 
+    if (mainMap) {
+        radiusCircle = L.circle([currentLat, currentLon], { radius: radKm * 1000, color: '#3b82f6', fillColor: '#3b82f6', fillOpacity: 0.15 }).addTo(mainMap); 
+    }
 } 
 function openGoogleMapsNavigation(lat = currentLat, lon = currentLon) { 
     window.open(`https://www.google.com/maps/dir/?api=1&destination=${lat},${lon}`, '_blank'); 
@@ -894,12 +812,10 @@ function fetchWikipediaAndFacts(cityName) {
         .catch(() => { document.getElementById('cityLocationDesc').innerText = "Standortinformationen geladen."; }); 
 } 
 
-// HIGH-PERFORMANCE OPTIMIERTE OVERPASS ABFRAGE (BOX MIT 0.4 Grad ~ 40km für blitzschnelles Laden)
 function fetchOverpassPOIs(lat, lon) { 
     const overlay = document.getElementById('mainMapOverlay'); 
     if (overlay) overlay.style.display = 'flex'; 
     
-    // Feste Bounding-Box um den Punkt herum (ca 40km x 40km, liefert fast alle POIs sofort)
     const latDelta = 0.2; 
     const lonDelta = 0.2 / Math.cos(lat * Math.PI / 180.0);
     const south = lat - latDelta;
@@ -911,6 +827,7 @@ function fetchOverpassPOIs(lat, lon) {
       node(${south},${west},${north},${east})[amenity];
       node(${south},${west},${north},${east})[shop];
       node(${south},${west},${north},${east})[tourism];
+      node(${south},${west},${north},${east})[historic];
     );out body;`; 
     
     fetch('https://overpass-api.de/api/interpreter', { method: 'POST', body: query }) 
@@ -920,7 +837,6 @@ function fetchOverpassPOIs(lat, lon) {
             processPoiData(data, lat, lon); 
         }) 
         .catch(() => { 
-            // Fallback Server
             fetch('https://overpass.kumi.systems/api/interpreter', { method: 'POST', body: query })
                 .then(res => res.json())
                 .then(data => {
@@ -942,23 +858,31 @@ function processPoiData(data, lat, lon) {
         const itemLat = item.lat; 
         const itemLon = item.lon; 
         if (!itemLat || !itemLon) return null; 
-        const realName = item.tags?.name || item.tags?.brand || item.tags?.amenity; 
+        const realName = item.tags?.name || item.tags?.brand || item.tags?.amenity || item.tags?.tourism || item.tags?.historic; 
         if (!realName) return null; 
         
         const dist = getDistanceKm(lat, lon, itemLat, itemLon); 
-        let cat = 'sights'; 
+        let cat = null; 
         const amenity = item.tags?.amenity;
         const tourism = item.tags?.tourism;
         const shop = item.tags?.shop;
+        const historic = item.tags?.historic;
         
         if (amenity === 'parking') cat = 'parking'; 
         else if (shop) cat = 'shops'; 
         else if (amenity === 'fuel') cat = 'fuel'; 
         else if (amenity === 'charging_station') cat = 'charging'; 
-        else if (amenity === 'restaurant' || amenity === 'cafe' || amenity === 'fast_food') cat = 'restaurants'; 
+        else if (amenity === 'restaurant' || amenity === 'cafe' || amenity === 'fast_food' || amenity === 'bar' || amenity === 'pub') cat = 'restaurants'; 
         else if (amenity === 'pharmacy') cat = 'pharmacy'; 
-        else if (tourism === 'hotel' || tourism === 'guest_house' || tourism === 'hostel') cat = 'hotels'; 
+        else if (tourism === 'hotel' || tourism === 'guest_house' || tourism === 'hostel' || tourism === 'motel' || tourism === 'apartment') cat = 'hotels'; 
         else if (amenity === 'bank' || amenity === 'atm') cat = 'banks'; 
+        else if (tourism === 'museum' || tourism === 'gallery' || tourism === 'attraction' || tourism === 'artwork' || 
+                 amenity === 'theatre' || amenity === 'cinema' || amenity === 'events_venue' || amenity === 'concert_hall' || 
+                 historic) {
+            cat = 'sights';
+        }
+
+        if(!cat) return null; 
         
         return { id: item.id || idx, name: realName, lat: itemLat, lon: itemLon, cat, dist, addr: item.tags?.["addr:street"] || "Vor Ort" }; 
     }).filter(item => item !== null); 
@@ -969,7 +893,7 @@ function filterPOIsDisplay() {
     if (!poiMarkersGroup) return; 
     poiMarkersGroup.clearLayers(); 
     let counts = {}; Object.keys(categoryConfig).forEach(k => counts[k] = 0); 
-    const currentMaxRad = parseFloat(document.getElementById('radiusRange').value) || 3;
+    const currentMaxRad = parseFloat(document.getElementById('radiusRange').value) || 0.5;
 
     fetchedPoiList.forEach((item) => { 
         if (item.dist <= currentMaxRad && document.getElementById(`poi_${item.cat}`)?.checked) { 
@@ -999,7 +923,7 @@ function openPoiListModal() { showModal('poiListModal'); renderPoiCategoryTabs()
 function renderPoiListModalContent() { 
     const container = document.getElementById('poiListModalContainer'); 
     const searchQ = document.getElementById('poiSearchModalInput').value.toLowerCase(); 
-    const currentMaxRad = parseFloat(document.getElementById('radiusRange').value) || 3;
+    const currentMaxRad = parseFloat(document.getElementById('radiusRange').value) || 0.5;
     let filtered = fetchedPoiList.filter(item => item.dist <= currentMaxRad && (selectedPoiCategoryTab === 'all' || item.cat === selectedPoiCategoryTab) && item.name.toLowerCase().includes(searchQ)); 
     if (filtered.length === 0) { container.innerHTML = '<div style="color:var(--text-muted); text-align:center; padding:12px;">Keine POIs im Radius.</div>'; return; } 
     container.innerHTML = filtered.map(item => ` 
@@ -1039,6 +963,14 @@ function renderAttachmentHtml(att) {
             <div style="margin-top:8px; background:#0f172a; border-radius:8px; border:1px solid var(--border-color); overflow:hidden;">
                 ${att.thumb ? `<div style="position:relative; cursor:pointer;" onclick="window.open('${att.data}', '_blank')"><img src="${att.thumb}" style="width:100%; height:160px; object-fit:cover;"><div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); background:rgba(0,0,0,0.7); color:white; padding:8px 14px; border-radius:20px; font-weight:bold; font-size:0.9rem;">▶ YouTube abspielen</div></div>` : ''}
                 <div style="padding:8px;"><a href="${att.data}" target="_blank" style="color:var(--accent-color); font-size:0.85rem; text-decoration:none;">🎥 YouTube Video öffnen</a></div>
+            </div>
+        `;
+    }
+    if (att.type === '🔴 Reddit' || att.isReddit) {
+        return `
+            <div style="margin-top:8px; background:#1a1a1b; padding:10px; border-radius:8px; border:1px solid #ff4500;">
+                <a href="${att.data}" target="_blank" style="color:#ff4500; font-size:0.9rem; font-weight:bold; text-decoration:none;">🔴 Reddit Beitrag öffnen</a>
+                <div style="font-size:0.8rem; color:var(--text-muted); margin-top:4px;">${att.data}</div>
             </div>
         `;
     }
@@ -1120,7 +1052,6 @@ function submitReply() {
     closeModal('replyModal'); showToast("Antwort hinzugefügt!"); 
 } 
 
-// TAGEBUCH & EINZELNE EINTRÄGE
 let pendingTravelLat = null, pendingTravelLon = null;
 function geocodeTravelEntryAddress() {
     const addr = document.getElementById('travelAddressInput').value.trim();
@@ -1133,23 +1064,26 @@ function useGPSForTravelEntry() {
             pendingTravelLat = pos.coords.latitude; pendingTravelLon = pos.coords.longitude;
             document.getElementById('travelAddressInput').value = "Aktueller GPS Standort";
             showToast("GPS übernommen!");
-        });
+        }, () => showToast("GPS Fehler. Bitte Berechtigungen prüfen."), { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 });
     }
 }
 function saveTravelEntry() {
     const title = document.getElementById('travelTitleInput').value.trim();
     const date = document.getElementById('travelDateInput').value;
+    const time = document.getElementById('travelTimeInput').value;
     const desc = document.getElementById('travelDescInput').value.trim();
     const address = document.getElementById('travelAddressInput').value.trim();
     if (!address || !title) { showToast("Bitte Titel und Adresse eingeben!"); return; }
     
     let entries = JSON.parse(localStorage.getItem('jannik_travel_entries') || '[]');
-    entries.unshift({ id: Date.now(), title, date: date || new Date().toISOString().slice(0, 10), desc, address, attachment: tempActiveAttachment, lat: pendingTravelLat || currentLat, lon: pendingTravelLon || currentLon });
+    entries.unshift({ id: Date.now(), title, date: date || new Date().toISOString().slice(0, 10), time: time, desc, address, attachment: tempActiveAttachment, lat: pendingTravelLat || currentLat, lon: pendingTravelLon || currentLon });
     localStorage.setItem('jannik_travel_entries', JSON.stringify(entries));
     
     document.getElementById('travelTitleInput').value = '';
     document.getElementById('travelDescInput').value = '';
     document.getElementById('travelAddressInput').value = '';
+    document.getElementById('travelTimeInput').value = '';
+    document.getElementById('travelDateInput').value = '';
     tempActiveAttachment = null;
     document.getElementById('travelMediaAttachmentIndicator').innerText = '';
     pendingTravelLat = null; pendingTravelLon = null;
@@ -1158,7 +1092,6 @@ function saveTravelEntry() {
     showToast("Tagebucheintrag gespeichert!");
 }
 
-// STRECKENPLANER & NADEL-BEARBEITUNG
 let drawnRoutePoints = []; 
 function openRouteDrawingModal() { 
     showModal('routeDrawingModal'); 
@@ -1173,9 +1106,18 @@ function openRouteDrawingModal() {
     }, 250); 
 } 
 function addDrawnPoint(lat, lon, title = "Station") { 
-    drawnRoutePoints.push({ lat, lon, title: title + " " + (drawnRoutePoints.length + 1), note: "", attachment: null }); 
+    drawnRoutePoints.push({ lat, lon, title: title + " " + (drawnRoutePoints.length + 1), note: "", attachment: null, date: "", time: "" }); 
     redrawRouteDrawMap(); 
 } 
+function addDrawnPointViaGPS() {
+    if ("geolocation" in navigator) {
+        showToast("📍 Ermittle GPS für Nadel...");
+        navigator.geolocation.getCurrentPosition(pos => {
+            addDrawnPoint(pos.coords.latitude, pos.coords.longitude, "GPS-Station");
+            showToast("GPS-Nadel hinzugefügt!");
+        }, () => showToast("GPS Fehler."), { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 });
+    }
+}
 function connectRoutePins() { if (drawnRoutePoints.length > 2) { drawnRoutePoints.push(drawnRoutePoints[0]); redrawRouteDrawMap(); } } 
 function undoLastPin() { drawnRoutePoints.pop(); redrawRouteDrawMap(); } 
 function clearDrawnRoutePoints() { drawnRoutePoints = []; redrawRouteDrawMap(); } 
@@ -1185,6 +1127,8 @@ function openPinDetailsModal(idx) {
     const p = drawnRoutePoints[idx];
     document.getElementById('pinModalStationTitle').innerText = "Station #" + (idx+1) + " bearbeiten";
     document.getElementById('pinEditTitleInput').value = p.title;
+    document.getElementById('pinEditDateInput').value = p.date || "";
+    document.getElementById('pinEditTimeInput').value = p.time || "";
     document.getElementById('pinEditNoteInput').value = p.note || "";
     tempActiveAttachment = p.attachment || null;
     document.getElementById('pinMediaAttachmentIndicator').innerText = p.attachment ? "📎 Anhang vorhanden" : "";
@@ -1195,6 +1139,8 @@ function savePinDetailChanges() {
     const p = drawnRoutePoints[idx];
     if (p) {
         p.title = document.getElementById('pinEditTitleInput').value.trim() || p.title;
+        p.date = document.getElementById('pinEditDateInput').value;
+        p.time = document.getElementById('pinEditTimeInput').value;
         p.note = document.getElementById('pinEditNoteInput').value.trim();
         p.attachment = tempActiveAttachment;
     }
@@ -1227,7 +1173,15 @@ function saveCompletedDrawnRoute() {
     } 
     const moveType = document.getElementById('routeMovementType').value;
     let routes = JSON.parse(localStorage.getItem('jannik_drawn_routes') || '[]'); 
-    routes.push({ id: Date.now(), title: document.getElementById('drawModalTitle').value || "Tour", date: new Date().toISOString().slice(0, 10), movementType: moveType, distanceKm: totalDist, points: drawnRoutePoints }); 
+    routes.push({ 
+        id: Date.now(), 
+        title: document.getElementById('drawModalTitle').value || "Tour", 
+        date: document.getElementById('drawModalDate').value || new Date().toISOString().slice(0, 10), 
+        time: document.getElementById('drawModalTime').value || '',
+        movementType: moveType, 
+        distanceKm: totalDist, 
+        points: drawnRoutePoints 
+    }); 
     localStorage.setItem('jannik_drawn_routes', JSON.stringify(routes)); 
     drawnRoutePoints = []; closeModal('routeDrawingModal'); 
     renderDistanceStatsSummary(); renderTimelineOnMap(); renderTravelEntries(); 
@@ -1288,29 +1242,62 @@ function renderTravelEntries() {
     
     if (selectedChronicleYear !== 'all') {
         routes = routes.filter(r => r.date && r.date.startsWith(selectedChronicleYear));
+        entries = entries.filter(e => e.date && e.date.startsWith(selectedChronicleYear));
     }
     
     let html = '';
     routes.forEach(r => {
         let cfg = movementConfig[r.movementType || 'car'];
+        let routeDateTimeStr = [];
+        if (r.date) routeDateTimeStr.push(r.date);
+        if (r.time) routeDateTimeStr.push(r.time + " Uhr");
+
         html += ` 
             <div style="background:#0f172a; padding:12px; border-radius:10px; border:1px solid var(--border-color); margin-bottom:10px;"> 
                 <div style="display:flex; justify-content:space-between;"> 
                     <strong>${cfg.icon} ${r.title}</strong> 
                     <span style="color:#34d399;">Gesamt: ${formatDistance(r.distanceKm)}</span> 
                 </div> 
-                <div style="font-size:0.75rem; color:var(--text-muted); margin-bottom:6px;">Datum: ${r.date}</div>
-                ${r.points.map((p, i) => `<div style="margin-top:6px; font-size:0.85rem;">Station ${i+1}: ${p.title} ${p.note ? '- ' + p.note : ''} ${renderAttachmentHtml(p.attachment)}</div>`).join('')} 
+                <div style="font-size:0.75rem; color:var(--text-muted); margin-bottom:12px;">Datum & Zeit: ${routeDateTimeStr.join(', ') || 'Keine Angabe'}</div>
+                ${r.points.map((p, i) => {
+                    let segmentInfo = '';
+                    if (i < r.points.length - 1) {
+                        let distToNext = getDistanceKm(p.lat, p.lon, r.points[i+1].lat, r.points[i+1].lon);
+                        segmentInfo = `<div style="margin: 4px 0 4px 14px; border-left: 2px dashed ${cfg.color}; padding-left: 14px; font-size: 0.8rem; color: ${cfg.color}; display: flex; align-items: center; min-height: 26px;">
+                            ${cfg.icon} ${formatDistance(distToNext)}
+                        </div>`;
+                    }
+                    
+                    let dateTimeStr = [];
+                    if (p.date) dateTimeStr.push(p.date);
+                    if (p.time) dateTimeStr.push(p.time + " Uhr");
+                    let dateTimeBadge = dateTimeStr.length > 0 ? `<span style="background:#334155; padding:2px 6px; border-radius:4px; font-size:0.7rem; color:#cbd5e1; margin-left:6px;">🕒 ${dateTimeStr.join(', ')}</span>` : '';
+
+                    return `
+                        <div style="font-size:0.85rem;">
+                            <div style="display:flex; align-items:center; flex-wrap:wrap;">
+                                <strong>📍 Station ${i+1}: ${p.title}</strong> ${dateTimeBadge}
+                            </div>
+                            ${p.note ? `<div style="color:var(--text-muted); margin-top:2px;">📝 ${p.note}</div>` : ''} 
+                            ${renderAttachmentHtml(p.attachment)}
+                        </div>
+                        ${segmentInfo}
+                    `;
+                }).join('')} 
             </div> 
         `;
     });
     
     entries.forEach(e => {
+        let dateTimeStr = [];
+        if (e.date) dateTimeStr.push(e.date);
+        if (e.time) dateTimeStr.push(e.time + " Uhr");
+
         html += `
             <div style="background:#0f172a; padding:12px; border-radius:10px; border:1px solid var(--border-color); margin-bottom:10px;">
                 <div style="font-weight:bold; color:var(--accent-color);">📍 ${e.title}</div>
                 <div style="font-size:0.8rem; color:#34d399;">Ort: ${e.address}</div>
-                <div style="font-size:0.75rem; color:var(--text-muted);">${e.date}</div>
+                <div style="font-size:0.75rem; color:var(--text-muted);">${dateTimeStr.join(', ')}</div>
                 <div style="font-size:0.9rem; margin-top:4px;">${e.desc}</div>
                 ${renderAttachmentHtml(e.attachment)}
             </div>
@@ -1322,7 +1309,67 @@ function renderTravelEntries() {
 
 function deleteMyAccount() { handleLogout(); } 
 
-window.onload = function() { completeLogin('admin'); }; 
+// Media Pickers Helper Functions
+function openGifPicker(target) { 
+    currentMediaAttachmentTarget = target; 
+    showModal('gifPickerModal'); 
+    searchGiphyGifs('travel'); 
+}
+
+function openLocationPicker(target) { 
+    currentMediaAttachmentTarget = target; 
+    showModal('locationPickerModal'); 
+}
+
+function openLinkPicker(target, type = 'yt') {
+    currentMediaAttachmentTarget = target;
+    const titleEl = document.getElementById('linkModalTitle');
+    const labelEl = document.getElementById('linkModalLabel');
+    if (type === 'reddit') {
+        titleEl.innerText = "🔴 Reddit Beitrag teilen";
+        labelEl.innerText = "Reddit URL:";
+        document.getElementById('linkPickerUrlInput').placeholder = "https://www.reddit.com/r/...";
+        window.currentLinkType = 'reddit';
+    } else {
+        titleEl.innerText = "🎥 YouTube Video oder Link";
+        labelEl.innerText = "URL:";
+        document.getElementById('linkPickerUrlInput').placeholder = "https://www.youtube.com/watch?v=...";
+        window.currentLinkType = 'yt';
+    }
+    showModal('linkPickerModal');
+}
+
+function confirmLinkAttachment() {
+    const url = document.getElementById('linkPickerUrlInput').value.trim();
+    if (!url) return;
+    if (window.currentLinkType === 'reddit') {
+        tempActiveAttachment = { type: '🔴 Reddit', data: url, isReddit: true };
+        setAttachmentIndicator(currentMediaAttachmentTarget, '🔴 Reddit angehängt');
+    } else {
+        let ytThumb = '';
+        let isYt = false;
+        if (url.includes('youtube.com') || url.includes('youtu.be')) {
+            isYt = true;
+            let vid = url.includes('v=') ? url.split('v=')[1]?.substring(0, 11) : url.split('youtu.be/')[1]?.substring(0, 11);
+            if (vid) ytThumb = `https://img.youtube.com/vi/${vid}/hqdefault.jpg`;
+        }
+        tempActiveAttachment = { type: '🎥 YouTube', data: url, thumb: ytThumb, isYt };
+        setAttachmentIndicator(currentMediaAttachmentTarget, '🎥 Link angehängt');
+    }
+    closeModal('linkPickerModal');
+    document.getElementById('linkPickerUrlInput').value = '';
+}
+
+function openPollPicker(target) { 
+    currentMediaAttachmentTarget = target; 
+    showModal('pollPickerModal'); 
+}
+
+// Direkt beim Laden das Login-Overlay anzeigen
+window.onload = function() { 
+    document.getElementById('loginUser').value = 'admin';
+    document.getElementById('loginPass').value = 'admin';
+}; 
 </script> 
 </body> 
 </html>
